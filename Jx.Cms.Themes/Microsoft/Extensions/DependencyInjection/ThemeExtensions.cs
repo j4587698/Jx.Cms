@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.Loader;
 using Jx.Cms.Common.Configure;
 using Jx.Cms.Common.Extensions;
+using Jx.Cms.Plugin;
 using Jx.Cms.Themes;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.PartManager;
@@ -24,34 +25,23 @@ namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ThemeExtensions
     {
-
+        private static string libraryPath = Path.GetFullPath(
+            Path.Combine(Directory.GetCurrentDirectory(), "Test"));
         private static void AddRclSupport(IServiceCollection services)
         {
-            var libraryPath = Path.GetFullPath(
-                Path.Combine(Directory.GetCurrentDirectory(), "Test"));
             var provider = new PhysicalFileProvider(libraryPath);
 
             void CallBack(object obj)
             {
                 var partManager = services.GetSingletonInstanceOrNull<ApplicationPartManager>();
-                var assemblyFiles = Directory.GetFiles(libraryPath, "*.dll", SearchOption.AllDirectories);
-                foreach (var assemblyFile in assemblyFiles)
+                var dirs = Directory.GetDirectories(libraryPath);
+                foreach (var dir in dirs)
                 {
-                    
-                    try
+                    var dllName = Path.GetFileName(dir) + ".dll";
+                    var dllPath = Path.Combine(dir, dllName);
+                    if (File.Exists(dllPath))
                     {
-                        var assembly = Assembly.LoadFrom(assemblyFile);
-                        if (partManager.ApplicationParts.Any(x => x.Name == assembly.GetName().Name))
-                        {
-                            continue;
-                        }
-                        if (assemblyFile.EndsWith(".Views.dll"))
-                            partManager.ApplicationParts.Add(new CompiledRazorAssemblyPart(assembly));
-                        else
-                            partManager.ApplicationParts.Add(new AssemblyPart(assembly));
-                    }
-                    catch (Exception e)
-                    {
+                        RazorPlugin.LoadPlugin(dllPath, partManager);
                     }
                 }
 
@@ -72,6 +62,18 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddRazorPages(options =>
             {
                 options.Conventions.Add(new ResponsivePageRouteModelConvention());
+            }).ConfigureApplicationPartManager(manager  =>
+            {
+                var dirs = Directory.GetDirectories(libraryPath);
+                foreach (var dir in dirs)
+                {
+                    var dllName = Path.GetFileName(dir) + ".dll";
+                    var dllPath = Path.Combine(dir, dllName);
+                    if (File.Exists(dllPath))
+                    {
+                        RazorPlugin.LoadPlugin(dllPath, manager);
+                    }
+                }
             });
 
             services.AddSingleton<MatcherPolicy, ResponsivePageMatcherPolicy>();
