@@ -24,7 +24,7 @@ namespace Jx.Cms.Themes
 
         public Task ApplyAsync(HttpContext httpContext, CandidateSet candidates)
         {
-            var path = Utils.GetThemePath();
+            var path = Utils.GetThemeName();
             if (path.IsNullOrEmpty())
             {
                 return Task.CompletedTask;

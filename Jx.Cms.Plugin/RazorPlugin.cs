@@ -1,14 +1,29 @@
-﻿using System.Collections.Generic;
+﻿#nullable enable
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
+using Jx.Cms.Common.Extensions;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 
 namespace Jx.Cms.Plugin
 {
     public static class RazorPlugin
     {
         private static readonly Dictionary<string, PluginLoader> PluginLoaders = new Dictionary<string, PluginLoader>();
+
+        /// <summary>
+        /// 根据dll名字（不含扩展名）获取Assembly
+        /// </summary>
+        /// <param name="dllName"></param>
+        /// <returns></returns>
+        public static Assembly? GetAssemblyByDllName(string dllName)
+        {
+            var dllPath = PluginLoaders.Keys.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x) == dllName);
+            return dllPath.IsNullOrEmpty() ? null : PluginLoaders[dllPath].LoadDefaultAssembly();
+        }
 
         /// <summary>
         /// 加载Razor插件
@@ -28,6 +43,9 @@ namespace Jx.Cms.Plugin
             });
             AddToPartManager(plugin, partManager);
             PluginLoaders.Add(dllPath, plugin);
+            ViewsFeature viewsFeature = new ViewsFeature();
+            partManager.PopulateFeature(viewsFeature);
+            
         }
 
         private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
@@ -71,7 +89,7 @@ namespace Jx.Cms.Plugin
             var partFactory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
             foreach (var applicationPart in partFactory.GetApplicationParts(pluginAssembly))
             {
-                var parts = partManager.ApplicationParts.Where(x => x.Name == applicationPart.Name);
+                var parts = partManager.ApplicationParts.Where(x => x.Name == applicationPart.Name).ToArray();
                 foreach (var part in parts)
                 {
                     partManager.ApplicationParts.Remove(part);
@@ -84,7 +102,7 @@ namespace Jx.Cms.Plugin
                 partFactory = ApplicationPartFactory.GetApplicationPartFactory(assembly);
                 foreach (var applicationPart in partFactory.GetApplicationParts(assembly))
                 {
-                    var parts = partManager.ApplicationParts.Where(x => x.Name == applicationPart.Name);
+                    var parts = partManager.ApplicationParts.Where(x => x.Name == applicationPart.Name).ToArray();
                     foreach (var part in parts)
                     {
                         partManager.ApplicationParts.Remove(part);

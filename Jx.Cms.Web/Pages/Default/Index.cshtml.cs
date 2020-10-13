@@ -2,9 +2,11 @@
 using System.IO;
 using System.Reflection;
 using Jx.Cms.Themes;
+using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Options;
 
 namespace Jx.Cms.Web.Pages.Default
 {
@@ -14,6 +16,7 @@ namespace Jx.Cms.Web.Pages.Default
         public Index(ApplicationPartManager app)
         {
             partManager = app;
+            //_options = options;
         }
         public void OnGet()
         {

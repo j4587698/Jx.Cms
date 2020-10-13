@@ -9,6 +9,7 @@ using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes;
 using Jx.Cms.Themes.Middlewares;
+using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -19,22 +20,23 @@ using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Options;
 
 // ReSharper disable once CheckNamespace
 namespace Microsoft.Extensions.DependencyInjection
 {
     public static class ThemeExtensions
     {
-        private static string libraryPath = Path.GetFullPath(
+        private static readonly string LibraryPath = Path.GetFullPath(
             Path.Combine(Directory.GetCurrentDirectory(), "Test"));
         private static void AddRclSupport(IServiceCollection services)
         {
-            var provider = new PhysicalFileProvider(libraryPath);
+            var provider = new PhysicalFileProvider(LibraryPath);
 
             void CallBack(object obj)
             {
                 var partManager = services.GetSingletonInstanceOrNull<ApplicationPartManager>();
-                var dirs = Directory.GetDirectories(libraryPath);
+                var dirs = Directory.GetDirectories(LibraryPath);
                 foreach (var dir in dirs)
                 {
                     var dllName = Path.GetFileName(dir) + ".dll";
@@ -64,7 +66,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.Conventions.Add(new ResponsivePageRouteModelConvention());
             }).ConfigureApplicationPartManager(manager  =>
             {
-                var dirs = Directory.GetDirectories(libraryPath);
+                var dirs = Directory.GetDirectories(LibraryPath);
                 foreach (var dir in dirs)
                 {
                     var dllName = Path.GetFileName(dir) + ".dll";
@@ -81,6 +83,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton(MyActionDescriptorChangeProvider.Instance);
             services.Replace<IViewCompilerProvider, MyViewCompilerProvider>();
             AddRclSupport(services);
+            services.ConfigureOptions<UiConfigureOptions>();
             return services;
         }
         
@@ -89,6 +92,7 @@ namespace Microsoft.Extensions.DependencyInjection
             var httpContextAccessor = app.ApplicationServices.GetRequiredService<IHttpContextAccessor>();
             HttpContext2.Configure(httpContextAccessor);
             Utils.InitThemePath();
+            var a = app.ApplicationServices;
             app.UseMiddleware<RedirectMiddleware>();
             return app;
         }

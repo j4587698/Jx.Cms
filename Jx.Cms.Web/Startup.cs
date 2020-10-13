@@ -30,13 +30,13 @@ namespace Jx.Cms.Web
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseTheme();
             Common.Configure.Configure.ServiceProvider = app.ApplicationServices;
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapGet("/", async context => { await context.Response.WriteAsync("Hello World!"); });
-                //endpoints.MapDynamicPageRoute<Test>("{**whatever}");
                 endpoints.MapRazorPages();
             });
         }

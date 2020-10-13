@@ -32,7 +32,7 @@ namespace Jx.Cms.Themes
         /// <summary>
         /// 获取主题路径
         /// </summary>
-        public static string GetThemePath()
+        public static string GetThemeName()
         {
             switch (Mode)
             {
@@ -87,7 +87,7 @@ namespace Jx.Cms.Themes
         public static void InitThemePath()
         {
             Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
-            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? "Default";
+            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? "TestA";
             MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile";
             MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
         }
