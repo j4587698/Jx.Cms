@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using DeviceDetectorNET.Parser.Device;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Entities.Settings;
@@ -12,12 +14,12 @@ namespace Jx.Cms.Themes
         /// <summary>
         /// PC主题，不切换主题与自适应主题同样使用此主题
         /// </summary>
-        public static string PcThemeName = "Default";
+        public static string PcThemeName { get; private set; }
 
         /// <summary>
         /// 手机版主题
         /// </summary>
-        public static string MobileThemeName = "Mobile";
+        public static string MobileThemeName { get; private set; } 
 
         /// <summary>
         /// 主题切换方式，默认为不切换
@@ -27,7 +29,22 @@ namespace Jx.Cms.Themes
         /// <summary>
         /// 手机版域名
         /// </summary>
-        public static string MobileDomain;
+        public static string MobileDomain { get; set; }
+        
+        /// <summary>
+        /// DLL与路径对应关系
+        /// </summary>
+        public static readonly Dictionary<string, string> PathDllDic = new Dictionary<string, string>();
+        
+        /// <summary>
+        /// 路径与主题对应关系
+        /// </summary>
+        public static readonly Dictionary<string, string> ThemePathDic = new Dictionary<string, string>();
+
+        /// <summary>
+        /// 变更通知
+        /// </summary>
+        public static Action<string> ThemeModify;
 
         /// <summary>
         /// 获取主题路径
@@ -60,6 +77,10 @@ namespace Jx.Cms.Themes
             }
         }
 
+        /// <summary>
+        /// 跳转指定路径
+        /// </summary>
+        /// <returns></returns>
         public static string Redirect()
         {
             if (MobileDomain.IsNullOrEmpty())
@@ -87,9 +108,42 @@ namespace Jx.Cms.Themes
         public static void InitThemePath()
         {
             Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
-            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? "TestA";
-            MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile";
+            SetTheme(SettingsEntity.GetValue(nameof(PcThemeName)) ?? "Default", ThemeMode.PcTheme);
+            SetTheme(SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile", ThemeMode.MobileTheme);
             MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
+        }
+
+        public static void SetTheme(string themeName, ThemeMode themeMode)
+        {
+            var oldThemeName = themeMode switch
+            {
+                ThemeMode.PcTheme => PcThemeName,
+                ThemeMode.MobileTheme => MobileThemeName,
+                _ => PcThemeName
+            };
+            var needChange = GetThemeName() == oldThemeName;
+            switch (themeMode)
+            {
+                case ThemeMode.PcTheme:
+                    PcThemeName = themeName;
+                    break;
+                case ThemeMode.MobileTheme:
+                    MobileThemeName = themeName;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(themeMode), themeMode, null);
+            }
+
+            if (needChange)
+            {
+                ThemeModify?.Invoke(themeName);
+            }
+        }
+
+        public enum ThemeMode
+        {
+            PcTheme,
+            MobileTheme
         }
     }
 }

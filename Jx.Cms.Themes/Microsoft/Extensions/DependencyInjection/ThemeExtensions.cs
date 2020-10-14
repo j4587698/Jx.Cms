@@ -29,6 +29,37 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         private static readonly string LibraryPath = Path.GetFullPath(
             Path.Combine(Directory.GetCurrentDirectory(), "Test"));
+
+        private static void LoadPlugin(ApplicationPartManager partManager)
+        {
+            var dirs = Directory.GetDirectories(LibraryPath);
+            foreach (var dir in dirs)
+            {
+                var dllName = Path.GetFileName(dir) + ".dll";
+                var dllPath = Path.Combine(dir, dllName);
+                if (File.Exists(dllPath))
+                {
+                    RazorPlugin.LoadPlugin(dllPath, partManager);
+                }
+            }
+            Utils.PathDllDic.Clear();
+            ViewsFeature viewsFeature = new ViewsFeature();
+            partManager.PopulateFeature(viewsFeature);
+            foreach (var view in viewsFeature.ViewDescriptors)
+            {
+                if (Utils.PathDllDic.ContainsKey(view.RelativePath))
+                {
+                    continue;
+                }
+                var name = view.Item.Type.Assembly.ManifestModule.Name.Replace(".Views", "");
+                if (name == "Jx.Cms.Web.dll")
+                {
+                    continue;
+                }
+                Utils.PathDllDic.Add(view.RelativePath, name);
+            }
+        }
+        
         private static void AddRclSupport(IServiceCollection services)
         {
             var provider = new PhysicalFileProvider(LibraryPath);
@@ -36,16 +67,7 @@ namespace Microsoft.Extensions.DependencyInjection
             void CallBack(object obj)
             {
                 var partManager = services.GetSingletonInstanceOrNull<ApplicationPartManager>();
-                var dirs = Directory.GetDirectories(LibraryPath);
-                foreach (var dir in dirs)
-                {
-                    var dllName = Path.GetFileName(dir) + ".dll";
-                    var dllPath = Path.Combine(dir, dllName);
-                    if (File.Exists(dllPath))
-                    {
-                        RazorPlugin.LoadPlugin(dllPath, partManager);
-                    }
-                }
+                LoadPlugin(partManager);
 
                 MyActionDescriptorChangeProvider.Instance.HasChanged = true;
                 MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
@@ -64,19 +86,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddRazorPages(options =>
             {
                 options.Conventions.Add(new ResponsivePageRouteModelConvention());
-            }).ConfigureApplicationPartManager(manager  =>
-            {
-                var dirs = Directory.GetDirectories(LibraryPath);
-                foreach (var dir in dirs)
-                {
-                    var dllName = Path.GetFileName(dir) + ".dll";
-                    var dllPath = Path.Combine(dir, dllName);
-                    if (File.Exists(dllPath))
-                    {
-                        RazorPlugin.LoadPlugin(dllPath, manager);
-                    }
-                }
-            });
+            }).ConfigureApplicationPartManager(LoadPlugin);
 
             services.AddSingleton<MatcherPolicy, ResponsivePageMatcherPolicy>();
             services.AddSingleton<IActionDescriptorChangeProvider>(MyActionDescriptorChangeProvider.Instance);

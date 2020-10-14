@@ -1,5 +1,6 @@
 ﻿using System;
 using Jx.Cms.Plugin;
+using Jx.Cms.Themes.FileProvider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
@@ -13,18 +14,19 @@ namespace Jx.Cms.Themes.Options
         public UiConfigureOptions(IWebHostEnvironment environment)
         {
             Environment = environment;
-            ChangeTheme();
+            Utils.ThemeModify = ChangeTheme;
         }
 
-        private IFileProvider _filesProvider;
+        private readonly MyCompositeFileProvider _filesProvider = new MyCompositeFileProvider();
         private string basePath = "wwwroot";
 
-        public void ChangeTheme()
+        public void ChangeTheme(string themeName)
         {
-            var assembly = RazorPlugin.GetAssemblyByDllName(Utils.GetThemeName());
+            var dllName = Utils.PathDllDic[Utils.ThemePathDic[themeName]];
+            var assembly = RazorPlugin.GetAssemblyByDllName(dllName);
             if (assembly != null)
             {
-                _filesProvider = new EmbeddedFileProvider(assembly, basePath);
+                _filesProvider.ModifyFileProvider(new EmbeddedFileProvider(assembly, "RazorClassLibrary1." + basePath));
             }
         }
         

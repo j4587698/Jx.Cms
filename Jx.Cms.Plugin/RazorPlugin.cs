@@ -1,5 +1,4 @@
-﻿#nullable enable
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -21,7 +20,7 @@ namespace Jx.Cms.Plugin
         /// <returns></returns>
         public static Assembly? GetAssemblyByDllName(string dllName)
         {
-            var dllPath = PluginLoaders.Keys.FirstOrDefault(x => Path.GetFileNameWithoutExtension(x) == dllName);
+            var dllPath = PluginLoaders.Keys.FirstOrDefault(x => Path.GetFileName(x) == dllName);
             return dllPath.IsNullOrEmpty() ? null : PluginLoaders[dllPath].LoadDefaultAssembly();
         }
 
@@ -43,9 +42,6 @@ namespace Jx.Cms.Plugin
             });
             AddToPartManager(plugin, partManager);
             PluginLoaders.Add(dllPath, plugin);
-            ViewsFeature viewsFeature = new ViewsFeature();
-            partManager.PopulateFeature(viewsFeature);
-            
         }
 
         private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
