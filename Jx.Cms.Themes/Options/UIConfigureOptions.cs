@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.FileProvider;
 using Microsoft.AspNetCore.Builder;
@@ -15,6 +16,7 @@ namespace Jx.Cms.Themes.Options
         {
             Environment = environment;
             Utils.ThemeModify = ChangeTheme;
+            ChangeTheme(Utils.GetThemeName());
         }
 
         private readonly MyCompositeFileProvider _filesProvider = new MyCompositeFileProvider();
@@ -22,11 +24,15 @@ namespace Jx.Cms.Themes.Options
 
         public void ChangeTheme(string themeName)
         {
+            if (!Utils.ThemePathDic.ContainsKey(themeName) || !Utils.PathDllDic.ContainsKey(themeName))
+            {
+                return;
+            }
             var dllName = Utils.PathDllDic[Utils.ThemePathDic[themeName]];
             var assembly = RazorPlugin.GetAssemblyByDllName(dllName);
             if (assembly != null)
             {
-                _filesProvider.ModifyFileProvider(new EmbeddedFileProvider(assembly, "RazorClassLibrary1." + basePath));
+                _filesProvider.ModifyFileProvider(new EmbeddedFileProvider(assembly, $"{Path.GetFileNameWithoutExtension(dllName)}.{basePath}"));
             }
         }
         

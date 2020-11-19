@@ -52,10 +52,10 @@ namespace Microsoft.Extensions.DependencyInjection
                     continue;
                 }
                 var name = view.Item.Type.Assembly.ManifestModule.Name.Replace(".Views", "");
-                if (name == "Jx.Cms.Web.dll")
-                {
-                    continue;
-                }
+                // if (name == "Jx.Cms.Web.dll")
+                // {
+                //     continue;
+                // }
                 Utils.PathDllDic.Add(view.RelativePath, name);
             }
         }

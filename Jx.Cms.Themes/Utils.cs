@@ -108,8 +108,8 @@ namespace Jx.Cms.Themes
         public static void InitThemePath()
         {
             Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
-            SetTheme(SettingsEntity.GetValue(nameof(PcThemeName)) ?? "Default", ThemeMode.PcTheme);
-            SetTheme(SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile", ThemeMode.MobileTheme);
+            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? "Default";
+            MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile";
             MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
         }
 
