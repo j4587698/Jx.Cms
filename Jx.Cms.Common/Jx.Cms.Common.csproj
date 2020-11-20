@@ -8,4 +8,8 @@
       <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Furion" Version="1.0.5.2" />
+    </ItemGroup>
+
 </Project>

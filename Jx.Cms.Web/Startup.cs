@@ -18,8 +18,9 @@ namespace Jx.Cms.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddFreeSql();
-            services.AddTheme();
+            services.AddInjectBase();
+            //services.AddFreeSql();
+            //services.AddTheme();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,8 +34,8 @@ namespace Jx.Cms.Web
 
             app.UseStaticFiles();
             app.UseRouting();
-            app.UseTheme();
-            Common.Configure.Configure.ServiceProvider = app.ApplicationServices;
+            //app.UseTheme();
+            app.UseInjectBase();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

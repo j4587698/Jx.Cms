@@ -1,4 +1,4 @@
-﻿using System;
+﻿﻿using System;
 using System.IO;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.FileProvider;
@@ -24,10 +24,6 @@ namespace Jx.Cms.Themes.Options
 
         public void ChangeTheme(string themeName)
         {
-            if (!Utils.ThemePathDic.ContainsKey(themeName) || !Utils.PathDllDic.ContainsKey(themeName))
-            {
-                return;
-            }
             var dllName = Utils.PathDllDic[Utils.ThemePathDic[themeName]];
             var assembly = RazorPlugin.GetAssemblyByDllName(dllName);
             if (assembly != null)

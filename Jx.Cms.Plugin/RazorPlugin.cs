@@ -18,7 +18,7 @@ namespace Jx.Cms.Plugin
         /// </summary>
         /// <param name="dllName"></param>
         /// <returns></returns>
-        public static Assembly? GetAssemblyByDllName(string dllName)
+        public static Assembly GetAssemblyByDllName(string dllName)
         {
             var dllPath = PluginLoaders.Keys.FirstOrDefault(x => Path.GetFileName(x) == dllName);
             return dllPath.IsNullOrEmpty() ? null : PluginLoaders[dllPath].LoadDefaultAssembly();

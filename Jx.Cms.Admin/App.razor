@@ -1,0 +1,10 @@
+﻿@using Jx.Cms.Admin.Pages.Layout
+
+<Router AppAssembly="typeof(AdminStartup).Assembly">
+    <Found Context="routeData">
+        <RouteView RouteData="routeData"></RouteView>
+    </Found>
+    <NotFound>
+        <h2>抱歉！找不到页面。</h2>
+    </NotFound>
+</Router>
