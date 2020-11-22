@@ -24,6 +24,15 @@ namespace Jx.Cms.Themes.Options
 
         public void ChangeTheme(string themeName)
         {
+            if (!Utils.ThemePathDic.ContainsKey(themeName))
+            {
+                return;
+            }
+
+            if (!Utils.PathDllDic.ContainsKey(Utils.ThemePathDic[themeName]))
+            {
+                return;
+            }
             var dllName = Utils.PathDllDic[Utils.ThemePathDic[themeName]];
             var assembly = RazorPlugin.GetAssemblyByDllName(dllName);
             if (assembly != null)

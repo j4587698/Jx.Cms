@@ -13,6 +13,7 @@ namespace Jx.Cms.Admin
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddServerSideBlazor();
+            services.AddBootstrapBlazor();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
