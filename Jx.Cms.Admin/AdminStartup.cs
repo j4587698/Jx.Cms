@@ -18,11 +18,6 @@ namespace Jx.Cms.Admin
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseStaticFiles(new StaticFileOptions()
-            {
-                
-                FileProvider = new EmbeddedFileProvider(typeof(AdminStartup).Assembly, "Jx.Cms.Admin.wwwroot")
-            });
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
