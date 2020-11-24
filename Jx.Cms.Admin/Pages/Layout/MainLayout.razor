@@ -11,7 +11,7 @@
 <Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
     <Header>
-        <span class="ml-3 flex-fill"><Breadcrumb Value="@DataSource" /></span>
+        <span class="ml-3 flex-fill"></span>
         <img src="_content/BootstrapBlazor.Shared/images/Argo.png" class="layout-avatar-right" />
         <span class="ml-3 d-none d-sm-block">超级管理员</span>
     </Header>
@@ -57,60 +57,11 @@
     }
 
     private List<MenuItem> _menuItems;
-
-    [NotNull]
-    private List<BreadcrumbItem> DataSource { get; set; } = new List<BreadcrumbItem>();
-
-    protected override void OnAfterRender(bool firstRender)
-    {
-        base.OnAfterRender(firstRender);
-        foreach (var menuItem in _menuItems)
-        {
-            if (FindMenu(menuItem, NavigationManager.GetLocalPath()))
-                return;
-        }
-    }
-
-    private bool FindMenu(MenuItem item, string targetPath)
-    {
-        if (item.Url == targetPath)
-        {
-            DataSource.Clear();
-            DataSource.Add(new BreadcrumbItem(item.Text));
-            return true;
-        }
-        foreach (var menuItem in item.Items)
-        {
-            if (FindMenu(menuItem, targetPath))
-            {
-                DataSource.Insert(0, new BreadcrumbItem(menuItem.Text, menuItem.Url));
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
         _menuItems = MenuService.GetAllMenu();
-        // var ret = new List<MenuItem>
-        // {
-        //     new MenuItem() { Text = "系统设置", IsActive = true, Icon = "fa fa-fw fa-gears" },
-        //     new MenuItem() { Text = "权限设置", Icon = "fa fa-fw fa-users" },
-        //     new MenuItem() { Text = "日志设置", Icon = "fa fa-fw fa-database" }
-        // };
-        //
-        // ret[0].AddItem(new MenuItem() { Text = "网站设置", Icon = "fa fa-fw fa-fa" });
-        // ret[0].AddItem(new MenuItem() { Text = "任务设置", Icon = "fa fa-fw fa-tasks" });
-        //
-        // ret[1].AddItem(new MenuItem() { Text = "用户设置", Icon = "fa fa-fw fa-user" });
-        // ret[1].AddItem(new MenuItem() { Text = "菜单设置", Icon = "fa fa-fw fa-dashboard" });
-        // ret[1].AddItem(new MenuItem() { Text = "角色设置", Icon = "fa fa-fw fa-sitemap" });
-        //
-        // ret[2].AddItem(new MenuItem() { Text = "访问日志", Icon = "fa fa-fw fa-bars" });
-        // ret[2].AddItem(new MenuItem() { Text = "登录日志", Icon = "fa fa-fw fa-user-circle-o" });
-        // ret[2].AddItem(new MenuItem() { Text = "操作日志", Icon = "fa fa-fw fa-edit" });
-
         return _menuItems;
     }
 }
