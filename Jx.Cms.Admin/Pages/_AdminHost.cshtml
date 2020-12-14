@@ -11,12 +11,17 @@
 <meta name="keywords" content="LightYear,光年,后台模板,后台管理系统,光年HTML模板">
 <meta name="description" content="LightYear是一个基于Bootstrap v3.3.7的后台管理系统的HTML模板。">
 <meta name="author" content="yinqi">
-<link rel="stylesheet" href="_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
- <base href="~/" />
+<link rel="stylesheet" href="/_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
+<link rel="stylesheet" href="/_content/BootstrapBlazor.Markdown/css/bootstrap.blazor.markdown.min.css" />
+<link rel="stylesheet" href="/_content/BootstrapBlazor/lib/summernote/summernote-bs4.min.css">
+ <base href="~/Admin/" />
 </head>
 <body>
     @(await Html.RenderComponentAsync<Jx.Cms.Admin.App>(RenderMode.ServerPrerendered))
-<script type="text/javascript" src="/_framework/blazor.server.js"></script>
-<script src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+    <script type="text/javascript" src="/_framework/blazor.server.js"></script>
+    <script src="/_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+    <script src="/_content/BootstrapBlazor.Markdown/js/bootstrap.blazor.markdown.min.js"></script>
+    <script src="/_content/BootstrapBlazor/lib/summernote/summernote-bs4.min.js"></script>
+    <script src="/_content/BootstrapBlazor/lib/summernote/summernote-zh-CN.min.js"></script>
 </body>
 </html>

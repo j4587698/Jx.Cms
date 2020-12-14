@@ -21,8 +21,8 @@ namespace Jx.Cms.Admin
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapBlazorHub();
-                endpoints.MapFallbackToAreaPage("/_AdminHost", "Admin");
+                endpoints.MapBlazorHub("~/Admin/_blazor");
+                endpoints.MapFallbackToAreaPage("~/Admin/{*clientroutes:nonfile}","/_AdminHost", "Admin");
             });
         }
     }

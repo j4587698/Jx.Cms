@@ -1,14 +1,37 @@
-﻿@page "/Admin/Article/Write"
+﻿@page "/Article/Write"
+@page "/Article/Write/{Id}"
 @using Jx.Cms.Admin.Attribute
+@using Jx.Cms.Entities.Admin
+@using Jx.Cms.Service
 
-@attribute [Menu("{A0259D93-39EB-462B-A69F-13924963D6AE}", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:"{A87BBD76-9849-4A7E-97A4-64B29E964F45}")]
+@inject IArticleService ArticleService
 
-<EditForm>
-    <FieldItems>
-        <EditorItem></EditorItem>
-    </FieldItems>
-</EditForm>
+@attribute [Menu("{A0259D93-39EB-462B-A69F-13924963D6AE}", "写文章", "/Article/Write", 5, iconClass:"fa fa-pencil", parentId:"{A87BBD76-9849-4A7E-97A4-64B29E964F45}")]
+
+<div class="row">
+    <div class="form-group col-12">
+        <BootstrapInput placeholder="请输入标题" @bind-Value="@ArticleEntity.Title" DisplayText="文章标题" ShowLabel="true"></BootstrapInput>
+    </div>
+</div>
+
+<div class="row">
+    <div class="form-group col-12">
+        
+        <Editor IsEditor="true" Height="400"></Editor>
+    </div>
+</div>
 
 @code {
-    
+    [Parameter]
+    public int Id { get; set; }
+
+    private ArticleEntity ArticleEntity { get; set; }
+
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        ArticleEntity = Id == 0 ? new ArticleEntity() : ArticleService.GetArticleById(Id);
+    }
+
 }

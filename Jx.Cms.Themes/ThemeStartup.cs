@@ -22,7 +22,7 @@ namespace Jx.Cms.Themes
     public class ThemeStartup : AppStartup
     {
         private static readonly string LibraryPath = Path.GetFullPath(
-            Path.Combine(Directory.GetCurrentDirectory(), "Test"));
+            Path.Combine(Directory.GetCurrentDirectory(), "Theme"));
 
         private static void LoadPlugin(ApplicationPartManager partManager)
         {

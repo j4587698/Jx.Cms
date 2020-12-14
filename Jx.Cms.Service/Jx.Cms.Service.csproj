@@ -5,11 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <FrameworkReference Include="Microsoft.AspNetCore.App" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Furion" Version="1.5.0" />
+      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
     </ItemGroup>
 
 </Project>
