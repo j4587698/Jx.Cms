@@ -10,7 +10,7 @@
   </ItemGroup>
 
 	<ItemGroup>
-    <PackageReference Include="BootstrapBlazor" Version="5.0.6" />
+    <PackageReference Include="BootstrapBlazor" Version="5.0.7" />
     <PackageReference Include="BootstrapBlazor.Markdown" Version="5.0.0" />
   </ItemGroup>
 
@@ -18,6 +18,7 @@
     <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
     <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
     <ProjectReference Include="..\Jx.Cms.Service\Jx.Cms.Service.csproj" />
+    <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
   </ItemGroup>
 
   <ItemGroup>

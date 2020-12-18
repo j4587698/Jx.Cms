@@ -2,7 +2,8 @@
 using System.IO;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.FileProvider;
-using Microsoft.AspNetCore.Builder;
+ using Jx.Cms.Themes.Util;
+ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;

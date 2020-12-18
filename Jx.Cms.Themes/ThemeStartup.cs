@@ -2,9 +2,11 @@
 using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin;
+using Jx.Cms.Themes.Config;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
+using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -21,12 +23,9 @@ namespace Jx.Cms.Themes
 {
     public class ThemeStartup : AppStartup
     {
-        private static readonly string LibraryPath = Path.GetFullPath(
-            Path.Combine(Directory.GetCurrentDirectory(), "Theme"));
-
         private static void LoadPlugin(ApplicationPartManager partManager)
         {
-            var dirs = Directory.GetDirectories(LibraryPath);
+            var dirs = Directory.GetDirectories(Constants.LibraryPath);
             foreach (var dir in dirs)
             {
                 var dllName = Path.GetFileName(dir) + ".dll";
@@ -56,7 +55,7 @@ namespace Jx.Cms.Themes
 
         private static void AddRclSupport(IServiceCollection services)
         {
-            var provider = new PhysicalFileProvider(LibraryPath);
+            var provider = new PhysicalFileProvider(Constants.LibraryPath);
 
             void CallBack(object obj)
             {
@@ -75,6 +74,11 @@ namespace Jx.Cms.Themes
 
         public void ConfigureServices(IServiceCollection services)
         {
+            if (!Directory.Exists(Constants.LibraryPath))
+            {
+                Directory.CreateDirectory(Constants.LibraryPath);
+            }
+            
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddRazorPages(options =>

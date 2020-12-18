@@ -1,0 +1,33 @@
+﻿@page "/Theme"
+@using Jx.Cms.Themes.Util
+@using Jx.Cms.Themes.Service
+@using Jx.Cms.Admin.Attribute
+
+@attribute [Menu("{4363DE5F-CDAC-4872-909A-EC05AF488AC0}", "主题列表", "/Theme", 10, iconClass:"fa fa-newspaper-o")]
+
+@inject IThemeConfigService ThemeConfigService
+@inject NavigationManager NavigationManager
+
+<ListView Items="_themeConfigs" TItem="ThemeConfig">
+    <HeaderTemplate>
+        <div>主题列表</div>
+    </HeaderTemplate>
+    <BodyTemplate>
+        <Card>
+            <CardBody>
+                <img src="/Admin/Image/LoadScreenShot?themeName=@context.ThemeName" alt="@context.ThemeDescription"/>
+            </CardBody>
+        </Card>
+    </BodyTemplate>
+</ListView>
+
+@code {
+    private List<ThemeConfig> _themeConfigs;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _themeConfigs = ThemeConfigService.GetAllThemes();
+    }
+
+}

@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using DeviceDetectorNET.Parser.Device;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Entities.Settings;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 
-namespace Jx.Cms.Themes
+namespace Jx.Cms.Themes.Util
 {
-    public class Utils
+    public static class Utils
     {
         /// <summary>
         /// PC主题，不切换主题与自适应主题同样使用此主题
