@@ -2,13 +2,14 @@
 @using Jx.Cms.Themes.Util
 @using Jx.Cms.Themes.Service
 @using Jx.Cms.Admin.Attribute
+@using Masuit.Tools.Reflection
 
 @attribute [Menu("{4363DE5F-CDAC-4872-909A-EC05AF488AC0}", "主题列表", "/Theme", 10, iconClass:"fa fa-newspaper-o")]
 
 @inject IThemeConfigService ThemeConfigService
 @inject NavigationManager NavigationManager
 
-<ListView Items="_themeConfigs" TItem="ThemeConfig">
+<ListView Items="_themeConfigs" TItem="ThemeConfig" style="width: 100%">
     <HeaderTemplate>
         <div>主题列表</div>
     </HeaderTemplate>
@@ -16,7 +17,14 @@
         <Card>
             <CardBody>
                 <img src="/Admin/Image/LoadScreenShot?themeName=@context.ThemeName" alt="@context.ThemeDescription"/>
+                <div style="text-align: center">@context.ThemeDescription</div>
             </CardBody>
+            <CardFooter>
+                <div class="row" style="margin: 10px auto;">
+                    <span style="align-self: center">@context.ThemeType.GetDescription()</span> 
+                    <Button IsDisabled="@context.IsUsing" style="margin-left: auto" @onclick="() => { SelectTheme(context.ThemeName); }">@(context.IsUsing ? "已启用" : "启用")</Button>
+                </div>
+            </CardFooter>
         </Card>
     </BodyTemplate>
 </ListView>
@@ -28,6 +36,11 @@
     {
         base.OnInitialized();
         _themeConfigs = ThemeConfigService.GetAllThemes();
+    }
+
+    private void SelectTheme(string themeName)
+    {
+        
     }
 
 }

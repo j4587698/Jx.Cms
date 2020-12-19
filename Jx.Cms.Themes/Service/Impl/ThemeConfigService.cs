@@ -5,8 +5,8 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Furion.DependencyInjection;
-using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes.Util;
+using Masuit.Tools.Media;
 using Newtonsoft.Json;
 
 namespace Jx.Cms.Themes.Service.Impl
@@ -49,8 +49,8 @@ namespace Jx.Cms.Themes.Service.Impl
                     Image img = Image.FromFile(screenShotPath);
                     var bitmap = new Bitmap(img);
                     var stream = new MemoryStream();
-                    var bit = bitmap.ResizeImage(100, 200);
-                    bit.Save(stream, ImageFormat.Jpeg);
+                    bitmap.ResizeImage(150, 200).Save(stream, ImageFormat.Jpeg);
+                    stream.Position = 0;
                     return stream;
                 }
                 catch

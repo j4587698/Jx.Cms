@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using DeviceDetectorNET.Parser.Device;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Entities.Settings;
+using Jx.Cms.Themes.Config;
 using Microsoft.Net.Http.Headers;
 
 namespace Jx.Cms.Themes.Util
@@ -111,22 +112,25 @@ namespace Jx.Cms.Themes.Util
             MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
         }
 
-        public static void SetTheme(string themeName, ThemeMode themeMode)
+        public static void SetTheme(string themeName, ThemeType themeMode)
         {
             var oldThemeName = themeMode switch
             {
-                ThemeMode.PcTheme => PcThemeName,
-                ThemeMode.MobileTheme => MobileThemeName,
+                ThemeType.PcTheme => PcThemeName,
+                ThemeType.MobileTheme => MobileThemeName,
                 _ => PcThemeName
             };
             var needChange = GetThemeName() == oldThemeName;
             switch (themeMode)
             {
-                case ThemeMode.PcTheme:
+                case ThemeType.PcTheme:
                     PcThemeName = themeName;
                     break;
-                case ThemeMode.MobileTheme:
+                case ThemeType.MobileTheme:
                     MobileThemeName = themeName;
+                    break;
+                case ThemeType.AdaptiveTheme:
+                    PcThemeName = themeName;
                     break;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(themeMode), themeMode, null);
@@ -136,12 +140,6 @@ namespace Jx.Cms.Themes.Util
             {
                 ThemeModify?.Invoke(themeName);
             }
-        }
-
-        public enum ThemeMode
-        {
-            PcTheme,
-            MobileTheme
         }
     }
 }
