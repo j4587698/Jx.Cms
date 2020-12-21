@@ -2,7 +2,6 @@
 using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin;
-using Jx.Cms.Themes.Config;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;

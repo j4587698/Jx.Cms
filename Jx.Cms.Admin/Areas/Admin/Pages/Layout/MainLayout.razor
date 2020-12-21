@@ -1,6 +1,7 @@
-﻿@using Jx.Cms.Admin.Service
-@using Jx.Cms.Common.Extensions
+﻿@using Jx.Cms.Common.Extensions
 @using System.Diagnostics.CodeAnalysis
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.Service
 @inherits LayoutComponentBase
 
 @inject IMenuService MenuService
@@ -8,6 +9,7 @@
 @inject NavigationManager NavigationManager
 
 <Message />
+<Toast />
 <Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
     <Header>
@@ -61,7 +63,34 @@
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
-        _menuItems = MenuService.GetAllMenu();
+        var menuAttributes = MenuService.GetAllMenu();
+        _menuItems = new List<MenuItem>();
+        foreach (var attribute in menuAttributes.Where(x => x.ParentId == "").OrderByDescending(x => x.Order))
+        {
+            MenuItem menuItem = new MenuItem();
+            menuItem.Icon = attribute.IconClass;
+            menuItem.Text = attribute.DisplayName;
+            menuItem.Url = attribute.Path;
+            GenerateMenu(menuItem, attribute.Id, menuAttributes);
+            _menuItems.Add(menuItem);
+        }
         return _menuItems;
+    }
+    
+    private void GenerateMenu(MenuItem item, string parentId, List<MenuAttribute> menuAttributes)
+    {
+        var menus = menuAttributes.Where(x => x.ParentId == parentId).OrderByDescending(x => x.Order);
+        foreach (var menuAttribute in menus)
+        {
+            MenuItem menuItem = new MenuItem();
+            menuItem.Icon = menuAttribute.IconClass;
+            menuItem.Text = menuAttribute.DisplayName;
+            menuItem.Url = menuAttribute.Path;
+            if (menuAttributes.Any(x => x.ParentId == menuAttribute.Id))
+            {
+                GenerateMenu(menuItem, menuAttribute.Id, menuAttributes);
+            }
+            item.AddItem(menuItem);
+        }
     }
 }

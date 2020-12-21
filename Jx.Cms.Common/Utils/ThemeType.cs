@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Jx.Cms.Themes.Config
+namespace Jx.Cms.Common.Utils
 {
     public enum ThemeType
     {

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using DeviceDetectorNET.Parser.Device;
 using Jx.Cms.Common.Extensions;
+using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Settings;
-using Jx.Cms.Themes.Config;
 using Microsoft.Net.Http.Headers;
 
 namespace Jx.Cms.Themes.Util

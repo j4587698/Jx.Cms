@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Jx.Cms.Admin.Attribute
+namespace Jx.Cms.Common.Attribute
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = false)]
     public class MenuAttribute:System.Attribute

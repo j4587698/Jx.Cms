@@ -1,6 +1,4 @@
-﻿using Jx.Cms.Themes.Config;
-
-namespace Jx.Cms.Themes.Util
+﻿namespace Jx.Cms.Common.Utils
 {
     public class ThemeConfig
     {
