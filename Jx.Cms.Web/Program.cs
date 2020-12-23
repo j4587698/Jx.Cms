@@ -23,6 +23,7 @@ namespace Jx.Cms.Web
                 {
                     webBuilder.UseStaticWebAssets();
                     webBuilder.Inject().UseStartup<Startup>();
-                });
+                })
+                .UseSerilogDefault();
     }
 }

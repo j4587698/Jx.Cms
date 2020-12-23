@@ -58,7 +58,7 @@ namespace Jx.Cms.DbContext
             if (!dbConfig.DbType.IsNullOrEmpty() && Enum.TryParse(dbConfig.DbType, true, out DataType dataType))
             {
                 IFreeSql freeSql = null;
-                var isDevelopment = services.GetSingletonInstanceOrNull<IHostEnvironment>()?.IsDevelopment() ?? true;
+                var isDevelopment = App.WebHostEnvironment?.IsDevelopment() ?? true;
                 switch (dataType)
                 {
                     case DataType.MySql:

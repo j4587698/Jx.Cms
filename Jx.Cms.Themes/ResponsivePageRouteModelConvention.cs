@@ -26,10 +26,6 @@ namespace Jx.Cms.Themes
             }
 
             var themeName = path.Substring(1, themeNameIndex - 1);
-            if (!Utils.ThemePathDic.ContainsKey(themeName))
-            {
-                Utils.ThemePathDic.Add(themeName, model.RelativePath);
-            }
             foreach (var selector in model.Selectors)
             {
                 if (selector.AttributeRouteModel.Template == themeName)

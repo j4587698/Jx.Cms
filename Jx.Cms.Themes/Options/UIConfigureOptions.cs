@@ -1,6 +1,7 @@
 ﻿﻿using System;
 using System.IO;
-using Jx.Cms.Plugin;
+ using Jx.Cms.Common.Utils;
+ using Jx.Cms.Plugin;
 using Jx.Cms.Themes.FileProvider;
  using Jx.Cms.Themes.Util;
  using Microsoft.AspNetCore.Builder;
@@ -17,32 +18,22 @@ namespace Jx.Cms.Themes.Options
         {
             Environment = environment;
             Utils.ThemeModify = ChangeTheme;
-            ChangeTheme(Utils.GetThemeName());
+            Utils.InitThemePath();
         }
 
-        private readonly MyCompositeFileProvider _filesProvider = new MyCompositeFileProvider();
+        private readonly MyCompositeFileProvider _filesProvider = new();
         private string basePath = "wwwroot";
 
-        public void ChangeTheme(string themeName)
+        public void ChangeTheme(ThemeConfig themeConfig)
         {
-            if (!Utils.ThemePathDic.ContainsKey(themeName))
-            {
-                return;
-            }
-
-            if (!Utils.PathDllDic.ContainsKey(Utils.ThemePathDic[themeName]))
-            {
-                return;
-            }
-            var dllName = Utils.PathDllDic[Utils.ThemePathDic[themeName]];
-            var assembly = RazorPlugin.GetAssemblyByDllName(dllName);
+            var assembly = RazorPlugin.GetAssemblyByThemeType(themeConfig.ThemeType);
             if (assembly != null)
             {
-                _filesProvider.ModifyFileProvider(new EmbeddedFileProvider(assembly, $"{Path.GetFileNameWithoutExtension(dllName)}.{basePath}"));
+                _filesProvider.ModifyFileProvider(new EmbeddedFileProvider(assembly, $"{Path.GetFileNameWithoutExtension(themeConfig.Path)}.{basePath}"), themeConfig.ThemeType);
             }
         }
-        
-        public IWebHostEnvironment Environment { get; }
+
+        private IWebHostEnvironment Environment { get; }
 
         public void PostConfigure(string name, StaticFileOptions options)
         {

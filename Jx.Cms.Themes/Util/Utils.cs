@@ -1,15 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using DeviceDetectorNET.Parser.Device;
+using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Settings;
+using Jx.Cms.Plugin;
+using Jx.Cms.Themes.PartManager;
+using Masuit.Tools.Core.Net;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Net.Http.Headers;
+using Newtonsoft.Json;
+using Serilog.Core;
 
 namespace Jx.Cms.Themes.Util
 {
     public static class Utils
     {
+        private const string DefaultPcThemeName = "Default";
+
+        private const string DefaultMobileThemeName = "Mobile";
+        
         /// <summary>
         /// PC主题，不切换主题与自适应主题同样使用此主题
         /// </summary>
@@ -29,21 +44,11 @@ namespace Jx.Cms.Themes.Util
         /// 手机版域名
         /// </summary>
         public static string MobileDomain { get; set; }
-        
-        /// <summary>
-        /// DLL与路径对应关系
-        /// </summary>
-        public static readonly Dictionary<string, string> PathDllDic = new Dictionary<string, string>();
-        
-        /// <summary>
-        /// 路径与主题对应关系
-        /// </summary>
-        public static readonly Dictionary<string, string> ThemePathDic = new Dictionary<string, string>();
 
         /// <summary>
         /// 变更通知
         /// </summary>
-        public static Action<string> ThemeModify;
+        public static Action<ThemeConfig> ThemeModify;
 
         /// <summary>
         /// 获取主题路径
@@ -86,6 +91,7 @@ namespace Jx.Cms.Themes.Util
             {
                 return null;
             }
+            
             var userAgent = HttpContext2.Current?.Request.Headers[HeaderNames.UserAgent];
             if (!userAgent.HasValue)
             {
@@ -107,39 +113,111 @@ namespace Jx.Cms.Themes.Util
         public static void InitThemePath()
         {
             Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
-            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? "Default";
-            MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? "Mobile";
+            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? DefaultPcThemeName;
+            MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? DefaultMobileThemeName;
             MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
+            var themes = GetAllThemes();
+            var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+            if (PcThemeName != DefaultPcThemeName)
+            {
+                var pc = themes.FirstOrDefault(x => x.ThemeName == PcThemeName);
+                SetTheme(pc);
+            }
+
+            if (MobileThemeName != DefaultMobileThemeName)
+            {
+                var mobile = themes.FirstOrDefault(x => x.ThemeName == MobileThemeName);
+                SetTheme(mobile);
+            }
         }
 
-        public static void SetTheme(string themeName, ThemeType themeMode)
+        public static void SetTheme(ThemeConfig themeConfig)
         {
-            var oldThemeName = themeMode switch
+            var oldThemeName = themeConfig.ThemeType switch
             {
                 ThemeType.PcTheme => PcThemeName,
                 ThemeType.MobileTheme => MobileThemeName,
                 _ => PcThemeName
             };
             var needChange = GetThemeName() == oldThemeName;
-            switch (themeMode)
+            switch (themeConfig.ThemeType)
             {
                 case ThemeType.PcTheme:
-                    PcThemeName = themeName;
+                    PcThemeName = themeConfig.ThemeName;
                     break;
                 case ThemeType.MobileTheme:
-                    MobileThemeName = themeName;
+                    MobileThemeName = themeConfig.ThemeName;
                     break;
                 case ThemeType.AdaptiveTheme:
-                    PcThemeName = themeName;
+                    PcThemeName = themeConfig.ThemeName;
                     break;
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(themeMode), themeMode, null);
+                    throw new ArgumentOutOfRangeException(nameof(themeConfig.ThemeType), themeConfig.ThemeType, null);
             }
 
             if (needChange)
             {
-                ThemeModify?.Invoke(themeName);
+                SettingsEntity.SetValue(nameof(Mode), Mode.ToString());
+                SettingsEntity.SetValue(nameof(PcThemeName), PcThemeName);
+                SettingsEntity.SetValue(nameof(MobileThemeName), MobileThemeName);
+                var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+                RazorPlugin.LoadPlugin(themeConfig, applicationPartManager);
+                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                var viewCompilerProvider = App.GetService<IViewCompilerProvider>() as MyViewCompilerProvider;
+                viewCompilerProvider?.Modify();
+                ThemeModify?.Invoke(themeConfig);
             }
+        }
+
+        public static List<ThemeConfig> GetAllThemes()
+        {
+            var themeConfigs = new List<ThemeConfig>();
+            themeConfigs.Add(new ThemeConfig()
+            {
+                IsUsing = PcThemeName == "Default",
+                Path = "",
+                ScreenShot = "",
+                ThemeDescription = "默认主题",
+                ThemeName = "Default",
+                ThemeType = ThemeType.PcTheme
+            });
+            var dirs = Directory.GetDirectories(Constants.LibraryPath);
+            foreach (var dir in dirs)
+            {
+                var configPath = Path.Combine(dir, "theme.json");
+                if (File.Exists(configPath))
+                {
+                    try
+                    {
+                        var themeConfig = JsonConvert.DeserializeObject<ThemeConfig>(File.ReadAllText(configPath));
+                        themeConfig.Path = dir;
+                        switch (themeConfig.ThemeType)
+                        {
+                            case ThemeType.PcTheme:
+                                themeConfig.IsUsing = Utils.PcThemeName == themeConfig.ThemeName;
+                                break;
+                            case ThemeType.MobileTheme:
+                                themeConfig.IsUsing = Utils.MobileThemeName == themeConfig.ThemeName;
+                                break;
+                            case ThemeType.AdaptiveTheme:
+                                themeConfig.IsUsing = Utils.PcThemeName == themeConfig.ThemeName;
+                                break;
+                            default:
+                                throw new ArgumentOutOfRangeException();
+                        }
+                        themeConfigs.Add(themeConfig);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
+                        //throw;
+                        
+                    }
+                }
+            }
+
+            return themeConfigs;
         }
     }
 }
