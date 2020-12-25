@@ -1,8 +1,34 @@
 ﻿@page "/Article/All"
 @using Jx.Cms.Common.Attribute
+@using Jx.Cms.Entities.Article
+@using Jx.Cms.Service
+@using Masuit.Tools.Reflection
+
+@inject IArticleService ArticleService
+
 @attribute [Menu("{164DD37C-8347-42AC-8D60-0D38F03D2E67}", "文章列表", "/Article/All", 10, iconClass:"fa fa-newspaper-o", parentId:"{A87BBD76-9849-4A7E-97A4-64B29E964F45}")]
-<h3>All</h3>
+
+<Table TItem="ArticleEntity" IsBordered="true" IsPagination="true" PageItemsSource="_pageItemSource" OnQueryAsync="OnQueryAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Title" Text="标题"></TableColumn>
+        <TableColumn @bind-Field="@context.Author" Text="作者"></TableColumn>
+        <TableColumn @bind-Field="@context.Catalogue.Name" Text="分类"></TableColumn>
+        <TableColumn @bind-Field="@context.UpdateTime" Text="最后修改时间"></TableColumn>
+        <TableColumn @bind-Field="@context.Status" Text="状态"></TableColumn>
+    </TableColumns>
+</Table>
 
 @code {
-    
+
+    private readonly IEnumerable<int> _pageItemSource = new[] {10, 20, 30, 40};
+
+    protected Task<QueryData<ArticleEntity>> OnQueryAsync(QueryPageOptions options)
+    {
+        var articleEntities = ArticleService.GetArticlePageWithCount(options.PageIndex - 1, options.PageItems, out long count);
+        return Task.FromResult(new QueryData<ArticleEntity>()
+        {
+            Items = articleEntities,
+            TotalCount = (int)count
+        });
+    } 
 }

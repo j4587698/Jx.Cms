@@ -3,11 +3,13 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FreeSql;
 using FreeSql.DataAnnotations;
+using Jx.Cms.Common.Enum;
+using Jx.Cms.Entities.Admin;
 
-namespace Jx.Cms.Entities.Admin
+namespace Jx.Cms.Entities.Article
 {
-    [Description("文章列表")]
-    public class ArticleEntity: BaseEntity<ArticleEntity, int>
+    [Description("文章")]
+    public class ArticleEntity : BaseEntity<ArticleEntity, int>
     {
         [Description("文章标题")]
         [DisplayName("标题")]
@@ -34,7 +36,7 @@ namespace Jx.Cms.Entities.Admin
         public DateTime PublishTime { get; set; }
         
         [Description("发布状态：1.公开 2.草稿 3.待审核")]
-        public int Status { get; set; }
+        public ArticleStatusEnum Status { get; set; }
 
         [Description("是否为Markdown")]
         public bool IsMarkdown { get; set; }

@@ -26,7 +26,7 @@ namespace Jx.Cms.Common.Extensions
                 return "";
             }
 
-            string strItemTarget = Regex.Replace("AtestBtestCtest", "([A-Z])", "_$1").ToLower();
+            string strItemTarget = Regex.Replace(str, "([A-Z])", "_$1").ToLower();
 
             return strItemTarget.TrimStart('_');
         }
