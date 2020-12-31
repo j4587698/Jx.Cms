@@ -2,13 +2,13 @@
 @using Jx.Cms.Common.Attribute
 @inject NavigationManager NavigationManager
 
-@attribute [Menu("{A87BBD76-9849-4A7E-97A4-64B29E964F45}", "文章列表", "", iconClass:"fa fa-newspaper-o")]
+@attribute [Menu(MenuIds.ArticleId, "文章列表", "", iconClass:"fa fa-newspaper-o")]
 
 @code {
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        NavigationManager.NavigateTo("/Article/All");
+        NavigationManager.NavigateTo("/Admin/Article/All");
     }
 
 }

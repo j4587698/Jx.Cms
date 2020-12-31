@@ -2,31 +2,50 @@
 @page "/Article/Write/{Id}"
 @using Jx.Cms.Service
 @using Jx.Cms.Common.Attribute
+@using Jx.Cms.Common.Enum
 @using Jx.Cms.Entities.Article
 
 @inject IArticleService ArticleService
 
-@attribute [Menu("{A0259D93-39EB-462B-A69F-13924963D6AE}", "写文章", "/Article/Write", 5, iconClass:"fa fa-pencil", parentId:"{A87BBD76-9849-4A7E-97A4-64B29E964F45}")]
+@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
 
-<div class="row">
-    <div class="form-group col-12">
-        <BootstrapInput placeholder="请输入标题" @bind-Value="@ArticleEntity.Title" DisplayText="文章标题" ShowLabel="true"></BootstrapInput>
+<ValidateForm class="row" Model="ArticleEntity">
+    <div class="col-lg-9 col-md-8">
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput placeholder="请输入标题" @bind-Value="@ArticleEntity.Title" DisplayText="文章标题" ShowLabel="true"></BootstrapInput>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-12">
+                <label>文章内容</label>
+                <Editor IsEditor="true" Height="400" @bind-Value="@ArticleEntity.Content"></Editor>
+            </div>
+        </div>
     </div>
-</div>
-
-<div class="row">
-    <div class="form-group col-12">
-        
-        <Editor IsEditor="true" Height="400"></Editor>
+    <div class="col-lg-3 col-md-4">
+        <div class="row">
+            <div class="form-group col-12">
+                <Button IsBlock="true" Size="Size.Large">提交</Button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <Select Items="ArticleStatus" @bind-Value="ArticleEntity.Status" DisplayText="状态"></Select>
+            </div>
+        </div>
     </div>
-</div>
-
+</ValidateForm>
 @code {
     [Parameter]
     public int Id { get; set; }
 
     private ArticleEntity ArticleEntity { get; set; }
 
+    private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
+
+    
 
     protected override void OnInitialized()
     {

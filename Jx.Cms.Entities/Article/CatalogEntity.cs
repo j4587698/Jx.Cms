@@ -19,7 +19,7 @@ namespace Jx.Cms.Entities.Article
         /// <summary>
         /// 分类标题
         /// </summary>
-        [Description("分类标题")]
+        [Description("分类别名")]
         public string Alias { get; set; }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Jx.Cms.Entities.Article
         /// <summary>
         /// 子目录
         /// </summary>
-        [Description("子目录")]
+        [Description("子分类")]
         public virtual ICollection<CatalogEntity> Children { get; set; }
     }
 }

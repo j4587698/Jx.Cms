@@ -1,0 +1,29 @@
+﻿@using Jx.Cms.Entities.Article
+@using Jx.Cms.Service
+
+@inject ICatalogService CatalogService
+
+<EditorForm Model="_catalogEntity"></EditorForm>
+
+@code {
+    [CascadingParameter(Name = "BodyContext")]
+    private object CatalogId { get; set; }
+
+    private CatalogEntity _catalogEntity;
+    
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if (CatalogId is int catalogId)
+        {
+            _catalogEntity = CatalogService.FindCatalogById(catalogId);
+        }
+        else
+        {
+            _catalogEntity = new CatalogEntity();
+        }
+    }
+
+}
