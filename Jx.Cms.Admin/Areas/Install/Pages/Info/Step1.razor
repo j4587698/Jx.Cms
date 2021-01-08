@@ -1,0 +1,24 @@
+﻿@page "/Step1"
+
+<div class="container">
+    <div class="row">
+        <Textarea IsDisabled="true" Value="@_agreement" style="height: 80vh"></Textarea>
+    </div>
+    <div class="row">
+        <div class="form-group">
+            <Button @onclick="@Next">同意并继续</Button>
+            <Button Color="Color.Danger">拒绝</Button>
+        </div>
+        
+    </div>
+
+</div>
+
+@code {
+
+    [CascadingParameter]
+    public EventCallback Next { get; set; }
+
+    private string _agreement = @"这里是用户协议";
+    
+}

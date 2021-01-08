@@ -1,0 +1,73 @@
+﻿@inherits LayoutComponentBase
+
+
+
+<Card Color="Color.None" IsCenter="true" style="height: 100vh">
+      <CardHeader>
+            <Steps IsCenter="true" Items="_stepItems">
+            </Steps>
+      </CardHeader>
+      <CardBody>
+            <CasadingValue Value="@Next">
+            @Body
+            </CasadingValue>
+      </CardBody>
+</Card>
+
+@code {
+
+      private int _nowStep = 0;
+
+      private List<StepItem> _stepItems = new List<StepItem>()
+      {
+            new()
+            {
+                  Description = "同意协议",
+                  Status = StepStatus.Process,
+                  Title = "同意协议"
+            },
+            new ()
+            {
+                  Description = "配置所需的数据库信息",
+                  Status = StepStatus.Wait,
+                  Title = "设置数据库"
+            },
+            new()
+            {
+                  Description = "设置管理员账户信息",
+                  Status = StepStatus.Wait,
+                  Title = "设置管理员"
+            },
+            new()
+            {
+                  Description = "完成设置",
+                  Status = StepStatus.Wait,
+                  Title = "完成设置"
+            }
+      };
+
+      private EventCallback _next = EventCallback.Empty;
+
+      public EventCallback Next
+      {
+            get
+            {
+                  if (_next.Equals(EventCallback.Empty))
+                  {
+                        _next = EventCallback.Factory.Create(this, NextStep);
+                  }
+                  return _next;
+            }
+      }
+
+      private void NextStep()
+      {
+            _stepItems[_nowStep].Status = StepStatus.Finish;
+            _nowStep++;
+            if (_nowStep < _stepItems.Count)
+            {
+                  _stepItems[_nowStep].Status = StepStatus.Process; 
+            }
+      }
+
+}
