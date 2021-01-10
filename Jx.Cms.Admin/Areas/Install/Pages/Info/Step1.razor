@@ -6,7 +6,7 @@
     </div>
     <div class="row">
         <div class="form-group">
-            <Button @onclick="@Next">同意并继续</Button>
+            <Button @onclick="@Click">同意并继续</Button>
             <Button Color="Color.Danger">拒绝</Button>
         </div>
         
@@ -20,5 +20,9 @@
     public EventCallback Next { get; set; }
 
     private string _agreement = @"这里是用户协议";
-    
+
+    private async Task Click()
+    {
+        await Next.InvokeAsync();
+    }
 }

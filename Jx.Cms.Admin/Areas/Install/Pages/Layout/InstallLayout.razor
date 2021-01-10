@@ -8,9 +8,9 @@
             </Steps>
       </CardHeader>
       <CardBody>
-            <CasadingValue Value="@Next">
+            <CascadingValue Value=Next>
             @Body
-            </CasadingValue>
+            </CascadingValue >
       </CardBody>
 </Card>
 
@@ -46,19 +46,7 @@
             }
       };
 
-      private EventCallback _next = EventCallback.Empty;
-
-      public EventCallback Next
-      {
-            get
-            {
-                  if (_next.Equals(EventCallback.Empty))
-                  {
-                        _next = EventCallback.Factory.Create(this, NextStep);
-                  }
-                  return _next;
-            }
-      }
+      public EventCallback Next=> EventCallback.Factory.Create(this, NextStep);
 
       private void NextStep()
       {
