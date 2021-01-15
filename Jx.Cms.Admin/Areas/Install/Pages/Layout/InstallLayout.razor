@@ -1,8 +1,13 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.IO
+@using System.Text.RegularExpressions
+@inherits LayoutComponentBase
 
 @inject NavigationManager NavigationManager
 
-<Card Color="Color.None" IsCenter="true" style="height: 100vh">
+<Message />
+<Toast />
+<SweetAlert />
+<Card Color="Color.None" style="height: 100vh">
       <CardHeader>
             <Steps IsCenter="true" Items="_stepItems">
             </Steps>
@@ -47,6 +52,20 @@
       };
 
       public EventCallback Next=> EventCallback.Factory.Create(this, NextStep);
+
+      protected override void OnInitialized()
+      {
+            base.OnInitialized();
+            if (File.Exists("install.lock"))
+            {
+                  NavigationManager.NavigateTo("/Admin");
+            }
+            var mc = Regex.Match(NavigationManager.Uri, @"Step(\d)$");
+            if (!(mc.Success && mc.Groups.Count > 1 && int.Parse(mc.Groups[1].Value) == _nowStep + 1))
+            {
+                  NavigationManager.NavigateTo($"step{_nowStep + 1}");
+            }
+      }
 
       private void NextStep()
       {

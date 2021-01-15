@@ -53,7 +53,7 @@ namespace Jx.Cms.DbContext
             return true;
         }
 
-        private static (bool isSuccess, string msg) SetupDb(IServiceCollection services, DbConfig dbConfig)
+        public static (bool isSuccess, string msg) SetupDb(IServiceCollection services, DbConfig dbConfig)
         {
             if (!dbConfig.DbType.IsNullOrEmpty() && Enum.TryParse(dbConfig.DbType, true, out DataType dataType))
             {
@@ -79,7 +79,7 @@ namespace Jx.Cms.DbContext
                         freeSql = new FreeSqlBuilder()
                             .UseAutoSyncStructure(isDevelopment)
                             .UseNoneCommandParameter(true)
-                            .UseConnectionString(dataType, $"data source={dbConfig.DbName}")
+                            .UseConnectionString(dataType, $"data source={(dbConfig.DbName.EndsWith(".db")?dbConfig.DbName : dbConfig.DbName + ".db")}")
                             .Build();
 
                         break;

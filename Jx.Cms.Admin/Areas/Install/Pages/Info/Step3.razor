@@ -1,6 +1,39 @@
-<h3>Step3</h3>
+@page "/Step3"
+
+@using Jx.Cms.Admin.ViewModel
+
+
+<div class="container">
+    <ValidateForm Model="@InstallInfoVm">
+    <h2>管理员设置</h2>
+        <div class="row">
+            <div class="from-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.AdminName" DisplayText="管理员用户名"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="from-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.AdminPassword" DisplayText="管理员密码" type="password"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+                <div class="from-group col-12">
+                    <BootstrapInput @bind-Value="@InstallInfoVm.AdminRePassword" DisplayText="管理员密码重复" type="password"></BootstrapInput>
+                </div>
+            </div>
+    </ValidateForm>
+</div>
 
 @code {
     [CascadingParameter]
     public EventCallback Next { get; set; }
+
+    private InstallInfoVm InstallInfoVm { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        InstallInfoVm = new InstallInfoVm();
+    }
+
 }

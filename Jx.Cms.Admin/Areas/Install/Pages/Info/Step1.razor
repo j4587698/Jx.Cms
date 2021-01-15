@@ -2,11 +2,13 @@
 
 <div class="container">
     <div class="row">
-        <Textarea IsDisabled="true" Value="@_agreement" style="height: 80vh"></Textarea>
+        <div class="form-group col-12">
+            <Textarea IsDisabled="true" Value="@_agreement" style="height: 80vh"></Textarea>
+            </div>
     </div>
     <div class="row">
-        <div class="form-group">
-            <Button @onclick="@Next">同意并继续</Button>
+        <div class="text-center btn-group" role="group">
+            <Button @onclick="@Next" >同意并继续</Button>
             <Button Color="Color.Danger">拒绝</Button>
         </div>
         
