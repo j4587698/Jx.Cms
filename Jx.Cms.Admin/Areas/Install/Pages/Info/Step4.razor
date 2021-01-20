@@ -1,7 +1,24 @@
 @page "/Step4"
-<h3>Step4</h3>
+
+@inject NavigationManager NavigationManager
+
+<div class="container">
+    
+    <div class="row">
+        <div class="m-auto">
+            <h2>恭喜，全部处理完成，即将转向登录页面</h2>
+        </div>
+        </div>
+    <CountDown CountDownSecond="3" OnTimeout="@OnTimeout"></CountDown>
+</div>
 
 @code {
     [CascadingParameter]
     public EventCallback Next { get; set; }
+
+    private Task OnTimeout()
+    {
+        NavigationManager.NavigateTo("/Admin");
+        return Task.CompletedTask;
+    }
 }

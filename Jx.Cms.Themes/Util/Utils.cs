@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Serilog.Core;
+using Constants = Jx.Cms.Common.Utils.Constants;
 
 namespace Jx.Cms.Themes.Util
 {
@@ -112,12 +113,21 @@ namespace Jx.Cms.Themes.Util
         /// </summary>
         public static void InitThemePath()
         {
-            Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
-            PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? DefaultPcThemeName;
-            MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? DefaultMobileThemeName;
-            MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
+            if (Common.Utils.Util.IsInstalled)
+            {
+                Mode = SettingsEntity.GetValue(nameof(Mode))?.ToEnum<ThemeChangeMode>() ?? ThemeChangeMode.None;
+                PcThemeName = SettingsEntity.GetValue(nameof(PcThemeName)) ?? DefaultPcThemeName;
+                MobileThemeName = SettingsEntity.GetValue(nameof(MobileThemeName)) ?? DefaultMobileThemeName;
+                MobileDomain = SettingsEntity.GetValue(nameof(MobileDomain)) ?? "";
+            }
+            else
+            {
+                Mode = ThemeChangeMode.None;
+                PcThemeName = DefaultPcThemeName;
+                MobileThemeName = DefaultMobileThemeName;
+                MobileDomain = "";
+            }
             var themes = GetAllThemes();
-            var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
             if (PcThemeName != DefaultPcThemeName)
             {
                 var pc = themes.FirstOrDefault(x => x.ThemeName == PcThemeName);

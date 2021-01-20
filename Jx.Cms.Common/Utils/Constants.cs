@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Jx.Cms.Themes.Util
+namespace Jx.Cms.Common.Utils
 {
     public static class Constants
     {

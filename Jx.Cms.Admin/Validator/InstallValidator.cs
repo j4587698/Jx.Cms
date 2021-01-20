@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using BootstrapBlazor.Components;
+using Jx.Cms.Admin.ViewModel;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext;
 using Masuit.Tools;
@@ -45,6 +46,18 @@ namespace Jx.Cms.Admin.Validator
                             }
                             break;
                     }
+                }
+            }
+            else if (context.ObjectInstance is InstallInfoVm infoVm)
+            {
+                switch (context.MemberName)
+                {
+                    case nameof(infoVm.AdminRePassword):
+                        if (infoVm.AdminRePassword != infoVm.AdminPassword)
+                        {
+                            results.Add(new ValidationResult("两次密码不一致", new []{context.MemberName}));
+                        }
+                        break;
                 }
             }
         }

@@ -1,26 +1,35 @@
 @page "/Step3"
 
 @using Jx.Cms.Admin.ViewModel
-
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.DbContext
+@using Jx.Cms.Entities.Admin
 
 <div class="container">
-    <ValidateForm Model="@InstallInfoVm">
+    <ValidateForm Model="@InstallInfoVm" OnValidSubmit="@OnSubmit">
     <h2>管理员设置</h2>
         <div class="row">
-            <div class="from-group col-12">
+            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@InstallInfoVm.AdminName" DisplayText="管理员用户名"></BootstrapInput>
             </div>
         </div>
         <div class="row">
-            <div class="from-group col-12">
+            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@InstallInfoVm.AdminPassword" DisplayText="管理员密码" type="password"></BootstrapInput>
             </div>
         </div>
         <div class="row">
-                <div class="from-group col-12">
-                    <BootstrapInput @bind-Value="@InstallInfoVm.AdminRePassword" DisplayText="管理员密码重复" type="password"></BootstrapInput>
-                </div>
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.AdminRePassword" DisplayText="管理员密码重复" type="password">
+                    <InstallValidator></InstallValidator>
+                </BootstrapInput>
             </div>
+        </div>
+        <div class="row">
+            <div class="form-group m-auto">
+                <Button ButtonType="ButtonType.Submit">确认</Button>
+            </div>
+        </div>
     </ValidateForm>
 </div>
 
@@ -33,7 +42,20 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        InstallInfoVm = new InstallInfoVm();
+        InstallInfoVm = new InstallInfoVm(){AdminName = "Admin"};
+    }
+
+    private async Task OnSubmit(EditContext arg)
+    {
+        
+        AdminUserEntity adminUserEntity = new AdminUserEntity();
+        adminUserEntity.UserName = InstallInfoVm.AdminName;
+        adminUserEntity.Password = InstallInfoVm.AdminPassword;
+        adminUserEntity.Type = "admin";
+        adminUserEntity.Save();
+        System.IO.File.Create("install.lock");
+        Util.IsInstalled = true;
+        await Next.InvokeAsync();
     }
 
 }

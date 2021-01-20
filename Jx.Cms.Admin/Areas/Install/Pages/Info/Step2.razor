@@ -1,7 +1,6 @@
 @page "/Step2"
 @using Jx.Cms.DbContext
 @using Jx.Cms.Common.Enum
-@using Jx.Cms.Admin.Validator
 @using Jx.Cms.Common.Extensions
 
 @inject SwalService SwalService
@@ -54,7 +53,7 @@
         </div>
         
         <div class="row">
-            <div class="form-group col-12">
+            <div class="form-group m-auto">
                 <Button ButtonType="ButtonType.Submit">验证并继续</Button>
             </div>
         </div>
@@ -87,6 +86,7 @@
             });
             return;
         }
+        DbStartup.CreateTables(DbConfig);
         await Next.InvokeAsync();
     }
 
@@ -98,6 +98,10 @@
             {
                 case DbTypeEnum.Sqlite:
                     _needShow = false;
+                    DbConfig.DbUrl = null;
+                    DbConfig.DbPort = null;
+                    DbConfig.Username = null;
+                    DbConfig.Password = null;
                     break;
                 case DbTypeEnum.Mysql:
                     _needShow = true;

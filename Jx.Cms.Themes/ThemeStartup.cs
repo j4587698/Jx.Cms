@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using Furion;
 using Jx.Cms.Common.Extensions;
+using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
@@ -47,7 +48,6 @@ namespace Jx.Cms.Themes
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseStaticHttpContext();
-            //Utils.InitThemePath();
             app.UseMiddleware<RedirectMiddleware>();
         }
     }
