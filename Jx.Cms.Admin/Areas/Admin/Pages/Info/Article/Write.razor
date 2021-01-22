@@ -4,23 +4,31 @@
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Entities.Article
+@using Jx.Cms.Service.Admin
+@using Jx.Cms.Admin.ViewModel
+@using Mapster
 
 @inject IArticleService ArticleService
+@inject ICatalogService CatalogService
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
 
-<ValidateForm class="row" Model="ArticleEntity">
+<ValidateForm class="row" Model="Article" OnValidSubmit="@OnValidSubmit">
     <div class="col-lg-9 col-md-8">
         <div class="row">
             <div class="form-group col-12">
-                <BootstrapInput placeholder="请输入标题" @bind-Value="@ArticleEntity.Title" DisplayText="文章标题" ShowLabel="true"></BootstrapInput>
+                <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="文章标题" ShowLabel="true"></BootstrapInput>
             </div>
         </div>
-
         <div class="row">
             <div class="form-group col-12">
                 <label>文章内容</label>
-                <Editor IsEditor="true" Height="400" @bind-Value="@ArticleEntity.Content"></Editor>
+                <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content"></Editor>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@Article.Labels" DisplayText="文章标签(用,隔开)" ShowLabel="true"></BootstrapInput>
             </div>
         </div>
     </div>
@@ -32,7 +40,12 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <Select Items="ArticleStatus" @bind-Value="ArticleEntity.Status" DisplayText="状态"></Select>
+                <Select Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态"></Select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <Select Items="Catalogs" @bind-Value="Article.CatalogueId" DisplayText="分类"></Select>
             </div>
         </div>
     </div>
@@ -41,16 +54,23 @@
     [Parameter]
     public int Id { get; set; }
 
-    private ArticleEntity ArticleEntity { get; set; }
+    private ArticleVm Article { get; set; }
 
     private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
 
-    
+    private IEnumerable<SelectedItem> Catalogs { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ArticleEntity = Id == 0 ? new ArticleEntity() : ArticleService.GetArticleById(Id);
+        Article = (Id == 0 ? new ArticleEntity() : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
+        
+        Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
+    }
+
+    private Task OnValidSubmit(EditContext arg)
+    {
+        return Task.CompletedTask;
     }
 
 }

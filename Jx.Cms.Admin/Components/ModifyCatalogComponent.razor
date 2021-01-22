@@ -1,0 +1,29 @@
+﻿@using Jx.Cms.Entities.Article
+@using Jx.Cms.Service
+@using Jx.Cms.Service.Admin
+
+
+@inject ICatalogService CatalogService
+
+<ValidateForm Model="@_catalogEntity"  style="margin: 10px">
+    <div class="row">
+        <div class="from-group col-12">
+            <BootstrapInput @bind-Value="_catalogEntity.Name" DisplayText="分类名称"></BootstrapInput>
+        </div>
+    </div>
+    <div class="row">
+        <div class="from-group col-12">
+            <BootstrapInput @bind-Value="_catalogEntity.Alias" DisplayText="分类别名"></BootstrapInput>
+        </div>
+    </div>
+    <div class="row">
+        <div class="from-group col-12">
+            <Select Items="_selectedItems" @bind-Value="_catalogEntity.ParentId" DisplayText="父分类"></Select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="from-group col-12">
+            <Textarea @bind-Value="_catalogEntity.Description" DisplayText="描述"></Textarea>
+        </div>
+    </div>
+</ValidateForm>

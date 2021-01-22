@@ -2,7 +2,7 @@
 using System.IO;
 using Jx.Cms.Common.Utils;
 
-namespace Jx.Cms.Service
+namespace Jx.Cms.Service.Admin
 {
     /// <summary>
     /// 主题相关

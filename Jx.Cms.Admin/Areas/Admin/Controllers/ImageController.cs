@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net.Mime;
 using Jx.Cms.Service;
+using Jx.Cms.Service.Admin;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Admin.Areas.Admin.Controllers

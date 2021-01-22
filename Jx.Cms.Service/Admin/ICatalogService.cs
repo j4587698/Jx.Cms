@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.Entities.Article;
 
-namespace Jx.Cms.Service
+namespace Jx.Cms.Service.Admin
 {
     /// <summary>
     /// 分类目录
@@ -15,7 +15,13 @@ namespace Jx.Cms.Service
         /// <param name="id">分类ID</param>
         /// <returns>分类</returns>
         CatalogEntity FindCatalogById(int id);
-        
+
+        /// <summary>
+        /// 获取所有的分类
+        /// </summary>
+        /// <returns>分类列表</returns>
+        List<CatalogEntity> GetAllCatalogs();
+
         /// <summary>
         /// 分页获取所有的分类
         /// </summary>
@@ -31,5 +37,12 @@ namespace Jx.Cms.Service
         /// <param name="catalogEntity">分类</param>
         /// <returns>是否成功</returns>
         bool Save(CatalogEntity catalogEntity);
+
+        /// <summary>
+        /// 删除分类
+        /// </summary>
+        /// <param name="catalogEntities">要删除的分类列表</param>
+        /// <returns>是否成功</returns>
+        bool Delete(IEnumerable<CatalogEntity> catalogEntities);
     }
 }

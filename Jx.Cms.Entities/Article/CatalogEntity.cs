@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 using FreeSql;
 
 namespace Jx.Cms.Entities.Article
@@ -14,6 +15,7 @@ namespace Jx.Cms.Entities.Article
         /// 分类名称
         /// </summary>
         [Description("分类名称")]
+        [Required(ErrorMessage = "分类名称不能为空")]
         public string Name { get; set; }
 
         /// <summary>

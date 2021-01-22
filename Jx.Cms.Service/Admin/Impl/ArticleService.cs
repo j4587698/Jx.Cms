@@ -2,7 +2,7 @@
 using Furion.DependencyInjection;
 using Jx.Cms.Entities.Article;
 
-namespace Jx.Cms.Service.Impl
+namespace Jx.Cms.Service.Admin.Impl
 {
     public class ArticleService: IArticleService, ITransient
     {
@@ -24,6 +24,12 @@ namespace Jx.Cms.Service.Impl
         public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize)
         {
             return ArticleEntity.Select.Include(x => x.Catalogue).Page(pageNumber, pageSize).ToList();
+        }
+
+        public bool SaveArticle(ArticleEntity articleEntity)
+        {
+            articleEntity.SaveMany("Labels");
+            return true;
         }
     }
 }

@@ -1,19 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using Furion.DependencyInjection;
-using Jx.Cms.Common;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Util;
 using Masuit.Tools.Media;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 
-namespace Jx.Cms.Service.Impl
+namespace Jx.Cms.Service.Admin.Impl
 {
     public class ThemeConfigService: IThemeConfigService, ITransient
     {

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.Common.Attribute;
 
-namespace Jx.Cms.Service
+namespace Jx.Cms.Service.Admin
 {
     /// <summary>
     /// 菜单相关

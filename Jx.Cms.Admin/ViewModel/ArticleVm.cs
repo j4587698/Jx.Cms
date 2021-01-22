@@ -1,19 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using FreeSql;
-using FreeSql.DataAnnotations;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Entities.Admin;
+using Jx.Cms.Entities.Article;
 
-namespace Jx.Cms.Entities.Article
+namespace Jx.Cms.Admin.ViewModel
 {
-    [Description("文章")]
-    public class ArticleEntity : BaseEntity<ArticleEntity, int>
+    public class ArticleVm
     {
         [Description("文章标题")]
-        [DisplayName("标题")]
         public string Title { get; set; }
 
         [Description("文章作者")]
@@ -23,16 +19,13 @@ namespace Jx.Cms.Entities.Article
         public int CatalogueId { get; set; }
         
         [Description("分类")]
-        [Navigate(nameof(CatalogueId))]
         public CatalogueEntity Catalogue { get; set; }
         
         [Description("文章内容")]
-        [MaxLength(-1)]
         public string Content { get; set; }
 
         [Description("标签")]
-        [Navigate(ManyToMany = typeof(ArticleLabelEntity))]
-        public List<LabelEntity> Labels { get; set; }
+        public string Labels { get; set; }
         
         [Description("阅读量")]
         public int ReadingVolume { get; set; }
@@ -47,7 +40,6 @@ namespace Jx.Cms.Entities.Article
         public bool IsMarkdown { get; set; }
 
         [Description("Markdown内容")]
-        [MaxLength(-1)]
         public string MarkdownContent { get; set; }
     }
 }
