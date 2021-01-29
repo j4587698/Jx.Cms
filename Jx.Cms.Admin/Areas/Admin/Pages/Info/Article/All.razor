@@ -4,6 +4,7 @@
 @using Jx.Cms.Service
 @using Jx.Cms.Service.Admin
 @using Masuit.Tools.Reflection
+@using FreeSql
 
 @inject IArticleService ArticleService
 
@@ -11,9 +12,24 @@
 
 <Table TItem="ArticleEntity" IsBordered="true" IsPagination="true" PageItemsSource="_pageItemSource" OnQueryAsync="OnQueryAsync">
     <TableColumns>
-        <TableColumn @bind-Field="@context.Title" Text="标题"></TableColumn>
+        <TableColumn @bind-Field="@context.Title" Text="标题">
+            <Template Context="value">
+                <NavLink href="@($"Article/Write/{(value.Row as ArticleEntity)?.Id}")">@value.Value</NavLink>
+            </Template>
+        </TableColumn>
         <TableColumn @bind-Field="@context.Author" Text="作者"></TableColumn>
-        <TableColumn @bind-Field="@context.Catalogue.Name" Text="分类"></TableColumn>
+        <TableColumn @bind-Field="@context.Catalogue" Text="分类">
+            <Template Context="value">
+                            @if (value.Value == null)
+                            {
+                                @("无")
+                            }
+                            else
+                            {
+                                @value.Value.Name
+                            }
+                        </Template>
+        </TableColumn>
         <TableColumn @bind-Field="@context.UpdateTime" Text="最后修改时间"></TableColumn>
         <TableColumn @bind-Field="@context.Status" Text="状态"></TableColumn>
     </TableColumns>

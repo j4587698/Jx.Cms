@@ -18,7 +18,7 @@ namespace Jx.Cms.Service.Admin.Impl
 
         public List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Include(x => x.Catalogue).Count(out count).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
         public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize)
@@ -28,7 +28,7 @@ namespace Jx.Cms.Service.Admin.Impl
 
         public bool SaveArticle(ArticleEntity articleEntity)
         {
-            articleEntity.SaveMany("Labels");
+            articleEntity.Save().SaveMany("Labels");
             return true;
         }
     }

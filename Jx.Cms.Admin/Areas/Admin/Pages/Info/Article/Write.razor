@@ -1,5 +1,5 @@
 ﻿@page "/Article/Write"
-@page "/Article/Write/{Id}"
+@page "/Article/Write/{Id:int}"
 @using Jx.Cms.Service
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
@@ -8,8 +8,10 @@
 @using Jx.Cms.Admin.ViewModel
 @using Mapster
 
+@inject NavigationManager NavigationManager
 @inject IArticleService ArticleService
 @inject ICatalogService CatalogService
+@inject ToastService ToastService
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
 
@@ -35,7 +37,7 @@
     <div class="col-lg-3 col-md-4">
         <div class="row">
             <div class="form-group col-12">
-                <Button IsBlock="true" Size="Size.Large">提交</Button>
+                <Button IsBlock="true" Size="Size.Large" ButtonType="ButtonType.Submit">提交</Button>
             </div>
         </div>
         <div class="row">
@@ -68,9 +70,22 @@
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
     }
 
-    private Task OnValidSubmit(EditContext arg)
+    private async Task OnValidSubmit(EditContext arg)
     {
-        return Task.CompletedTask;
+        // TODO: 增加登录后这里要改成用户名
+        Article.Author = "Admin";
+        
+        var ret = ArticleService.SaveArticle(Article.Adapt<ArticleEntity>());
+        await ToastService.Show(new ToastOption()
+        {
+            Category = ret?ToastCategory.Success: ToastCategory.Error,
+            Title = ret?"保存成功":"保存失败",
+            Content = $"保存数据{(ret?"成功":"失败")}，4 秒后自动关闭"
+        });
+        if (ret)
+        {
+            NavigationManager.NavigateTo("All");
+        }        
     }
 
 }

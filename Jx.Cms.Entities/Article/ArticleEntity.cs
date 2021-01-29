@@ -24,7 +24,7 @@ namespace Jx.Cms.Entities.Article
         
         [Description("分类")]
         [Navigate(nameof(CatalogueId))]
-        public CatalogueEntity Catalogue { get; set; }
+        public CatalogEntity Catalogue { get; set; }
         
         [Description("文章内容")]
         [MaxLength(-1)]

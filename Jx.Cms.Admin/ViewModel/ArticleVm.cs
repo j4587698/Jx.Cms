@@ -19,7 +19,7 @@ namespace Jx.Cms.Admin.ViewModel
         public int CatalogueId { get; set; }
         
         [Description("分类")]
-        public CatalogueEntity Catalogue { get; set; }
+        public CatalogEntity Catalogue { get; set; }
         
         [Description("文章内容")]
         public string Content { get; set; }
