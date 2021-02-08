@@ -30,6 +30,11 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@Article.Labels" DisplayText="文章标签(用,隔开)" ShowLabel="true"></BootstrapInput>
             </div>
         </div>
@@ -50,6 +55,11 @@
                 <Select Items="Catalogs" @bind-Value="Article.CatalogueId" DisplayText="分类"></Select>
             </div>
         </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime" DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime" />
+            </div>
+        </div>
     </div>
 </ValidateForm>
 @code {
@@ -65,8 +75,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Article = (Id == 0 ? new ArticleEntity() : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
-        
+        Article = (Id == 0 ? new ArticleEntity(){IsPage = false, PublishTime = DateTime.Now} : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
     }
 
@@ -84,7 +93,7 @@
         });
         if (ret)
         {
-            NavigationManager.NavigateTo("All");
+            NavigationManager.NavigateTo("Article/All");
         }        
     }
 

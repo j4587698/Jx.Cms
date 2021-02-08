@@ -21,10 +21,6 @@
     </None>
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages" />
-  </ItemGroup>
-
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
     <Exec Command="mkdir $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\$(TargetName).views.dll $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\theme.json $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\screenshot.jpg $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)" />
   </Target>

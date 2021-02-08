@@ -4,6 +4,7 @@ using Jx.Cms.Themes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
@@ -19,8 +20,6 @@ namespace Jx.Cms.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddInjectBase();
-            //services.AddFreeSql();
-            //services.AddTheme();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

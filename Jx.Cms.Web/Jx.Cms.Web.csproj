@@ -11,7 +11,48 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Areas\" />
+      <Folder Include="wwwroot\Default" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\script\3dtag.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\custom.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\fancybox.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\html5-css3.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\jquery-ias.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\script.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\scrollmonitor.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\slides.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\stickySidebar.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\script\superfish.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\style\style.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\fontawesome-all.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-brands-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-brands-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-brands-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-brands-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-brands-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-regular-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-regular-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-regular-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-regular-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-regular-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-solid-900.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-solid-900.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-solid-900.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-solid-900.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\fonts\webfonts\fa-solid-900.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\3dtag.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\custom.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\fancybox.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\html5-css3.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\jquery-3.5.1.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\jquery-ias.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\script.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\scrollmonitor.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\slides.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\stickySidebar.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\Default\script\superfish.js" />
     </ItemGroup>
 
 </Project>

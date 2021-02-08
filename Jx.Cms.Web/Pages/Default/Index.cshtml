@@ -1,19 +1,53 @@
 ﻿@page
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Entities.Article
+@using Masuit.Tools.Html
 @model Jx.Cms.Web.Pages.Default.Index
 
-@{
-    Layout = null;
-}
+<!-- Page Header -->
+    <header class="masthead" style="background-image: url('/Default/img/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>@ViewData[SettingsConstants.TitleKey]</h1>
+              <span class="subheading">@ViewData[SettingsConstants.SubTitleKey]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
 
-<!DOCTYPE html>
+    <!-- Main Content -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          @{ var articles = ViewData["articles"] as IEnumerable<ArticleEntity> ?? new List<ArticleEntity>();}
+          @foreach (ArticleEntity articleEntity in articles){
+            <div class="post-preview">
+              <a href="@articleEntity.Id">
+                <h2 class="post-title">
+                  @articleEntity.Title
+                </h2>
+                <h3 class="post-subtitle">
+                  @{
+                    var content = articleEntity.Content.RemoveHtmlTag();
+                  }
+                  @(content.Length > 120 ? content.Substring(120) : content)
+                </h3>
+              </a>
+              <p class="post-meta">Posted by
+                <a href="#">Start Bootstrap</a>
+                on September 24, 2018</p>
+            </div>
+          }
+          <hr>
+          <!-- Pager -->
+          <div class="clearfix">
+            <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          </div>
+        </div>
+            </div>
+    </div>
 
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-<div>
-    this is a default page11122
-</div>
-</body>
-</html>

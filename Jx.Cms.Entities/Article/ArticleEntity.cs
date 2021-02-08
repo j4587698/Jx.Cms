@@ -16,6 +16,9 @@ namespace Jx.Cms.Entities.Article
         [DisplayName("标题")]
         public string Title { get; set; }
 
+        [Description("别名")]
+        public string Alias { get; set; }
+
         [Description("文章作者")]
         public string Author { get; set; }
         
@@ -49,5 +52,8 @@ namespace Jx.Cms.Entities.Article
         [Description("Markdown内容")]
         [MaxLength(-1)]
         public string MarkdownContent { get; set; }
+
+        [Description("是否为独立页面")]
+        public bool IsPage { get; set; }
     }
 }

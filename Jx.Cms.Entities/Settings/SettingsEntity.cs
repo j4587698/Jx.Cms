@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using FreeSql;
+using Jx.Cms.Common.Utils;
 
 namespace Jx.Cms.Entities.Settings
 {
@@ -43,7 +44,7 @@ namespace Jx.Cms.Entities.Settings
         /// <returns>设置项值</returns>
         public static string GetValue(string name)
         {
-            return GetValue("system", name);
+            return GetValue(SettingsConstants.SystemType, name);
         }
 
         /// <summary>
@@ -69,7 +70,7 @@ namespace Jx.Cms.Entities.Settings
         /// <param name="value">设置项值</param>
         public static void SetValue(string name, string value)
         {
-            SetValue("system", name, value);
+            SetValue(SettingsConstants.SystemType, name, value);
         }
     }
 }
