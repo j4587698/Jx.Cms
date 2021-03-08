@@ -37,6 +37,16 @@ namespace Jx.Cms.Service.Admin
         /// <param name="pageSize">每页条数</param>
         /// <returns>制定页文章列表</returns>
         List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize);
+        
+        /// <summary>
+        /// 根据标签名获取文章
+        /// </summary>
+        /// <param name="label">标签名（如果标签名相同则会全部查出）</param>
+        /// <param name="pageNumber">获取第几页</param>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="count">文章总数量</param>
+        /// <returns>指定页文章列表</returns>
+        List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count);
 
         /// <summary>
         /// 保存文章

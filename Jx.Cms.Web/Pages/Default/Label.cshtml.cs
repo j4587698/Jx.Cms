@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using Furion;
 using Jx.Cms.Entities.Article;
+using Jx.Cms.Service.Admin;
 using Jx.Cms.Service.Front;
 
 namespace Jx.Cms.Web.Pages.Default
 {
-    public class Index : DefaultPageModel
+    public class Label : DefaultPageModel
     {
         public long Count { get; set; }
 
@@ -17,18 +18,21 @@ namespace Jx.Cms.Web.Pages.Default
 
         public IEnumerable<ArticleEntity> Articles { get; set; }
 
+        public int Id { get; set; }
+
         private int pageSize = 1;
         
-        public void OnGet(int pageNo)
+        public void OnGet(int id, int pageNo)
         {
             if (pageNo == 0)
             {
                 pageNo = 1;
             }
-            var articleService = App.GetService<IArticleService>();
-            Articles = articleService.GetArticlePageWithCount(pageNo, pageSize, out var count);
+            var labelService = App.GetService<ILabelService>();
+            Articles = labelService.GetArticleFormLabelId(id, pageNo, pageSize, out var count);
             Count = count;
             PageNo = pageNo;
+            Id = id;
             TotalPage = count % pageSize == 0 ? count / pageSize : count / pageSize + 1;
             if (TotalPage < 5)
             {

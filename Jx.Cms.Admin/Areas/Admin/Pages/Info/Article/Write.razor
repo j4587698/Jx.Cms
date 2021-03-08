@@ -24,8 +24,20 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
+                <Switch class="form-control" @bind-Value="@Article.IsMarkdown" OnColor="Color.Success" OnText="启用" OffText="禁用" DisplayText="启用Markdown编辑" OnValueChanged="OnValueChanged"></Switch>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
                 <label>文章内容</label>
-                <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content"></Editor>
+                @if (Article.IsMarkdown)
+                {
+                    <Markdown @ref="_markdown"></Markdown>
+                }
+                else
+                {
+                    <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content"></Editor> 
+                }
             </div>
         </div>
         <div class="row">
@@ -47,12 +59,12 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <Select Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态"></Select>
+                <Select style="width: 100%" Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态" ShowLabel="false"></Select>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <Select Items="Catalogs" @bind-Value="Article.CatalogueId" DisplayText="分类"></Select>
+                <Select style="width: 100%" Items="Catalogs" @bind-Value="Article.CatalogueId" DisplayText="分类"></Select>
             </div>
         </div>
         <div class="row">
@@ -65,6 +77,10 @@
 @code {
     [Parameter]
     public int Id { get; set; }
+
+    private Markdown _markdown;
+
+    private bool _needChange;
 
     private ArticleVm Article { get; set; }
 
@@ -79,10 +95,36 @@
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
     }
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            if (Article.IsMarkdown)
+            {
+                _markdown?.SetMarkdown(Article.MarkdownContent);
+            }
+        }
+        if (_needChange)
+        {
+            if (Article.IsMarkdown)
+            {
+                await _markdown.SetHtml(Article.Content);
+            }
+            _needChange = false;
+        }
+       
+    }
+
     private async Task OnValidSubmit(EditContext arg)
     {
         // TODO: 增加登录后这里要改成用户名
         Article.Author = "Admin";
+
+        if (Article.IsMarkdown && _markdown != null)
+        {
+            Article.MarkdownContent = await _markdown.GetMarkdownString();
+        }
         
         var ret = ArticleService.SaveArticle(Article.Adapt<ArticleEntity>());
         await ToastService.Show(new ToastOption()
@@ -95,6 +137,19 @@
         {
             NavigationManager.NavigateTo("Article/All");
         }        
+    }
+
+    private async Task OnValueChanged(bool arg)
+    {
+        if (arg)
+        {
+            _needChange = true;
+        }
+        else
+        {
+            Article.Content = await _markdown.GetMarkdownHtmlString();
+            StateHasChanged();
+        }
     }
 
 }

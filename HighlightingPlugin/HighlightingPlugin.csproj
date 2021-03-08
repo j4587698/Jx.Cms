@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;" />
+    </Target>
+</Project>

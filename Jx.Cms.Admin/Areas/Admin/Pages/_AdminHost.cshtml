@@ -1,4 +1,4 @@
-﻿@page "/"
+﻿@page "/Admin"
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
@@ -11,15 +11,13 @@
 <meta name="author" content="JX">
 <link rel="stylesheet" href="/_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
 <link rel="stylesheet" href="/_content/BootstrapBlazor.Markdown/css/bootstrap.blazor.markdown.min.css" />
-<link rel="stylesheet" href="/_content/BootstrapBlazor/lib/summernote/summernote-bs4.min.css">
- <base href="~/Admin/" />
+<base href="~/Admin/" />
 </head>
 <body>
     @(await Html.RenderComponentAsync<Jx.Cms.Admin.App>(RenderMode.ServerPrerendered))
     <script type="text/javascript" src="/_framework/blazor.server.js"></script>
     <script src="/_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
-    <script src="/_content/BootstrapBlazor.Markdown/js/bootstrap.blazor.markdown.min.js"></script>
-    <script src="/_content/BootstrapBlazor/lib/summernote/summernote-bs4.min.js"></script>
-    <script src="/_content/BootstrapBlazor/lib/summernote/summernote-zh-CN.min.js"></script>
+<script src="/_content/BootstrapBlazor/lib/summernote/summernote-zh-CN.min.js"></script>
+<script src="/_content/BootstrapBlazor.Markdown/js/bootstrap.blazor.markdown.min.js"></script>
 </body>
 </html>

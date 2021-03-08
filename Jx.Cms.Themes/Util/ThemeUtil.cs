@@ -20,7 +20,7 @@ using Constants = Jx.Cms.Common.Utils.Constants;
 
 namespace Jx.Cms.Themes.Util
 {
-    public static class Utils
+    public static class ThemeUtil
     {
         private const string DefaultPcThemeName = "Default";
 
@@ -189,6 +189,7 @@ namespace Jx.Cms.Themes.Util
                 Path = "",
                 ScreenShot = "",
                 ThemeDescription = "默认主题",
+                ThemeDisplayName = "默认主题",
                 ThemeName = "Default",
                 ThemeType = ThemeType.PcTheme
             });
@@ -205,13 +206,13 @@ namespace Jx.Cms.Themes.Util
                         switch (themeConfig.ThemeType)
                         {
                             case ThemeType.PcTheme:
-                                themeConfig.IsUsing = Utils.PcThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = ThemeUtil.PcThemeName == themeConfig.ThemeName;
                                 break;
                             case ThemeType.MobileTheme:
-                                themeConfig.IsUsing = Utils.MobileThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = ThemeUtil.MobileThemeName == themeConfig.ThemeName;
                                 break;
                             case ThemeType.AdaptiveTheme:
-                                themeConfig.IsUsing = Utils.PcThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = ThemeUtil.PcThemeName == themeConfig.ThemeName;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

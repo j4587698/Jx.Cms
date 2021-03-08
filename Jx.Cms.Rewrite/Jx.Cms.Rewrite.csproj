@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
+    </ItemGroup>
+
+</Project>

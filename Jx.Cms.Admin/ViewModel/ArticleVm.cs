@@ -7,8 +7,13 @@ using Jx.Cms.Entities.Article;
 
 namespace Jx.Cms.Admin.ViewModel
 {
+    /// <summary>
+    /// 文章VM
+    /// </summary>
     public class ArticleVm
     {
+        public int Id { get; set; }
+        
         [Description("文章标题")]
         public string Title { get; set; }
 

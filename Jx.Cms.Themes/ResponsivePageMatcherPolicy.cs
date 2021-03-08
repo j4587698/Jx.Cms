@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes.Util;
@@ -25,7 +27,17 @@ namespace Jx.Cms.Themes
 
         public Task ApplyAsync(HttpContext httpContext, CandidateSet candidates)
         {
-            var path = Utils.GetThemeName();
+            List<CandidateState> candidateStates = new List<CandidateState>();
+            for (int i = 0; i < candidates.Count; i++)
+            {
+                candidateStates.Add(candidates[i]);
+            }
+
+            if (candidateStates.OrderByDescending(x => x.Score).First().Values!.Any(x => x.Key == "area"))
+            {
+                return Task.CompletedTask;
+            }
+            var path = ThemeUtil.GetThemeName();
             if (path.IsNullOrEmpty())
             {
                 return Task.CompletedTask;

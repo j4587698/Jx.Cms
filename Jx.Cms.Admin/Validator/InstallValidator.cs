@@ -11,7 +11,7 @@ namespace Jx.Cms.Admin.Validator
     /// <summary>
     /// 
     /// </summary>
-    public class InstallValidator: ValidatorComponentBase
+    public class InstallValidator: ValidatorBase 
     {
         public override void Validate(object propertyValue, ValidationContext context, List<ValidationResult> results)
         {

@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoPlugin", "DemoPlugin\De
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Cms.Rewrite", "Jx.Cms.Rewrite\Jx.Cms.Rewrite.csproj", "{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighlightingPlugin", "HighlightingPlugin\HighlightingPlugin.csproj", "{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -77,6 +79,10 @@ Global
 		{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -92,6 +98,7 @@ Global
 		{1450A0E1-7C32-4DF4-968B-3ED9987A08C7} = {62598B20-19EA-4BEC-A19E-E1183CEAC417}
 		{AA9B75E2-1009-4522-AC7F-6D1224621928} = {E9C6B309-B031-43D6-88CB-0C301BFCCD8C}
 		{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC} = {62598B20-19EA-4BEC-A19E-E1183CEAC417}
+		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC} = {E9C6B309-B031-43D6-88CB-0C301BFCCD8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D059992-2AD3-4A60-96C5-0E725E0FA933}

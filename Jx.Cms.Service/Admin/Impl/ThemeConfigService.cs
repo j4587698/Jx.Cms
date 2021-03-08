@@ -23,7 +23,7 @@ namespace Jx.Cms.Service.Admin.Impl
         
         public List<ThemeConfig> GetAllThemes()
         {
-            return Utils.GetAllThemes();
+            return ThemeUtil.GetAllThemes();
         }
 
         public Stream GetScreenShotStreamByThemeName(string themeName)
@@ -57,7 +57,7 @@ namespace Jx.Cms.Service.Admin.Impl
 
         public bool EnableTheme(ThemeConfig themeConfig)
         {
-            Utils.SetTheme(themeConfig);
+            ThemeUtil.SetTheme(themeConfig);
             
             return true;
         }

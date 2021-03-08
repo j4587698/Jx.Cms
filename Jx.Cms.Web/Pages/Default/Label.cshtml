@@ -1,0 +1,71 @@
+﻿@page "{id:int}.{pageNo:int?}"
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Entities.Article
+@using Masuit.Tools.Html
+@model Label
+
+<!-- Page Header -->
+    <header class="masthead" style="background-image: url('/Default/img/home-bg.jpg')">
+      <div class="overlay"></div>
+      <div class="container">
+        <div class="row">
+          <div class="col-lg-8 col-md-10 mx-auto">
+            <div class="site-heading">
+              <h1>@ViewData[SettingsConstants.TitleKey]</h1>
+              <span class="subheading">@ViewData[SettingsConstants.SubTitleKey]</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+<div class="container">
+  <div class="row">
+    <div class="col-lg-8 col-md-10 mx-auto">
+      @foreach (ArticleEntity articleEntity in Model.Articles){
+        <div class="post-preview">
+          <a href="/Post/@articleEntity.Id">
+            <h2 class="post-title">
+              @articleEntity.Title
+            </h2>
+            <h3 class="post-subtitle">
+              @{
+                var content = articleEntity.Content.RemoveHtmlTag();
+              }
+              @(content.Length > 120 ? content.Substring(120) : content)
+            </h3>
+          </a>
+          <p class="post-meta">
+            <a href="#">@articleEntity.Author</a>
+            @articleEntity.PublishTime.ToString("yyyy-MM-dd")</p>
+        </div>
+      }
+      <hr>
+      <!-- Pager -->
+      <div class="clearfix">
+        <nav aria-label="Page navigation example">
+          <ul class="pagination justify-content-center">
+            <li class="page-item @if (Model.PageNo <= 1) { @("disabled") }">
+              <a class="page-link" href="/Label/@Model.Id.1" >首页</a>
+            </li>
+            <li class="page-item @if (Model.PageNo <= 1) { @("disabled") }">
+              <a class="page-link" href="@($"/Label/{Model.Id}.{Model.PageNo - 1}")" tabindex="-1">上一页</a>
+            </li>
+            @for (int i = Model.StartNo; i <= Model.TotalPage && i < Model.StartNo + 5; i++)
+            {
+              @:<li class="page-item @if (Model.PageNo == i) { @("active") }"><a class="page-link" href="/Label/@Model.Id.@i">@i</a></li>
+            }
+            <li class="page-item @if (Model.PageNo >= Model.TotalPage){@("disabled")}">
+              <a class="page-link" href="@($"/Label/{Model.Id}.{Model.PageNo + 1}")">下一页</a>
+            </li>
+            <li class="page-item @if (Model.PageNo >= Model.TotalPage){@("disabled")}">
+              <a class="page-link" href="@($"/Label/{Model.Id}.{Model.TotalPage}")">尾页</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>
+

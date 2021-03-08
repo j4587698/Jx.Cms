@@ -9,7 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Plugin" />
       <Folder Include="Watcher" />
     </ItemGroup>
 

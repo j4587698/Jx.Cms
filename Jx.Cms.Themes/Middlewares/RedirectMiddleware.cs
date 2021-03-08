@@ -19,7 +19,7 @@ namespace Jx.Cms.Themes.Middlewares
             var hasArea = context.Request.RouteValues.ContainsKey("area");
             if (!hasArea)
             {
-                var path = Utils.Redirect();
+                var path = ThemeUtil.Redirect();
                 if (path.IsNullOrEmpty())
                 {
                     await _next.Invoke(context);

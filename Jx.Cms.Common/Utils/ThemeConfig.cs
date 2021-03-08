@@ -10,7 +10,17 @@
         /// <summary>
         /// 主题显示名称
         /// </summary>
+        public string ThemeDisplayName { get; set; }
+
+        /// <summary>
+        /// 主题描述
+        /// </summary>
         public string ThemeDescription { get; set; }
+
+        /// <summary>
+        /// 主题版本号
+        /// </summary>
+        public string Version { get; set; }
 
         /// <summary>
         /// 主题路径

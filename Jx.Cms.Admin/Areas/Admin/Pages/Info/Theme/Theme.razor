@@ -20,11 +20,11 @@
         <Card>
             <CardBody>
                 <img src="/Admin/Image/LoadScreenShot?themeName=@context.ThemeName" alt="@context.ThemeDescription"/>
-                <div style="text-align: center">@context.ThemeDescription</div>
+                <div style="text-align: center">@context.ThemeDisplayName</div>
             </CardBody>
             <CardFooter>
                 <div class="row" style="margin: 10px auto;">
-                    <span style="align-self: center">@context.ThemeType.GetDescription()</span> 
+                    <span style="align-self: center">@context.ThemeType.GetDescription()</span>
                     <Button IsDisabled="@context.IsUsing" style="margin-left: auto" @onclick="() => { SelectTheme(context); }">@(context.IsUsing ? "已启用" : "启用")</Button>
                 </div>
             </CardFooter>

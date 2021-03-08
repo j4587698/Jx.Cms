@@ -16,6 +16,20 @@ namespace Jx.Cms.Service.Front
         ArticleEntity GetArticleById(int id);
 
         /// <summary>
+        /// 根据当前文章ID获取上一篇文章，如没有，则为null
+        /// </summary>
+        /// <param name="id">当前文章ID</param>
+        /// <returns>上一篇文章</returns>
+        ArticleEntity GetPrevArticle(int id);
+
+        /// <summary>
+        /// 根据当前文章ID获取下一篇文章，如没有，则为null
+        /// </summary>
+        /// <param name="id">当前文章ID</param>
+        /// <returns>下一篇文章</returns>
+        ArticleEntity GetNextArticle(int id);
+
+        /// <summary>
         /// 获取所有文章
         /// </summary>
         /// <returns>所有文章列表</returns>
@@ -37,6 +51,16 @@ namespace Jx.Cms.Service.Front
         /// <param name="pageSize">每页条数</param>
         /// <returns>制定页文章列表</returns>
         List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize);
+
+        /// <summary>
+        /// 根据标签名获取文章
+        /// </summary>
+        /// <param name="label">标签名（如果标签名相同则会全部查出）</param>
+        /// <param name="pageNumber">获取第几页</param>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="count">文章总数量</param>
+        /// <returns>指定页文章列表</returns>
+        List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count);
 
         /// <summary>
         /// 保存文章

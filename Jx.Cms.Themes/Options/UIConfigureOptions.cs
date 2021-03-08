@@ -17,8 +17,8 @@ namespace Jx.Cms.Themes.Options
         public UiConfigureOptions(IWebHostEnvironment environment)
         {
             Environment = environment;
-            Utils.ThemeModify = ChangeTheme;
-            Utils.InitThemePath();
+            ThemeUtil.ThemeModify = ChangeTheme;
+            ThemeUtil.InitThemePath();
         }
 
         private readonly MyCompositeFileProvider _filesProvider = new();
