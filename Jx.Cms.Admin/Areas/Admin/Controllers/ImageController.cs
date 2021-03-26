@@ -9,7 +9,7 @@ namespace Jx.Cms.Admin.Areas.Admin.Controllers
     [Area("Admin")]
     public class ImageController : Controller
     {
-        private IThemeConfigService _themeConfigService;
+        private readonly IThemeConfigService _themeConfigService;
         
         public ImageController(IThemeConfigService themeConfigService)
         {

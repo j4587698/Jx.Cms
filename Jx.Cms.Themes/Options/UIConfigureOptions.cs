@@ -24,7 +24,7 @@ namespace Jx.Cms.Themes.Options
         private readonly MyCompositeFileProvider _filesProvider = new();
         private string basePath = "wwwroot";
 
-        public void ChangeTheme(ThemeConfig themeConfig)
+        private void ChangeTheme(ThemeConfig themeConfig)
         {
             var assembly = RazorPlugin.GetAssemblyByThemeType(themeConfig.ThemeType);
             if (assembly != null)

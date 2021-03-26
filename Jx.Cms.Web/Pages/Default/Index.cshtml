@@ -33,7 +33,7 @@
                   @{
                     var content = articleEntity.Content.RemoveHtmlTag();
                   }
-                  @(content.Length > 120 ? content.Substring(120) : content)
+                  @(content.Length > 120 ? content.Substring(0, 120) : content)
                 </h3>
               </a>
               <p class="post-meta">

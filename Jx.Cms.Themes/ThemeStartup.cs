@@ -27,9 +27,9 @@ namespace Jx.Cms.Themes
     {
         public void ConfigureServices(IServiceCollection services)
         {
-            if (!Directory.Exists(Constants.LibraryPath))
+            if (!Directory.Exists(Constants.ThemePath))
             {
-                Directory.CreateDirectory(Constants.LibraryPath);
+                Directory.CreateDirectory(Constants.ThemePath);
             }
             
             services.AddStaticHttpContext();

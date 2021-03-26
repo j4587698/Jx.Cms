@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Furion.DependencyInjection;
 using Jx.Cms.Entities.Article;
+using Jx.Cms.Plugin.Model;
+using Jx.Cms.Plugin.Utils;
+using Markdig;
 
 namespace Jx.Cms.Service.Front.Impl
 {
@@ -9,9 +12,17 @@ namespace Jx.Cms.Service.Front.Impl
     /// </summary>
     public class ArticleService: IArticleService, ITransient
     {
-        public ArticleEntity GetArticleById(int id)
+        public ArticleModel GetArticleById(int id)
         {
-            return ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            var article = ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            if (article.IsMarkdown)
+            {
+                article.Content = Markdown.ToHtml(article.Content);
+            }
+            var model = new ArticleModel();
+            model.Body = article;
+            PluginUtil.ArticleShow(model);
+            return model;
         }
 
         public ArticleEntity GetPrevArticle(int id)

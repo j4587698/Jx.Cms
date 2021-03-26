@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using Furion;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Util;
@@ -58,7 +59,6 @@ namespace Jx.Cms.Service.Admin.Impl
         public bool EnableTheme(ThemeConfig themeConfig)
         {
             ThemeUtil.SetTheme(themeConfig);
-            
             return true;
         }
     }

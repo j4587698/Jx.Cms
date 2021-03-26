@@ -2,6 +2,7 @@
 @using Jx.Cms.Entities.Article
 @model Jx.Cms.Web.Pages.Default.Post
 
+@Html.Raw(Model.Article.Header)
 <!-- Page Header -->
     <header class="masthead" style="background-image: url('/Default/img/post-bg.jpg')">
       <div class="overlay"></div>
@@ -9,10 +10,10 @@
         <div class="row">
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="post-heading">
-              <h1>@Model.Article.Title</h1>
+              <h1>@Model.Article.Body.Title</h1>
               <span class="meta">
-                <a href="#">@Model.Article.Author</a>
-                @Model.Article.PublishTime.ToString("yyyy-MM-dd hh:mm:ss")</span>
+                <a href="#">@Model.Article.Body.Author</a>
+                @Model.Article.Body.PublishTime.ToString("yyyy-MM-dd hh:mm:ss")</span>
             </div>
           </div>
         </div>
@@ -24,7 +25,7 @@
   <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        @Html.Raw(Model.Article.Content)
+        @Html.Raw(Model.Article.Body.Content)
       </div>
     </div>
   </div>
@@ -32,9 +33,9 @@
 <div class="container">
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
-        <small class="text-muted">标签：@if(Model.Article.Labels != null)
+        <small class="text-muted">标签：@if(Model.Article.Body.Labels != null)
                                      {
-                                       foreach (var label in Model.Article.Labels)
+                                       foreach (var label in Model.Article.Body.Labels)
                                        {
                                          <a href="/Label/@label.Id"><span class="label">@label.Name</span></a>
                                        }
@@ -62,3 +63,4 @@
     }
 </div>
 
+@Html.Raw(Model.Article.Footer)

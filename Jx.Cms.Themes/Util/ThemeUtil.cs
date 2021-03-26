@@ -193,7 +193,7 @@ namespace Jx.Cms.Themes.Util
                 ThemeName = "Default",
                 ThemeType = ThemeType.PcTheme
             });
-            var dirs = Directory.GetDirectories(Constants.LibraryPath);
+            var dirs = Directory.GetDirectories(Constants.ThemePath);
             foreach (var dir in dirs)
             {
                 var configPath = Path.Combine(dir, "theme.json");
@@ -206,13 +206,13 @@ namespace Jx.Cms.Themes.Util
                         switch (themeConfig.ThemeType)
                         {
                             case ThemeType.PcTheme:
-                                themeConfig.IsUsing = ThemeUtil.PcThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = PcThemeName == themeConfig.ThemeName;
                                 break;
                             case ThemeType.MobileTheme:
-                                themeConfig.IsUsing = ThemeUtil.MobileThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = MobileThemeName == themeConfig.ThemeName;
                                 break;
                             case ThemeType.AdaptiveTheme:
-                                themeConfig.IsUsing = ThemeUtil.PcThemeName == themeConfig.ThemeName;
+                                themeConfig.IsUsing = PcThemeName == themeConfig.ThemeName;
                                 break;
                             default:
                                 throw new ArgumentOutOfRangeException();

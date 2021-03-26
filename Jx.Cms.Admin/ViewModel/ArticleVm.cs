@@ -46,8 +46,5 @@ namespace Jx.Cms.Admin.ViewModel
 
         [Description("是否为Markdown")]
         public bool IsMarkdown { get; set; }
-
-        [Description("Markdown内容")]
-        public string MarkdownContent { get; set; }
     }
 }

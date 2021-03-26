@@ -79,7 +79,7 @@
         var ret = DbStartup.SetupDb(ServicesExtension.Services, DbConfig);
         if (!ret.isSuccess)
         {
-            SwalService.Show(new SwalOption()
+            await SwalService.Show(new SwalOption()
             {
                 Category = SwalCategory.Error,
                 Title = ret.msg

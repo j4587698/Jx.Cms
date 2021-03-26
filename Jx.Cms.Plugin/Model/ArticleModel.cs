@@ -1,4 +1,6 @@
-﻿namespace Jx.Cms.Plugin.Model
+﻿using Jx.Cms.Entities.Article;
+
+namespace Jx.Cms.Plugin.Model
 {
     /// <summary>
     /// 文章插件传送内容
@@ -8,7 +10,7 @@
         /// <summary>
         /// 文章主体内容
         /// </summary>
-        public string Body { get; set; }
+        public ArticleEntity Body { get; set; }
 
         /// <summary>
         /// 头部添加内容(如css)

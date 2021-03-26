@@ -6,12 +6,17 @@
 @using Jx.Cms.Entities.Article
 @using Jx.Cms.Service.Admin
 @using Jx.Cms.Admin.ViewModel
+@using Jx.Cms.Plugin.Model
+@using Jx.Cms.Plugin.Utils
 @using Mapster
+@using Furion
 
 @inject NavigationManager NavigationManager
 @inject IArticleService ArticleService
 @inject ICatalogService CatalogService
 @inject ToastService ToastService
+@inject IServiceProvider ServiceProvider
+@inject SwalService SwalService1
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
 
@@ -32,11 +37,11 @@
                 <label>文章内容</label>
                 @if (Article.IsMarkdown)
                 {
-                    <Markdown @ref="_markdown"></Markdown>
+                    <Markdown @bind-Value="@Article.Content" Language="zh-CN"></Markdown>
                 }
                 else
                 {
-                    <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content"></Editor> 
+                    <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content" CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor> 
                 }
             </div>
         </div>
@@ -78,42 +83,23 @@
     [Parameter]
     public int Id { get; set; }
 
-    private Markdown _markdown;
-
-    private bool _needChange;
-
     private ArticleVm Article { get; set; }
 
     private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
 
     private IEnumerable<SelectedItem> Catalogs { get; set; }
+    
+    private List<EditorExtModel> EditorExtModels { get; set; }
+    
+    private List<EditorToolbarButton> ToolbarButtons { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        EditorExtModels = PluginUtil.ArticleEditorShow();
+        ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Article = (Id == 0 ? new ArticleEntity(){IsPage = false, PublishTime = DateTime.Now} : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
-    }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await base.OnAfterRenderAsync(firstRender);
-        if (firstRender)
-        {
-            if (Article.IsMarkdown)
-            {
-                _markdown?.SetMarkdown(Article.MarkdownContent);
-            }
-        }
-        if (_needChange)
-        {
-            if (Article.IsMarkdown)
-            {
-                await _markdown.SetHtml(Article.Content);
-            }
-            _needChange = false;
-        }
-       
     }
 
     private async Task OnValidSubmit(EditContext arg)
@@ -121,11 +107,6 @@
         // TODO: 增加登录后这里要改成用户名
         Article.Author = "Admin";
 
-        if (Article.IsMarkdown && _markdown != null)
-        {
-            Article.MarkdownContent = await _markdown.GetMarkdownString();
-        }
-        
         var ret = ArticleService.SaveArticle(Article.Adapt<ArticleEntity>());
         await ToastService.Show(new ToastOption()
         {
@@ -139,17 +120,26 @@
         }        
     }
 
-    private async Task OnValueChanged(bool arg)
+    private Task OnValueChanged(bool arg)
     {
-        if (arg)
+        Article.Content = "";
+        return Task.CompletedTask;;
+    }
+
+    private async Task<string> OnClickButton(string arg)
+    {
+        var op = new SwalOption()
         {
-            _needChange = true;
-        }
-        else
-        {
-            Article.Content = await _markdown.GetMarkdownHtmlString();
-            StateHasChanged();
-        }
+            Title = "点击plugin2按钮后弹窗",
+            Content = "点击插件按钮后弹窗并确认后才进行下一步处理",
+            IsConfirm = true
+        };
+
+        await SwalService1.Show(op);
+        var a = ServiceProvider.GetService(typeof(SwalService)) as SwalService;
+        await a.Show(op);
+        
+        return arg;
     }
 
 }

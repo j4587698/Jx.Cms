@@ -375,6 +375,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\codemirror\theme\zenburn.css" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\marked.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\prettify.min.js" />
+      <_ContentIncludedByDefault Remove="Plugin\HighlightingPlugin\plugin.json" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.Entities.Article;
+using Jx.Cms.Plugin.Model;
 
 namespace Jx.Cms.Service.Front
 {
@@ -13,7 +14,7 @@ namespace Jx.Cms.Service.Front
         /// </summary>
         /// <param name="id">文章ID</param>
         /// <returns>对应的文章</returns>
-        ArticleEntity GetArticleById(int id);
+        ArticleModel GetArticleById(int id);
 
         /// <summary>
         /// 根据当前文章ID获取上一篇文章，如没有，则为null

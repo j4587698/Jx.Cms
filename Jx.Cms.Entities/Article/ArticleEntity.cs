@@ -49,10 +49,6 @@ namespace Jx.Cms.Entities.Article
         [Description("是否为Markdown")]
         public bool IsMarkdown { get; set; }
 
-        [Description("Markdown内容")]
-        [MaxLength(-1)]
-        public string MarkdownContent { get; set; }
-
         [Description("是否为独立页面")]
         public bool IsPage { get; set; }
     }

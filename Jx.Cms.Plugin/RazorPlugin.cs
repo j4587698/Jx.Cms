@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -77,6 +78,8 @@ namespace Jx.Cms.Plugin
             }
             RemoveFromPartManager(plugin, partManager);
             plugin.Dispose();
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
         }
 
         private static void RemoveFromPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
