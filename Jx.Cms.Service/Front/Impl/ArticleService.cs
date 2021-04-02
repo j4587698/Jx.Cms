@@ -21,7 +21,7 @@ namespace Jx.Cms.Service.Front.Impl
             }
             var model = new ArticleModel();
             model.Body = article;
-            PluginUtil.ArticleShow(model);
+            PluginUtil.OnArticleShow(model);
             return model;
         }
 

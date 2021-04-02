@@ -23,6 +23,11 @@ namespace Jx.Cms.Plugin
         /// </summary>
         internal static readonly Dictionary<string, List<Type>> ArticlePlugins = new();
 
+        /// <summary>
+        /// 系统相关插件列表
+        /// </summary>
+        internal static readonly Dictionary<string, List<Type>> SystemPlugins = new();
+
         public static Assembly GetAssemblyByPluginId(string pluginId)
         {
             return Plugins.TryGetValue(pluginId, out var plugin) ? plugin.LoadDefaultAssembly() : null;
@@ -47,6 +52,7 @@ namespace Jx.Cms.Plugin
             });
             Plugins.Add(pluginConfig.PluginId, plugin);
             var types = plugin.LoadDefaultAssembly().GetTypes();
+            // 文章相关插件列表
             var articleList = new List<Type>();
             foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
             {
@@ -57,6 +63,15 @@ namespace Jx.Cms.Plugin
             {
                 ArticlePlugins.Add(pluginConfig.PluginId, articleList);
             }
+            
+            // 系统相关插件列表
+            var systemList = new List<Type>();
+            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
+
+            if (systemList.Count > 0)
+            {
+                SystemPlugins.Add(pluginConfig.PluginId, systemList);
+            }
         }
 
         public static void UnloadPlugin(PluginConfig pluginConfig)
@@ -64,6 +79,7 @@ namespace Jx.Cms.Plugin
             if (Plugins.TryRemove(pluginConfig.PluginId, out PluginLoader plugin))
             {
                 ArticlePlugins.TryRemove(pluginConfig.PluginId, out _);
+                SystemPlugins.TryRemove(pluginConfig.PluginId, out _);
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

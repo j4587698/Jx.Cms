@@ -1,6 +1,7 @@
 ﻿@using Jx.Cms.Common.Extensions
 @using System.Diagnostics.CodeAnalysis
 @using Jx.Cms.Common.Attribute
+@using Jx.Cms.Plugin.Utils
 @using Jx.Cms.Service
 @using Jx.Cms.Service.Admin
 @inherits LayoutComponentBase
@@ -61,8 +62,9 @@
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
         var menuAttributes = MenuService.GetAllMenu();
+        menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/Admin/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();
-        foreach (var attribute in menuAttributes.Where(x => x.ParentId == "").OrderByDescending(x => x.Order))
+        foreach (var attribute in menuAttributes.Where(x => x.ParentId.IsNullOrEmpty()).OrderByDescending(x => x.Order))
         {
             MenuItem menuItem = new MenuItem();
             menuItem.Icon = attribute.IconClass;

@@ -9,7 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor" Version="5.0.23-beta01" />
+      <PackageReference Include="BootstrapBlazor" Version="5.0.23-beta10" />
       <PackageReference Include="Furion" Version="1.15.9" />
       <PackageReference Include="Furion.Extras.Logging.Serilog" Version="1.7.0" />
       <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="1.8.0" />

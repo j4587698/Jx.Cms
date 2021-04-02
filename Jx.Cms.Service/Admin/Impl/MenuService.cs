@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Attribute;
+using Jx.Cms.Plugin.Utils;
 using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Service.Admin.Impl

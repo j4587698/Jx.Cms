@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
+using Furion.DependencyInjection.Extensions;
 using HighlightingPlugin.Pages;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
@@ -12,33 +13,66 @@ namespace HighlightingPlugin
     {
         public ArticleModel OnArticleShow(ArticleModel articleModel)
         {
-            articleModel.Body.Content += "Highlighting Run";
             articleModel.Header += "<link rel=\"stylesheet\" href=\"/highlight/styles/default.css\">";
             articleModel.Footer += "<script src=\"/highlight/highlight.pack.js\"></script><script>hljs.highlightAll();</script>";
             return articleModel;
         }
 
-        public EditorExtModel AddEditorToolbarButton()
+        public EditorExtModel AddEditorToolbarButton(DialogService dialogService)
         {
-            var dialogService = App.GetService<SwalService>();
-            
             EditorExtModel extModel = new EditorExtModel();
             extModel.ToolbarButton = new EditorToolbarButton()
             {
                 ButtonName = "AddCode",
                 IconClass = "fa fa-code",
-                Tooltip = $"{(dialogService == null ? "空dialogService": $"{dialogService.GetType()}")}"
+                Tooltip = "添加代码段"
             };
-            extModel.OnToolbarClick = async pluginName =>
+            extModel.OnDialogCreat = option =>
             {
-                await dialogService.Show(new SwalOption()
+                option.Title = "添加代码段";
+                option.ButtonYesText = "插入代码段";
+                return typeof(HighlightingDialog);
+            };
+            extModel.OnToolbarClick = result =>
+            {
+                if (result.dialogResult == DialogResult.Yes)
                 {
-                    IsConfirm = true,
-                    Content = "这是一个提示"
-                });
-                return pluginName;
+                    var highlightDialog = result.pluginDialog as HighlightingDialog;
+                    if (highlightDialog == null)
+                    {
+                        return Task.FromResult("");
+                    }
+
+                    if (highlightDialog.SelectedValue == "Auto")
+                    {
+                        return Task.FromResult<string>($"<pre><code>{HtmlToEsc(highlightDialog.CodeValue)}</code></pre>");
+                    }
+                    return Task.FromResult<string>($"<pre><code class=\"{highlightDialog.SelectedValue.ToLower()}\">{HtmlToEsc(highlightDialog.CodeValue)}</code></pre>");
+                }
+                return Task.FromResult<string>("");
             };
             return extModel;
+        }
+        
+        /// <summary>
+        /// Html to Esc
+        /// </summary>
+        /// <param name="input">input</param>
+        /// <returns></returns>
+        public static string HtmlToEsc(string input)
+        {
+            if (string.IsNullOrEmpty(input)) { return ""; }
+ 
+            input = input.Replace("&", "&amp;")
+                .Replace("'", "&#39;")
+                .Replace("\"", "&quot;")
+                .Replace("<", "&lt;")
+                .Replace(">", "&gt;")
+                .Replace(" ", "&nbsp;")
+                .Replace("©", "&copy;")
+                .Replace("®", "&reg;")
+                .Replace("™", "&#8482;");
+            return input;
         }
     }
 }

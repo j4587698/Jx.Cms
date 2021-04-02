@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using BootstrapBlazor.Components;
+using Furion.DependencyInjection.Extensions;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Entities.Settings;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
 using Masuit.Tools;
+using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 
 namespace Jx.Cms.Plugin.Utils
@@ -107,7 +110,7 @@ namespace Jx.Cms.Plugin.Utils
         /// </summary>
         /// <param name="articleModel"></param>
         /// <returns></returns>
-        public static ArticleModel ArticleShow(ArticleModel articleModel)
+        public static ArticleModel OnArticleShow(ArticleModel articleModel)
         {
             var articlePlugin = new List<Type>();
             DefaultPlugin.ArticlePlugins.ForEach(x => articlePlugin.AddRange(x.Value));
@@ -119,7 +122,11 @@ namespace Jx.Cms.Plugin.Utils
             return articleModel;
         }
 
-        public static List<EditorExtModel> ArticleEditorShow()
+        /// <summary>
+        /// 文章列表显示时执行
+        /// </summary>
+        /// <returns></returns>
+        public static List<EditorExtModel> OnArticleEditorShow()
         {
             var extModels = new List<EditorExtModel>();
             var articlePlugin = new List<Type>();
@@ -127,7 +134,7 @@ namespace Jx.Cms.Plugin.Utils
             foreach (var type in articlePlugin)
             {
                 var instance = Activator.CreateInstance(type) as IArticlePlugin;
-                var ret = instance?.AddEditorToolbarButton();
+                var ret = instance?.AddEditorToolbarButton(ServiceProviderHelper.ServiceProvider.GetService<DialogService>());
                 if (ret != null)
                 {
                     extModels.Add(ret);
@@ -135,6 +142,32 @@ namespace Jx.Cms.Plugin.Utils
             }
 
             return extModels;
+        }
+
+        public static List<PluginMenuModel> OnMenuShow()
+        {
+            var menuModel = new List<PluginMenuModel>();
+            var menuPlugin = new List<Type>();
+            DefaultPlugin.SystemPlugins.ForEach(x => menuPlugin.AddRange(x.Value));
+            foreach (var plugin in menuPlugin)
+            {
+                var instance = Activator.CreateInstance(plugin) as ISystemPlugin;
+                var ret = instance?.AddMenuItem();
+                if (ret != null)
+                {
+                    menuModel.Add(ret);
+                }
+            }
+
+            PluginMenuModels = menuModel;
+            return menuModel;
+        }
+
+        private static List<PluginMenuModel> PluginMenuModels { get; set; }
+
+        public static RenderFragment OnPluginPageShow(string menuId)
+        {
+            return PluginMenuModels.FirstOrDefault(x => x.MenuId == menuId)?.PluginBody;
         }
     }
 }

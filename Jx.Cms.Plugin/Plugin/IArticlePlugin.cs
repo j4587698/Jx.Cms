@@ -1,4 +1,5 @@
 ﻿using System;
+using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Model;
 
 namespace Jx.Cms.Plugin.Plugin
@@ -20,7 +21,7 @@ namespace Jx.Cms.Plugin.Plugin
         /// 添加编辑器扩展按钮
         /// </summary>
         /// <returns></returns>
-        EditorExtModel AddEditorToolbarButton()
+        EditorExtModel AddEditorToolbarButton(DialogService dialogService)
         {
             return null;
         }

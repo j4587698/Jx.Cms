@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
+using Jx.Cms.Plugin.Components;
 using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Plugin.Model
@@ -14,10 +15,12 @@ namespace Jx.Cms.Plugin.Model
         /// 按钮信息
         /// </summary>
         public EditorToolbarButton ToolbarButton { get; set; }
+        
+        public Func<ResultDialogOption, Type> OnDialogCreat { get; set; }
 
         /// <summary>
         /// 按钮点击事件
         /// </summary>
-        public Func<string, Task<string>> OnToolbarClick { get; set; }
+        public Func<(DialogResult dialogResult, IPluginDialog pluginDialog), Task<string>> OnToolbarClick { get; set; }
     }
 }

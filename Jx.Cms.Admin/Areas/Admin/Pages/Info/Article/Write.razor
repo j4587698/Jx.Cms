@@ -6,17 +6,17 @@
 @using Jx.Cms.Entities.Article
 @using Jx.Cms.Service.Admin
 @using Jx.Cms.Admin.ViewModel
+@using Jx.Cms.Plugin.Components
 @using Jx.Cms.Plugin.Model
 @using Jx.Cms.Plugin.Utils
 @using Mapster
-@using Furion
 
 @inject NavigationManager NavigationManager
 @inject IArticleService ArticleService
 @inject ICatalogService CatalogService
 @inject ToastService ToastService
-@inject IServiceProvider ServiceProvider
-@inject SwalService SwalService1
+@inject DialogService DialogService
+@inject PluginDialogService PluginDialogService
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Admin/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
 
@@ -96,7 +96,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        EditorExtModels = PluginUtil.ArticleEditorShow();
+        EditorExtModels = PluginUtil.OnArticleEditorShow();
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Article = (Id == 0 ? new ArticleEntity(){IsPage = false, PublishTime = DateTime.Now} : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
@@ -128,18 +128,15 @@
 
     private async Task<string> OnClickButton(string arg)
     {
-        var op = new SwalOption()
+        var model = EditorExtModels.Find(x => x.ToolbarButton.ButtonName == arg);
+        if (model == null)
         {
-            Title = "点击plugin2按钮后弹窗",
-            Content = "点击插件按钮后弹窗并确认后才进行下一步处理",
-            IsConfirm = true
-        };
-
-        await SwalService1.Show(op);
-        var a = ServiceProvider.GetService(typeof(SwalService)) as SwalService;
-        await a.Show(op);
-        
-        return arg;
+            return "";
+        }
+        ResultDialogOption option = new ResultDialogOption();
+        var type = model.OnDialogCreat(option);
+        var res = await model.OnToolbarClick(await PluginDialogService.ShowModal(option, type, DialogService));
+        return res;
     }
 
 }

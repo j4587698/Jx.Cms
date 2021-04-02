@@ -1,0 +1,33 @@
+﻿@page "/PluginPage"
+@page "/PluginPage/{Id}"
+@using Masuit.Tools
+@using Jx.Cms.Plugin.Utils
+
+@inject NavigationManager NavigationManager
+
+@_renderFragment
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    private RenderFragment _renderFragment;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        if (Id.IsNullOrEmpty())
+        {
+            NavigationManager.NavigateTo("/Admin");
+            return;
+        }
+        var body = PluginUtil.OnPluginPageShow(Id);
+        if (body == null)
+        {
+            NavigationManager.NavigateTo("/Admin");
+            return;
+        }
+        _renderFragment = body;
+    }
+
+}
