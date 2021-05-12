@@ -47,7 +47,7 @@ namespace HighlightingPlugin
                     {
                         return Task.FromResult<string>($"<pre><code>{HtmlToEsc(highlightDialog.CodeValue)}</code></pre>");
                     }
-                    return Task.FromResult<string>($"<pre><code class=\"{highlightDialog.SelectedValue.ToLower()}\">{HtmlToEsc(highlightDialog.CodeValue)}</code></pre>");
+                    return Task.FromResult<string>($"<br><pre><code class=\"{highlightDialog.SelectedValue.ToLower()}\">{HtmlToEsc(highlightDialog.CodeValue)}</code></pre><br>");
                 }
                 return Task.FromResult<string>("");
             };

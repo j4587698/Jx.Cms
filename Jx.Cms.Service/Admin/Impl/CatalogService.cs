@@ -48,7 +48,7 @@ namespace Jx.Cms.Service.Admin.Impl
             }
             catch (DbException e)
             {
-                "删除失败".Log<CatalogService>(LogLevel.Error, e);
+                "删除失败".LogError<CatalogService>(e);
                 return false;
             }
             

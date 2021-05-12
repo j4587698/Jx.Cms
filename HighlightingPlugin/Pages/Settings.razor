@@ -1,0 +1,34 @@
+﻿@using Jx.Cms.Service.Both
+@inject ISettingsService SettingsService 
+@inject ToastService ToastService
+
+<Toast></Toast>
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>高亮设置设置</h3>
+    <Button OnClick="Modify" style="float: right">确定</Button>
+</Row>
+
+
+<Row RowType="RowType.FormRow" ItemsPerRow="ItemsPerRow.One">
+    <Select @bind-Value="@DefaultCodeType" Items="@Codes" DisplayText="默认语言" ShowLabel="true"></Select>
+</Row>
+
+@code {
+    // 默认使用的主题项
+    private string DefaultCodeType { get; set; }
+    
+    private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        DefaultCodeType = SettingsService.GetValue(Constant.SettingsKey, Constant.DefaultCodeType) ?? "Auto";
+    }
+
+    private void Modify()
+    {
+        SettingsService.SetValue(Constant.SettingsKey, Constant.DefaultCodeType, DefaultCodeType);
+        ToastService.Success("修改成功", "默认语言修改成功");
+    }
+
+}

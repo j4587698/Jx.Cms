@@ -37,7 +37,7 @@
     </Main>
     <Footer>
         <div class="text-center flex-fill">
-            <a href="https://gitee.com/LongbowEnterprise/BootstrapAdmin" target="_blank">JX.CMS</a>
+            <a href="/" target="_blank">JX.CMS</a>
         </div>
     </Footer>
 </Layout>
@@ -62,7 +62,7 @@
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
         var menuAttributes = MenuService.GetAllMenu();
-        menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/Admin/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
+        menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();
         foreach (var attribute in menuAttributes.Where(x => x.ParentId.IsNullOrEmpty()).OrderByDescending(x => x.Order))
         {

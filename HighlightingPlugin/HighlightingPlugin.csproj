@@ -15,11 +15,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.4" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="5.0.5" />
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Service\Jx.Cms.Service.csproj" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <Exec Command="mkdir $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;copy $(TargetDir)\plugin.json $(SolutionDir)\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;" />

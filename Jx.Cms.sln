@@ -33,6 +33,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Cms.Rewrite", "Jx.Cms.Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighlightingPlugin", "HighlightingPlugin\HighlightingPlugin.csproj", "{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Theme", "Theme", "{E81BDB17-E7BA-4FB0-8C76-2B37C233687F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogs", "Blogs\Blogs.csproj", "{DC62E31E-DBFE-4F8B-8878-FA900829E137}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -83,6 +87,10 @@ Global
 		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DC62E31E-DBFE-4F8B-8878-FA900829E137}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DC62E31E-DBFE-4F8B-8878-FA900829E137}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DC62E31E-DBFE-4F8B-8878-FA900829E137}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DC62E31E-DBFE-4F8B-8878-FA900829E137}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -99,6 +107,7 @@ Global
 		{AA9B75E2-1009-4522-AC7F-6D1224621928} = {E9C6B309-B031-43D6-88CB-0C301BFCCD8C}
 		{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC} = {62598B20-19EA-4BEC-A19E-E1183CEAC417}
 		{E4004B4B-FC62-4617-B247-B64CFBC1E3FC} = {E9C6B309-B031-43D6-88CB-0C301BFCCD8C}
+		{DC62E31E-DBFE-4F8B-8878-FA900829E137} = {E81BDB17-E7BA-4FB0-8C76-2B37C233687F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0D059992-2AD3-4A60-96C5-0E725E0FA933}

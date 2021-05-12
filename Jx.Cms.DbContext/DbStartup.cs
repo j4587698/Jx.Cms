@@ -35,7 +35,7 @@ namespace Jx.Cms.DbContext
             }
             else if (Util.IsInstalled)
             {
-                "数据库配置错误，无数据库配置信息！".Log<DbStartup>(LogLevel.Error);
+                "数据库配置错误，无数据库配置信息！".LogError<DbStartup>();
                 throw new DbException("数据库配置错误，无数据库配置信息！");
             }
         }
@@ -55,7 +55,7 @@ namespace Jx.Cms.DbContext
             }
             catch (Exception e)
             {
-                "建表出错了".Log<DbStartup>(LogLevel.Error, e);
+                "建表出错了".LogError<DbStartup>(e);
                 return false;
             }
             
@@ -93,19 +93,19 @@ namespace Jx.Cms.DbContext
 
                         break;
                     default:
-                        "数据库类型不在指定范围内".Log<DbStartup>(LogLevel.Error);
+                        "数据库类型不在指定范围内".LogError<DbStartup>();
                         return (false, "数据库类型不在指定范围内");
                 }
 
                 if (freeSql == null)
                 {
-                    "数据库初始化失败".Log<DbStartup>(LogLevel.Error);
+                    "数据库初始化失败".LogError<DbStartup>();
                     return (false, "数据库初始化失败");
                 }
 
                 if (!freeSql.Ado.ExecuteConnectTest())
                 {
-                    "数据库连接失败".Log<DbStartup>(LogLevel.Error);
+                    "数据库连接失败".LogError<DbStartup>();
                     freeSql.Dispose();
                     return (false, "数据库连接失败");
                 }
@@ -121,7 +121,7 @@ namespace Jx.Cms.DbContext
 
                 return (true, "");
             }
-            "数据库类型不在指定范围内".Log<DbStartup>(LogLevel.Error);
+            "数据库类型不在指定范围内".LogError<DbStartup>();
             return (false, "数据库类型不在指定范围内"); ;
         }
 

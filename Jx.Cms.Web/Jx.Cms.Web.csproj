@@ -376,6 +376,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\marked.min.js" />
       <_ContentIncludedByDefault Remove="wwwroot\lib\prettify.min.js" />
       <_ContentIncludedByDefault Remove="Plugin\HighlightingPlugin\plugin.json" />
+      <_ContentIncludedByDefault Remove="Test\abc\Index.cshtml" />
     </ItemGroup>
 
 </Project>
