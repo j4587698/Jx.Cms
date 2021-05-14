@@ -14,17 +14,17 @@ namespace Jx.Cms.Service.Admin.Impl
 
         public List<ArticleEntity> GetAllArticle()
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).ToList();
+            return ArticleEntity.Select.Where(x => x.IsPage).OrderByDescending(x => x.Id).ToList();
         }
 
         public List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).Count(out count).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.IsPage).Count(out count).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }
 
         public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.IsPage).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }
 
         public bool SaveArticle(ArticleEntity articleEntity)

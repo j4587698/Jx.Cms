@@ -17,12 +17,12 @@ namespace Jx.Cms.Service.Admin.Impl
 
         public List<CatalogEntity> GetAllCatalogs()
         {
-            return CatalogEntity.Select.ToList();
+            return CatalogEntity.Select.OrderByDescending(x => x.Id).ToList();
         }
 
         public List<CatalogEntity> GetCatalogPageWithCount(int pageNumber, int pageSize, out long count)
         {
-            return CatalogEntity.Select.Count(out count).Page(pageNumber, pageSize).ToList();
+            return CatalogEntity.Select.Count(out count).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }
 
         public bool Save(CatalogEntity catalogEntity)

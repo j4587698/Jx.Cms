@@ -1,0 +1,192 @@
+﻿@page "/Appearance/Menu"
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.Entities.Article
+@using Jx.Cms.Entities.Front
+@using Jx.Cms.Service.Admin
+@using Jx.Cms.Service.Both.Impl
+@inject IPageService PageService
+@inject IArticleService ArticleService
+@inject IMenuService MenuService
+
+@attribute [Menu("909EBEB6-3865-42CC-9E63-AF036B7AD2A3", "菜单", "/Appearance/Menu", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
+
+<div class="row">
+    <div class="col-4">
+        <h4>添加菜单项</h4>
+        <Collapse IsAccordion="true" ShowArrow="true">
+            <CollapseItems>
+                <CollapseItem Text="文章" IsCollapsed="true">
+                    <Tab OnClickTab="OnArticleClick">
+                        <TabItem Text="最近">
+                            <CheckboxList @bind-Value="@_lateArticleValue" Items="@_lateArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                        <TabItem Text="所有">
+                            <Pagination PageItems="10" TotalCount="@_articleTotal" ShowPaginationInfo="false" OnPageClick="OnArticleClick"></Pagination>
+                            <CheckboxList @bind-Value="@_allArticleValue" Items="@_allArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                        <TabItem Text="搜索">
+                            <BootstrapInput TValue="string" @oninput="@ArticleSearch"></BootstrapInput>
+                            <CheckboxList @bind-Value="@_searchArticleValue" Items="@_searchArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                    </Tab>
+                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+                        <Button OnClickWithoutRender="OnArticleAddClick">添加到菜单</Button>
+                    </Row>
+                </CollapseItem>
+                <CollapseItem Text="页面">
+                    <Tab>
+                        <TabItem Text="最近">
+                            <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                        <TabItem Text="所有">
+                            <Pagination PageItems="10" TotalCount="@_pageTotal" ShowPaginationInfo="false" OnPageClick="OnPageClick"></Pagination>
+                            <CheckboxList @bind-Value="@_allPageValue" Items="@_allPage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                        <TabItem Text="搜索">
+                            <BootstrapInput TValue="string" @oninput="@PageSearch"></BootstrapInput>
+                            <CheckboxList @bind-Value="@_searchPageValue" Items="@_searchPage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                        </TabItem>
+                    </Tab>
+                    <Row ItemsPerRow="ItemsPerRow.Two">
+
+                    </Row>
+                </CollapseItem>
+            </CollapseItems>
+        </Collapse>
+
+    </div>
+    <div class="col-8">
+        <h4>菜单结构</h4>
+        <Table TItem="MenuEntity" IsBordered="true" Items="@_menus" IsTree="true" OnTreeExpand="OnTreeExpand" DoubleClickToEdit="true">
+            <TableColumns>
+                <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
+                <TableColumn @bind-Field="@context.MenuType" Text="菜单类型"></TableColumn>
+                <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
+                <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
+                <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开"></TableColumn>
+            </TableColumns>
+            <EditTemplate>
+                <Row RowType="RowType.FormRow">
+                    
+                </Row>
+            </EditTemplate>
+        </Table>
+    </div>
+</div>
+
+@code {
+
+    private List<MenuEntity> _menus;
+
+    #region Page
+
+    private string _pageTab = "最近";
+
+    private List<SelectedItem> _latePage;
+    private string _latePageValue;
+
+    private long _pageTotal;
+    private List<SelectedItem> _allPage;
+    private string _allPageValue;
+    
+    private List<SelectedItem> _searchPage = new List<SelectedItem>();
+    private string _searchPageValue;
+
+    private Task OnPageClick(int arg1, int arg2)
+    {
+        _allPage = PageService.GetArticlePageWithCount(arg1, arg2, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        return Task.CompletedTask;
+    }
+
+    private void PageSearch(ChangeEventArgs e)
+    {
+        if (e.Value != null && e.Value.ToString().Length > 1)
+        {
+            _searchPage = ArticleEntity.Select.Where(x => x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
+        }
+    }
+    
+    #endregion
+
+    #region Article
+
+    private List<SelectedItem> _lateArticle;
+    private string _lateArticleValue;
+
+    private long _articleTotal;
+    private List<SelectedItem> _allArticle;
+    private string _allArticleValue;
+    
+    private List<SelectedItem> _searchArticle = new List<SelectedItem>();
+    private string _searchArticleValue;
+
+    private Task OnArticleClick(int arg1, int arg2)
+    {
+        _allArticle = ArticleService.GetArticlePageWithCount(arg1, arg2, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private void ArticleSearch(ChangeEventArgs e)
+    {
+        if (e.Value != null && e.Value.ToString().Length > 1)
+        {
+            _searchArticle = ArticleEntity.Select.Where(x => !x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
+        }
+    }
+
+    private Task OnArticleClick(TabItem arg)
+    {
+        _pageTab = arg.Text;
+        return Task.CompletedTask;
+    }
+
+    private Task OnArticleAddClick()
+    {
+        switch (_pageTab)
+        {
+            case "最近":
+                var ids = _lateArticleValue.Split(',');
+                foreach (var id in ids)
+                {
+                    var item = _lateArticle.First(x => x.Value == id);
+                    MenuEntity menuEntity = new MenuEntity();
+                    menuEntity.Name = item.Text;
+                    menuEntity.MenuType = MenuTypeEnum.Article;
+                    menuEntity.NavTitle = item.Text;
+                    menuEntity.TypeId = int.Parse(id);
+                    MenuService.SaveMenu(menuEntity);
+                }
+                break;
+            case "所有":
+                break;
+            case "搜索":
+                break;
+            default:
+                break;
+        }
+        return Task.CompletedTask;
+    }
+    
+    #endregion
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _menus = MenuService.GetAllMenuTree();
+        
+        _latePage = PageService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allPage = PageService.GetArticlePageWithCount(1, 10, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        
+        _lateArticle = ArticleService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allArticle = ArticleService.GetArticlePageWithCount(1, 10, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+    }
+
+    private Task<IEnumerable<MenuEntity>> OnTreeExpand(MenuEntity arg)
+    {
+        throw new NotImplementedException();
+    }
+
+}

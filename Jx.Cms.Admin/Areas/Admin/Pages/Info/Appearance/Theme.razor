@@ -1,4 +1,4 @@
-﻿@page "/Theme"
+﻿@page "/Appearance/Theme"
 @using Jx.Cms.Themes.Util
 @using Jx.Cms.Common.Utils
 @using Masuit.Tools.Reflection
@@ -6,7 +6,7 @@
 @using Jx.Cms.Service
 @using Jx.Cms.Service.Admin
 
-@attribute [Menu("{4363DE5F-CDAC-4872-909A-EC05AF488AC0}", "主题列表", "/Theme", 10, iconClass:"fa fa-newspaper-o")]
+@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题列表", "/Appearance/Theme", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
 
 @inject IThemeConfigService ThemeConfigService
 @inject NavigationManager NavigationManager

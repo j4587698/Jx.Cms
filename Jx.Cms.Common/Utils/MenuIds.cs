@@ -19,5 +19,10 @@
         /// 页面ID
         /// </summary>
         public const string PageId = "92BA2F91-B4D6-4971-86B2-6E956B86D454";
+
+        /// <summary>
+        /// 外观页ID
+        /// </summary>
+        public const string AppearanceId = "BF3AE494-E5F9-4F78-897A-5D9E59709615";
     }
 }

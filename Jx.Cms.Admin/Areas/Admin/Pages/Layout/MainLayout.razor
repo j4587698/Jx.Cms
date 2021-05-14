@@ -6,7 +6,7 @@
 @using Jx.Cms.Service.Admin
 @inherits LayoutComponentBase
 
-@inject IMenuService MenuService
+@inject IAdminMenuService _adminMenuService
 @inject MessageService MessageService
 @inject NavigationManager NavigationManager
 
@@ -61,7 +61,7 @@
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
-        var menuAttributes = MenuService.GetAllMenu();
+        var menuAttributes = _adminMenuService.GetAllMenu();
         menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();
         foreach (var attribute in menuAttributes.Where(x => x.ParentId.IsNullOrEmpty()).OrderByDescending(x => x.Order))

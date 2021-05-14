@@ -1,0 +1,13 @@
+﻿@page "/Appearance"
+@using Jx.Cms.Common.Attribute
+@inject NavigationManager NavigationManager
+
+@attribute [Menu(MenuIds.AppearanceId, "外观", "/Appearance", iconClass:"fa fa-newspaper-o")]
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.NavigateTo("/Admin/Appearance/Theme");
+    }
+}

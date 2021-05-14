@@ -170,12 +170,15 @@ namespace Jx.Cms.Themes.Util
                 SettingsEntity.SetValue(nameof(Mode), Mode.ToString());
                 SettingsEntity.SetValue(nameof(PcThemeName), PcThemeName);
                 SettingsEntity.SetValue(nameof(MobileThemeName), MobileThemeName);
-                var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
-                RazorPlugin.LoadPlugin(themeConfig, applicationPartManager);
-                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
-                var viewCompilerProvider = App.GetService<IViewCompilerProvider>() as MyViewCompilerProvider;
-                viewCompilerProvider?.Modify();
+                if (themeConfig.ThemeName != "Default")
+                {
+                    var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+                    RazorPlugin.LoadPlugin(themeConfig, applicationPartManager);
+                    MyActionDescriptorChangeProvider.Instance.HasChanged = true;
+                    MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
+                    var viewCompilerProvider = App.GetService<IViewCompilerProvider>() as MyViewCompilerProvider;
+                    viewCompilerProvider?.Modify();
+                }
                 ThemeModify?.Invoke(themeConfig);
             }
         }

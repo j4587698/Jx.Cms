@@ -6,7 +6,7 @@ namespace Jx.Cms.Service.Admin
     /// <summary>
     /// 菜单相关
     /// </summary>
-    public interface IMenuService
+    public interface IAdminMenuService
     {
         /// <summary>
         /// 获取所有菜单

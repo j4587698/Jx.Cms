@@ -11,7 +11,7 @@ namespace Jx.Cms.Service.Admin.Impl
     /// <summary>
     /// 菜单相关
     /// </summary>
-    public class MenuService: IMenuService, ITransient
+    public class AdminAdminMenuService: IAdminMenuService, ITransient
     {
         /// <summary>
         /// 获取所有菜单
