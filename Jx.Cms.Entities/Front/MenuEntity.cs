@@ -30,6 +30,9 @@ namespace Jx.Cms.Entities.Front
         [Description("链接描述")]
         public string Title { get; set; }
 
+        [Description("排序（越大越靠前）")]
+        public int Order { get; set; }
+
         [Description("父ID")]
         public int ParentId { get; set; }
 

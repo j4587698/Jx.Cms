@@ -1,0 +1,33 @@
+﻿@using Microsoft.AspNetCore.Components
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.Entities.Front
+@using Jx.Cms.Service.Both.Impl
+
+@inject MenuService MenuService
+
+<BootstrapInput @bind-Value="Context.Name" DisplayText="菜单名"></BootstrapInput>
+<Select Items="(typeof(MenuTypeEnum).ToSelectList())" @bind-Value="Context.MenuType" OnSelectedItemChanged="item => { StateHasChanged();return Task.CompletedTask;}" DisplayText="菜单类型"></Select>
+<BootstrapInput @bind-Value="Context.NavTitle" DisplayText="导航标签"></BootstrapInput>
+<Checkbox @bind-Value="Context.OpenInNewWindow" DisplayText=""></Checkbox>在新标签页打开链接<br />
+<BootstrapInputNumber @bind-Value="Context.Order"  DisplayText="排序位置（大者在前）"></BootstrapInputNumber>
+<Select Items="_menuItems" @bind-Value="Context.ParentId" DisplayText="父菜单"></Select>
+@if (Context.MenuType == MenuTypeEnum.CustomUrl)
+{
+    <BootstrapInput @bind-Value="Context.Url" DisplayText="自定义链接地址"></BootstrapInput>
+}
+<Textarea @bind-Value="Context.Title" DisplayText="链接描述"></Textarea>
+
+@code {
+    [Parameter]
+    public MenuEntity Context { get; set; }
+
+    private List<SelectedItem> _menuItems;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _menuItems = new List<SelectedItem> {new SelectedItem("0", "顶级菜单")};
+        _menuItems.AddRange(MenuService.GetMenusWithOutId(Context.Id).Select(x => new SelectedItem(x.Id.ToString(), x.Name)));
+    }
+
+}

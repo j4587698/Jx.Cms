@@ -4,10 +4,12 @@
 @using Jx.Cms.Entities.Article
 @using Jx.Cms.Entities.Front
 @using Jx.Cms.Service.Admin
-@using Jx.Cms.Service.Both.Impl
+@using Jx.Cms.Service.Both
+@using System.Collections
 @inject IPageService PageService
 @inject IArticleService ArticleService
 @inject IMenuService MenuService
+@inject MessageService MessageService
 
 @attribute [Menu("909EBEB6-3865-42CC-9E63-AF036B7AD2A3", "菜单", "/Appearance/Menu", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
 
@@ -57,19 +59,22 @@
 
     </div>
     <div class="col-8">
-        <h4>菜单结构</h4>
-        <Table TItem="MenuEntity" IsBordered="true" Items="@_menus" IsTree="true" OnTreeExpand="OnTreeExpand" DoubleClickToEdit="true">
+        <h4>菜单结构(双击编辑)</h4>
+        <Table TItem="MenuEntity" IsBordered="true" IsTree="true" OnTreeExpand="OnTreeExpand" DoubleClickToEdit="true" @ref="@_table"
+               OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync">
             <TableColumns>
                 <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
                 <TableColumn @bind-Field="@context.MenuType" Text="菜单类型"></TableColumn>
                 <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
                 <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
-                <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开"></TableColumn>
+                <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
+                    <Template Context="value">
+                        @(value.Value?"是":"否")
+                    </Template>
+                </TableColumn>
             </TableColumns>
             <EditTemplate>
-                <Row RowType="RowType.FormRow">
-                    
-                </Row>
+                <MenuEdit Context="@context"></MenuEdit>
             </EditTemplate>
         </Table>
     </div>
@@ -77,7 +82,7 @@
 
 @code {
 
-    private List<MenuEntity> _menus;
+    private Table<MenuEntity> _table;
 
     #region Page
 
@@ -144,28 +149,27 @@
 
     private Task OnArticleAddClick()
     {
+        string[] ids;
+        SelectedItem[] items;
         switch (_pageTab)
         {
             case "最近":
-                var ids = _lateArticleValue.Split(',');
-                foreach (var id in ids)
-                {
-                    var item = _lateArticle.First(x => x.Value == id);
-                    MenuEntity menuEntity = new MenuEntity();
-                    menuEntity.Name = item.Text;
-                    menuEntity.MenuType = MenuTypeEnum.Article;
-                    menuEntity.NavTitle = item.Text;
-                    menuEntity.TypeId = int.Parse(id);
-                    MenuService.SaveMenu(menuEntity);
-                }
+                ids = _lateArticleValue.Split(',');
+                items = _lateArticle.Where(x => ids.Contains(x.Value)).ToArray();
                 break;
             case "所有":
+                ids = _allArticleValue.Split(',');
+                items = _allArticle.Where(x => ids.Contains(x.Value)).ToArray();
                 break;
             case "搜索":
+                ids = _searchArticleValue.Split(',');
+                items = _searchArticle.Where(x => ids.Contains(x.Value)).ToArray();
                 break;
             default:
-                break;
+                return Task.CompletedTask;
         }
+        MenuService.SaveMenu(items.Select(x => new MenuEntity() {Name = x.Text, MenuType = MenuTypeEnum.Article, NavTitle = x.Text, TypeId = int.Parse(x.Value)}));
+        _table.QueryAsync();
         return Task.CompletedTask;
     }
     
@@ -175,8 +179,6 @@
     {
         base.OnInitialized();
 
-        _menus = MenuService.GetAllMenuTree();
-        
         _latePage = PageService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _allPage = PageService.GetArticlePageWithCount(1, 10, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         
@@ -186,7 +188,20 @@
 
     private Task<IEnumerable<MenuEntity>> OnTreeExpand(MenuEntity arg)
     {
-        throw new NotImplementedException();
+        return Task.FromResult((IEnumerable<MenuEntity>)arg.Children);
+    }
+
+    private Task<QueryData<MenuEntity>> OnQueryAsync(QueryPageOptions arg)
+    {
+        return Task.FromResult(new QueryData<MenuEntity>()
+        {
+            Items = MenuService.GetAllMenuTree()
+        });
+    }
+
+    private Task<bool> OnSaveAsync(MenuEntity arg)
+    {
+        return Task.FromResult(MenuService.SaveMenu(arg));
     }
 
 }
