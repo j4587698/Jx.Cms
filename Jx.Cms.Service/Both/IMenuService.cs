@@ -53,5 +53,19 @@ namespace Jx.Cms.Service.Both
         /// <param name="menus">菜单列表</param>
         /// <returns></returns>
         bool SaveMenu(IEnumerable<MenuEntity> menus);
+
+        /// <summary>
+        /// 删除菜单（子菜单变为顶级菜单）
+        /// </summary>
+        /// <param name="menuEntity"></param>
+        /// <returns></returns>
+        bool DeleteMenu(MenuEntity menuEntity);
+
+        /// <summary>
+        /// 删除菜单（子菜单变为顶级菜单）
+        /// </summary>
+        /// <param name="menuEntities"></param>
+        /// <returns></returns>
+        bool DeleteMenu(IEnumerable<MenuEntity> menuEntities);
     }
 }

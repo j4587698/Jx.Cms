@@ -11,10 +11,12 @@ namespace Jx.Cms.Web
     {
 
         private readonly ISettingsService _settingsService;
+        private readonly IMenuService _menuService;
 
         public DefaultPageModel()
         {
             _settingsService = App.GetService<ISettingsService>();
+            _menuService = App.GetService<IMenuService>();
         }
         
         public override void OnPageHandlerSelected(PageHandlerSelectedContext context)
@@ -26,6 +28,8 @@ namespace Jx.Cms.Web
             {
                 ViewData[setting.name] = setting.value;
             }
+
+            ViewData["menu"] = _menuService.GetAllMenuTree();
         }
     }
 }

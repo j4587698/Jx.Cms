@@ -1,4 +1,7 @@
 ﻿@using Jx.Cms.Common.Utils
+@using Jx.Cms.Entities.Front
+@using Jx.Cms.Common.Enum
+
 <!DOCTYPE html>
 <html lang="zh">
 
@@ -29,23 +32,65 @@
     <div class="container">
       <a class="navbar-brand" href="@ViewData[SettingsConstants.UrlKey]">@ViewData[SettingsConstants.TitleKey]</a>
       <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        Menu
+        菜单
         <i class="fa fa-bars"></i>
       </button>
       <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link" href="@ViewData[SettingsConstants.UrlKey]">首页</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="post.html">Sample Post</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="contact.html">Contact</a>
-          </li>
+          @{
+            var menus = ViewData["menu"] as List<MenuEntity>;
+            foreach (var menuEntity in menus)
+            {
+              @if (menuEntity.HasChildren)
+              {
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" id="@menuEntity.Id" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    @Html.Raw(menuEntity.NavTitle)
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="@menuEntity.Id">
+                    @foreach (var menu in menuEntity.Children)
+                    {
+                      @switch (menu.MenuType)
+                      {
+                        case MenuTypeEnum.Page:
+                          break;
+                        case MenuTypeEnum.Article:
+                          <a class="dropdown-item" href="/Post/@menu.TypeId">@Html.Raw(menu.NavTitle)</a>
+                          break;
+                        case MenuTypeEnum.CustomUrl:
+                          <a class="dropdown-item" href="@menu.Url">@Html.Raw(menu.NavTitle)</a>
+                          break;
+                        case MenuTypeEnum.Catalogue:
+                          break;
+                        default:
+                          throw new ArgumentOutOfRangeException();
+                      }
+                    }
+                  </div>
+                </li>
+              }
+              else
+              {
+                <li class="nav-item">
+                  @switch (menuEntity.MenuType)
+                  {
+                    case MenuTypeEnum.Page:
+                      break;
+                    case MenuTypeEnum.Article:
+                      <a class="nav-link" href="/Post/@menuEntity.TypeId">@Html.Raw(menuEntity.NavTitle)</a>
+                      break;
+                    case MenuTypeEnum.CustomUrl:
+                      <a class="nav-link" href="@menuEntity.Url">@Html.Raw(menuEntity.NavTitle)</a>
+                      break;
+                    case MenuTypeEnum.Catalogue:
+                      break;
+                    default:
+                      throw new ArgumentOutOfRangeException();
+                  }
+                </li>
+              }
+            }
+          }
         </ul>
       </div>
     </div>

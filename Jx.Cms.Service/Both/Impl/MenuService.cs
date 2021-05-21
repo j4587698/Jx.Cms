@@ -51,5 +51,20 @@ namespace Jx.Cms.Service.Both.Impl
             });
             return true;
         }
+
+        public bool DeleteMenu(MenuEntity menuEntity)
+        {
+            BaseEntity.Orm.Transaction(() =>
+            {
+                MenuEntity.Where(x => x.ParentId == menuEntity.Id).ToUpdate().Set(x => x.ParentId, 0).ExecuteAffrows();
+                menuEntity.Delete(true);
+            });
+            return true;
+        }
+
+        public bool DeleteMenu(IEnumerable<MenuEntity> menuEntities)
+        {
+            return menuEntities.All(DeleteMenu);
+        }
     }
 }
