@@ -22,11 +22,14 @@ namespace Jx.Cms.Web
         public override void OnPageHandlerSelected(PageHandlerSelectedContext context)
         {
             base.OnPageHandlerSelected(context);
-            var settings = _settingsService.GetValuesByNames(new[] {SettingsConstants.TitleKey, 
-                SettingsConstants.SubTitleKey, SettingsConstants.UrlKey, SettingsConstants.CopyRightKey}).ToList();
+            var settings = _settingsService.GetValuesByNames(new[]
+            {
+                SettingsConstants.TitleKey,
+                SettingsConstants.SubTitleKey, SettingsConstants.UrlKey, SettingsConstants.CopyRightKey
+            });
             foreach (var setting in settings)
             {
-                ViewData[setting.name] = setting.value;
+                ViewData[setting.Key] = setting.Value;
             }
 
             ViewData["menu"] = _menuService.GetAllMenuTree();

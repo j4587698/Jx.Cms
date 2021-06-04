@@ -1,5 +1,6 @@
 ﻿using Jx.Cms.Plugin.Model;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Http;
 
 namespace Jx.Cms.Plugin.Plugin
 {
@@ -8,9 +9,23 @@ namespace Jx.Cms.Plugin.Plugin
     /// </summary>
     public interface ISystemPlugin
     {
+        /// <summary>
+        /// 添加后台菜单项
+        /// </summary>
+        /// <returns></returns>
         PluginMenuModel AddMenuItem()
         {
             return null;
+        }
+
+        /// <summary>
+        /// 添加中间件
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns>停止中间件执行返回false，否则返回true</returns>
+        bool AddMiddleware(HttpContext context)
+        {
+            return true;
         }
         
     }

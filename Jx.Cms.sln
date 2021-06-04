@@ -27,15 +27,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jx.Cms.Service", "Jx.Cms.Se
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Plugin", "Plugin", "{E9C6B309-B031-43D6-88CB-0C301BFCCD8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DemoPlugin", "DemoPlugin\DemoPlugin.csproj", "{AA9B75E2-1009-4522-AC7F-6D1224621928}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DemoPlugin", "DemoPlugin\DemoPlugin.csproj", "{AA9B75E2-1009-4522-AC7F-6D1224621928}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Jx.Cms.Rewrite", "Jx.Cms.Rewrite\Jx.Cms.Rewrite.csproj", "{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jx.Cms.Rewrite", "Jx.Cms.Rewrite\Jx.Cms.Rewrite.csproj", "{07C1E04B-4121-4D0D-A6EC-AEDF20DA89DC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HighlightingPlugin", "HighlightingPlugin\HighlightingPlugin.csproj", "{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HighlightingPlugin", "HighlightingPlugin\HighlightingPlugin.csproj", "{E4004B4B-FC62-4617-B247-B64CFBC1E3FC}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Theme", "Theme", "{E81BDB17-E7BA-4FB0-8C76-2B37C233687F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blogs", "Blogs\Blogs.csproj", "{DC62E31E-DBFE-4F8B-8878-FA900829E137}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blogs", "Blogs\Blogs.csproj", "{DC62E31E-DBFE-4F8B-8878-FA900829E137}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

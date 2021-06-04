@@ -1,4 +1,5 @@
 ﻿using Furion;
+using Jx.Cms.Plugin.Middlewares;
 using Jx.Cms.Plugin.Options;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -15,8 +16,7 @@ namespace Jx.Cms.Plugin
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            
-            
+            app.UseMiddleware<PluginMiddleware>();
         }
     }
 }

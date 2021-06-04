@@ -20,6 +20,7 @@ namespace Jx.Cms.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddInjectBase();
+            services.AddRemoteRequest();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

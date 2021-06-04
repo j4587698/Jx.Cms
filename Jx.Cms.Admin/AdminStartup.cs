@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using Furion;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +15,11 @@ namespace Jx.Cms.Admin
         {
             services.AddServerSideBlazor();
             services.AddBootstrapBlazor();
+            services.AddSignalR(o =>
+            {
+                o.EnableDetailedErrors = true;
+                o.MaximumReceiveMessageSize = Int64.MaxValue;
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

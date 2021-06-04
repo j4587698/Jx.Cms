@@ -5,9 +5,11 @@ using System.Linq;
 using System.Reflection;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
+using StackExchange.Profiling.Internal;
 
 namespace Jx.Cms.Plugin
 {
@@ -34,7 +36,7 @@ namespace Jx.Cms.Plugin
         {
             if (PluginLoaders.ContainsKey(themeConfig.ThemeType))
             {
-                RemovePlugin(themeConfig.ThemeType, partManager);
+                RemovePlugin(themeConfig, partManager);
             }
             var plugin = PluginLoader.CreateFromAssemblyFile(Path.Combine(themeConfig.Path, $"{Path.GetFileName(themeConfig.Path)}.dll"), config =>
             {
@@ -43,6 +45,26 @@ namespace Jx.Cms.Plugin
             });
             AddToPartManager(plugin, partManager);
             PluginLoaders.Add(themeConfig.ThemeType, plugin);
+            var types = plugin.LoadDefaultAssembly().GetTypes();
+            var articleList = new List<Type>();
+            foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
+            {
+                articleList.Add(article);
+            }
+
+            if (articleList.Count > 0)
+            {
+                DefaultPlugin.ArticlePlugins.Add(themeConfig.ThemeName, articleList);
+            }
+            
+            // 系统相关插件列表
+            var systemList = new List<Type>();
+            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
+
+            if (systemList.Count > 0)
+            {
+                DefaultPlugin.SystemPlugins.Add(themeConfig.ThemeName, systemList);
+            }
         }
 
         private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
@@ -70,16 +92,17 @@ namespace Jx.Cms.Plugin
         /// </summary>
         /// <param name="themeType"></param>
         /// <param name="partManager"></param>
-        public static void RemovePlugin(ThemeType themeType, ApplicationPartManager partManager)
+        public static void RemovePlugin(ThemeConfig themeConfig, ApplicationPartManager partManager)
         {
-            if (!PluginLoaders.Remove(themeType, out var plugin))
+            if (PluginLoaders.Remove(themeConfig.ThemeType, out var plugin))
             {
-                return;
+                RemoveFromPartManager(plugin, partManager);
+                DefaultPlugin.ArticlePlugins.TryRemove(themeConfig.ThemeName, out _);
+                DefaultPlugin.SystemPlugins.TryRemove(themeConfig.ThemeName, out _);
+                plugin.Dispose();
+                GC.Collect();
+                GC.WaitForPendingFinalizers();
             }
-            RemoveFromPartManager(plugin, partManager);
-            plugin.Dispose();
-            GC.Collect();
-            GC.WaitForPendingFinalizers();
         }
 
         private static void RemoveFromPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)

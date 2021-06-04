@@ -29,24 +29,24 @@ namespace Jx.Cms.Service.Both.Impl
             SettingsEntity.SetValue(name, value);
         }
 
-        public IEnumerable<(string name, string value)> GetAllValues(string type)
+        public Dictionary<string, string> GetAllValues(string type)
         {
-            return SettingsEntity.Select.Where(x => x.Type == type).ToList(x => new ValueTuple<string, string>(x.Name, x.Value));
+            return SettingsEntity.Select.Where(x => x.Type == type).ToDictionary(x => x.Name, y => y.Value);
         }
 
-        public IEnumerable<(string name, string value)> GetAllValues()
+        public Dictionary<string, string> GetAllValues()
         {
             return GetAllValues(SettingsConstants.SystemType);
         }
 
-        public IEnumerable<(string name, string value)> GetValuesByNames(IEnumerable<string> names)
+        public Dictionary<string, string> GetValuesByNames(IEnumerable<string> names)
         {
             return GetValuesByNames(SettingsConstants.SystemType, names);
         }
 
-        public IEnumerable<(string name, string value)> GetValuesByNames(string type, IEnumerable<string> names)
+        public Dictionary<string, string> GetValuesByNames(string type, IEnumerable<string> names)
         {
-            return SettingsEntity.Where(x => x.Type == type && names.Contains(x.Name)).ToList(x => new ValueTuple<string, string>(x.Name, x.Value));
+            return SettingsEntity.Where(x => x.Type == type && names.Contains(x.Name)).ToDictionary(x => x.Name, y => y.Value);
         }
     }
 }

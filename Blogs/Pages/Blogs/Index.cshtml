@@ -1,0 +1,92 @@
+﻿@page
+@using Blogs.Enum
+@using Blogs.Model
+@using Blogs.Utils
+@using Jx.Cms.Common.Utils
+@using Masuit.Tools.Html
+@model Blogs.Pages.Blogs.Index
+
+<div id="content" class="site-content">	
+	<div class="clear"></div>
+	<div id="contentab">	
+		<section id="primary" class="content-area">
+			<main id="main" class="site-main" role="main">
+				<div id="post_list_box" class="border_gray">
+					@{
+						int tds = 0;
+					}
+					@foreach (var article in Model.Articles)
+					{
+						tds++;
+						<article id="post-@article.Id" class="archive-list @if(tds % 2 == 0){@("shuangshu");}">
+							<div class="post-date-ribbon">
+								<div class="corner"></div>@article.PublishTime.ToString("yyyy年MM月dd日")</div>
+							@if(Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()){
+							<header class="entry-header">
+								<h2 class="entry-title"><a href="{$article.Url}" title="@article.Title">@article.Title</a></h2>
+							</header>
+							<figure class="thumbnail">
+								<a href="" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
+							</figure>
+							}
+							else 
+							{
+							<figure class="thumbnail">
+								@if(Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()){
+									<a href="" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
+								}
+								else
+								{
+									<a href="" title="@article.Title">@Html.Raw(article.GetThumbnail(270, 180))</a>
+								}
+							</figure>
+							<header class="entry-header">
+								<h2 class="entry-title"><a href="{$article.Url}" title="@article.Title">@article.Title</a></h2>
+							</header>
+							}
+							
+							<div class="entry-content">
+								<div class="archive-content">
+									@{
+										var content = article.Content.RemoveHtmlTag();
+									}
+									@if ((Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
+									     (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
+									{
+										@(content.Length > 120 ? content.Substring(0, 80) + "..." : content)
+									}
+									else if (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
+									{
+										@(content.Length > 120 ? content.Substring(0, 160) + "..." : content)
+									}
+									else
+									{
+										@(content.Length > 120 ? content.Substring(0, 80) + "..." : content)
+									}
+								</div>
+								<div class="entry-meta">
+									<span class="post_cat"><i class="fas fa-folder" aria-hidden="true"></i>&nbsp;<a href="{$article.Category.Url}" target="_blank" rel="category tag">@article.Catalogue.Name</a></span>
+									<span class="views"><i class="fas fa-users" aria-hidden="true"></i>&nbsp;{$article.ViewNums} 人阅读</span>
+									<span class="comment sllpl"><i class="fas fa-comment" aria-hidden="true"></i>&nbsp;{$article.CommNums} 条评论</span>
+								</div>
+								<div class="readMore"><a href="{$article.Url}" rel="nofollow">阅读全文</a></div>
+								<div class="clear"></div>
+							</div><!-- .entry-content -->
+						</article><!-- #post -->
+
+					}
+				</div>		
+			</main><!-- .site-main -->
+			{template:pagebar}	
+		</section><!-- .content-area -->
+
+	</div>
+	<div class="clear"></div>
+</div>
+
+@section header{
+	<title>@Model.Settings[SettingsConstants.TitleKey]@if (Model.PageNum > 1)
+	                                            {
+		                                            @("-第" + Model.PageNum + "页")
+	                                            }-@Model.Settings[SettingsConstants.SubTitleKey]</title>
+}

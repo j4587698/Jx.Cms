@@ -1,0 +1,204 @@
+﻿@using Blogs.Model
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Entities.Front
+@using Jx.Cms.Service.Both
+@inject ISettingsService SettingsService
+@inject IMenuService MenuService
+@{
+	var type = ViewContext.RouteData.Values["page"]?.ToString();
+	if (type != null)
+	{
+		type = type.Substring(type.LastIndexOf('/') + 1);
+	}
+	
+	var settings = SettingsService.GetValuesByNames(new[] {SettingsConstants.TitleKey, 
+		SettingsConstants.SubTitleKey, SettingsConstants.UrlKey, SettingsConstants.CopyRightKey});
+
+	var blogs = SettingsService.GetAllValues("Blogs");
+
+	var menus = MenuService.GetAllMenuTree();
+
+	void CreateMenu(MenuEntity menuEntity)
+	{
+		<li class="navbar-item"><a href="http://test.jvxiang.com/" title="@menuEntity.Title" @if(menuEntity.HasChildren)
+		{
+			@("class=sf-with-ul");
+		}
+	>@Html.Raw(menuEntity.NavTitle)</a>
+		@if (menuEntity.HasChildren)
+		{
+		<ul>
+		 @foreach (var menu in menuEntity.Children)
+			{
+				CreateMenu(menu);
+			}
+		</ul>
+		}
+		</li>
+	}
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+<meta name="renderer" content="webkit">
+<meta name="applicable-device" content="pc,mobile">
+<meta name="HandheldFriendly" content="true"/>
+<meta name="robots" content="index,follow"/>
+@await RenderSectionAsync("header", false)
+@if (type == "Index")
+{
+	<meta name="Keywords" content="@blogs[nameof(SettingsModel.Keywords)],@settings[SettingsConstants.TitleKey]">
+	<meta name="description" content="@blogs[nameof(SettingsModel.Description)]">
+}
+else if (type == "Category")
+{
+	<title>{if $category.Metas.Blogs_fltitle}{$category.Metas.Blogs_fltitle}{else}{$category.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
+	<meta name="Keywords" content="{if $category.Metas.Blogs_flgjc}{$category.Metas.Blogs_flgjc}{else}{$category.Name}{/if},{$name}">
+	<meta name="description" content="{$category.Intro}">
+}
+else if(type == "Article") {
+<title>{$title}{$zbp->Config('Blogs')->lianjiefu}{$article.Category.Name}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
+// {php}
+//     $aryTags = array();
+//     foreach($article->Tags as $key){
+//       $aryTags[] = $key->Name;
+//     }
+//     if(count($aryTags)>0){
+//         $keywords = implode(',',$aryTags);
+//     } else {
+//         $keywords = $zbp->name;
+//     }
+// 	if (strlen($article->Intro)>0){
+// 	$description = preg_replace('/[\r\n\s]+/', ' ', trim(SubStrUTF8(TransferHTML($article->Intro,'[nohtml]'),135)).'...');
+// 	}else{
+//     $description = preg_replace('/[\r\n\s]+/', ' ', trim(SubStrUTF8(TransferHTML($article->Content,'[nohtml]'),135)).'...');
+// 	}
+// {/php}
+<meta name="keywords" content="{$keywords}"/>
+<meta name="description" content="{$description}"/>
+<meta name="author" content="{$article.Author.StaticName}">
+// {elseif $type=='page'}
+<title>{if $article.Metas.Blogs_pstitle}{$article.Metas.Blogs_pstitle}{else}{$title}{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
+<meta name="keywords" content="{if $article.Metas.Blogs_psguanjianci}{$article.Metas.Blogs_psguanjianci}{else}{$title},{$name}{/if}"/>
+// {php}
+// 	if (strlen($article->Metas->Blogs_psmiaoshu)>0){
+// 	$description = $article->Metas->Blogs_psmiaoshu;
+// 	}else{
+//     $description = preg_replace('/[\r\n\s]+/', ' ', trim(SubStrUTF8(TransferHTML($article->Content,'[nohtml]'),135)).'...');
+// 	}
+// {/php}
+<meta name="description" content="{$description}"/>
+<meta name="author" content="{$article.Author.StaticName}">  
+// {elseif $type=='tag'}  
+<title>{if $tag->Metas->Blogs_bqtitle}{$tag.Metas.Blogs_bqtitle}{else}{$tag.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
+<meta name="Keywords" content="{if $tag->Metas->Blogs_bqgjc}{$tag.Metas.Blogs_bqgjc}{else}{$tag.Name}{/if},{$name}">
+<meta name="description" content="{$tag.Intro}">
+// {else}
+<title>{$title}{$zbp->Config('Blogs')->lianjiefu}{$name}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}</title>
+<meta name="Keywords" content="{$title},{$name}">
+<meta name="description" content="{$title}{$zbp->Config('Blogs')->lianjiefu}{$name}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}"> 
+}
+<link rel="shortcut icon" href="{$host}zb_users/theme/Blogs/image/{php}Blogs_Get_Logo('favicon','ico');{/php}">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<!--[if lt IE 9]><script src="/Blogs/js/html5-css3.js"></script><![endif]-->
+<link rel="stylesheet" rev="stylesheet" href="/Blogs/css/style.css" type="text/css" media="all"/>
+<script src="/Blogs/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+<script src="/Blogs/js/custom.js" type="text/javascript"></script>
+<script src="/Blogs/js/slides.js" type="text/javascript"></script>
+<script src="/Blogs/js/stickySidebar.js" type="text/javascript"></script>
+<script src="/Blogs/js/script.js" type="text/javascript"></script>
+<script src="/Blogs/js/scrollmonitor.js" type="text/javascript"></script>
+@if(type == "Article" || type == "Page"){
+<script src="/Blogs/js/fancybox.min.js" type="text/javascript"></script>
+}
+@* {if $zbp->Config('Blogs')->cblbiaoqian=='3' && $zbp->Config('Blogs')->cebianlanbj !== '3'} *@
+@* <script src="{$host}zb_users/theme/{$theme}/script/3dtag.js" type="text/javascript"></script> *@
+@* {/if} *@
+<!--[if IE]>
+<div class="tixing"><strong>温馨提示：感谢您访问本站，经检测您使用的浏览器为IE浏览器，为了获得更好的浏览体验，请使用Chrome、Firefox或其他浏览器。</strong>
+</div>
+<![endif]-->
+<link rel="stylesheet" id="font-awesome-four-css" href="/fonts/fontawesome-all.css" type='text/css' media='all'/>
+@Html.Raw(blogs[nameof(SettingsModel.HeaderExtendCode)])
+</head>
+<body class="@type.ToLower()">
+<div id="page" class="hfeed site">
+	<header id="masthead" class="site-header">
+		<nav id="top-header">
+			<div class="top-nav">
+				<div id="user-profile">
+				@blogs[nameof(SettingsModel.WelcomeMessage)]
+				</div>	
+				<div class="menu-youshangjiao-container">
+					<ul id="menu-youshangjiao" class="top-menu">@Html.Raw(blogs[nameof(SettingsModel.RightMenu)])</ul>
+				</div>		
+			</div>
+		</nav><!-- #top-header -->
+		<div id="menu-box">
+			<div id="top-menu">
+				<div class="logo-site">
+					<h1 class="site-title">
+						<a href="{$host}" title="{$name}-{$title}">
+							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]"/>
+							<span>@settings[SettingsConstants.TitleKey]</span>
+						</a>
+					</h1>
+				</div><!-- .logo-site -->			
+				<span class="nav-search"><i class="fas fa-search"></i></span>
+				<div id="site-nav-wrap">
+					<div id="sidr-close"><a href="#sidr-close" class="toggle-sidr-close">X</a></div>
+					<nav id="site-nav" class="main-nav"> 
+						<a href="#sidr-main" id="navigation-toggle" class="bars"><i class="fa fa-bars"></i></a> 
+						<div id="divNavBar-main">
+							<ul id="menu-main" class="down-menu nav-menu sf-js-enabled sf-arrows">
+								@foreach (var menu in menus)
+								{
+									CreateMenu(menu);
+								}
+							</ul>
+						</div> 
+					</nav>
+				</div><!-- #site-nav-wrap -->
+			</div><!-- #top-menu -->
+		</div><!-- #menu-box -->
+	</header><!-- #masthead -->
+<div id="main-search">
+	<div id="searchbar">
+	<form id="searchform" name="search" method="post" action="{$host}zb_system/cmd.php?act=search">
+	<input type="text" name="q" placeholder="输入搜索内容"> 
+	<button type="submit" id="searchsubmit">搜索</button>
+	</form>
+	</div>	
+	<div class="clear"></div>
+</div>
+@if(type == "Index"){
+<nav class="breadcrumb" @if (blogs[nameof(SettingsModel.Notice)] == "")
+                        {
+	                        @("style = 'height:15px;'")
+                        }>
+@if (blogs[nameof(SettingsModel.Notice)] != ""){
+<div id="scrolldiv">
+	<div class="bull"></div>
+		<div class="scrolltext">
+			<ul style="margin-top: 0px;">@Html.Raw(blogs[nameof(SettingsModel.Notice)])</ul>
+		</div>
+</div> 
+<script type="text/javascript">$(document).ready(function() {$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});})</script>
+}
+</nav>
+}
+else
+{
+	//template:breadcrumb
+}
+
+</div>
+@RenderBody()
+
+</body>
+</html>

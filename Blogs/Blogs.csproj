@@ -2,11 +2,11 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
 
-
     <ItemGroup>
-        <SupportedPlatform Include="browser" />
+        <EmbeddedResource Include="wwwroot/**" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,4 +19,53 @@
       </None>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Service\Jx.Cms.Service.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\Blogs\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Blogs\Shared\_ViewStart.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Shared\_Layout.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Shared\_ViewStart.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\Blogs\Shared\_Layout1.cshtml" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\fontawesome-all.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-brands-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-brands-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-brands-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-brands-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-brands-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-regular-400.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-regular-400.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-regular-400.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-regular-400.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-regular-400.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-solid-900.eot" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-solid-900.svg" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-solid-900.ttf" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-solid-900.woff" />
+      <_ContentIncludedByDefault Remove="wwwroot\fonts\webfonts\fa-solid-900.woff2" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\3dtag.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\custom.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\fancybox.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\html5-css3.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\jquery-2.2.4.min.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\jquery-ias.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\script.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\scrollmonitor.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\slides.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\stickySidebar.js" />
+      <_ContentIncludedByDefault Remove="wwwroot\js\superfish.js" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\Blogs\Shared\_Layout.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Shared\_ViewStart.cshtml" />
+    </ItemGroup>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;copy $(TargetDir)\theme.json $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;" />
+    </Target>
 </Project>

@@ -39,20 +39,20 @@ namespace Jx.Cms.Service.Both
         /// </summary>
         /// <param name="type">类型</param>
         /// <returns>设置项值列表</returns>
-        IEnumerable<(string name, string value)> GetAllValues(string type);
+        Dictionary<string, string> GetAllValues(string type);
 
         /// <summary>
         /// 获取system类型下所有设置项的值
         /// </summary>
         /// <returns>设置项列值表</returns>
-        IEnumerable<(string name, string value)> GetAllValues();
+        Dictionary<string, string> GetAllValues();
 
         /// <summary>
         /// 获取system类型下指定设置项名列表的值
         /// </summary>
         /// <param name="names">设置项名列表</param>
         /// <returns>设置项列值表</returns>
-        IEnumerable<(string name, string value)> GetValuesByNames(IEnumerable<string> names);
+        Dictionary<string, string> GetValuesByNames(IEnumerable<string> names);
 
         /// <summary>
         /// 获取类型下指定设置项名列表的值
@@ -60,6 +60,6 @@ namespace Jx.Cms.Service.Both
         /// <param name="type">类型名</param>
         /// <param name="names">设置项名列表</param>
         /// <returns>设置项值列表</returns>
-        IEnumerable<(string name, string value)> GetValuesByNames(string type, IEnumerable<string> names);
+        Dictionary<string, string> GetValuesByNames(string type, IEnumerable<string> names);
     }
 }
