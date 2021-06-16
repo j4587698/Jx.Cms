@@ -377,6 +377,7 @@
       <_ContentIncludedByDefault Remove="wwwroot\lib\prettify.min.js" />
       <_ContentIncludedByDefault Remove="Plugin\HighlightingPlugin\plugin.json" />
       <_ContentIncludedByDefault Remove="Test\abc\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Pages\test\Index.cshtml" />
     </ItemGroup>
 
 </Project>

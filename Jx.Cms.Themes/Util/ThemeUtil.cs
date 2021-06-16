@@ -179,6 +179,11 @@ namespace Jx.Cms.Themes.Util
                     var viewCompilerProvider = App.GetService<IViewCompilerProvider>() as MyViewCompilerProvider;
                     viewCompilerProvider?.Modify();
                 }
+                else
+                {
+                    var applicationPartManager = ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+                    RazorPlugin.RemovePlugin(themeConfig, applicationPartManager);
+                }
                 ThemeModify?.Invoke(themeConfig);
             }
         }

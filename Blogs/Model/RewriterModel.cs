@@ -26,7 +26,6 @@ namespace Blogs.Model
                 _rewriterModel = new RewriterModel();
                 foreach (var settings in settingsEnumerable)
                 {
-
                     _rewriterModel.SetProperty(settings.Key, settings.Value??"");
                 }
             }

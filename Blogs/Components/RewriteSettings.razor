@@ -1,16 +1,25 @@
 ﻿@using Masuit.Tools.Systems
 @using Jx.Cms.Rewrite
+@using Blogs.Model
 
+@inject ToastService ToastService
+
+
+<Toast></Toast>
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>Blogs伪静态设置</h3>
+    <Button OnClick="Save" style="float: right">保存</Button>
+</Row>
 
 <table class="table">
     <tbody>
     <tr>
         <td>静态化选项 </td>
-        <td><Radio Items="@typeof(RewriteOptionEnum).ToSelectList()" OnStateChanged="@OnStateChanged"></Radio></td>
+        <td><Radio Items="@_optionItem" OnStateChanged="OnStateChanged"></Radio></td>
     </tr>
     <tr>
         <td>文章URL配置</td>
-        <td><BootstrapInput @bind-Value="@_articleUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.ArticleUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
     </tr>
     <tr>
         <td></td>
@@ -18,7 +27,7 @@
     </tr>
     <tr>
         <td>页面的URL配置</td>
-        <td><BootstrapInput @bind-Value="@_pageUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.PageUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
     </tr>
     <tr>
         <td></td>
@@ -26,16 +35,19 @@
     </tr>
     <tr>
         <td>首页URL配置</td>
-        <td><BootstrapInput @bind-Value="@_indexUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.IndexUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
     </tr>
     <tr>
-            <td></td>
-            <td><Radio Items="@_indexItems" IsVertical="true" OnStateChanged="IndexChange" IsDisabled="_isDisabled"></Radio></td>
-        </tr>
+        <td></td>
+        <td><Radio Items="@_indexItems" IsVertical="true" OnStateChanged="IndexChange" IsDisabled="_isDisabled"></Radio></td>
+    </tr>
     </tbody>
 </table>
 
 @code {
+    
+    // 伪静态选项Radio
+    private IEnumerable<SelectedItem> _optionItem;
 
     // 文章推荐Radio
     private readonly IEnumerable<SelectedItem> _articleItems = new[]
@@ -58,25 +70,29 @@
         , new SelectedItem("/{{alias}}/", "/{{alias}}/")
     };
 
+    private RewriterModel RewriterModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        RewriterModel = Model.RewriterModel.GetSettings();
+        _optionItem = typeof(RewriteOptionEnum).ToSelectList().ToList();
+        _isDisabled = RewriterModel.RewriteOption != RewriteOptionEnum.Rewrite.ToString();
+        _optionItem.First(x => x.Value == RewriterModel.RewriteOption).Active = true;
+        StateHasChanged();
+    }
+
     // 是否禁用
     private bool _isDisabled = false;
 
-    // 文章Url
-    private string _articleUrl = "";
-
-    // 页面Url
-    private string _pageUrl = "";
-
-    // 首页Url
-    private string _indexUrl = "";
-
     private Task OnStateChanged(CheckboxState arg1, SelectedItem arg2)
     {
-        if (arg2.Text == RewriteOptionEnum.Dynamic.ToString())
+        RewriterModel.RewriteOption = arg2.Value;
+        if (arg2.Value == RewriteOptionEnum.Dynamic.ToString())
         {
             _isDisabled = true;
         }
-        else if (arg2.Text == RewriteOptionEnum.Rewrite.ToString())
+        else if (arg2.Value == RewriteOptionEnum.Rewrite.ToString())
         {
             _isDisabled = false;
         }
@@ -86,22 +102,28 @@
 
     private Task ArticleChange(CheckboxState arg1, SelectedItem arg2)
     {
-        _articleUrl = arg2.Text;
+        RewriterModel.ArticleUrl = arg2.Text;
         StateHasChanged();
         return Task.CompletedTask;
     }
     
     private Task PageChange(CheckboxState arg1, SelectedItem arg2)
     {
-        _pageUrl = arg2.Text;
+        RewriterModel.PageUrl = arg2.Text;
         StateHasChanged();
         return Task.CompletedTask;
     }
 
     private Task IndexChange(CheckboxState arg1, SelectedItem arg2)
     {
-        _indexUrl = arg2.Text;
+        RewriterModel.IndexUrl = arg2.Text;
         StateHasChanged();
         return Task.CompletedTask;
+    }
+    
+    private void Save()
+    {
+        RewriterModel.SaveSettings(RewriterModel);
+        ToastService.Success("修改成功", "Blogs伪静态规则设置成功");
     }
 }

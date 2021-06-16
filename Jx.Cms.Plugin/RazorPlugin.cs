@@ -54,7 +54,7 @@ namespace Jx.Cms.Plugin
 
             if (articleList.Count > 0)
             {
-                DefaultPlugin.ArticlePlugins.Add(themeConfig.ThemeName, articleList);
+                DefaultPlugin.ArticlePlugins.Add(themeConfig.ThemeType.ToString(), articleList);
             }
             
             // 系统相关插件列表
@@ -63,7 +63,7 @@ namespace Jx.Cms.Plugin
 
             if (systemList.Count > 0)
             {
-                DefaultPlugin.SystemPlugins.Add(themeConfig.ThemeName, systemList);
+                DefaultPlugin.SystemPlugins.Add(themeConfig.ThemeType.ToString(), systemList);
             }
         }
 
@@ -90,15 +90,15 @@ namespace Jx.Cms.Plugin
         /// <summary>
         /// 移除Razor插件
         /// </summary>
-        /// <param name="themeType"></param>
+        /// <param name="themeConfig"></param>
         /// <param name="partManager"></param>
         public static void RemovePlugin(ThemeConfig themeConfig, ApplicationPartManager partManager)
         {
             if (PluginLoaders.Remove(themeConfig.ThemeType, out var plugin))
             {
                 RemoveFromPartManager(plugin, partManager);
-                DefaultPlugin.ArticlePlugins.TryRemove(themeConfig.ThemeName, out _);
-                DefaultPlugin.SystemPlugins.TryRemove(themeConfig.ThemeName, out _);
+                DefaultPlugin.ArticlePlugins.TryRemove(themeConfig.ThemeType.ToString(), out _);
+                DefaultPlugin.SystemPlugins.TryRemove(themeConfig.ThemeType.ToString(), out _);
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
