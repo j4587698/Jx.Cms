@@ -8,7 +8,7 @@ namespace Blogs.Utils
         public static List<string> CreateUrl(string url)
         {
             var urlList = new List<string>();
-            var mc = Regex.Matches(url, @"\{\{.+?\}\}");
+            var mc = Regex.Matches(url, @"\{\{(.+?)\}\}");
             foreach (Match match in mc)
             {
                 urlList.Add(match.Groups[1].Value);

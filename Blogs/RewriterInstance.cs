@@ -1,7 +1,10 @@
 ﻿using Blogs.Components;
+using Blogs.Model;
+using Blogs.Utils;
 using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
+using Jx.Cms.Rewrite;
 using Microsoft.AspNetCore.Http;
 
 namespace Blogs
@@ -21,7 +24,19 @@ namespace Blogs
 
         public bool AddMiddleware(HttpContext context)
         {
-            
+            var rewriterModel = RewriterModel.GetSettings();
+            if (rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
+            {
+                return true;
+            }
+
+            var url = RewriteUtil.AnalysisArticle(context.Request.Path);
+            if (url != null)
+            {
+                context.Request.Path = "/Article";
+                context.Request.QueryString = new QueryString(url);
+                return true;
+            }
             return true;
         }
     }

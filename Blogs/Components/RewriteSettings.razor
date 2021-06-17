@@ -53,7 +53,7 @@
     private readonly IEnumerable<SelectedItem> _articleItems = new[]
     {
         new SelectedItem("/post/{{id}}.html", "/post/{{id}}.html"), new SelectedItem("/post/{{alias}}.html", "/post/{{alias}}.html")
-            , new SelectedItem("/{%year%}/{%month%}/{%id%}/", "/{%year%}/{%month%}/{%id%}/"), new SelectedItem("/{%category%}/{%alias%}/", "/{%category%}/{%alias%}/")
+            , new SelectedItem("/{{year}}/{{month}}/{{id}}/", "/{{year}}/{{month}}/{{id}}/"), new SelectedItem("/{{category}}/{{alias}}/", "/{{category}}/{{alias}}/")
     };
     
     // 页面推荐Radio
