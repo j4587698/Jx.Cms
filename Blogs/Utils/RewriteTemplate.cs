@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Web;
 
 namespace Blogs.Utils
 {
@@ -18,7 +19,7 @@ namespace Blogs.Utils
                 }
                 else
                 {
-                    url = url.Replace(match.Value, "(.+?");
+                    url = url.Replace(match.Value, "(.+?)");
                 }
             }
             urlList.Insert(0, url);
@@ -41,7 +42,7 @@ namespace Blogs.Utils
             Dictionary<string, string> result = new Dictionary<string, string>();
             for (int i = 1; i < mc.Groups.Count; i++)
             {
-                result.Add(urlList[i], mc.Groups[i].Value);
+                result.Add(urlList[i], HttpUtility.UrlDecode(mc.Groups[i].Value));
             }
 
             return (true, result);

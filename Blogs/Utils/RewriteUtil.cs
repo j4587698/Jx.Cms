@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Blogs.Model;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Rewrite;
@@ -24,6 +26,7 @@ namespace Blogs.Utils
             return template.Set("id", articleEntity.Id.ToString()).Set("year", articleEntity.PublishTime.Year.ToString())
                 .Set("month", articleEntity.PublishTime.Month.ToString())
                 .Set("day", articleEntity.PublishTime.Day.ToString())
+                .Set("category", articleEntity.Catalogue.Alias)
                 .Set("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
         }
 
@@ -45,25 +48,40 @@ namespace Blogs.Utils
                 {
                     return $"?id={result.result["id"]}";
                 }
-                if (result.result.ContainsKey("alias"))
-                {
-                    var articles = ArticleEntity.Select.Where(x =>
-                        x.Alias == result.result["alias"] || x.Title == result.result["alias"]).ToList();
-                    if (articles == null)
-                    {
-                        return null;
-                    }
-                    if (articles.Count == 0)
-                    {
-                        return $"?id={articles[0].Id}";
-                    }
 
-                    if (articles.Any(x => x.Alias == result.result["alias"]))
+                Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
+                foreach (var info in result.result)
+                {
+                    switch (info.Key)
                     {
-                        return $"?id={articles.First(x => x.Alias == result.result["alias"])}";
+                        case "year":
+                            where = where.And(x => x.PublishTime.Year.ToString() == info.Value);
+                            break;
+                        case "month":
+                            var month = info.Value.PadLeft(2, '0');
+                            where = where.And(x => x.PublishTime.Month.ToString() == month);
+                            break;
+                        case "day":
+                            where = where.And(x => x.PublishTime.Day.ToString() == info.Value);
+                            break;
+                        case "alias":
+                            where = where.And(x =>
+                                x.Alias == result.result["alias"] || x.Title == result.result["alias"]);
+                            break;
+                        case "category":
+                            where = where.And(x => x.Catalogue.Alias == info.Value);
+                            break;
                     }
-                    return $"?id={articles.First().Id}";
                 }
+
+                var sql = ArticleEntity.Select.Where(where).ToSql();
+                var articles = ArticleEntity.Select.Where(where);
+                if (articles == null || articles.Count() == 0)
+                {
+                    return null;
+                }
+
+                return $"?id={articles.First().Id}";
             }
             return null;
         }
