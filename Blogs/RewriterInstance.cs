@@ -1,4 +1,5 @@
-﻿using Blogs.Components;
+﻿using System.Collections.Generic;
+using Blogs.Components;
 using Blogs.Model;
 using Blogs.Utils;
 using BootstrapBlazor.Components;
@@ -11,14 +12,17 @@ namespace Blogs
 {
     public class RewriterInstance: ISystemPlugin
     {
-        public PluginMenuModel AddMenuItem()
+        public List<PluginMenuModel> AddMenuItem()
         {
-            return new PluginMenuModel()
+            return new()
             {
-                DisplayName = "Blogs主题伪静态设置",
-                Icon = "fa fa-code",
-                MenuId = "AB0050BE-9EC0-49B8-A2F6-0403880D9B23",
-                PluginBody = BootstrapDynamicComponent.CreateComponent<RewriteSettings>().Render()
+                new PluginMenuModel()
+                {
+                    DisplayName = "Blogs主题伪静态设置",
+                    Icon = "fa fa-code",
+                    MenuId = "AB0050BE-9EC0-49B8-A2F6-0403880D9B23",
+                    PluginBody = BootstrapDynamicComponent.CreateComponent<RewriteSettings>().Render()
+                }
             };
         }
 

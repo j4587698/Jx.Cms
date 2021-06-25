@@ -7,7 +7,6 @@ using Jx.Cms.Entities.Article;
 using Jx.Cms.Rewrite;
 using Masuit.Tools;
 using Masuit.Tools.Strings;
-using Microsoft.AspNetCore.Rewrite;
 
 namespace Blogs.Utils
 {
@@ -62,7 +61,8 @@ namespace Blogs.Utils
                             where = where.And(x => x.PublishTime.Month.ToString() == month);
                             break;
                         case "day":
-                            where = where.And(x => x.PublishTime.Day.ToString() == info.Value);
+                            var day = info.Value.PadLeft(2, '0');
+                            where = where.And(x => x.PublishTime.Day.ToString() == day);
                             break;
                         case "alias":
                             where = where.And(x =>

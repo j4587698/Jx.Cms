@@ -66,8 +66,8 @@
 								</div>
 								<div class="entry-meta">
 									<span class="post_cat"><i class="fas fa-folder" aria-hidden="true"></i>&nbsp;<a href="{$article.Category.Url}" target="_blank" rel="category tag">@article.Catalogue.Name</a></span>
-									<span class="views"><i class="fas fa-users" aria-hidden="true"></i>&nbsp;{$article.ViewNums} 人阅读</span>
-									<span class="comment sllpl"><i class="fas fa-comment" aria-hidden="true"></i>&nbsp;{$article.CommNums} 条评论</span>
+									<span class="views"><i class="fas fa-users" aria-hidden="true"></i>&nbsp;@article.ReadingVolume 人阅读</span>
+									<span class="comment sllpl"><i class="fas fa-comment" aria-hidden="true"></i>&nbsp;@(article.Comments?.Count ?? 0) 条评论</span>
 								</div>
 								<div class="readMore"><a href="@RewriteUtil.GetArticleUrl(article)" rel="nofollow">阅读全文</a></div>
 								<div class="clear"></div>
@@ -77,7 +77,37 @@
 					}
 				</div>		
 			</main><!-- .site-main -->
-			{template:pagebar}	
+			<nav class="navigation pagination" role="navigation">
+				<div class="nav-links">
+					@foreach (var pagination in Model.pagination)
+					{
+						@if (pagination.Key == Model.PageNum.ToString())
+						{
+							<span class='page-numbers current'>@pagination.Key</span>
+						}
+						else if (pagination.Key == "‹")
+						{
+							<span class="prev"><a class="page-numbers" href="{$v}" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+						}
+						else if (pagination.Key == ">")
+						{
+							<span class="next"><a class="page-numbers" href="{$v}" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+						}
+						else if (pagination.Key == "<<")
+						{
+							<a class="page-numbers" href="{$v}" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+						}
+						else if (pagination.Key == ">>")
+						{
+							<a class="page-numbers" href="{$v}" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+						}
+						else
+						{
+							<a class="page-numbers" href="{$v}" title="第 @pagination.Key 页">@pagination.Key</a>
+						}
+					}
+				</div>
+            </nav>
 		</section><!-- .content-area -->
 
 	</div>

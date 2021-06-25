@@ -153,9 +153,9 @@ namespace Jx.Cms.Plugin.Utils
             {
                 var instance = Activator.CreateInstance(plugin) as ISystemPlugin;
                 var ret = instance?.AddMenuItem();
-                if (ret != null)
+                if (ret != null && ret.Count > 0)
                 {
-                    menuModel.Add(ret);
+                    menuModel.AddRange(ret);
                 }
             }
 

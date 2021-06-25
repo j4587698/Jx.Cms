@@ -1,4 +1,5 @@
-﻿using BootstrapBlazor.Components;
+﻿using System.Collections.Generic;
+using BootstrapBlazor.Components;
 using HighlightingPlugin.Pages;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
@@ -8,14 +9,17 @@ namespace HighlightingPlugin
 {
     public class SystemInstance: ISystemPlugin
     {
-        public PluginMenuModel AddMenuItem()
+        public List<PluginMenuModel> AddMenuItem()
         {
-            return new PluginMenuModel()
+            return new()
             {
-                DisplayName = "代码高亮设置",
-                Icon = "fa fa-code",
-                MenuId = "77069BFC-4B62-43E5-8021-B06933D18630",
-                PluginBody = BootstrapDynamicComponent.CreateComponent<Settings>().Render()
+                new PluginMenuModel()
+                {
+                    DisplayName = "代码高亮设置",
+                    Icon = "fa fa-code",
+                    MenuId = "77069BFC-4B62-43E5-8021-B06933D18630",
+                    PluginBody = BootstrapDynamicComponent.CreateComponent<Settings>().Render()
+                }
             };
         }
     }

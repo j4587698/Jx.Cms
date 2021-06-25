@@ -1,4 +1,5 @@
-﻿using Jx.Cms.Plugin.Model;
+﻿using System.Collections.Generic;
+using Jx.Cms.Plugin.Model;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http;
 
@@ -13,7 +14,7 @@ namespace Jx.Cms.Plugin.Plugin
         /// 添加后台菜单项
         /// </summary>
         /// <returns></returns>
-        PluginMenuModel AddMenuItem()
+        List<PluginMenuModel> AddMenuItem()
         {
             return null;
         }
