@@ -1,4 +1,102 @@
 ﻿@page
+@using Blogs.Utils
 @model Blogs.Pages.Blogs.Article
 
-Article Id is @Model.Id
+<div id="content" class="site-content">	
+	<div class="clear"></div>
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+			<article id="post-@Model._article.Id" class="post-@Model._article.Id post type-post status-publish format-standard hentry category-@Model._article.Catalogue.Alias">
+				<header class="entry-header">
+					<h1 class="entry-title">{$article.Title}</h1>						
+					<div class="single_info">
+						<i class="fas fa-user"></i>&nbsp;<a href="{php}Blogs_wenzhanglaiyuan($article->ID){/php}" rel="nofollow" target="_blank">@Model._article.Author</a>&nbsp;
+						<span class="date"><i class="fas fa-clock"></i>&nbsp;@Model._article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
+						<span class="views"><i class="fas fa-users"></i>&nbsp;@Model._article.ReadingVolume 人阅读</span>
+						<span class="comment"><i class="fas fa-comment"></i>&nbsp;@Model._article.Comments.Count 条评论</span>
+						{if $user.ID>0}<span class="edit"><i class="fas fa-pencil-alt"></i>&nbsp;<a href="{$host}zb_system/cmd.php?act=ArticleEdt&id={$article.ID}" rel="nofollow">编辑</a></span>{/if}
+					</div>							
+				</header><!-- .entry-header -->
+				<div class="entry-content">
+					<div class="single-content">
+						@Model._article.Content																
+					</div>
+					<div class="clear"></div>
+					<div class="xiaoshi">
+						<div class="single_banquan">	
+							<strong>本文地址：</strong><a href="{$article.Url}" title="{$article.Title}"  target="_blank">{$article.Url}</a><br/>
+							<strong>版权声明：</strong>本文为原创文章，版权归&nbsp;<a href="{$article.Author.Url}" target="_blank">@Model._article.Author</a>&nbsp;所有，欢迎分享本文，转载请保留出处！
+						</div>
+					</div>
+					<div class="clear"></div>
+					{template:social}					
+					<div class="clear"></div>
+					<div class="post-navigation">
+						<div class="post-previous">
+							@if(Model.Prev != null){
+								<a href="@RewriteUtil.GetArticleUrl(Model.Prev)" rel="prev"><span>PREVIOUS:</span>@Model.Prev.Title</a> 
+							}
+							else{
+								<span>PREVIOUS:</span><a href="JavaScript:void(0)">已经是最后一篇了</a> 
+							}
+						</div>
+						<div class="post-next">
+							@if(Model.Next != null){
+								<a href="@RewriteUtil.GetArticleUrl(Model.Next)" rel="next"><span>NEXT:</span>@Model.Next.Title</a> 
+							}
+							else {
+								<span>NEXT:</span><a href="JavaScript:void(0)">已经是最新一篇了</a> 
+							}
+						</div>
+					</div>
+					<nav class="nav-single-c"> 	
+						<nav class="navigation post-navigation" role="navigation">		
+							<h2 class="screen-reader-text">文章导航</h2>		
+							<div class="nav-links">	
+								@if(Model.Prev != null){
+									<div class="nav-previous"> <a href="@RewriteUtil.GetArticleUrl(Model.Prev)" rel="prev"><span class="meta-nav-r" aria-hidden="true"><i class="fas fa-angle-left"></i></span></a> </div>
+								}
+								@if(Model.Next != null){
+									<div class="nav-next"> <a href="@RewriteUtil.GetArticleUrl(Model.Next)" rel="next"><span class="meta-nav-l" aria-hidden="true"><i class="fas fa-angle-right"></i></span> </a> </div>
+								}
+							</div>	
+						</nav>
+					</nav>
+        
+        
+				</div><!-- .entry-content -->
+			</article><!-- #post -->
+			<div class="tab-site">
+				<div id="layout-tab">
+					<div class="tit">
+						<span class="name"><i class="fas fa-bookmark"></i>&nbsp;相关文章</span>
+						<span class="plxiaoshi"><span class="keyword">
+							<i class="fas fa-tags"></i>&nbsp;关键词：{if Count($article.Tags)>0}{foreach $article.Tags as $tag}<a href="{$tag.Url}" target="_blank" rel="tag">{$tag.Name}</a>{/foreach}{/if}</span></span>
+					</div>
+					<ul class="tab-bd">
+						{php}$i=0;$excludeid = $article->ID;$xgnum=8;{/php}
+						{foreach GetList($xgnum,null,null,null,null,null,array('is_related'=>$article->ID)) as $articles}
+						<li><span class="post_spliter">•</span><a href="{$articles.Url}" target="_blank">{$articles.Title}</a></li>
+						{php}$i+=1;$excludeid .= ',' . $articles->ID;{/php}
+						{/foreach}
+						{if $i<$xgnum}
+						{php}$j=$xgnum-$i;Blogs_wenzhangxgfl($excludeid,$article->Category->ID,$j);{/php}
+						{/if}
+					</ul>
+				</div>
+			</div>
+			<div class="clear"></div>
+			{if !$article.IsLock}
+			{template:comments}
+			{else}
+			<p class="no-comments">评论已关闭！</p>
+			{/if}
+		</main><!-- .site-main -->
+	</div><!-- .content-area -->
+	{if ($zbp->Config('Blogs')->cebianlanbj !== '3') }
+	<div id="sidebar" class="widget-area">	
+		{template:sidebar2}	
+	</div>
+	{/if}
+</div>
+<div class="clear"></div>

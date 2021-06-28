@@ -66,8 +66,8 @@
     // 首页推荐Radio
     private readonly IEnumerable<SelectedItem> _indexItems = new[]
     {
-        new SelectedItem("/{{id}}.html", "/{{id}}.html"), new SelectedItem("/{{alias}}.html", "/{{alias}}.html")
-        , new SelectedItem("/{{alias}}/", "/{{alias}}/")
+        new SelectedItem("/page_{{page}}.html", "/page_{{page}}.html"), new SelectedItem("/page_{{page}}/", "/page_{{page}}/")
+        , new SelectedItem("/page/{{page}}/", "/page/{{page}}/")
     };
 
     private RewriterModel RewriterModel { get; set; }

@@ -15,7 +15,7 @@ namespace Jx.Cms.Service.Front.Impl
     {
         public ArticleModel GetArticleById(int id)
         {
-            var article = ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Comments).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            var article = ArticleEntity.Select.Where(x => x.Id == id).Include(x => x.Catalogue).IncludeMany(x => x.Comments).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
             if (article.IsMarkdown)
             {
                 article.Content = Markdown.ToHtml(article.Content);

@@ -4,7 +4,7 @@ using System.Web;
 
 namespace Blogs.Utils
 {
-    public class RewriteTemplate
+    public static class RewriteTemplate
     {
         public static List<string> CreateUrl(string url)
         {

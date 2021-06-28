@@ -41,6 +41,21 @@ namespace Blogs
                 context.Request.QueryString = new QueryString(url);
                 return true;
             }
+
+            url = RewriteUtil.AnalysisPage(context.Request.Path);
+            if (url != null)
+            {
+                context.Request.Path = "/Page";
+                context.Request.QueryString = new QueryString(url);
+                return true;
+            }
+            url = RewriteUtil.AnalysisIndex(context.Request.Path);
+            if (url != null)
+            {
+                context.Request.Path = "/Index";
+                context.Request.QueryString = new QueryString(url);
+                return true;
+            }
             return true;
         }
     }

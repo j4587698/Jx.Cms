@@ -87,23 +87,23 @@
 						}
 						else if (pagination.Key == "‹")
 						{
-							<span class="prev"><a class="page-numbers" href="{$v}" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+							<span class="prev"><a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="上一页"><i class="fa fa-angle-left"></i></a></span>
 						}
 						else if (pagination.Key == ">")
 						{
-							<span class="next"><a class="page-numbers" href="{$v}" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+							<span class="next"><a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="下一页"><i class="fa fa-angle-right"></i></a></span>
 						}
 						else if (pagination.Key == "<<")
 						{
-							<a class="page-numbers" href="{$v}" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="第1页"><i class="fa fa-angle-double-left"></i></a>
 						}
 						else if (pagination.Key == ">>")
 						{
-							<a class="page-numbers" href="{$v}" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
 						}
 						else
 						{
-							<a class="page-numbers" href="{$v}" title="第 @pagination.Key 页">@pagination.Key</a>
+							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="第 @pagination.Key 页">@pagination.Key</a>
 						}
 					}
 				</div>

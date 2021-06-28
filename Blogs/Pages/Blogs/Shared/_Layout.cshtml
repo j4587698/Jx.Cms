@@ -143,7 +143,7 @@ else if(type == "Article") {
 			<div id="top-menu">
 				<div class="logo-site">
 					<h1 class="site-title">
-						<a href="{$host}" title="{$name}-{$title}">
+						<a href="/" title="{$name}-{$title}">
 							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]"/>
 							<span>@settings[SettingsConstants.TitleKey]</span>
 						</a>
@@ -199,6 +199,53 @@ else
 
 </div>
 @RenderBody()
+<div id="footer">
+<div class="foot">
+@if (type == "Index")
+{
+	<div id="links">
+		<ul class="linkcat"> <li><strong>友情链接：</strong></li>
+			{module:link}
+		</ul>
+		<div class="clear"></div></div>
+}
+	<div class="ps">
+<div class="p p2">
+	<div class="clear"></div>
+<div class="site-info">{$zbp->Config('Blogs')->banquanxinxi}<span class="footer-tag">&nbsp; | &nbsp; Theme by <a href="http://yigujin.wang/"  target="_blank" title="免费响应式博客主题BlogsV2.0">Blogs</a>&nbsp; | &nbsp; Powered by <a href="http://www.jvxiang.com/" title="JX.CMS" target="_blank">JX.CMS</a></span></div>
+</div>
+	</div>
+</div>
+</div>
+</div>
 
+<div class="tools">
+    <a class="tools_top" title="返回顶部"></a>
+    @if (type == "Article" || type == "Page")
+    {
+	    
+    
+	<a class="tools_comments" title="发表评论"></a>
+    }
+    else
+    {
+	    <a href="{$zbp->Config('Blogs')->liuyanban}#divCommentPost" class="tools_comments" title="给我留言" target="_blank" rel="nofollow"></a>
+    }
+    </div>
+@if (type == "Article" || type == "Page"){
+<script type="text/javascript">
+const regx = /\.(jpe?g|png|bmp|gif|swf)(?=\?|$)/i;
+$('.single-content').find('a').each(function(){
+    const href = $(this).attr('href');
+    const isImg = regx.test(href);
+    if (isImg) {
+        $(this).attr({'data-fancybox':'images','class':'cboxElement','rel':'example_group'});
+    }
+});
+</script>
+}
+<script src="/Blogs/js/superfish.js" type="text/javascript"></script>
+@blogs[nameof(SettingsModel.FooterExtendCode)]
+</div>
 </body>
 </html>
