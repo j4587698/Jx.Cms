@@ -52,6 +52,8 @@ namespace Jx.Cms.Entities.Article
         [Description("是否为独立页面")]
         public bool IsPage { get; set; }
 
+        [Description("是否允许评论")] public bool CanComment { get; set; } = true;
+
         [Description("评论列表")]
         [Navigate(nameof(CommentEntity.ArticleId))]
         public ICollection<CommentEntity> Comments { get; set; }

@@ -64,6 +64,14 @@ namespace Jx.Cms.Service.Front
         List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count);
 
         /// <summary>
+        /// 获取相关文章（根据所在分类以及相同Label）
+        /// </summary>
+        /// <param name="baseArticle">基准文章</param>
+        /// <param name="count">获取多少个(默认10个)</param>
+        /// <returns></returns>
+        List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10);
+
+        /// <summary>
         /// 保存文章
         /// </summary>
         /// <param name="articleEntity">文章</param>

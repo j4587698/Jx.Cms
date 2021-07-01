@@ -2,30 +2,31 @@
 @using Blogs.Utils
 @model Blogs.Pages.Blogs.Article
 
+@Html.Raw(@Model._article.Header)
 <div id="content" class="site-content">	
 	<div class="clear"></div>
 	<div id="primary" class="content-area">
 		<main id="main" class="site-main" role="main">
-			<article id="post-@Model._article.Id" class="post-@Model._article.Id post type-post status-publish format-standard hentry category-@Model._article.Catalogue.Alias">
+			<article id="post-@Model._article.Body.Id" class="post-@Model._article.Body.Id post type-post status-publish format-standard hentry category-@(Model._article.Body.Catalogue == null ? "无" : Model._article.Body.Catalogue.Alias):">
 				<header class="entry-header">
-					<h1 class="entry-title">{$article.Title}</h1>						
+					<h1 class="entry-title">@Model._article.Body.Title</h1>						
 					<div class="single_info">
-						<i class="fas fa-user"></i>&nbsp;<a href="{php}Blogs_wenzhanglaiyuan($article->ID){/php}" rel="nofollow" target="_blank">@Model._article.Author</a>&nbsp;
-						<span class="date"><i class="fas fa-clock"></i>&nbsp;@Model._article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
-						<span class="views"><i class="fas fa-users"></i>&nbsp;@Model._article.ReadingVolume 人阅读</span>
-						<span class="comment"><i class="fas fa-comment"></i>&nbsp;@Model._article.Comments.Count 条评论</span>
+						<i class="fas fa-user"></i>&nbsp;<a href="{php}Blogs_wenzhanglaiyuan($article->ID){/php}" rel="nofollow" target="_blank">@Model._article.Body.Author</a>&nbsp;
+						<span class="date"><i class="fas fa-clock"></i>&nbsp;@Model._article.Body.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
+						<span class="views"><i class="fas fa-users"></i>&nbsp;@Model._article.Body.ReadingVolume 人阅读</span>
+						<span class="comment"><i class="fas fa-comment"></i>&nbsp;@(Model._article.Body.Comments?.Count ?? 0) 条评论</span>
 						{if $user.ID>0}<span class="edit"><i class="fas fa-pencil-alt"></i>&nbsp;<a href="{$host}zb_system/cmd.php?act=ArticleEdt&id={$article.ID}" rel="nofollow">编辑</a></span>{/if}
 					</div>							
 				</header><!-- .entry-header -->
 				<div class="entry-content">
 					<div class="single-content">
-						@Model._article.Content																
+						@Html.Raw(Model._article.Body.Content)																
 					</div>
 					<div class="clear"></div>
 					<div class="xiaoshi">
 						<div class="single_banquan">	
 							<strong>本文地址：</strong><a href="{$article.Url}" title="{$article.Title}"  target="_blank">{$article.Url}</a><br/>
-							<strong>版权声明：</strong>本文为原创文章，版权归&nbsp;<a href="{$article.Author.Url}" target="_blank">@Model._article.Author</a>&nbsp;所有，欢迎分享本文，转载请保留出处！
+							<strong>版权声明：</strong>本文为原创文章，版权归&nbsp;<a href="{$article.Author.Url}" target="_blank">@Model._article.Body.Author</a>&nbsp;所有，欢迎分享本文，转载请保留出处！
 						</div>
 					</div>
 					<div class="clear"></div>
@@ -33,16 +34,16 @@
 					<div class="clear"></div>
 					<div class="post-navigation">
 						<div class="post-previous">
-							@if(Model.Prev != null){
-								<a href="@RewriteUtil.GetArticleUrl(Model.Prev)" rel="prev"><span>PREVIOUS:</span>@Model.Prev.Title</a> 
+							@if(Model._prev != null){
+								<a href="@RewriteUtil.GetArticleUrl(Model._prev)" rel="prev"><span>PREVIOUS:</span>@Model._prev.Title</a> 
 							}
 							else{
 								<span>PREVIOUS:</span><a href="JavaScript:void(0)">已经是最后一篇了</a> 
 							}
 						</div>
 						<div class="post-next">
-							@if(Model.Next != null){
-								<a href="@RewriteUtil.GetArticleUrl(Model.Next)" rel="next"><span>NEXT:</span>@Model.Next.Title</a> 
+							@if(Model._next != null){
+								<a href="@RewriteUtil.GetArticleUrl(Model._next)" rel="next"><span>NEXT:</span>@Model._next.Title</a> 
 							}
 							else {
 								<span>NEXT:</span><a href="JavaScript:void(0)">已经是最新一篇了</a> 
@@ -53,11 +54,11 @@
 						<nav class="navigation post-navigation" role="navigation">		
 							<h2 class="screen-reader-text">文章导航</h2>		
 							<div class="nav-links">	
-								@if(Model.Prev != null){
-									<div class="nav-previous"> <a href="@RewriteUtil.GetArticleUrl(Model.Prev)" rel="prev"><span class="meta-nav-r" aria-hidden="true"><i class="fas fa-angle-left"></i></span></a> </div>
+								@if(Model._prev != null){
+									<div class="nav-previous"> <a href="@RewriteUtil.GetArticleUrl(Model._prev)" rel="prev"><span class="meta-nav-r" aria-hidden="true"><i class="fas fa-angle-left"></i></span></a> </div>
 								}
-								@if(Model.Next != null){
-									<div class="nav-next"> <a href="@RewriteUtil.GetArticleUrl(Model.Next)" rel="next"><span class="meta-nav-l" aria-hidden="true"><i class="fas fa-angle-right"></i></span> </a> </div>
+								@if(Model._next != null){
+									<div class="nav-next"> <a href="@RewriteUtil.GetArticleUrl(Model._next)" rel="next"><span class="meta-nav-l" aria-hidden="true"><i class="fas fa-angle-right"></i></span> </a> </div>
 								}
 							</div>	
 						</nav>
@@ -71,7 +72,7 @@
 					<div class="tit">
 						<span class="name"><i class="fas fa-bookmark"></i>&nbsp;相关文章</span>
 						<span class="plxiaoshi"><span class="keyword">
-							<i class="fas fa-tags"></i>&nbsp;关键词：{if Count($article.Tags)>0}{foreach $article.Tags as $tag}<a href="{$tag.Url}" target="_blank" rel="tag">{$tag.Name}</a>{/foreach}{/if}</span></span>
+							<i class="fas fa-tags"></i>&nbsp;关键词：@if(Model._article.Body.Labels != null){@foreach(var label in Model._article.Body.Labels){<a href="{$tag.Url}" target="_blank" rel="tag">@label.Name}</a>} } </span></span>
 					</div>
 					<ul class="tab-bd">
 						{php}$i=0;$excludeid = $article->ID;$xgnum=8;{/php}
@@ -86,11 +87,96 @@
 				</div>
 			</div>
 			<div class="clear"></div>
-			{if !$article.IsLock}
-			{template:comments}
-			{else}
+			@if (Model._article.Body.CanComment)
+			{
+				<div id="commentszbplk" class="commentszbp-area">
+					<div id="divCommentPost" class="comment-divCommentPost">
+                    			<h3 id="reply-title" class="comment-reply-title"><i class="fas fa-comments"></i>&nbsp;发表评论
+                    			<small><a rel="nofollow" id="cancel-reply" href="#divCommentPost" style="display:none;">取消回复</a></small>
+                    			</h3>
+                    			<form action="{$article.CommentPostUrl}" method="post" id="frmSumbit" target="_self" >
+                    			<input type="hidden" name="inpId" id="inpId" value="{$article.ID}" />
+                    			<input type="hidden" name="inpRevID" id="inpRevID" value="0" />
+                    			{if $user.ID>0}
+                    				{php}$avatar = md5(strtolower($user->Email));
+                    				$zmavatar=Blogs_tt_touxiang_generate_first_letter_uri($user->StaticName);{/php}
+                    				<div class="user_avatar"><img alt="{$user.StaticName}" src="https://cn.gravatar.com/avatar/{$avatar}&amp;r=X&amp;s=50?d=404" onerror='javascript:this.src="{$zmavatar}";this.onerror=null;' class="avatar avatar-50 photo" height="50" width="50">当前用户：
+                    				<a href="{$user.Url}">{$user.StaticName}</a>
+                    				<a href="{$host}zb_system/cmd.php?act=logout" title="退出">&nbsp;退出</a>
+                    		<input type="hidden" name="inpName" id="inpName" value="{$user.StaticName}" />
+                    		<input type="hidden" name="inpEmail" id="inpEmail" value="{$user.Email}" />
+                    		<input type="hidden" name="inpHomePage" id="inpHomePage" value="{$user.HomePage}" />
+                    				</div>
+                    			{else}
+                    				<div id="comment-author-info">
+                    					<p class="comment-form-author">
+                    						<input type="text" name="inpName" id="inpName" class="commenttext" value="{$user.Name}" tabindex="1" />
+                    						<label for="author">昵称<?php if ($req) echo "（必填）"; ?></label>
+                    					</p>
+                    					<p class="comment-form-email">
+                    						<input type="text" name="inpEmail" id="inpEmail" class="commenttext" value="{$user.Email}" tabindex="2" />
+                    						<label for="email">邮箱<?php if ($req) echo "（必填）"; ?></label>
+                    					</p>
+                    					<p class="comment-form-url">
+                    						<input type="text" name="inpHomePage" id="inpHomePage" class="commenttext" value="{$user.HomePage}" tabindex="3" />
+                    						<label for="url">网址</label>
+                    					</p>
+                    					{if $option['ZC_COMMENT_VERIFY_ENABLE']}
+                    <p><input type="text" name="inpVerify" id="inpVerify" class="text" value="" size="28" tabindex="4" /> 
+                    <img style="width:{$option['ZC_VERIFYCODE_WIDTH']}px;height:{$option['ZC_VERIFYCODE_HEIGHT']}px;cursor:pointer;" src="{$article.ValidCodeUrl}" alt="" title="" onclick="javascript:this.src='{$article.ValidCodeUrl}&amp;tm='+Math.random();"/></p>{/if}
+                    				</div>
+                    				{/if}
+                    
+                    				<p class="smiley-box">
+                    <a href="javascript:grin('[face_01]')"><img src="/Blogs/image/smilies/face_01.gif" alt="" title="呵呵" /></a><a href="javascript:grin('[face_02]')"><img src="/Blogs/image/smilies/face_02.gif" alt="" title="嘻嘻" /></a><a href="javascript:grin('[face_03]')"><img src="/Blogs/image/smilies/face_03.gif" alt="" title="哈哈" /></a><a href="javascript:grin('[face_04]')"><img src="/Blogs/image/smilies/face_04.gif" alt="" title="偷笑" /></a><a href="javascript:grin('[face_05]')"><img src="/Blogs/image/smilies/face_05.gif" alt="" title="挖鼻屎" /></a><a href="javascript:grin('[face_06]')"><img src="/Blogs/image/smilies/face_06.gif" alt="" title="互粉" /></a><a href="javascript:grin('[face_07]')"><img src="/Blogs/image/smilies/face_07.gif" alt="" title="吃惊" /></a><a href="javascript:grin('[face_08]')"><img src="/Blogs/image/smilies/face_08.gif" alt="" title="疑问" /></a><a href="javascript:grin('[face_09]')"><img src="/Blogs/image/smilies/face_09.gif" alt="" title="怒火" /></a><a href="javascript:grin('[face_10]')"><img src="/Blogs/image/smilies/face_10.gif" alt="" title="睡觉" /></a><a href="javascript:grin('[face_11]')"><img src="/Blogs/image/smilies/face_11.gif" alt="" title="鼓掌" /></a><a href="javascript:grin('[face_12]')"><img src="/Blogs/image/smilies/face_12.gif" alt="" title="抓狂" /></a><a href="javascript:grin('[face_13]')"><img src="/Blogs/image/smilies/face_13.gif" alt="" title="黑线" /></a><a href="javascript:grin('[face_14]')"><img src="/Blogs/image/smilies/face_14.gif" alt="" title="阴险" /></a><a href="javascript:grin('[face_15]')"><img src="/Blogs/image/smilies/face_15.gif" alt="" title="懒得理你" /></a><a href="javascript:grin('[face_16]')"><img src="/Blogs/image/smilies/face_16.gif" alt="" title="嘘" /></a><a href="javascript:grin('[face_17]')"><img src="/Blogs/image/smilies/face_17.gif" alt="" title="亲亲" /></a><a href="javascript:grin('[face_18]')"><img src="/Blogs/image/smilies/face_18.gif" alt="" title="可怜" /></a><a href="javascript:grin('[face_19]')"><img src="/Blogs/image/smilies/face_19.gif" alt="" title="害羞" /></a><a href="javascript:grin('[face_20]')"><img src="/Blogs/image/smilies/face_20.gif" alt="" title="思考" /></a><a href="javascript:grin('[face_21]')"><img src="/Blogs/image/smilies/face_21.gif" alt="" title="失望" /></a><a href="javascript:grin('[face_22]')"><img src="/Blogs/image/smilies/face_22.gif" alt="" title="挤眼" /></a><a href="javascript:grin('[face_23]')"><img src="/Blogs/image/smilies/face_23.gif" alt="" title="委屈" /></a><a href="javascript:grin('[face_24]')"><img src="/Blogs/image/smilies/face_24.gif" alt="" title="太开心" /></a><a href="javascript:grin('[face_26]')"><img src="/Blogs/image/smilies/face_25.gif" alt="" title="哈欠" /></a><a href="javascript:grin('[face_26]')"><img src="/Blogs/image/smilies/face_26.gif" alt="" title="晕" /></a><a href="javascript:grin('[face_27]')"><img src="/Blogs/image/smilies/face_27.gif" alt="" title="泪" /></a><a href="javascript:grin('[face_28]')"><img src="/Blogs/image/smilies/face_28.gif" alt="" title="困" /></a><a href="javascript:grin('[face_29]')"><img src="/Blogs/image/smilies/face_29.gif" alt="" title="悲伤" /></a><a href="javascript:grin('[face_30]')"><img src="/Blogs/image/smilies/face_30.gif" alt="" title="衰" /></a><a href="javascript:grin('[face_31]')"><img src="/Blogs/image/smilies/face_31.gif" alt="" title="围观" /></a><a href="javascript:grin('[face_32]')"><img src="/Blogs/image/smilies/face_32.gif" alt="" title="给力" /></a><a href="javascript:grin('[face_33]')"><img src="/Blogs/image/smilies/face_33.gif" alt="" title="囧" /></a><a href="javascript:grin('[face_34]')"><img src="/Blogs/image/smilies/face_34.gif" alt="" title="威武" /></a><a href="javascript:grin('[face_35]')"><img src="/Blogs/image/smilies/face_35.gif" alt="" title="OK" /></a><a href="javascript:grin('[face_36]')"><img src="/Blogs/image/smilies/face_36.gif" alt="" title="赞" /></a><br />
+                    		        </p>
+                    		        <p class="comment-form-comment"><textarea id="txaArticle" name="txaArticle" rows="4" tabindex="4"></textarea></p>
+                    
+                    				<p class="comment-tool"><span class="single-tag"><a class="smiley" href="" title="插入表情">表情</a></span></p>
+                    
+                    				<p class="form-submit">
+                    					<input id="submit" name="sumbit" type="submit" tabindex="5" value="提交评论" onclick="return zbp.comment.post()"/>
+                    				</p>
+                    			</form>
+                    			<script type="text/javascript">
+                    				document.getElementById("txaArticle").onkeydown = function (moz_ev){
+                    				var ev = null;
+                    				if (window.event){
+                    				ev = window.event;
+                    				}else{
+                    				ev = moz_ev;
+                    				}
+                    				if (ev != null && ev.ctrlKey && ev.keyCode == 13){
+                    				document.getElementById("submit").click();}
+                    				}
+                    			</script>
+                    		</div>
+
+				</div>
+				<label id="AjaxCommentBegin"></label>
+				@if (Model._article.Body.Comments is {Count: > 0 }){
+					<div id="commentszbplb" class="commentszbp-area">
+						<h3 id="pinglunliebiao"><i class="fas fa-comments"></i>&nbsp;评论列表</h3>
+						<ol class="commentzpb-list">
+							@foreach (var comment in Model._article.Body.Comments)
+							{
+								
+							}
+						</ol>
+					</div>
+				<label id="AjaxCommentEnd"></label>
+			}
+			else
+			{
+				<div id="commentszbpmy" class="commentszbp-area">
+					<h3 id="meiyoupinglun">还没有留言，还不快点抢沙发？</h3>
+				</div>
+			}
+			}
+			else
+			{
 			<p class="no-comments">评论已关闭！</p>
-			{/if}
+			}
 		</main><!-- .site-main -->
 	</div><!-- .content-area -->
 	{if ($zbp->Config('Blogs')->cebianlanbj !== '3') }
@@ -100,3 +186,5 @@
 	{/if}
 </div>
 <div class="clear"></div>
+
+@Html.Raw(@Model._article.Footer)

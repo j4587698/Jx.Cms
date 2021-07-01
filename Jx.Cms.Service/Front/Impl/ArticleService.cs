@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Furion.DependencyInjection;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Plugin.Model;
@@ -15,7 +17,11 @@ namespace Jx.Cms.Service.Front.Impl
     {
         public ArticleModel GetArticleById(int id)
         {
-            var article = ArticleEntity.Select.Where(x => x.Id == id).Include(x => x.Catalogue).IncludeMany(x => x.Comments).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            var article = ArticleEntity.Select.Where(x => x.Id == id).Include(x => x.Catalogue).IncludeMany(x => x.Comments).IncludeMany(x => x.Labels).First();
+            if (article == null)
+            {
+                return null;
+            }
             if (article.IsMarkdown)
             {
                 article.Content = Markdown.ToHtml(article.Content);
@@ -30,12 +36,12 @@ namespace Jx.Cms.Service.Front.Impl
 
         public ArticleEntity GetPrevArticle(int id)
         {
-            return ArticleEntity.Select.Where(x => x.Id < id && x.IsPage == false).OrderByDescending(x => x.Id).First();
+            return ArticleEntity.Select.Where(x => x.Id < id && x.IsPage == false).Include(x => x.Catalogue).OrderByDescending(x => x.Id).First();
         }
 
         public ArticleEntity GetNextArticle(int id)
         {
-            return ArticleEntity.Select.Where(x => x.Id > id && x.IsPage == false).OrderBy(x => x.Id).First();
+            return ArticleEntity.Select.Where(x => x.Id > id && x.IsPage == false).Include(x => x.Catalogue).OrderBy(x => x.Id).First();
         }
 
         public List<ArticleEntity> GetAllArticle()
@@ -56,6 +62,16 @@ namespace Jx.Cms.Service.Front.Impl
         public List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count)
         {
             return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Name == label)).Count(out count).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
+        }
+
+        public List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10)
+        {
+            // Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
+            // if (expr)
+            // {
+            //     
+            // }
+            return null;
         }
 
         public bool SaveArticle(ArticleEntity articleEntity)
