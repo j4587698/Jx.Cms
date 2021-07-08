@@ -1,6 +1,8 @@
 using System.IO;
+using System.Net.Http;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -19,14 +21,29 @@ namespace Jx.Cms.Web
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddInjectBase();
+            services.AddControllersWithViews().AddInjectBase();
             services.AddRemoteRequest();
+            services.Configure<CookiePolicyOptions>(op =>
+            {
+                op.CheckConsentNeeded = context => true;
+                op.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+
+            services.AddHttpContextAccessor();
+            services.AddScoped<HttpContextAccessor>();
+            services.AddHttpClient();
+            services.AddScoped<HttpClient>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             app.UseInjectBase();
+
+            app.UseCookiePolicy();
+            app.UseAuthentication();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();

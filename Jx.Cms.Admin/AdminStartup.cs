@@ -24,6 +24,10 @@ namespace Jx.Cms.Admin
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new EmbeddedFileProvider(typeof(AdminStartup).Assembly, "Jx.Cms.Admin.wwwroot")
+            });
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
@@ -31,7 +35,7 @@ namespace Jx.Cms.Admin
                 endpoints.MapBlazorHub("~/Install/_blazor");
                 endpoints.MapFallbackToAreaPage("~/Install/{*clientroutes:nonfile}","/_InstallHost", "Install");
                 
-                endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller}/{action}");
+                endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapBlazorHub("~/Admin/_blazor");
                 endpoints.MapFallbackToAreaPage("~/Admin/{*clientroutes:nonfile}","/_AdminHost", "Admin");
             });

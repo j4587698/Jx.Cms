@@ -15,6 +15,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="wwwroot/**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
     <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
     <ProjectReference Include="..\Jx.Cms.Rewrite\Jx.Cms.Rewrite.csproj" />

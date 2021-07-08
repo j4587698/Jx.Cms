@@ -10,8 +10,8 @@ namespace Jx.Cms.Themes
         public void Apply(PageRouteModel model)
         {
             var area = model.AreaName;
-            // 不处理区域内的
-            if (!area.IsNullOrEmpty())
+            // 不处理区域内的和Admin的和Install的
+            if (!area.IsNullOrEmpty() || area is "Admin" or "Install")
             {
                 return;
             }

@@ -17,6 +17,7 @@ namespace Jx.Cms.Themes.Middlewares
         public async Task Invoke(HttpContext context)
         {
             var hasArea = context.Request.RouteValues.ContainsKey("area");
+            
             if (!hasArea)
             {
                 var path = ThemeUtil.Redirect();
