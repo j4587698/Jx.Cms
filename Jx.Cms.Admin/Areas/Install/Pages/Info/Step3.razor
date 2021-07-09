@@ -2,8 +2,9 @@
 
 @using Jx.Cms.Admin.ViewModel
 @using Jx.Cms.Common.Utils
-@using Jx.Cms.DbContext
-@using Jx.Cms.Entities.Admin
+@using Jx.Cms.Service.Admin
+
+@inject IAdminUserService AdminUserService
 
 <div class="container">
     <ValidateForm Model="@InstallInfoVm" OnValidSubmit="@OnSubmit">
@@ -47,12 +48,7 @@
 
     private async Task OnSubmit(EditContext arg)
     {
-        
-        AdminUserEntity adminUserEntity = new AdminUserEntity();
-        adminUserEntity.UserName = InstallInfoVm.AdminName;
-        adminUserEntity.Password = InstallInfoVm.AdminPassword;
-        adminUserEntity.Type = "admin";
-        adminUserEntity.Save();
+        AdminUserService.Register(InstallInfoVm.AdminName, InstallInfoVm.AdminPassword);
         System.IO.File.Create("install.lock");
         Util.IsInstalled = true;
         await Next.InvokeAsync();

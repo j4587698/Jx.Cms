@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using Masuit.Tools
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -11,9 +12,9 @@
 <body class="login js login-action-login wp-core-ui">
 <div id="login">
     <h1>
-        <a href="https://cn.wordpress.org/">基于WordPress</a>
+        <a href="https://cn.wordpress.org/">JX.CMS</a>
     </h1>
-    <div id="login_error"> <strong>错误</strong>：用户名一栏为空。<br></div>
+    @if(!ViewData["Error"].IsNullOrEmpty()){<div id="login_error"> <strong>错误</strong>：@ViewData["Error"]<br></div>}
     <form name="loginform" id="loginform" method="post">
         <p>
             <label for="user_login">用户名</label>
@@ -26,7 +27,7 @@
             </div>
         </div>
         <p class="forgetmenot">
-            <input name="rememberme" type="checkbox" id="rememberme" value="forever"> <label for="rememberme">记住我</label>
+            <input name="rememberme" type="checkbox" id="rememberme" value="true"> <label for="rememberme">记住我</label>
         </p>
         <p class="submit">
             <input type="submit" name="wp-submit" id="wp-submit" class="button button-primary button-large" value="登录">
