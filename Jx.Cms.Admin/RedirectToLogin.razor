@@ -1,12 +1,10 @@
-﻿@using Microsoft.AspNetCore.Authentication.Cookies
-
-@inject NavigationManager NavigationManager
+﻿@inject NavigationManager NavigationManager
 
 @code {
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        NavigationManager.NavigateTo(CookieAuthenticationDefaults.LoginPath, true);
+        NavigationManager.NavigateTo("/Admin/Login", true);
     }
 
 }

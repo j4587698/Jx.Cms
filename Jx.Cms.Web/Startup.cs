@@ -23,14 +23,6 @@ namespace Jx.Cms.Web
         {
             services.AddControllersWithViews().AddInjectBase();
             services.AddRemoteRequest();
-            services.Configure<CookiePolicyOptions>(op =>
-            {
-                op.CheckConsentNeeded = context => true;
-                op.MinimumSameSitePolicy = SameSiteMode.None;
-            });
-
-            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-
             services.AddHttpContextAccessor();
             services.AddScoped<HttpContextAccessor>();
             services.AddHttpClient();
@@ -41,9 +33,7 @@ namespace Jx.Cms.Web
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             app.UseInjectBase();
-
-            app.UseCookiePolicy();
-            app.UseAuthentication();
+            app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
