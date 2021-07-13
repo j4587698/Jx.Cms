@@ -1,6 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using Furion;
@@ -9,6 +7,9 @@ using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Util;
 using Masuit.Tools.Media;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Processing;
 
 namespace Jx.Cms.Service.Admin.Impl
 {
@@ -36,22 +37,22 @@ namespace Jx.Cms.Service.Admin.Impl
             {
                 try
                 {
-                    img = Image.FromFile(screenShotPath);
+                    img = Image.Load(screenShotPath);
                 }
                 catch
                 {
                     _logger.LogInformation("获取封面信息失败:{screenShotPath}", screenShotPath);
-                    img = Image.FromStream(Resource.GetResource("noconver.jpg"));
+                    img = Image.Load(Resource.GetResource("noconver.jpg"));
                 }
             }
             else
             {
-                img = Image.FromStream(Resource.GetResource("noconver.jpg"));
+                img = Image.Load(Resource.GetResource("noconver.jpg"));
                 
             }
-            var bitmap = new Bitmap(img);
             var stream = new MemoryStream();
-            bitmap.ResizeImage(150, 200).Save(stream, ImageFormat.Jpeg);
+            img.Mutate(x => x.Resize(150, 200));
+            img.Save(stream, JpegFormat.Instance);
             stream.Position = 0;
             return stream;
         }

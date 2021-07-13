@@ -1,5 +1,6 @@
 ﻿@using Jx.Cms.Common.Extensions
 @using System.Diagnostics.CodeAnalysis
+@using Furion
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Plugin.Utils
 @using Jx.Cms.Service
@@ -19,8 +20,8 @@
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
     <Header>
         <span class="ml-3 flex-fill"></span>
-        <img src="_content/BootstrapBlazor.Shared/images/Argo.png" class="layout-avatar-right" />
-        <span class="ml-3 d-none d-sm-block">超级管理员</span>
+        <img src="/Admin/Image/LoadLocalAvatar?name=@App.User.Identity.Name" class="layout-avatar-right" />
+        <span class="ml-3 d-none d-sm-block">@App.User.Identity.Name</span>
     </Header>
     <Side>
         <div class="layout-banner">

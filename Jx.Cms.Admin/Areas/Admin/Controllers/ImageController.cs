@@ -1,8 +1,11 @@
 ﻿using System.IO;
 using System.Net.Mime;
+using Jx.Cms.Common.Extensions;
+using Jx.Cms.Common.Utils;
 using Jx.Cms.Service;
 using Jx.Cms.Service.Admin;
 using Microsoft.AspNetCore.Mvc;
+using SixLabors.ImageSharp;
 
 namespace Jx.Cms.Admin.Areas.Admin.Controllers
 {
@@ -16,10 +19,24 @@ namespace Jx.Cms.Admin.Areas.Admin.Controllers
             _themeConfigService = themeConfigService;
         }
         
-        // GET
+        /// <summary>
+        /// 获取主题截图
+        /// </summary>
+        /// <param name="themeName"></param>
+        /// <returns></returns>
         public IActionResult LoadScreenShot(string themeName)
         {
             return File(_themeConfigService.GetScreenShotStreamByThemeName(themeName), "image/jpeg");
+        }
+
+        /// <summary>
+        /// 加载本地头像
+        /// </summary>
+        /// <returns></returns>
+        public IActionResult LoadLocalAvatar(string name)
+        {
+            string ch = name.IsNullOrEmpty() ? "空" : name.Substring(0, 1);
+            return File(Util.StringToImage(ch, 45, 45, 20, Color.White, Color.Blue), "image/png");
         }
     }
 }
