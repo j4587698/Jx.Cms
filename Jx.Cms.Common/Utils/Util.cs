@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Masuit.Tools.Security;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
@@ -14,9 +15,13 @@ namespace Jx.Cms.Common.Utils
         /// </summary>
         public static bool IsInstalled { get; set; }
 
+        private static readonly FontFamily Family;
+
         static Util()
         {
             IsInstalled = File.Exists("install.lock");
+            FontCollection collection = new FontCollection();
+            Family = collection.Install(Resource.GetResource("font.ttf"));
         }
 
         /// <summary>
@@ -32,8 +37,6 @@ namespace Jx.Cms.Common.Utils
         public static Stream StringToImage(string str, int width, int height, int fontsize, Color color, Color bgColor)
         {
             Image image = new Image<Rgba32>(width, height, bgColor);
-            FontCollection collection = new FontCollection();
-            var family = collection.Install(Resource.GetResource("font.ttf"));
             var options = new DrawingOptions()
             {
                 TextOptions = new TextOptions()
@@ -45,11 +48,21 @@ namespace Jx.Cms.Common.Utils
                     VerticalAlignment = VerticalAlignment.Center
                 }
             };
-            image.Mutate(x => x.DrawText(options, str, family.CreateFont(fontsize), color, new PointF(0, height / 2)));
+            image.Mutate(x => x.DrawText(options, str, Family.CreateFont(fontsize), color, new PointF(0, height / 2)));
             MemoryStream ms = new MemoryStream();
             image.SaveAsPng(ms);
             ms.Position = 0;
             return ms;
+        }
+
+        /// <summary>
+        /// 获取Avatar头像地址
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns></returns>
+        public static string GetWebAvatarUrl(string email)
+        {
+            return $"https://cn.gravatar.com/avatar/{email.ToLower().MDString()}";
         }
     }
 }

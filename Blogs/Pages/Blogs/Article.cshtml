@@ -1,5 +1,7 @@
 ﻿@page
 @using Blogs.Utils
+@using Furion
+@using Util = Jx.Cms.Common.Utils.Util
 @model Blogs.Pages.Blogs.Article
 
 @Html.Raw(@Model._article.Header)
@@ -95,27 +97,26 @@
                     			<small><a rel="nofollow" id="cancel-reply" href="#divCommentPost" style="display:none;">取消回复</a></small>
                     			</h3>
                     			<form action="{$article.CommentPostUrl}" method="post" id="frmSumbit" target="_self" >
-                    			<input type="hidden" name="inpId" id="inpId" value="{$article.ID}" />
+                    			<input type="hidden" name="inpId" id="inpId" value="@Model._article.Body.Id" />
                     			<input type="hidden" name="inpRevID" id="inpRevID" value="0" />
-                    			{if $user.ID>0}
-                    				{php}$avatar = md5(strtolower($user->Email));
-                    				$zmavatar=Blogs_tt_touxiang_generate_first_letter_uri($user->StaticName);{/php}
-                    				<div class="user_avatar"><img alt="{$user.StaticName}" src="https://cn.gravatar.com/avatar/{$avatar}&amp;r=X&amp;s=50?d=404" onerror='javascript:this.src="{$zmavatar}";this.onerror=null;' class="avatar avatar-50 photo" height="50" width="50">当前用户：
-                    				<a href="{$user.Url}">{$user.StaticName}</a>
-                    				<a href="{$host}zb_system/cmd.php?act=logout" title="退出">&nbsp;退出</a>
-                    		<input type="hidden" name="inpName" id="inpName" value="{$user.StaticName}" />
-                    		<input type="hidden" name="inpEmail" id="inpEmail" value="{$user.Email}" />
-                    		<input type="hidden" name="inpHomePage" id="inpHomePage" value="{$user.HomePage}" />
+                    			@if(Model.AdminUserEntity != null){
+			                    <div class="user_avatar"><img alt="{$user.StaticName}" src="@Util.GetWebAvatarUrl(Model.AdminUserEntity.Email)&amp;r=X&amp;s=50?d=404" onerror='javascript:this.src="/Admin/Image/LoadLocalAvatar?name=@Model.AdminUserEntity.NickName";this.onerror=null;' class="avatar avatar-50 photo" height="50" width="50">当前用户：
+                    				<a href="{$user.Url}">@Model.AdminUserEntity.NickName</a>
+                    				<a href="/Admin/Logout" title="退出">&nbsp;退出</a>
+                    		<input type="hidden" name="inpName" id="inpName" value="@Model.AdminUserEntity.NickName" />
+                    		<input type="hidden" name="inpEmail" id="inpEmail" value="@Model.AdminUserEntity.Email" />
+                    		<input type="hidden" name="inpHomePage" id="inpHomePage" value="@Model.AdminUserEntity.HomePage" />
                     				</div>
-                    			{else}
+			                    }else{
+			                    
                     				<div id="comment-author-info">
                     					<p class="comment-form-author">
                     						<input type="text" name="inpName" id="inpName" class="commenttext" value="{$user.Name}" tabindex="1" />
-                    						<label for="author">昵称<?php if ($req) echo "（必填）"; ?></label>
+                    						<label for="author">昵称（必填）</label>
                     					</p>
                     					<p class="comment-form-email">
                     						<input type="text" name="inpEmail" id="inpEmail" class="commenttext" value="{$user.Email}" tabindex="2" />
-                    						<label for="email">邮箱<?php if ($req) echo "（必填）"; ?></label>
+                    						<label for="email">邮箱（必填） </label>
                     					</p>
                     					<p class="comment-form-url">
                     						<input type="text" name="inpHomePage" id="inpHomePage" class="commenttext" value="{$user.HomePage}" tabindex="3" />

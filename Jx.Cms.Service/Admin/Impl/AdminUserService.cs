@@ -1,6 +1,7 @@
 ﻿using System;
 using Furion.DependencyInjection;
 using Jx.Cms.Entities.Admin;
+using Masuit.Tools;
 using Masuit.Tools.Security;
 
 namespace Jx.Cms.Service.Admin.Impl
@@ -10,28 +11,43 @@ namespace Jx.Cms.Service.Admin.Impl
         // 盐
         private string _salt = "E78D376F97CE4A7E89E011FA1FB362F6";
 
-        public bool Register(string username, string password)
+        public bool Register(AdminUserEntity adminUserEntity)
         {
-            if (AdminUserEntity.Select.Where(x => x.UserName == username).Any())
+            if (AdminUserEntity.Select.Where(x => x.UserName == adminUserEntity.UserName).Any())
             {
                 return false;
             }
-
-            var admin = new AdminUserEntity()
-                {UserName = username, Password = password.MDString2(_salt), Type = "admin"};
-            admin.Insert();
+            
+            adminUserEntity.Insert();
             return true;
         }
 
-        public bool LoginCheck(string username, string password)
+        public AdminUserEntity Login(string username, string password)
         {
-            Console.WriteLine("123456".MDString2(_salt));
-            if (AdminUserEntity.Where(x => x.UserName == username && x.Password == password.MDString2(_salt)).Count() == 1)
+            var entity = AdminUserEntity.Where(x =>
+                (x.UserName == username || x.Email == username) && x.Password == password.MDString2(_salt));
+            if (entity.Count() == 1)
             {
-                return true;
+                return entity.First();
             }
 
-            return false;
+            return null;
+        }
+
+        public AdminUserEntity GetUserByUserName(string username)
+        {
+            var entity = AdminUserEntity.Where(x => x.UserName == username).First();
+            if (entity == null)
+            {
+                return null;
+            }
+
+            if (entity.NickName.IsNullOrEmpty())
+            {
+                entity.NickName = entity.UserName;
+            }
+
+            return entity;
         }
     }
 }

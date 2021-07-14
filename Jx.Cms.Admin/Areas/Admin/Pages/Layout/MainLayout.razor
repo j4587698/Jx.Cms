@@ -2,6 +2,7 @@
 @using System.Diagnostics.CodeAnalysis
 @using Furion
 @using Jx.Cms.Common.Attribute
+@using Jx.Cms.Entities.Admin
 @using Jx.Cms.Plugin.Utils
 @using Jx.Cms.Service
 @using Jx.Cms.Service.Admin
@@ -10,6 +11,7 @@
 @inject IAdminMenuService _adminMenuService
 @inject MessageService MessageService
 @inject NavigationManager NavigationManager
+@inject IAdminUserService AdminUserService
 
 <Message />
 <Toast />
@@ -20,8 +22,8 @@
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
     <Header>
         <span class="ml-3 flex-fill"></span>
-        <img src="/Admin/Image/LoadLocalAvatar?name=@App.User.Identity.Name" class="layout-avatar-right" />
-        <span class="ml-3 d-none d-sm-block">@App.User.Identity.Name</span>
+        <img src="/Admin/Image/LoadLocalAvatar?name=@_adminUser.NickName" class="layout-avatar-right" />
+        <span class="ml-3 d-none d-sm-block">@_adminUser.NickName</span>
     </Header>
     <Side>
         <div class="layout-banner">
@@ -58,10 +60,13 @@
     }
 
     private List<MenuItem> _menuItems;
+
+    private AdminUserEntity _adminUser;
     
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
+        _adminUser = AdminUserService.GetUserByUserName(App.User.Identity.Name);
         var menuAttributes = _adminMenuService.GetAllMenu();
         menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();

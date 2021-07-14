@@ -52,8 +52,8 @@ namespace Jx.Cms.Admin.Validator
             {
                 switch (context.MemberName)
                 {
-                    case nameof(infoVm.AdminRePassword):
-                        if (infoVm.AdminRePassword != infoVm.AdminPassword)
+                    case nameof(infoVm.RePassword):
+                        if (infoVm.RePassword != infoVm.Password)
                         {
                             results.Add(new ValidationResult("两次密码不一致", new []{context.MemberName}));
                         }

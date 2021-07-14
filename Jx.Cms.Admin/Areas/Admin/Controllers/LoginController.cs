@@ -42,10 +42,12 @@ namespace Jx.Cms.Admin.Areas.Admin.Controllers
                 ViewData["Error"] = "密码不能为空";
                 return View();
             }
-            if (_adminUserService.LoginCheck(username, password))
+
+            var entity = _adminUserService.Login(username, password);
+            if (entity != null)
             {
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
-                identity.AddClaim(new Claim(ClaimTypes.Name, username));
+                identity.AddClaim(new Claim(ClaimTypes.Name, entity.UserName));
                 await HttpContext.SignInAsync(new ClaimsPrincipal(identity), new AuthenticationProperties(){IsPersistent = true, ExpiresUtc = rememberme? DateTimeOffset.Now.AddDays(5): DateTimeOffset.Now.AddMinutes(30)});
                 if (redirect.IsNullOrEmpty())
                 {

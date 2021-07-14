@@ -2,7 +2,9 @@
 
 @using Jx.Cms.Admin.ViewModel
 @using Jx.Cms.Common.Utils
+@using Jx.Cms.Entities.Admin
 @using Jx.Cms.Service.Admin
+@using Mapster
 
 @inject IAdminUserService AdminUserService
 
@@ -11,17 +13,27 @@
     <h2>管理员设置</h2>
         <div class="row">
             <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@InstallInfoVm.AdminName" DisplayText="管理员用户名"></BootstrapInput>
+                <BootstrapInput @bind-Value="@InstallInfoVm.UserName" DisplayText="管理员用户名"></BootstrapInput>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@InstallInfoVm.AdminPassword" DisplayText="管理员密码" type="password"></BootstrapInput>
+                <BootstrapInput @bind-Value="@InstallInfoVm.Email" DisplayText="邮箱"></BootstrapInput>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@InstallInfoVm.AdminRePassword" DisplayText="管理员密码重复" type="password">
+                <BootstrapInput @bind-Value="@InstallInfoVm.NickName" DisplayText="邮箱"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.Password" DisplayText="管理员密码" type="password"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.RePassword" DisplayText="管理员密码重复" type="password">
                     <InstallValidator></InstallValidator>
                 </BootstrapInput>
             </div>
@@ -43,12 +55,12 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        InstallInfoVm = new InstallInfoVm(){AdminName = "Admin"};
+        InstallInfoVm = new InstallInfoVm(){UserName = "Admin"};
     }
 
     private async Task OnSubmit(EditContext arg)
     {
-        AdminUserService.Register(InstallInfoVm.AdminName, InstallInfoVm.AdminPassword);
+        AdminUserService.Register(InstallInfoVm.Adapt<AdminUserEntity>());
         System.IO.File.Create("install.lock");
         Util.IsInstalled = true;
         await Next.InvokeAsync();
