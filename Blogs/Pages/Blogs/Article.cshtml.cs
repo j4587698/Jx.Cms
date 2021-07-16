@@ -1,4 +1,5 @@
-﻿using Furion;
+﻿using System.Collections.Generic;
+using Furion;
 using Jx.Cms.Entities.Admin;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Plugin.Model;
@@ -17,7 +18,9 @@ namespace Blogs.Pages.Blogs
 
         public ArticleEntity _next { get; set; }
         
-        public AdminUserEntity AdminUserEntity { get; set; }
+        public AdminUserEntity _AdminUser { get; set; }
+
+        public List<ArticleEntity> Relevant { get; set; }
         
         public IActionResult OnGet([FromQuery]int id, [FromServices]IArticleService articleService, [FromServices]IAdminUserService adminUserService)
         {
@@ -30,8 +33,10 @@ namespace Blogs.Pages.Blogs
             _next = articleService.GetNextArticle(id);
             if (HttpContext.User.Identity?.IsAuthenticated == true)
             {
-                AdminUserEntity = adminUserService.GetUserByUserName(HttpContext.User.Identity.Name);
+                _AdminUser = adminUserService.GetUserByUserName(HttpContext.User.Identity.Name);
             }
+
+            Relevant = articleService.GetRelevantArticle(_article.Body, 8);
             return Page();
         }
     }

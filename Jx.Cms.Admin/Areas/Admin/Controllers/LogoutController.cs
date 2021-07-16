@@ -1,16 +1,19 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Admin.Areas.Admin.Controllers
 {
+    [Authorize]
+    [Area("Admin")]
     public class LogoutController : Controller
     {
         // GET
-        public async Task<bool> Index()
+        public async Task<IActionResult> Index()
         {
             await HttpContext.SignOutAsync();
-            return true;
+            return Redirect("/");
         }
     }
 }

@@ -66,12 +66,17 @@ namespace Jx.Cms.Service.Front.Impl
 
         public List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10)
         {
-            // Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
-            // if (expr)
-            // {
-            //     
-            // }
-            return null;
+            Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
+            Expression<Func<ArticleEntity, bool>> whereContent = x => x.CatalogueId == baseArticle.CatalogueId;
+            if (baseArticle.Labels != null)
+            {
+                
+                //whereContent = whereContent.Or(x => ArticleLabelEntity.Select.Where(y => )));
+            }
+
+            where = where.And(whereContent);
+            var sql = ArticleEntity.Select.Where(where).ToSql();
+            return ArticleEntity.Where(where).ToList();
         }
 
         public bool SaveArticle(ArticleEntity articleEntity)
