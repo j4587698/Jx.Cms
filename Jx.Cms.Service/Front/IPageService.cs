@@ -28,7 +28,7 @@ namespace Jx.Cms.Service.Front
         /// <param name="pageSize">每页条数</param>
         /// <param name="count">页面总数量</param>
         /// <returns>指定页页面列表</returns>
-        List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count);
+        List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize, out long count);
 
         /// <summary>
         /// 分页获取页面

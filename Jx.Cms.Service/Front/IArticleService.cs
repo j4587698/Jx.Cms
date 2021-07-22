@@ -61,7 +61,7 @@ namespace Jx.Cms.Service.Front
         /// <param name="pageSize">每页条数</param>
         /// <param name="count">文章总数量</param>
         /// <returns>指定页文章列表</returns>
-        List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count);
+        List<ArticleEntity> GetArticleByLabel(string label, int pageNumber, int pageSize, out long count);
 
         /// <summary>
         /// 获取相关文章（根据所在分类以及相同Label）

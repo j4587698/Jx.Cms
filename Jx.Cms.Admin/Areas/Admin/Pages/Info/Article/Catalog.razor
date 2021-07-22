@@ -68,7 +68,7 @@
 
     private Task<QueryData<CatalogEntity>> OnQueryAsync(QueryPageOptions arg)
     {
-        var catalogEntities = CatalogService.GetCatalogPageWithCount(arg.PageIndex - 1, arg.PageItems, out var count);
+        var catalogEntities = CatalogService.GetCatalogPage(arg.PageIndex - 1, arg.PageItems, out var count);
         return Task.FromResult(new QueryData<CatalogEntity>()
         {
             Items = catalogEntities,

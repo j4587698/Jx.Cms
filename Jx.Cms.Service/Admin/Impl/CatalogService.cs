@@ -20,7 +20,7 @@ namespace Jx.Cms.Service.Admin.Impl
             return CatalogEntity.Select.OrderByDescending(x => x.Id).ToList();
         }
 
-        public List<CatalogEntity> GetCatalogPageWithCount(int pageNumber, int pageSize, out long count)
+        public List<CatalogEntity> GetCatalogPage(int pageNumber, int pageSize, out long count)
         {
             return CatalogEntity.Select.Count(out count).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }

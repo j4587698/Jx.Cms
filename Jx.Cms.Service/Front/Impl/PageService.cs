@@ -16,7 +16,7 @@ namespace Jx.Cms.Service.Front.Impl
             return ArticleEntity.Select.Where(x => x.IsPage).ToList();
         }
 
-        public List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count)
+        public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize, out long count)
         {
             return ArticleEntity.Select.Where(x => x.IsPage).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }

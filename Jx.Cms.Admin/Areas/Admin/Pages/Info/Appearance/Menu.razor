@@ -126,7 +126,7 @@
 
     private Task OnCatalogueClick(int arg1, int arg2)
     {
-        _allCatalogue = CatalogService.GetCatalogPageWithCount(arg1, arg2, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _allCatalogue = CatalogService.GetCatalogPage(arg1, arg2, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
         return Task.CompletedTask;
     }
     
@@ -188,7 +188,7 @@
 
     private Task OnPageClick(int arg1, int arg2)
     {
-        _allPage = PageService.GetArticlePageWithCount(arg1, arg2, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allPage = PageService.GetArticlePage(arg1, arg2, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         return Task.CompletedTask;
     }
 
@@ -242,7 +242,7 @@
 
     private Task OnArticleClick(int arg1, int arg2)
     {
-        _allArticle = ArticleService.GetArticlePageWithCount(arg1, arg2, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allArticle = ArticleService.GetArticlePage(arg1, arg2, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -343,13 +343,13 @@
         base.OnInitialized();
         
         _lateCatalogue = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
-        _allCatalogue = CatalogService.GetCatalogPageWithCount(1, 10, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _allCatalogue = CatalogService.GetCatalogPage(1, 10, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
 
         _latePage = PageService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        _allPage = PageService.GetArticlePageWithCount(1, 10, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allPage = PageService.GetArticlePage(1, 10, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         
         _lateArticle = ArticleService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        _allArticle = ArticleService.GetArticlePageWithCount(1, 10, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allArticle = ArticleService.GetArticlePage(1, 10, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
     }
 
     

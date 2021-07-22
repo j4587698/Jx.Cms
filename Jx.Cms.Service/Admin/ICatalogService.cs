@@ -29,7 +29,7 @@ namespace Jx.Cms.Service.Admin
         /// <param name="pageSize">每页数量</param>
         /// <param name="count">总数量</param>
         /// <returns>分类列表</returns>
-        List<CatalogEntity> GetCatalogPageWithCount(int pageNumber, int pageSize, out long count);
+        List<CatalogEntity> GetCatalogPage(int pageNumber, int pageSize, out long count);
 
         /// <summary>
         /// 保存分类

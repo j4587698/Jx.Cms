@@ -46,7 +46,7 @@
 
     protected Task<QueryData<ArticleEntity>> OnQueryAsync(QueryPageOptions options)
     {
-        var articleEntities = PageService.GetArticlePageWithCount(options.PageIndex - 1, options.PageItems, out long count);
+        var articleEntities = PageService.GetArticlePage(options.PageIndex - 1, options.PageItems, out long count);
         return Task.FromResult(new QueryData<ArticleEntity>()
         {
             Items = articleEntities,

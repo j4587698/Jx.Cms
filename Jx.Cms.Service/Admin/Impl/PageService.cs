@@ -17,7 +17,7 @@ namespace Jx.Cms.Service.Admin.Impl
             return ArticleEntity.Select.Where(x => x.IsPage).OrderByDescending(x => x.Id).ToList();
         }
 
-        public List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count)
+        public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize, out long count)
         {
             return ArticleEntity.Select.Where(x => x.IsPage).Count(out count).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }

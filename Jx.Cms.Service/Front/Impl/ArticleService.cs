@@ -59,24 +59,27 @@ namespace Jx.Cms.Service.Front.Impl
             return ArticleEntity.Select.Where(x => x.IsPage == false).OrderByDescending(x => x.PublishTime).Include(x => x.Catalogue).Page(pageNumber, pageSize).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
-        public List<ArticleEntity> GetArticleByLabelWithCount(string label, int pageNumber, int pageSize, out long count)
+        public List<ArticleEntity> GetArticleByLabel(string label, int pageNumber, int pageSize, out long count)
         {
             return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Name == label)).Count(out count).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
         public List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10)
         {
-            Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
-            Expression<Func<ArticleEntity, bool>> whereContent = x => x.CatalogueId == baseArticle.CatalogueId;
-            if (baseArticle.Labels != null)
+            List<ArticleEntity> articles = new List<ArticleEntity>();
+            if (baseArticle.Labels is {Count: > 0})
             {
-                
-                //whereContent = whereContent.Or(x => ArticleLabelEntity.Select.Where(y => )));
+                var ids = baseArticle.Labels.Select(x => x.Id).ToList();
+                var articleIds = ArticleLabelEntity.Where(x => ids.Contains(x.LabelId)).GroupBy(x => x.ArticleId).ToList(x => x.Key);
+                articles.AddRange(ArticleEntity.Where(x => articleIds.Contains(x.Id) && x.IsPage == false).Include(x => x.Catalogue).Take(count).ToList());
             }
 
-            where = where.And(whereContent);
-            var sql = ArticleEntity.Select.Where(where).ToSql();
-            return ArticleEntity.Where(where).ToList();
+            if (articles.Count < count)
+            {
+               articles.AddRange(ArticleEntity.Where(x => !x.IsPage && x.CatalogueId == baseArticle.CatalogueId).Include(x => x.Catalogue).Take(count - articles.Count).ToList());
+            }
+
+            return articles;
         }
 
         public bool SaveArticle(ArticleEntity articleEntity)

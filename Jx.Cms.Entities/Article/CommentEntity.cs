@@ -35,6 +35,13 @@ namespace Jx.Cms.Entities.Article
 
         [Description("父评论")]
         public CommentEntity Parent { get; set; }
+        
+        [Description("根评论Id")]
+        public int RootId { get; set; }
+
+        [Description("根评论")]
+        [Navigate(nameof(RootId))]
+        public CommentEntity Root { get; set; }
 
         [Description("内容")]
         [MaxLength(2048)]
