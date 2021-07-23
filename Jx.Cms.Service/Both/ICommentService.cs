@@ -63,5 +63,7 @@ namespace Jx.Cms.Service.Both
         /// <param name="articleId">文章Id</param>
         /// <returns></returns>
         List<CommentEntity> GetAllCommentByArticleId(int articleId);
+
+        List<CommentEntity> GetCommentTreeCteByArticleId(int articleId);
     }
 }

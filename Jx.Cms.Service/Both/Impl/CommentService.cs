@@ -40,5 +40,10 @@ namespace Jx.Cms.Service.Both.Impl
         {
             return CommentEntity.Where(x => x.ArticleEntity.Id == articleId).ToList();
         }
+
+        public List<CommentEntity> GetCommentTreeCteByArticleId(int articleId)
+        {
+            return CommentEntity.Where(x => x.ArticleEntity.Id == articleId && x.ParentId == 0).OrderByDescending(x => x.CreateTime).AsTreeCte().ToList();
+        }
     }
 }
