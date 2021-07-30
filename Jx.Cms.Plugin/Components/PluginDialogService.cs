@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion.DependencyInjection;
-using Furion.DependencyInjection.Extensions;
 
 namespace Jx.Cms.Plugin.Components
 {

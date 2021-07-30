@@ -1,29 +1,30 @@
 ﻿@using Jx.Cms.Common.Extensions
-@using System.Diagnostics.CodeAnalysis
 @using Furion
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Entities.Admin
 @using Jx.Cms.Plugin.Utils
-@using Jx.Cms.Service
 @using Jx.Cms.Service.Admin
 @inherits LayoutComponentBase
 
 @inject IAdminMenuService _adminMenuService
-@inject MessageService MessageService
-@inject NavigationManager NavigationManager
-@inject IAdminUserService AdminUserService
+@inject MessageService _messageService
+@inject NavigationManager _navigationManager
+@inject IAdminUserService _adminUserService
 
 <Message />
 <Toast />
 <SweetAlert />
-<Dialog />
+<Dialog></Dialog>
 
-<Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true"
+<Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true" AdditionalAssemblies="new[] { GetType().Assembly }"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
     <Header>
-        <span class="ml-3 flex-fill"></span>
-        <img src="/Admin/Image/LoadLocalAvatar?name=@_adminUser.NickName" class="layout-avatar-right" />
-        <span class="ml-3 d-none d-sm-block">@_adminUser.NickName</span>
+        <span class="ms-3 flex-sm-fill d-none d-sm-block">JX.CMS</span>
+        <div class="flex-fill d-sm-none">
+        </div>
+        <Widget></Widget>
+        <img src="/Admin/Image/LoadLocalAvatar?name=@_adminUser.NickName" class="layout-avatar-right"/>
+        <span class="mx-3 d-none d-sm-block">@_adminUser.NickName</span>
     </Header>
     <Side>
         <div class="layout-banner">
@@ -62,11 +63,11 @@
     private List<MenuItem> _menuItems;
 
     private AdminUserEntity _adminUser;
-    
+
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()
     {
-        _adminUser = AdminUserService.GetUserByUserName(App.User.Identity.Name);
+        _adminUser = _adminUserService.GetUserByUserName(App.User.Identity.Name);
         var menuAttributes = _adminMenuService.GetAllMenu();
         menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();
@@ -81,10 +82,11 @@
         }
         return _menuItems;
     }
-    
+
     private void GenerateMenu(MenuItem item, string parentId, List<MenuAttribute> menuAttributes)
     {
         var menus = menuAttributes.Where(x => x.ParentId == parentId).OrderByDescending(x => x.Order);
+        List<MenuItem> items = new List<MenuItem>();
         foreach (var menuAttribute in menus)
         {
             MenuItem menuItem = new MenuItem();
@@ -95,7 +97,8 @@
             {
                 GenerateMenu(menuItem, menuAttribute.Id, menuAttributes);
             }
-            item.AddItem(menuItem);
+            items.Add(menuItem);
         }
+        item.Items = items;
     }
 }
