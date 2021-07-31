@@ -29,13 +29,16 @@ namespace Jx.Cms.Plugin.Options
             name = name ?? throw new ArgumentNullException(nameof(name));
             options = options ?? throw new ArgumentNullException(nameof(options));
             Dictionary<string, IFileProvider> fileProviders = new Dictionary<string, IFileProvider>();
-            var list = PluginUtil.GetAllPlugins().Where(x => x.IsEnable).ToList();
-            foreach (var pluginConfig in list)
+            if (Util.IsInstalled)
             {
-                DefaultPlugin.LoadPlugin(pluginConfig);
-                fileProviders.Add(pluginConfig.PluginId, new EmbeddedFileProvider(DefaultPlugin.GetAssemblyByPluginId(pluginConfig.PluginId), $"{Path.GetFileNameWithoutExtension(pluginConfig.PluginPath)}.{_basePath}"));
+                var list = PluginUtil.GetAllPlugins().Where(x => x.IsEnable).ToList();
+                foreach (var pluginConfig in list)
+                {
+                    DefaultPlugin.LoadPlugin(pluginConfig);
+                    fileProviders.Add(pluginConfig.PluginId, new EmbeddedFileProvider(DefaultPlugin.GetAssemblyByPluginId(pluginConfig.PluginId), $"{Path.GetFileNameWithoutExtension(pluginConfig.PluginPath)}.{_basePath}"));
+                }
             }
-
+            
             _filesProvider = new MyCompositeFileProvider(fileProviders);
             
             // Basic initialization in case the options weren't initialized by any other component

@@ -1,10 +1,12 @@
 ﻿@using System.Diagnostics.CodeAnalysis
-<div class="row">
-    <Circle Width="@Width" Value="@Value" Color="@Color" StrokeWidth="10" ShowProgress="false" class="m-auto">
-            <div class="count-down">
-                <h2>@(CountDownSecond - NowSecond)</h2>
-            </div>
-        </Circle>
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <Circle Width="@Width" Value="@Value" Color="@Color" StrokeWidth="10" ShowProgress="false" class="m-auto">
+                <div class="count-down">
+                    <h2>@(CountDownSecond - NowSecond)</h2>
+                </div>
+            </Circle>
+    </div>
 </div>
 <style>
     .count-down{

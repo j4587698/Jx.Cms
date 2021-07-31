@@ -6,13 +6,12 @@
             <Textarea IsDisabled="true" Value="@_agreement" style="height: 80vh"></Textarea>
             </div>
     </div>
-    <div class="row">
-        <div class="m-auto btn-group" role="group">
-            <Button @onclick="@Next" >同意并继续</Button>
-            <Button Color="Color.Danger">拒绝</Button>
+    <div class="row justify-content-md-center">
+        <div class="col-md-auto">
+                <Button @onclick="@Next">同意并继续</Button>
+                <Button Color="Color.Danger">拒绝</Button>
+            </div>
         </div>
-        
-    </div>
 
 </div>
 

@@ -85,6 +85,11 @@ namespace Jx.Cms.DbContext
                     case DataType.Oracle:
                         break;
                     case DataType.Sqlite:
+                        var path = Path.GetDirectoryName(dbConfig.DbName);
+                        if (!path.IsNullOrEmpty() && !Directory.Exists(path))
+                        {
+                            Directory.CreateDirectory(path);
+                        }
                         freeSql = new FreeSqlBuilder()
                             .UseAutoSyncStructure(isDevelopment)
                             .UseNoneCommandParameter(true)

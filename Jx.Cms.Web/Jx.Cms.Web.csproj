@@ -11,6 +11,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="db" />
       <Folder Include="Plugin" />
       <Folder Include="wwwroot\Default" />
     </ItemGroup>

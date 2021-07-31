@@ -17,7 +17,8 @@ namespace Jx.Cms.Service.Admin.Impl
             {
                 return false;
             }
-            
+
+            adminUserEntity.Password = adminUserEntity.Password.MDString2(_salt);
             adminUserEntity.Insert();
             return true;
         }
