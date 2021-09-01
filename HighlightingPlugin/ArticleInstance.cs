@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
-using Furion.DependencyInjection.Extensions;
 using HighlightingPlugin.Pages;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;

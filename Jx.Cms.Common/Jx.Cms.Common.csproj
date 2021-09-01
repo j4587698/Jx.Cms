@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
@@ -9,12 +9,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor" Version="5.4.2" />
-      <PackageReference Include="Furion" Version="2.16.0" />
-      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="2.16.0" />
-      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="2.16.0" />
-      <PackageReference Include="Markdig" Version="0.25.0" />
-      <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.7" />
+      <PackageReference Include="BootstrapBlazor" Version="5.8.3" />
+      <PackageReference Include="Furion" Version="2.18.7" />
+      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="2.18.7" />
+      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="2.18.7" />
+      <PackageReference Include="Humanizer.Core.zh-CN" Version="2.11.10" />
+      <PackageReference Include="Markdig" Version="0.26.0" />
+      <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.9" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
     </ItemGroup>

@@ -33,7 +33,7 @@
                             <CheckboxList @bind-Value="@_searchCatalogueValue" Items="@_searchCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
-                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
                         <Button OnClickWithoutRender="OnCatalogueAddClick">添加到菜单</Button>
                     </Row>
                 </CollapseItem>
@@ -51,7 +51,7 @@
                             <CheckboxList @bind-Value="@_searchArticleValue" Items="@_searchArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
-                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
                         <Button OnClickWithoutRender="OnArticleAddClick">添加到菜单</Button>
                     </Row>
                 </CollapseItem>
@@ -69,14 +69,14 @@
                             <CheckboxList @bind-Value="@_searchPageValue" Items="@_searchPage" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
-                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
                         <Button OnClickWithoutRender="OnPageAddClick">添加到菜单</Button>
                     </Row>
                 </CollapseItem>
                 <CollapseItem Text="自定义连接">
                     <BootstrapInput @bind-Value="_urlName" DisplayText="连接名称" ShowLabel="true"></BootstrapInput>
                     <BootstrapInput @bind-Value="_url" DisplayText="连接地址" ShowLabel="true"></BootstrapInput>
-                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+                    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
                         <Button OnClickWithoutRender="OnCustomUrlAddClick">添加到菜单</Button>
                     </Row>
                 </CollapseItem>

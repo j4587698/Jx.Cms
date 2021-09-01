@@ -11,6 +11,13 @@ namespace Jx.Cms.Plugin.Plugin
     public interface ISystemPlugin
     {
         /// <summary>
+        /// 插件被启用时
+        /// </summary>
+        void PluginEnable()
+        {
+        }
+
+        /// <summary>
         /// 添加后台菜单项
         /// </summary>
         /// <returns></returns>
@@ -28,6 +35,12 @@ namespace Jx.Cms.Plugin.Plugin
         {
             return true;
         }
-        
+
+        /// <summary>
+        /// 插件被禁用时
+        /// </summary>
+        void PluginDisable()
+        {
+        }
     }
 }

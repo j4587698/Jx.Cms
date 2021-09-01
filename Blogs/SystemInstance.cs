@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using Blogs.Components;
+using Blogs.Model;
+using Blogs.Utils;
 using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
@@ -8,6 +10,11 @@ namespace Blogs
 {
     public class SystemInstance: ISystemPlugin
     {
+        public void PluginEnable()
+        {
+            ThemeSettings.SaveSettings(ThemeSettings.GetSettings());
+        }
+
         public List<PluginMenuModel> AddMenuItem()
         {
             return new()

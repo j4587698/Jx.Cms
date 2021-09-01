@@ -2,6 +2,7 @@
 @using Blogs.Enum
 @using Blogs.Model
 @using Blogs.Utils
+@using Humanizer
 @using Jx.Cms.Common.Utils
 @using Masuit.Tools.Html
 @model Blogs.Pages.Blogs.Index
@@ -53,15 +54,15 @@
 									@if ((Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
 									     (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
 									{
-										@(content.Length > 120 ? content.Substring(0, 80) + "..." : content)
+										@content.Truncate(80)
 									}
 									else if (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
 									{
-										@(content.Length > 120 ? content.Substring(0, 160) + "..." : content)
+										@content.Truncate(120)
 									}
 									else
 									{
-										@(content.Length > 120 ? content.Substring(0, 80) + "..." : content)
+										@content.Truncate(80)
 									}
 								</div>
 								<div class="entry-meta">

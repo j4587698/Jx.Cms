@@ -45,26 +45,7 @@ namespace Jx.Cms.Plugin
             });
             AddToPartManager(plugin, partManager);
             PluginLoaders.Add(themeConfig.ThemeType, plugin);
-            var types = plugin.LoadDefaultAssembly().GetTypes();
-            var articleList = new List<Type>();
-            foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
-            {
-                articleList.Add(article);
-            }
-
-            if (articleList.Count > 0)
-            {
-                DefaultPlugin.ArticlePlugins.Add(themeConfig.ThemeType.ToString(), articleList);
-            }
-            
-            // 系统相关插件列表
-            var systemList = new List<Type>();
-            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
-
-            if (systemList.Count > 0)
-            {
-                DefaultPlugin.SystemPlugins.Add(themeConfig.ThemeType.ToString(), systemList);
-            }
+            DefaultPlugin.LoadPluginType(themeConfig.ThemeType.ToString(), plugin);
         }
 
         private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
@@ -97,8 +78,7 @@ namespace Jx.Cms.Plugin
             if (PluginLoaders.Remove(themeConfig.ThemeType, out var plugin))
             {
                 RemoveFromPartManager(plugin, partManager);
-                DefaultPlugin.ArticlePlugins.TryRemove(themeConfig.ThemeType.ToString(), out _);
-                DefaultPlugin.SystemPlugins.TryRemove(themeConfig.ThemeType.ToString(), out _);
+                DefaultPlugin.UnLoadPluginType(themeConfig.ThemeType.ToString());
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();

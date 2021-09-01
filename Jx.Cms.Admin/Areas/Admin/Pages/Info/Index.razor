@@ -1,6 +1,8 @@
 ﻿@page "/"
 @using Jx.Cms.Common.Attribute
 @using Microsoft.AspNetCore.Components.Authorization
+@using Jx.Cms.Common.Components
+
 @attribute [Menu("{622993B8-7B9B-4DA8-80B5-9FD34A251C82}", "首页", "/", Int32.MaxValue, iconClass:"fa fa-home")]
 
 Index
@@ -13,6 +15,8 @@ Index
         Failed
     </NotAuthorized>
 </AuthorizeView>
+
+<MediaSelectComponent></MediaSelectComponent>
 
 @code {
 

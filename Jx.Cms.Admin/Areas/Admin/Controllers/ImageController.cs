@@ -38,5 +38,7 @@ namespace Jx.Cms.Admin.Areas.Admin.Controllers
             string ch = name.IsNullOrEmpty() ? "空" : name.Substring(0, 1);
             return File(Util.StringToImage(ch, 45, 45, 20, Color.White, Color.Blue), "image/png");
         }
+        
+        
     }
 }

@@ -12,6 +12,16 @@ namespace Blogs
 {
     public class RewriterInstance: ISystemPlugin
     {
+        public void PluginEnable()
+        {
+            var rewriterModel = RewriterModel.GetSettings();
+            if (rewriterModel.RewriteOption == null)
+            {
+                rewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+                RewriterModel.SaveSettings(rewriterModel);
+            }
+        }
+
         public List<PluginMenuModel> AddMenuItem()
         {
             return new()
@@ -29,7 +39,7 @@ namespace Blogs
         public bool AddMiddleware(HttpContext context)
         {
             var rewriterModel = RewriterModel.GetSettings();
-            if (rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
+            if (rewriterModel == null || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
             {
                 return true;
             }

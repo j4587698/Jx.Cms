@@ -1,4 +1,8 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Furion;
+using Jx.Cms.Common.Vo;
 using Masuit.Tools.Security;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -8,7 +12,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Jx.Cms.Common.Utils
 {
-    public class Util
+    public static class Util
     {
         /// <summary>
         /// 是否已安装
@@ -63,6 +67,23 @@ namespace Jx.Cms.Common.Utils
         public static string GetWebAvatarUrl(string email)
         {
             return $"https://cn.gravatar.com/avatar/{email.ToLower().MDString()}";
+        }
+
+        /// <summary>
+        /// 获取上传文件
+        /// </summary>
+        /// <param name="ext"></param>
+        /// <returns></returns>
+        public static List<MediaInfoVo> GetUploadFile(params string[] ext)
+        {
+            var uploadPath = Path.Combine(App.WebHostEnvironment.WebRootPath, "upload");
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+            return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
+                .Where(x => ext.Contains(Path.GetExtension(x))).Select(x => new MediaInfoVo()
+                    { MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x }).ToList();
         }
     }
 }

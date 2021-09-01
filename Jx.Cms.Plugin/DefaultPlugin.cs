@@ -51,35 +51,14 @@ namespace Jx.Cms.Plugin
                 configure.PreferSharedTypes = true;
             });
             Plugins.Add(pluginConfig.PluginId, plugin);
-            var types = plugin.LoadDefaultAssembly().GetTypes();
-            // 文章相关插件列表
-            var articleList = new List<Type>();
-            foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
-            {
-                articleList.Add(article);
-            }
-
-            if (articleList.Count > 0)
-            {
-                ArticlePlugins.Add(pluginConfig.PluginId, articleList);
-            }
-            
-            // 系统相关插件列表
-            var systemList = new List<Type>();
-            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
-
-            if (systemList.Count > 0)
-            {
-                SystemPlugins.Add(pluginConfig.PluginId, systemList);
-            }
+            LoadPluginType(pluginConfig.PluginId, plugin);
         }
 
         public static void UnloadPlugin(PluginConfig pluginConfig)
         {
             if (Plugins.TryRemove(pluginConfig.PluginId, out PluginLoader plugin))
             {
-                ArticlePlugins.TryRemove(pluginConfig.PluginId, out _);
-                SystemPlugins.TryRemove(pluginConfig.PluginId, out _);
+                UnLoadPluginType(pluginConfig.PluginId);
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -91,6 +70,45 @@ namespace Jx.Cms.Plugin
             if (Plugins.TryGetValue(pluginConfig.PluginId, out PluginLoader plugin))
             {
                 plugin.Reload();
+            }
+        }
+
+        internal static void LoadPluginType(string pluginName, PluginLoader plugin)
+        {
+            var types = plugin.LoadDefaultAssembly().GetTypes();
+            // 文章相关插件列表
+            var articleList = new List<Type>();
+            foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
+            {
+                articleList.Add(article);
+            }
+
+            if (articleList.Count > 0)
+            {
+                ArticlePlugins.Add(pluginName, articleList);
+            }
+            
+            // 系统相关插件列表
+            var systemList = new List<Type>();
+            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
+
+            if (systemList.Count > 0)
+            {
+                SystemPlugins.Add(pluginName, systemList);
+                foreach (var instance in systemList.Select(system => Activator.CreateInstance(system) as ISystemPlugin))
+                {
+                    instance?.PluginEnable();
+                }
+            }
+        }
+
+        internal static void UnLoadPluginType(string pluginName)
+        {
+            ArticlePlugins.TryRemove(pluginName, out _);
+            SystemPlugins.TryRemove(pluginName, out List<Type> systemList);
+            foreach (var instance in systemList.Select(system => Activator.CreateInstance(system) as ISystemPlugin))
+            {
+                instance?.PluginDisable();
             }
         }
     }

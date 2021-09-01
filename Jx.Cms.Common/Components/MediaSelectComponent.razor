@@ -1,0 +1,40 @@
+﻿@namespace Jx.Cms.Common.Components
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Common.Vo
+@using BootstrapBlazor.Components
+
+<ListView TItem="MediaInfoVo" Items="@MediaInfoVos">
+    <HeaderTemplate>
+        @Title
+    </HeaderTemplate>
+    <BodyTemplate>
+        <Card>
+            <CardHeader>
+                @context.MediaName
+            </CardHeader>
+            <CardBody></CardBody>
+            <CardFooter >
+                <Button>选择</Button>
+            </CardFooter>
+        </Card>
+    </BodyTemplate>
+</ListView>
+
+@code {
+    /// 要搜索的文件类型
+    [Parameter]
+    public string[] FileType { get; set; } = { ".jpg", ".jpeg", ".png", ".gif" };
+
+    /// 显示的标题
+    [Parameter]
+    public string Title { get; set; } = "请选择媒体";
+
+    private List<MediaInfoVo> MediaInfoVos { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MediaInfoVos = Util.GetUploadFile(FileType);
+    }
+
+}

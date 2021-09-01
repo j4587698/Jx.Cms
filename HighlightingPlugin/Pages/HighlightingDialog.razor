@@ -1,5 +1,5 @@
 ﻿
-    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.FormRow">
+    <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
         <Select TValue="string" Items="@Codes" ShowLabel="true" DisplayText="选择语言" @bind-Value="@SelectedValue"></Select>
         <Textarea @bind-Value="@CodeValue" DisplayText="代码段" ShowLabel="true" cols="10"></Textarea>
     </Row>
