@@ -42,7 +42,7 @@ namespace Jx.Cms.Themes.FileProvider
             foreach (IFileProvider fileProvider in _fileProviders)
             {
                 IFileInfo fileInfo = fileProvider.GetFileInfo(subPath);
-                if (fileInfo != null && fileInfo.Exists)
+                if (fileInfo is { Exists: true })
                     return fileInfo;
             }
             return new NotFoundFileInfo(subPath);

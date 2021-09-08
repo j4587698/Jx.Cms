@@ -50,6 +50,8 @@ namespace Jx.Cms.Themes.Options
             options.FileProvider ??= Environment.WebRootFileProvider;
             
             options.FileProvider = new CompositeFileProvider(options.FileProvider, _filesProvider);
+
+            Common.Utils.Util.ThemeProvider = options.FileProvider;
         }
     }
 }

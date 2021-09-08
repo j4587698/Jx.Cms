@@ -25,12 +25,12 @@ namespace Blogs.Utils
             var img = GetHtmlImageUrlList(articleEntity.Content);
             if (img.Length > 0)
             {
-                imgSrc = $@"<img src='/Tools/Thumbnail?src={img[0]}&width={width}&height={height}'>";
+                imgSrc = $@"{img[0]}?width={width}&height={height}'>";
             }
             else
             {
                 Random random = new Random();
-                imgSrc = $@"<img src='/Tools/Thumbnail?src=/Blogs/Image/random/{random.Next(10) + 1}.jpg&width={width}&height={height}'>";
+                imgSrc = $@"<img src='/Blogs/Image/random/{random.Next(10) + 1}.jpg?width={width}&height={height}&rmode=crop'>";
             }
 
             return imgSrc;

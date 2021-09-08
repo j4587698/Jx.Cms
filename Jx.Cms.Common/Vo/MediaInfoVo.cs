@@ -21,5 +21,10 @@ namespace Jx.Cms.Common.Vo
         /// 媒体路径
         /// </summary>
         public string FullPath { get; set; }
+
+        /// <summary>
+        /// 内容，仅供后台使用
+        /// </summary>
+        public string Content { get; set; }
     }
 }

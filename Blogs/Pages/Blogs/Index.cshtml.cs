@@ -19,7 +19,7 @@ namespace Blogs.Pages.Blogs
 
         public List<ArticleEntity> Articles { get; set; }
 
-        public Dictionary<string, int> pagination { get; set; }
+        public Dictionary<string, int> Pagination { get; set; }
 
         public long PageCount { get; set; }
         
@@ -35,7 +35,7 @@ namespace Blogs.Pages.Blogs
             Settings.AddOrUpdate(settingsService.GetAllValues("Blogs"));
             Articles = articleService.GetArticlePageWithCount(page, 10, out long count);
             PageCount = count;
-            pagination = paginationService.GetPagination(page, 10, (int)count);
+            Pagination = paginationService.GetPagination(page, 10, (int)count);
         }
     }
 }

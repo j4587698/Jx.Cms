@@ -4,9 +4,11 @@ using System.Linq;
 using Furion;
 using Jx.Cms.Common.Vo;
 using Masuit.Tools.Security;
+using Microsoft.Extensions.FileProviders;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 
@@ -18,6 +20,11 @@ namespace Jx.Cms.Common.Utils
         /// 是否已安装
         /// </summary>
         public static bool IsInstalled { get; set; }
+
+        /// <summary>
+        /// 主题使用的文件提供器
+        /// </summary>
+        public static IFileProvider ThemeProvider { get; set; }
 
         private static readonly FontFamily Family;
 
@@ -84,6 +91,31 @@ namespace Jx.Cms.Common.Utils
             return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
                 .Where(x => ext.Contains(Path.GetExtension(x))).Select(x => new MediaInfoVo()
                     { MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x }).ToList();
+        }
+
+        /// <summary>
+        /// 获取缩略图
+        /// </summary>
+        /// <param name="inputStream">输入流</param>
+        /// <param name="width">图片宽度</param>
+        /// <param name="height">图片高度</param>
+        /// <param name="op">操作码(crop:裁切 resize:重置大小)</param>
+        /// <returns></returns>
+        public static Stream GetThumbnail(Stream inputStream, int width, int height, string op = "crop")
+        {
+            var image = Image.Load(inputStream);
+            if (op == "crop")
+            {
+                image.Mutate(x => x.Crop(width, height));
+            }
+            else if (op == "resize")
+            {
+                image.Mutate( x => x.Resize(width, height));
+            }
+            var stream = new MemoryStream();
+            image.Save(stream, JpegFormat.Instance);
+            stream.Position = 0;
+            return stream;
         }
     }
 }

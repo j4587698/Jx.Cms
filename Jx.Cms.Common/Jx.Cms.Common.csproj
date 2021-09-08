@@ -18,6 +18,7 @@
       <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.9" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
+      <PackageReference Include="SixLabors.ImageSharp.Web" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
