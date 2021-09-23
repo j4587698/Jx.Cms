@@ -4,18 +4,15 @@
 @using BootstrapBlazor.Components
 
 <ListView TItem="MediaInfoVo" Items="@MediaInfoVos">
-    <HeaderTemplate>
-        @Title
-    </HeaderTemplate>
     <BodyTemplate>
         <Card>
             <CardHeader>
                 @context.MediaName
             </CardHeader>
-            <CardBody></CardBody>
-            <CardFooter >
-                <Button>选择</Button>
-            </CardFooter>
+            <CardBody>
+                <img style="margin-bottom: 1rem" src="@context.Url?width=150&height=200"/>
+                <div style="text-align: center"><Button OnClick="() => Select(context)">选择</Button></div>
+            </CardBody>
         </Card>
     </BodyTemplate>
 </ListView>
@@ -29,6 +26,10 @@
     [Parameter]
     public string Title { get; set; } = "请选择媒体";
 
+    /// 选择事件
+    [Parameter]
+    public EventCallback<MediaInfoVo> MediaSelected { get; set; }
+
     private List<MediaInfoVo> MediaInfoVos { get; set; }
     
     protected override void OnInitialized()
@@ -37,10 +38,9 @@
         MediaInfoVos = Util.GetUploadFile(FileType);
     }
 
-    protected override void OnAfterRender(bool firstRender)
+    private void Select(MediaInfoVo mediaInfoVo)
     {
-        base.OnAfterRender(firstRender);
-        
+        MediaSelected.InvokeAsync(mediaInfoVo);
     }
 
 }

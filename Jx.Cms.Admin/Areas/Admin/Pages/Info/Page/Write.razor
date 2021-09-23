@@ -7,6 +7,8 @@
 @using Jx.Cms.Service.Admin
 @using Jx.Cms.Admin.ViewModel
 @using Mapster
+@using System.Security.Claims
+@using Furion
 
 @inject NavigationManager NavigationManager
 @inject IPageService PageService
@@ -72,8 +74,7 @@
 
     private async Task OnValidSubmit(EditContext arg)
     {
-        // TODO: 增加登录后这里要改成用户名
-        Article.Author = "Admin";
+        Article.Author = App.User?.FindFirstValue(ClaimTypes.Name);
         
         var ret = PageService.SaveArticle(Article);
         await ToastService.Show(new ToastOption()

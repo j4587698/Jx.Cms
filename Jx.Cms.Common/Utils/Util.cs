@@ -90,7 +90,7 @@ namespace Jx.Cms.Common.Utils
             }
             return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
                 .Where(x => ext.Contains(Path.GetExtension(x))).Select(x => new MediaInfoVo()
-                    { MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x }).ToList();
+                    { MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x, Url = x.Substring(App.WebHostEnvironment.WebRootPath.Length)}).ToList();
         }
 
         /// <summary>

@@ -23,8 +23,8 @@ namespace Jx.Cms.Common.Vo
         public string FullPath { get; set; }
 
         /// <summary>
-        /// 内容，仅供后台使用
+        /// 地址
         /// </summary>
-        public string Content { get; set; }
+        public string Url { get; set; }
     }
 }

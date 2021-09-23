@@ -96,15 +96,13 @@ namespace Blogs.Utils
                     switch (info.Key)
                     {
                         case "year":
-                            where = where.And(x => x.PublishTime.Year.ToString() == info.Value);
+                            where = where.And(x => x.PublishTime.Year == info.Value.ConvertTo<int>());
                             break;
                         case "month":
-                            var month = info.Value.PadLeft(2, '0');
-                            where = where.And(x => x.PublishTime.Month.ToString() == month);
+                            where = where.And(x => x.PublishTime.Month == info.Value.ConvertTo<int>());
                             break;
                         case "day":
-                            var day = info.Value.PadLeft(2, '0');
-                            where = where.And(x => x.PublishTime.Day.ToString() == day);
+                            where = where.And(x => x.PublishTime.Day == info.Value.ConvertTo<int>());
                             break;
                         case "alias":
                             where = where.And(x =>

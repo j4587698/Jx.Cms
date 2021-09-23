@@ -2,9 +2,12 @@
 @using Jx.Cms.Common.Attribute
 @using Microsoft.AspNetCore.Components.Authorization
 @using Jx.Cms.Common.Components
+@using Jx.Cms.Common.Vo
 
 @attribute [Menu("{622993B8-7B9B-4DA8-80B5-9FD34A251C82}", "首页", "/", Int32.MaxValue, iconClass:"fa fa-home")]
 
+
+@inject MessageService MessageService
 Index
 
 <AuthorizeView>
@@ -16,8 +19,15 @@ Index
     </NotAuthorized>
 </AuthorizeView>
 
-<MediaSelectComponent></MediaSelectComponent>
+<MediaSelectComponent MediaSelected="MediaSelected"></MediaSelectComponent>
 
 @code {
 
+    private void MediaSelected(MediaInfoVo mediaInfoVo)
+    {
+        MessageService.Show(new MessageOption()
+        {
+            Content = mediaInfoVo.MediaName
+        });
+    }
 }
