@@ -4,6 +4,8 @@
 @using Jx.Cms.Common.Components
 @using Jx.Cms.Common.Vo
 
+@inject DialogService DialogService
+
 @attribute [Menu("{622993B8-7B9B-4DA8-80B5-9FD34A251C82}", "首页", "/", Int32.MaxValue, iconClass:"fa fa-home")]
 
 
@@ -22,6 +24,12 @@ Index
 <MediaSelectComponent MediaSelected="MediaSelected"></MediaSelectComponent>
 
 @code {
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        //DialogService.ShowModal<MediaSelectComponent>()
+    }
 
     private void MediaSelected(MediaInfoVo mediaInfoVo)
     {

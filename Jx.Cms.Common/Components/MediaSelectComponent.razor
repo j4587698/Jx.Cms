@@ -3,19 +3,28 @@
 @using Jx.Cms.Common.Vo
 @using BootstrapBlazor.Components
 
-<ListView TItem="MediaInfoVo" Items="@MediaInfoVos">
-    <BodyTemplate>
-        <Card>
-            <CardHeader>
-                @context.MediaName
-            </CardHeader>
-            <CardBody>
-                <img style="margin-bottom: 1rem" src="@context.Url?width=150&height=200"/>
-                <div style="text-align: center"><Button OnClick="() => Select(context)">选择</Button></div>
-            </CardBody>
-        </Card>
-    </BodyTemplate>
-</ListView>
+@implements IResultDialog
+
+<Tab>
+    <TabItem Text="上传媒体">
+        
+    </TabItem>
+    <TabItem Text="选择媒体 ">
+        <ListView TItem="MediaInfoVo" Items="@MediaInfoVos">
+            <BodyTemplate>
+                <Card>
+                    <CardHeader>
+                        @context.MediaName
+                    </CardHeader>
+                    <CardBody>
+                        <img style="margin-bottom: 1rem" src="@context.Url?width=150&height=200"/>
+                        <div style="text-align: center"><Button OnClick="() => Select(context)">选择</Button></div>
+                    </CardBody>
+                </Card>
+            </BodyTemplate>
+        </ListView>
+    </TabItem>
+</Tab>
 
 @code {
     /// 要搜索的文件类型
@@ -41,6 +50,12 @@
     private void Select(MediaInfoVo mediaInfoVo)
     {
         MediaSelected.InvokeAsync(mediaInfoVo);
+    }
+
+    public Task OnClose(DialogResult result)
+    {
+        result = DialogResult.Yes;
+        return Task.CompletedTask;
     }
 
 }
