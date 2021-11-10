@@ -9,21 +9,25 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor" Version="5.8.3" />
-      <PackageReference Include="Furion" Version="2.18.7" />
-      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="2.18.7" />
-      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="2.18.7" />
+      <PackageReference Include="BootstrapBlazor" Version="5.18.4" />
+      <PackageReference Include="Furion" Version="3.0.1" />
+      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.0.1" />
+      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="3.0.1" />
       <PackageReference Include="Humanizer.Core.zh-CN" Version="2.11.10" />
       <PackageReference Include="Markdig" Version="0.26.0" />
-      <PackageReference Include="Masuit.Tools.Core" Version="2.4.3.9" />
-      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.3" />
+      <PackageReference Include="Masuit.Tools.Core" Version="2.4.5.2" />
+      <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
-      <PackageReference Include="SixLabors.ImageSharp.Web" Version="1.0.3" />
+      <PackageReference Include="SixLabors.ImageSharp.Web" Version="1.0.4" />
     </ItemGroup>
 
     <ItemGroup>
       <EmbeddedResource Include="Resources\noconver.jpg" />
         <EmbeddedResource Include="Resources\font.ttf" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="wwwroot" />
     </ItemGroup>
 
 </Project>

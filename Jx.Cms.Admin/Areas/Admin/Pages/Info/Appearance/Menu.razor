@@ -326,7 +326,7 @@
         });
     }
 
-    private Task<bool> OnSaveAsync(MenuEntity arg)
+    private Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
     {
         return Task.FromResult(MenuService.SaveMenu(arg));
     }

@@ -12,8 +12,8 @@
 
     <ItemGroup>
       <PackageReference Include="DeviceDetector.NET" Version="4.3.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="5.0.9" />
-      <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="5.0.0" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
     </ItemGroup>
 
 </Project>

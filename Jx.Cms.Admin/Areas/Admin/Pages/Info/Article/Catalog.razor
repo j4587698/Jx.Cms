@@ -76,7 +76,7 @@
         });
     }
 
-    private Task<bool> OnSaveAsync(CatalogEntity arg)
+    private Task<bool> OnSaveAsync(CatalogEntity arg, ItemChangedType changedType)
     {
         return Task.FromResult(CatalogService.Save(arg));
     }
