@@ -3,7 +3,7 @@
 @using Blogs.Model
 
 @inject ToastService ToastService
-
+<br/>
 
 <Toast></Toast>
 <Row ItemsPerRow="ItemsPerRow.Two">
@@ -14,8 +14,8 @@
 <table class="table">
     <tbody>
     <tr>
-        <td>静态化选项 </td>
-        <td><Radio Items="@_optionItem" OnStateChanged="OnStateChanged"></Radio></td>
+        <td style="width: 20%">静态化选项 </td>
+        <td style="width: 80%"><RadioList TValue="string" Items="@_optionItem" OnSelectedChanged="OnSelectedChanged"></RadioList ></td>
     </tr>
     <tr>
         <td>文章URL配置</td>
@@ -23,7 +23,7 @@
     </tr>
     <tr>
         <td></td>
-        <td><Radio Items="@_articleItems" IsVertical="true" OnStateChanged="ArticleChange" IsDisabled="_isDisabled"></Radio></td>
+        <td><RadioList TValue="string" Items="@_articleItems" IsVertical="true" OnSelectedChanged="ArticleChange" IsDisabled="_isDisabled"></RadioList></td>
     </tr>
     <tr>
         <td>页面的URL配置</td>
@@ -31,7 +31,7 @@
     </tr>
     <tr>
         <td></td>
-        <td><Radio Items="@_pageItems" IsVertical="true" OnStateChanged="PageChange" IsDisabled="_isDisabled"></Radio></td>
+        <td><RadioList TValue="string" Items="@_pageItems" IsVertical="true" OnSelectedChanged="PageChange" IsDisabled="_isDisabled"></RadioList></td>
     </tr>
     <tr>
         <td>首页URL配置</td>
@@ -39,10 +39,16 @@
     </tr>
     <tr>
         <td></td>
-        <td><Radio Items="@_indexItems" IsVertical="true" OnStateChanged="IndexChange" IsDisabled="_isDisabled"></Radio></td>
+        <td><RadioList TValue="string" Items="@_indexItems" IsVertical="true" OnSelectedChanged="IndexChange" IsDisabled="_isDisabled"></RadioList></td>
     </tr>
     </tbody>
 </table>
+
+<style>
+    .radio-list .form-check {
+        width: 200px;
+    }
+</style>
 
 @code {
     
@@ -85,38 +91,23 @@
     // 是否禁用
     private bool _isDisabled = false;
 
-    private Task OnStateChanged(CheckboxState arg1, SelectedItem arg2)
+    private Task ArticleChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
-        RewriterModel.RewriteOption = arg2.Value;
-        if (arg2.Value == RewriteOptionEnum.Dynamic.ToString())
-        {
-            _isDisabled = true;
-        }
-        else if (arg2.Value == RewriteOptionEnum.Rewrite.ToString())
-        {
-            _isDisabled = false;
-        }
-        StateHasChanged();
-        return Task.CompletedTask;
-    }
-
-    private Task ArticleChange(CheckboxState arg1, SelectedItem arg2)
-    {
-        RewriterModel.ArticleUrl = arg2.Text;
+        RewriterModel.ArticleUrl = arg2;
         StateHasChanged();
         return Task.CompletedTask;
     }
     
-    private Task PageChange(CheckboxState arg1, SelectedItem arg2)
+    private Task PageChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
-        RewriterModel.PageUrl = arg2.Text;
+        RewriterModel.PageUrl = arg2;
         StateHasChanged();
         return Task.CompletedTask;
     }
 
-    private Task IndexChange(CheckboxState arg1, SelectedItem arg2)
+    private Task IndexChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
-        RewriterModel.IndexUrl = arg2.Text;
+        RewriterModel.IndexUrl = arg2;
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -126,4 +117,20 @@
         RewriterModel.SaveSettings(RewriterModel);
         ToastService.Success("修改成功", "Blogs伪静态规则设置成功");
     }
+
+    private Task OnSelectedChanged(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.RewriteOption = arg2;
+        if (arg2 == RewriteOptionEnum.Dynamic.ToString())
+        {
+            _isDisabled = true;
+        }
+        else if (arg2 == RewriteOptionEnum.Rewrite.ToString())
+        {
+            _isDisabled = false;
+        }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
 }

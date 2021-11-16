@@ -1,5 +1,6 @@
 using System.IO;
 using System.Net.Http;
+using BootstrapBlazor.Components;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -33,6 +34,7 @@ namespace Jx.Cms.Web
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
             app.UseInjectBase();
+            app.ApplicationServices.RegisterProvider();
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {

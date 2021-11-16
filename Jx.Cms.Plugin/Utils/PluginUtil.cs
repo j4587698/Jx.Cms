@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BootstrapBlazor.Components;
+using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Entities.Settings;
@@ -133,7 +134,8 @@ namespace Jx.Cms.Plugin.Utils
             foreach (var type in articlePlugin)
             {
                 var instance = Activator.CreateInstance(type) as IArticlePlugin;
-                var ret = instance?.AddEditorToolbarButton(ServiceProviderHelper.ServiceProvider.GetService(typeof(DialogService)) as DialogService);
+                
+                var ret = instance?.AddEditorToolbarButton(App.GetService<DialogService>());
                 if (ret != null)
                 {
                     extModels.Add(ret);

@@ -9,19 +9,34 @@
 
 @code {
     [Parameter]
-    public string Id { get; set; }
+    public string Id
+    {
+        get => _id;
+        set
+        {
+            _id = value;
+            ModifyPage();
+        }
+    }
+
+    private string _id;
 
     private RenderFragment _renderFragment;
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        if (Id.IsNullOrEmpty())
+        ModifyPage();
+    }
+
+    private void ModifyPage()
+    {
+        if (_id.IsNullOrEmpty())
         {
             NavigationManager.NavigateTo("/Admin");
             return;
         }
-        var body = PluginUtil.OnPluginPageShow(Id);
+        var body = PluginUtil.OnPluginPageShow(_id);
         if (body == null)
         {
             NavigationManager.NavigateTo("/Admin");
