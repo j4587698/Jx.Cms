@@ -16,7 +16,7 @@ namespace Jx.Cms.Plugin.Model
         /// </summary>
         public EditorToolbarButton ToolbarButton { get; set; }
         
-        public Func<ResultDialogOption, Type> OnDialogCreat { get; set; }
+        public Func<ResultDialogOption, Type> OnDialogCreate { get; set; }
 
         /// <summary>
         /// 按钮点击事件

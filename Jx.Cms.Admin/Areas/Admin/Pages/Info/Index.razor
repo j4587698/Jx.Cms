@@ -22,7 +22,6 @@ Index
     </NotAuthorized>
 </AuthorizeView>
 
-<MediaSelectComponent MediaSelected="MediaSelected"></MediaSelectComponent>
 
 @code {
 
@@ -31,12 +30,5 @@ Index
         base.OnInitialized();
         //DialogService.ShowModal<MediaSelectComponent>()
     }
-
-    private void MediaSelected(MediaInfoVo mediaInfoVo)
-    {
-        MessageService.Show(new MessageOption()
-        {
-            Content = mediaInfoVo.MediaName
-        });
-    }
+    
 }

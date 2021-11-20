@@ -12,6 +12,7 @@
 @using Mapster
 @using Furion
 @using System.Security.Claims
+@using Jx.Cms.Common.Components
 @using Masuit.Tools
 
 @inject NavigationManager NavigationManager
@@ -101,8 +102,13 @@
         base.OnInitialized();
         EditorExtModels = PluginUtil.OnArticleEditorShow();
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
-        var mediaButton = new EditorToolbarButton();
-        mediaButton.Tooltip = "选择图片";
+        var mediaButton = new EditorToolbarButton
+        {
+            Tooltip = "选择媒体",
+            ButtonName = "selectMedia",
+            IconClass = "fa fa-picture-o"
+        };
+        ToolbarButtons.Add(mediaButton);
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
         Article = (Id == 0 ? new ArticleEntity(){IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published} : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
         if (Article.CatalogueId == 0 && Catalogs.Any())
@@ -136,13 +142,27 @@
 
     private async Task<string> OnClickButton(string arg)
     {
+        if (arg == "selectMedia")
+        {
+            string ret = "";
+            await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+            {
+                Title = "请选择媒体",
+                IsScrolling = true,
+                ComponentParamters = new KeyValuePair<string, object>[]
+                {
+                    new(nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x))
+                }
+            });
+            return ret;
+        }
         var model = EditorExtModels.Find(x => x.ToolbarButton.ButtonName == arg);
         if (model == null)
         {
             return "";
         }
         ResultDialogOption option = new ResultDialogOption();
-        var type = model.OnDialogCreat(option);
+        var type = model.OnDialogCreate(option);
         var res = await model.OnToolbarClick(await PluginDialogService.ShowModal(option, type, DialogService));
         return res;
     }

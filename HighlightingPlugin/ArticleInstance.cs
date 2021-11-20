@@ -26,7 +26,7 @@ namespace HighlightingPlugin
                 IconClass = "fa fa-code",
                 Tooltip = "添加代码段"
             };
-            extModel.OnDialogCreat = option =>
+            extModel.OnDialogCreate = option =>
             {
                 option.Title = "添加代码段";
                 option.ButtonYesText = "插入代码段";

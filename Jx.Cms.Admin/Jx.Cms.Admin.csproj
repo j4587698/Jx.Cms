@@ -29,6 +29,7 @@
   <ItemGroup>
     <Folder Include="ViewModel\" />
     <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\Admin\js" />
   </ItemGroup>
 
 </Project>

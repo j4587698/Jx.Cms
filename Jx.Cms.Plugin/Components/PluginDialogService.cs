@@ -19,7 +19,7 @@ namespace Jx.Cms.Plugin.Components
 
             IPluginDialog pluginDialog = null;
             var result = DialogResult.Close;
-
+            option.Size = Size.ExtraLarge;
             option.BodyTemplate = builder =>
             {
                 builder.OpenComponent(0, type);

@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using Furion;
+using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
 using Masuit.Tools.Security;
 using Microsoft.Extensions.FileProviders;
@@ -88,9 +89,20 @@ namespace Jx.Cms.Common.Utils
             {
                 Directory.CreateDirectory(uploadPath);
             }
+
             return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
-                .Where(x => ext.Contains(Path.GetExtension(x))).Select(x => new MediaInfoVo()
-                    { MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x, Url = x.Substring(App.WebHostEnvironment.WebRootPath.Length)}).ToList();
+                .Where(x => ext.Contains(Path.GetExtension(x).ToLower())).Select(x => new MediaInfoVo()
+                {
+                    MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
+                    Url = x.Substring(App.WebHostEnvironment.WebRootPath.Length), IsSelected = false,
+                    MediaType = Path.GetExtension(x).ToLower() switch
+                    {
+                        ".jpg" or ".jpeg" or ".png" or ".gif" => MediaTypeEnum.Image,
+                        ".mp3" or ".wav" => MediaTypeEnum.Audio,
+                        ".mp4" or ".webm" => MediaTypeEnum.Video,
+                        _ => MediaTypeEnum.Unknow
+                }
+                }).ToList();
         }
 
         /// <summary>

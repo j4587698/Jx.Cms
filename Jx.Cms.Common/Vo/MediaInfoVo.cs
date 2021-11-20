@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using Jx.Cms.Common.Enum;
 
 namespace Jx.Cms.Common.Vo
 {
@@ -23,8 +24,18 @@ namespace Jx.Cms.Common.Vo
         public string FullPath { get; set; }
 
         /// <summary>
+        /// 文件类型
+        /// </summary>
+        public MediaTypeEnum MediaType { get; set; }
+
+        /// <summary>
         /// 地址
         /// </summary>
         public string Url { get; set; }
+
+        /// <summary>
+        /// 是否被选中
+        /// </summary>
+        public bool IsSelected { get; set; }
     }
 }
