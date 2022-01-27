@@ -42,5 +42,14 @@ namespace Jx.Cms.Plugin.Plugin
         void PluginDisable()
         {
         }
+
+        /// <summary>
+        /// 插件被删除时
+        /// </summary>
+        void PluginDeleted()
+        {
+            
+        }
+        
     }
 }

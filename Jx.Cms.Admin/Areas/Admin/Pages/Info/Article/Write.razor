@@ -149,9 +149,9 @@
             {
                 Title = "请选择媒体",
                 IsScrolling = true,
-                ComponentParamters = new KeyValuePair<string, object>[]
+                ComponentParamters = new Dictionary<string, object>
                 {
-                    new(nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x))
+                    {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x)}
                 }
             });
             return ret;

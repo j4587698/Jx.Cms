@@ -28,36 +28,55 @@ namespace Jx.Cms.Plugin.Components
                 builder.SetKey(Guid.NewGuid());
                 builder.CloseComponent();
             };
-            
-            option.FooterTemplate = BootstrapDynamicComponent.CreateComponent<ResultDialogFooter>(new KeyValuePair<string, object>[]
-            {
-                new(nameof(ResultDialogFooter.ShowCloseButton), option.ShowCloseButton),
-                new(nameof(ResultDialogFooter.ButtonCloseColor), option.ButtonCloseColor),
-                new(nameof(ResultDialogFooter.ButtonCloseIcon), option.ButtonCloseIcon),
-                new(nameof(ResultDialogFooter.ButtonCloseText), option.ButtonCloseText),
-                new(nameof(ResultDialogFooter.OnClickClose), new Func<Task>(async () => {
-                    result = DialogResult.Close;
-                    if(option.OnCloseAsync !=null) { await option.OnCloseAsync(); }
-                })),
 
-                new(nameof(ResultDialogFooter.ShowYesButton), option.ShowYesButton),
-                new(nameof(ResultDialogFooter.ButtonYesColor), option.ButtonYesColor),
-                new(nameof(ResultDialogFooter.ButtonYesIcon), option.ButtonYesIcon),
-                new(nameof(ResultDialogFooter.ButtonYesText), option.ButtonYesText ?? "确定"),
-                new(nameof(ResultDialogFooter.OnClickYes), new Func<Task>(async () => {
-                    result = DialogResult.Yes;
-                    if(option.OnCloseAsync !=null) { await option.OnCloseAsync(); }
-                })),
+            option.FooterTemplate = BootstrapDynamicComponent.CreateComponent<ResultDialogFooter>(
+                new Dictionary<string, object?>()
+                {
+                    { nameof(ResultDialogFooter.ShowCloseButton), option.ShowCloseButton },
+                    { nameof(ResultDialogFooter.ButtonCloseColor), option.ButtonCloseColor },
+                    { nameof(ResultDialogFooter.ButtonCloseIcon), option.ButtonCloseIcon },
+                    { nameof(ResultDialogFooter.ButtonCloseText), option.ButtonCloseText },
+                    {
+                        nameof(ResultDialogFooter.OnClickClose), new Func<Task>(async () =>
+                        {
+                            result = DialogResult.Close;
+                            if (option.OnCloseAsync != null)
+                            {
+                                await option.OnCloseAsync();
+                            }
+                        })
+                    },
 
-                new(nameof(ResultDialogFooter.ShowNoButton), option.ShowNoButton),
-                new(nameof(ResultDialogFooter.ButtonNoColor), option.ButtonNoColor),
-                new(nameof(ResultDialogFooter.ButtonNoIcon), option.ButtonNoIcon),
-                new(nameof(ResultDialogFooter.ButtonNoText), option.ButtonNoText ?? "取消"),
-                new(nameof(ResultDialogFooter.OnClickNo), new Func<Task>(async () => {
-                    result = DialogResult.No;
-                    if(option.OnCloseAsync !=null) { await option.OnCloseAsync(); }
-                }))
-            }).Render();
+                    { nameof(ResultDialogFooter.ShowYesButton), option.ShowYesButton },
+                    { nameof(ResultDialogFooter.ButtonYesColor), option.ButtonYesColor },
+                    { nameof(ResultDialogFooter.ButtonYesIcon), option.ButtonYesIcon },
+                    { nameof(ResultDialogFooter.ButtonYesText), option.ButtonYesText ?? "确定" },
+                    {
+                        nameof(ResultDialogFooter.OnClickYes), new Func<Task>(async () =>
+                        {
+                            result = DialogResult.Yes;
+                            if (option.OnCloseAsync != null)
+                            {
+                                await option.OnCloseAsync();
+                            }
+                        })
+                    },
+
+                    { nameof(ResultDialogFooter.ShowNoButton), option.ShowNoButton },
+                    { nameof(ResultDialogFooter.ButtonNoColor), option.ButtonNoColor },
+                    { nameof(ResultDialogFooter.ButtonNoIcon), option.ButtonNoIcon },
+                    { nameof(ResultDialogFooter.ButtonNoText), option.ButtonNoText ?? "取消" },
+                    {
+                        nameof(ResultDialogFooter.OnClickNo), new Func<Task>(async () =>
+                        {
+                            result = DialogResult.No;
+                            if (option.OnCloseAsync != null)
+                            {
+                                await option.OnCloseAsync();
+                            }
+                        })
+                    }
+                }).Render();
 
             var closeCallback = option.OnCloseAsync;
             option.OnCloseAsync = async () =>

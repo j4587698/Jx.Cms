@@ -25,6 +25,11 @@ namespace Jx.Cms.Plugin.Utils
         {
             var dbPlugins = PluginEntity.Select.ToList();
             var pluginConfigs = new List<PluginConfig>();
+            if (!Directory.Exists(Constants.PluginPath))
+            {
+                Directory.CreateDirectory(Constants.PluginPath);
+                return pluginConfigs;
+            }
             var dirs = Directory.GetDirectories(Constants.PluginPath);
             foreach (var dir in dirs)
             {

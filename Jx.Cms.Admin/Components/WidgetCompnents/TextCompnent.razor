@@ -1,0 +1,42 @@
+﻿@using Jx.Cms.Service.Both
+@using System.ComponentModel
+@inject IWidgetSettingsService _widgetSettingsService
+
+<Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Normal">
+    <BootstrapInput @bind-Value="Title"></BootstrapInput>
+    <BootstrapInput @bind-Value="Content"></BootstrapInput>
+    <Button OnClick="Callback">保存</Button>
+</Row>
+
+@code {
+    [DisplayName("标题名")]
+    private string Title { get; set; }
+
+    [DisplayName("内容")]
+    private string Content { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var values = _widgetSettingsService.GetAll("text");
+        if (values.ContainsKey(nameof(Title)))
+        {
+            Title = values[nameof(Title)];
+        }
+        if (values.ContainsKey(nameof(Content)))
+        {
+            Content = values[nameof(Content)];
+        }
+    }
+
+    private void Callback()
+    {
+        var values = new Dictionary<string, string>()
+        {
+            {nameof(Title), Title},
+            {nameof(Content), Content}
+        };
+        _widgetSettingsService.SetValues("text", values);
+    }
+
+}

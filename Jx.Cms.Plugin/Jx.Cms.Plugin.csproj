@@ -9,10 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Watcher" />
-    </ItemGroup>
-
-    <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
       <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
     </ItemGroup>

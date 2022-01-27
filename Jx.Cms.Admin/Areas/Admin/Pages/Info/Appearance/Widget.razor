@@ -1,0 +1,36 @@
+﻿@page "/Appearance/Widget"
+@using Jx.Cms.Common.Attribute
+@using Furion
+@using Jx.Cms.Common.Widgets
+
+@attribute [Menu("7FBD0E2C-247A-4E50-A52A-E7DB7ADF472F", "小工具", "/Appearance/Widget", iconClass:"fa fa-newspaper-o", parentId:MenuIds.AppearanceId)]
+
+<div class="row">
+    <div class="col col-8">
+        <Row ItemsPerRow="ItemsPerRow.Two">
+            @foreach (var widget in widgetTypes)
+            {
+                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                    
+                </Card>
+            }
+        </Row>
+    </div>
+    <div class="col col-4">
+        
+    </div>
+</div>
+
+@code {
+
+    List<IWidget> widgetTypes;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        widgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
+            .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
+    }
+
+}

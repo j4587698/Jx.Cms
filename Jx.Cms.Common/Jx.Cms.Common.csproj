@@ -9,10 +9,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor" Version="6.0.3" />
-      <PackageReference Include="Furion" Version="3.0.1" />
-      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.0.1" />
-      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="3.0.1" />
+      <PackageReference Include="BootstrapBlazor" Version="6.2.8" />
+      <PackageReference Include="Furion" Version="3.0.6" />
+      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.0.6" />
+      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="3.0.6" />
       <PackageReference Include="Humanizer.Core.zh-CN" Version="2.11.10" />
       <PackageReference Include="Markdig" Version="0.26.0" />
       <PackageReference Include="Masuit.Tools.Core" Version="2.4.5.2" />
