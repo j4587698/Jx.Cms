@@ -1,4 +1,5 @@
 ﻿@page "/Admin"
+@using Jx.Cms.Admin
 @addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
 
 <!DOCTYPE html>
@@ -12,10 +13,11 @@
 <link rel="stylesheet" href="/_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
 <link rel="stylesheet" href="/_content/BootstrapBlazor.Markdown/css/bootstrap.blazor.markdown.min.css" />
 <link rel="stylesheet" href="/Admin/css/font-awesome.min.css">
+<link rel="stylesheet" href="/_content/Jx.Cms.Admin/Jx.Cms.Admin.bundle.scp.css">
 <base href="~/Admin/" />
 </head>
 <body>
-    @(await Html.RenderComponentAsync<Jx.Cms.Admin.App>(RenderMode.ServerPrerendered))
+    <component type="typeof(App)" render-mode="ServerPrerendered"/>
     <script type="text/javascript" src="/_framework/blazor.server.js"></script>
     <script src="/_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
 <script src="/Admin/js/summernote-zh-CN.min.js"></script>

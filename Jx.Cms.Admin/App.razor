@@ -1,6 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 
-<CascadingAuthenticationState>
+<BootstrapBlazorRoot>
     <Router AppAssembly="typeof(AdminStartup).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="routeData">
@@ -13,4 +13,4 @@
             <h2>抱歉！找不到页面。</h2>
         </NotFound>
     </Router>
-</CascadingAuthenticationState>
+</BootstrapBlazorRoot>
