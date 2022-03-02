@@ -25,7 +25,7 @@
                             <CheckboxList @bind-Value="@_lateCatalogueValue" Items="@_lateCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@_catalogueTotal" ShowPaginationInfo="false" OnPageClick="OnCatalogueClick"></Pagination>
+                            <Pagination PageItems="10" TotalCount="@((int)_catalogueTotal)" ShowPaginationInfo="false" OnPageClick="OnCatalogueClick"></Pagination>
                             <CheckboxList @bind-Value="@_allCatalogueValue" Items="@_allCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
@@ -43,7 +43,7 @@
                             <CheckboxList @bind-Value="@_lateArticleValue" Items="@_lateArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@_articleTotal" ShowPaginationInfo="false" OnPageClick="OnArticleClick"></Pagination>
+                            <Pagination PageItems="10" TotalCount="@((int)_articleTotal)" ShowPaginationInfo="false" OnPageClick="OnArticleClick"></Pagination>
                             <CheckboxList @bind-Value="@_allArticleValue" Items="@_allArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
@@ -61,7 +61,7 @@
                             <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@_pageTotal" ShowPaginationInfo="false" OnPageClick="OnPageClick"></Pagination>
+                            <Pagination PageItems="10" TotalCount="@((int)_pageTotal)" ShowPaginationInfo="false" OnPageClick="OnPageClick"></Pagination>
                             <CheckboxList @bind-Value="@_allPageValue" Items="@_allPage" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
