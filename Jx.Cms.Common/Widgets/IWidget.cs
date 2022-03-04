@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System;
+using Jx.Cms.Common.Components;
+using Jx.Cms.Common.Enum;
+using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Common.Widgets;
 
@@ -25,7 +28,7 @@ public interface IWidget
     /// <summary>
     /// 后台显示的内容
     /// </summary>
-    RenderFragment SystemBody { get; set; }
+    WidgetComponentBase SystemBody { get; set; }
 
     /// <summary>
     /// 获取小工具的Html代码

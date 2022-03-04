@@ -1,36 +1,99 @@
 ﻿@page "/Appearance/Widget"
 @using Jx.Cms.Common.Attribute
 @using Furion
+@using Jx.Cms.Common.Enum
 @using Jx.Cms.Common.Widgets
+@using Jx.Cms.Service.Both.Impl
+@using Console = System.Console
+
+@inject SettingsService SettingsService
+@inject ToastService ToastService
 
 @attribute [Menu("7FBD0E2C-247A-4E50-A52A-E7DB7ADF472F", "小工具", "/Appearance/Widget", iconClass:"fa fa-newspaper-o", parentId:MenuIds.AppearanceId)]
 
 <div class="row">
     <div class="col col-8">
-        <Row ItemsPerRow="ItemsPerRow.Two">
-            @foreach (var widget in widgetTypes)
-            {
-                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
-                    
-                </Card>
-            }
-        </Row>
+        <Card HeaderText="小工具列表">
+            <CardBody>
+                <Row ItemsPerRow="ItemsPerRow.Two">
+                    @foreach (var widget in WidgetTypes)
+                    {
+                        <Card>
+                            <CardHeader>
+                                <div class="row">
+                                    <div class="col rol-4">
+                                        @widget.DisplayName
+                                    </div>
+                                    <div class="col col-4" style="float: right">
+                                        添加到：
+                                    </div>
+                                    <div class="col col-4">
+                                        <Select TValue="string" Items="typeof(WidgetMenuType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, widget.Name)"></Select>
+                                    </div>
+                                </div>
+                            </CardHeader>
+                            <CardBody>
+                                @widget.Description
+                            </CardBody>
+                        </Card>
+                    }
+                </Row>
+            </CardBody>
+        </Card>
+        
     </div>
     <div class="col col-4">
+        @foreach (var menu in typeof(WidgetMenuType).ToSelectList())
+        {
+            <Card HeaderText="@menu.Text">
+                <CardBody>
+                    @if (SavedWidgetType.ContainsKey(menu.Value))
+                    {
+                        var widgets = SavedWidgetType[menu.Value].Split(',');
+                        foreach (var widgetName in widgets)
+                        {
+                            if (WidgetTypes.Any(x => x.Name == widgetName))
+                            {
+                                var widget = WidgetTypes.First(x => x.Name == widgetName);
+                                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                                    <CardBody>
+                                        
+                                    </CardBody>
+                                </Card>
+                            }
+                        }
+                    }
+                </CardBody>
+            </Card>
+            <br/>
+        }
         
     </div>
 </div>
 
 @code {
 
-    List<IWidget> widgetTypes;
+    private List<IWidget> WidgetTypes { get; set; }
+    
+    private Dictionary<string, string> SavedWidgetType { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        widgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
+        WidgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType)));
+    }
+
+    private Task OnAddWidget(string menuName, string widgetName)
+    {
+        List<string> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<string>() : SavedWidgetType[menuName].Split(',').ToList();
+        widgets.Add(widgetName);
+        SettingsService.SetValue(menuName, string.Join(',', widgets));
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType)));
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
 }

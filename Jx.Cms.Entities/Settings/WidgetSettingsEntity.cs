@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using FreeSql;
 using FreeSql.DataAnnotations;
+using Jx.Cms.Common.Enum;
 
 namespace Jx.Cms.Entities.Settings;
 
@@ -10,6 +11,9 @@ public class WidgetSettingsEntity : BaseEntity<WidgetSettingsEntity, Guid>
 {
     [Description("小工具名")]
     public string Name { get; set; }
+
+    [Description("所在菜单")]
+    public WidgetMenuType WidgetMenuType { get; set; }
 
     [Description("键")]
     public string Key { get; set; }

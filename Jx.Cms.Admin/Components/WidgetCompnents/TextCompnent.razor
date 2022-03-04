@@ -1,6 +1,9 @@
 ﻿@using Jx.Cms.Service.Both
 @using System.ComponentModel
+
+@inherits Jx.Cms.Common.Components.WidgetComponentBase
 @inject IWidgetSettingsService _widgetSettingsService
+@inject IWidgetSettingsService widgetSettingsService
 
 <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Normal">
     <BootstrapInput @bind-Value="Title"></BootstrapInput>
@@ -18,7 +21,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        var values = _widgetSettingsService.GetAll("text");
+        var values = _widgetSettingsService.GetAll("text", WidgetMenuType);
         if (values.ContainsKey(nameof(Title)))
         {
             Title = values[nameof(Title)];
@@ -36,7 +39,13 @@
             {nameof(Title), Title},
             {nameof(Content), Content}
         };
-        _widgetSettingsService.SetValues("text", values);
+        _widgetSettingsService.SetValues("text",WidgetMenuType, values);
+    }
+
+    public override bool OnSave()
+    {
+        
+        return false;
     }
 
 }

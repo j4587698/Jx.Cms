@@ -27,7 +27,7 @@ namespace Jx.Cms.Common.Utils
         /// </summary>
         public static IFileProvider ThemeProvider { get; set; }
 
-        private static readonly FontFamily Family;
+        private static FontFamily Family;
 
         static Util()
         {
