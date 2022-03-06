@@ -18,24 +18,15 @@
                 <Row ItemsPerRow="ItemsPerRow.Two">
                     @foreach (var widget in WidgetTypes)
                     {
-                        <Card>
+                        <WidgetCard HeaderText="@widget.DisplayName">
                             <CardHeader>
-                                <div class="row">
-                                    <div class="col rol-4">
-                                        @widget.DisplayName
-                                    </div>
-                                    <div class="col col-4" style="float: right">
-                                        添加到：
-                                    </div>
-                                    <div class="col col-4">
-                                        <Select TValue="string" Items="typeof(WidgetMenuType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, widget.Name)"></Select>
-                                    </div>
-                                </div>
+                            添加到：
+                            <Select style="width: 100px" TValue="string" Items="typeof(WidgetMenuType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, widget.Name)"></Select>
                             </CardHeader>
                             <CardBody>
                                 @widget.Description
                             </CardBody>
-                        </Card>
+                        </WidgetCard>
                     }
                 </Row>
             </CardBody>
@@ -55,11 +46,14 @@
                             if (WidgetTypes.Any(x => x.Name == widgetName))
                             {
                                 var widget = WidgetTypes.First(x => x.Name == widgetName);
-                                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                                <WidgetCard HeaderText="@widget.DisplayName">
+                                    <CardHeader>
+                                        <Button>移除</Button>
+                                    </CardHeader>
                                     <CardBody>
-                                        
+
                                     </CardBody>
-                                </Card>
+                                </WidgetCard>
                             }
                         }
                     }
