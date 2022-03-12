@@ -12,6 +12,8 @@ namespace Blogs.Model
 
         [DisplayName("侧边栏布局")] public SidebarEnum Sidebar { get; set; } = SidebarEnum.Right;
 
+        [DisplayName("连接符")]public string Connector { get; set; } = "-";
+
         [DisplayName("站点关键词")] public string Keywords { get; set; } = "";
 
         [DisplayName("站点描述")] public string Description { get; set; } = "";

@@ -2,9 +2,17 @@
 @using Blogs.Utils
 @using Furion
 @using Util = Jx.Cms.Common.Utils.Util
+@using Blogs.Model
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.Plugin.Widgets
+@using Masuit.Tools
 @model Blogs.Pages.Blogs.Article
 
 @Html.Raw(@Model._article.Header)
+
+@{
+	var blogs = ViewBag.blogs as Dictionary<string, string>;
+}
 <div id="content" class="site-content">	
 	<div class="clear"></div>
 	<div id="primary" class="content-area">
@@ -180,11 +188,24 @@
 			}
 		</main><!-- .site-main -->
 	</div><!-- .content-area -->
-	{if ($zbp->Config('Blogs')->cebianlanbj !== '3') }
-	<div id="sidebar" class="widget-area">	
-		{template:sidebar2}	
-	</div>
-	{/if}
+	@if (blogs.ContainsKey(nameof(SettingsModel.Sidebar)) && !blogs[nameof(SettingsModel.Sidebar)].IsNullOrEmpty())
+	{
+		<div id="sidebar" class="widget-area">	
+			@{
+				var widgets = WidgetCache.GetSidebarWidgets(WidgetSidebarType.MainMenu);
+			}
+			@foreach (var widget in widgets)
+			{
+				<aside class="widget widget_@widget.Name">
+					<h3 class="widget-title">
+						<span class="cat">@widget.GetWidgetName()</span>
+					</h3>
+					@Html.Raw(widget.GetWidgetHtml())
+				</aside>
+			}
+			
+		</div>
+	}
 </div>
 <div class="clear"></div>
 

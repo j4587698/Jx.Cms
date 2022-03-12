@@ -9,31 +9,31 @@ namespace Jx.Cms.Service.Both.Impl;
 
 public class WidgetSettingsService: IWidgetSettingsService, ITransient
 {
-    public Dictionary<string, string> GetAll(string widgetName, WidgetMenuType widgetMenuType)
+    public Dictionary<string, string> GetAll(string widgetName, WidgetSidebarType widgetSidebarType)
     {
-        return WidgetSettingsEntity.Where(x => x.Name == widgetName && x.WidgetMenuType == widgetMenuType).ToDictionary(x => x.Key, y => y.Value);
+        return WidgetSettingsEntity.Where(x => x.Name == widgetName && x.WidgetSidebarType == widgetSidebarType).ToDictionary(x => x.Key, y => y.Value);
     }
 
-    public string GetValue(string widgetName,WidgetMenuType widgetMenuType, string key)
+    public string GetValue(string widgetName,WidgetSidebarType widgetSidebarType, string key)
     {
-        return WidgetSettingsEntity.Where(x => x.Name == widgetName && x.Key == key && x.WidgetMenuType == widgetMenuType).First(x => x.Value);
+        return WidgetSettingsEntity.Where(x => x.Name == widgetName && x.Key == key && x.WidgetSidebarType == widgetSidebarType).First(x => x.Value);
     }
 
-    public void SetValue(string widgetName, WidgetMenuType widgetMenuType, string key, string value)
+    public void SetValue(string widgetName, WidgetSidebarType widgetSidebarType, string key, string value)
     {
-        var widgetEntity = WidgetSettingsEntity.Where(x => x.Name == widgetName && x.Key == key && x.WidgetMenuType == widgetMenuType).First() ?? new WidgetSettingsEntity
+        var widgetEntity = WidgetSettingsEntity.Where(x => x.Name == widgetName && x.Key == key && x.WidgetSidebarType == widgetSidebarType).First() ?? new WidgetSettingsEntity
         {
             Name = widgetName,
             Key = key,
-            WidgetMenuType = widgetMenuType
+            WidgetSidebarType = widgetSidebarType
         };
         widgetEntity.Value = value;
         widgetEntity.Save();
     }
 
-    public void SetValues(string widgetName, WidgetMenuType widgetMenuType, Dictionary<string, string> values)
+    public void SetValues(string widgetName, WidgetSidebarType widgetSidebarType, Dictionary<string, string> values)
     {
-        var widgets = WidgetSettingsEntity.Where(x => x.Name == widgetName && x.WidgetMenuType == widgetMenuType).ToList();
+        var widgets = WidgetSettingsEntity.Where(x => x.Name == widgetName && x.WidgetSidebarType == widgetSidebarType).ToList();
         BaseEntity.Orm.Transaction(() =>
         {
             foreach (var value in values)
@@ -42,7 +42,7 @@ public class WidgetSettingsService: IWidgetSettingsService, ITransient
                 {
                     Name = widgetName,
                     Key = value.Key,
-                    WidgetMenuType = widgetMenuType
+                    WidgetSidebarType = widgetSidebarType
                 };
 
                 widget.Value = value.Value;

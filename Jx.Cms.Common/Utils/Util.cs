@@ -33,7 +33,8 @@ namespace Jx.Cms.Common.Utils
         {
             IsInstalled = File.Exists("install.lock");
             FontCollection collection = new FontCollection();
-            Family = collection.Add(Resource.GetResource("font.ttf"));
+            //Family = collection.Add(Resource.GetResource("font.ttf"));
+            Family = collection.Install(Resource.GetResource("font.ttf"));
         }
 
         /// <summary>
@@ -49,17 +50,18 @@ namespace Jx.Cms.Common.Utils
         public static Stream StringToImage(string str, int width, int height, int fontsize, Color color, Color bgColor)
         {
             Image image = new Image<Rgba32>(width, height, bgColor);
-            var font = Family.CreateFont(fontsize);
-            var options = new TextOptions(font)
+            var options = new DrawingOptions()
             {
-                Origin = new PointF(width / 2, height / 2),
-                ApplyHinting = true,
-                TabWidth = 8, // a tab renders as 8 spaces wide
-                WrappingLength = width, // greater than zero so we will word wrap at 100 pixels wide
-                HorizontalAlignment = HorizontalAlignment.Center, // right align
-                VerticalAlignment = VerticalAlignment.Center
+                TextOptions = new TextOptions()
+                {
+                    ApplyKerning = true,
+                    TabWidth = 8, // a tab renders as 8 spaces wide
+                    WrapTextWidth = width, // greater than zero so we will word wrap at 100 pixels wide
+                    HorizontalAlignment = HorizontalAlignment.Center, // right align
+                    VerticalAlignment = VerticalAlignment.Center
+                }
             };
-            image.Mutate(x => x.DrawText(options, str, color));
+            image.Mutate(x => x.DrawText(options, str, Family.CreateFont(fontsize), color, new PointF(0, height / 2)));
             MemoryStream ms = new MemoryStream();
             image.SaveAsPng(ms);
             ms.Position = 0;

@@ -20,6 +20,9 @@ namespace Jx.Cms.Admin.ViewModel
         [Description("别名")]
         public string Alias { get; set; }
 
+        [Description("描述")]
+        public string Description { get; set; }
+
         [Description("文章作者")]
         public string Author { get; set; }
         

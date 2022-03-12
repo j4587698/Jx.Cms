@@ -5,7 +5,7 @@ namespace Jx.Cms.Common.Enum;
 /// <summary>
 /// 侧边栏列表
 /// </summary>
-public enum WidgetMenuType
+public enum WidgetSidebarType
 {
     [Description("主菜单")]
     MainMenu,

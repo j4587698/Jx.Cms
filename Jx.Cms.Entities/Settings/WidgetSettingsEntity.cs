@@ -13,7 +13,7 @@ public class WidgetSettingsEntity : BaseEntity<WidgetSettingsEntity, Guid>
     public string Name { get; set; }
 
     [Description("所在菜单")]
-    public WidgetMenuType WidgetMenuType { get; set; }
+    public WidgetSidebarType WidgetSidebarType { get; set; }
 
     [Description("键")]
     public string Key { get; set; }

@@ -30,7 +30,7 @@ namespace Jx.Cms.Plugin.Components
             };
 
             option.FooterTemplate = BootstrapDynamicComponent.CreateComponent<ResultDialogFooter>(
-                new Dictionary<string, object?>()
+                new Dictionary<string, object>()
                 {
                     { nameof(ResultDialogFooter.ShowCloseButton), option.ShowCloseButton },
                     { nameof(ResultDialogFooter.ButtonCloseColor), option.ButtonCloseColor },

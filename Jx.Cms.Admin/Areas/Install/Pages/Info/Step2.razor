@@ -2,8 +2,12 @@
 @using Jx.Cms.DbContext
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Common.Extensions
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Service.Both.Impl
+@using Furion
 
 @inject SwalService SwalService
+@inject SettingsService SettingsService
 
 <div class="container">
     <ValidateForm Model="@DbConfig" OnValidSubmit="@OnSubmit">
@@ -87,6 +91,10 @@
             return;
         }
         DbStartup.CreateTables(DbConfig);
+        SettingsService.SetValue(SettingsConstants.TitleKey, "JX.CMS");
+        SettingsService.SetValue(SettingsConstants.SubTitleKey, "一个基于ASP.NET CORE的CMS");
+        SettingsService.SetValue(SettingsConstants.UrlKey, $"{App.HttpContext.Request.PathBase}{App.HttpContext.Request.Path}");
+        SettingsService.SetValue(SettingsConstants.CopyRightKey, "JX.CMS");
         await Next.InvokeAsync();
     }
 

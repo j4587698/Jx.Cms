@@ -41,7 +41,7 @@ namespace Jx.Cms.Common.Provider
             return Task.FromResult<IImageResolver>(new PhysicalFileSystemResolver(fileInfo, metadata));
         }
 
-        public ProcessingBehavior ProcessingBehavior { get; } = ProcessingBehavior.All;
+        public ProcessingBehavior ProcessingBehavior { get; } = ProcessingBehavior.CommandOnly;
         public Func<HttpContext, bool> Match { get; set; } = _ => true;
     }
 }

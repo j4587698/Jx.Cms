@@ -20,6 +20,7 @@
         <div class="clearfix"></div>
         <Select Items="typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
         <Select Items="typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar" ShowLabel="true"></Select>
+        <BootstrapInput @bind-Value="@_settingsModel.Connector" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Keywords" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Description" ShowLabel="true"></BootstrapInput>
         <Textarea @bind-Value="@_settingsModel.Notice" ShowLabel="true"></Textarea>

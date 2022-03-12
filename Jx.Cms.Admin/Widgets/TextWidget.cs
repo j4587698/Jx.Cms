@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using BootstrapBlazor.Components;
+using Furion.JsonSerialization;
 using Jx.Cms.Admin.Components.WidgetCompnents;
 using Jx.Cms.Common.Components;
 using Jx.Cms.Common.Enum;
-using Jx.Cms.Common.Widgets;
+using Jx.Cms.Plugin.Widgets;
 using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Admin.Widgets;
@@ -19,10 +21,19 @@ public class TextWidget : IWidget
 
     public string Description { get; set; } = "输出任意文本";
 
-    public WidgetComponentBase SystemBody { get; set; } = null;
+    public Type SystemBodyType { get; set; } = typeof(TextCompnent);
+    
+    public string Parameter { get; set; }
+
+    public string GetWidgetName()
+    {
+        var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
+        return parameters.ContainsKey("Title") ? parameters["Title"] : "";
+    }
 
     public string GetWidgetHtml()
     {
-        throw new System.NotImplementedException();
+        var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
+        return $"<div class=\"textwidget\">{(parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
     }
 }

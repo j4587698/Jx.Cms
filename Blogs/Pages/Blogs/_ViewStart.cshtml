@@ -1,3 +1,10 @@
-﻿@{
+﻿@using Jx.Cms.Common.Utils
+@using Jx.Cms.Service.Both
+@inject ISettingsService SettingsService
+@inject IMenuService MenuService
+@{
     Layout = "Shared/_Layout";
+    ViewBag.type = ViewContext.RouteData.Values["page"]?.ToString();
+    ViewBag.settings = SettingsService.GetValuesByNames(SettingsConstants.GetAllSystemKey());
+    ViewBag.blogs = SettingsService.GetAllValues("Blogs");
 }

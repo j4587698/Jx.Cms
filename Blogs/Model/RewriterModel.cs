@@ -24,9 +24,12 @@ namespace Blogs.Model
                 var settingsService = App.GetService<ISettingsService>();
                 var settingsEnumerable = settingsService.GetAllValues("Rewriter");
                 _rewriterModel = new RewriterModel();
+                var prop = _rewriterModel.GetProperties();
+                var index = prop[0].GetIndexParameters();
                 foreach (var settings in settingsEnumerable)
                 {
                     _rewriterModel.SetProperty(settings.Key, settings.Value??"");
+                    //prop[0].SetValue(_rewriterModel, settings.Value);
                 }
             }
             

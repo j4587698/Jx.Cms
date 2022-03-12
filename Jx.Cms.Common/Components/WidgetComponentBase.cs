@@ -1,4 +1,5 @@
-﻿using BootstrapBlazor.Components;
+﻿using System;
+using BootstrapBlazor.Components;
 using Jx.Cms.Common.Enum;
 using Microsoft.AspNetCore.Components;
 
@@ -10,18 +11,21 @@ namespace Jx.Cms.Common.Components;
 public class WidgetComponentBase: BootstrapComponentBase
 {
     /// <summary>
-    /// 小工具所在菜单
+    /// 小工具的参数
     /// </summary>
     [Parameter]
-    public WidgetMenuType WidgetMenuType { get; set; }
+    public string Parameter { get; set; }
 
     /// <summary>
-    /// 点击保存按钮时调用
-    /// <returns>是否保存成功</returns>
+    /// 小工具的唯一ID
     /// </summary>
-    public virtual bool OnSave()
-    {
-        return true;
-    }
+    [Parameter]
+    public Guid WidgetId { get; set; }
     
+    /// <summary>
+    /// 当需要保存参数时调用
+    /// </summary>
+    [Parameter]
+    public EventCallback<string> OnParameterSave { get; set; }
+
 }

@@ -56,6 +56,11 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
+                <Textarea @bind-Value="@Article.Description" DisplayText="描述" ShowLabel="true"></Textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@Article.Labels" DisplayText="文章标签(用,隔开)" ShowLabel="true"></BootstrapInput>
             </div>
         </div>

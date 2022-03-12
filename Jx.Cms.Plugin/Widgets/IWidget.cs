@@ -1,9 +1,6 @@
 ﻿using System;
-using Jx.Cms.Common.Components;
-using Jx.Cms.Common.Enum;
-using Microsoft.AspNetCore.Components;
 
-namespace Jx.Cms.Common.Widgets;
+namespace Jx.Cms.Plugin.Widgets;
 
 /// <summary>
 /// 小工具类
@@ -28,7 +25,18 @@ public interface IWidget
     /// <summary>
     /// 后台显示的内容
     /// </summary>
-    WidgetComponentBase SystemBody { get; set; }
+    Type SystemBodyType { get; set; }
+
+    /// <summary>
+    /// 小工具参数，使用时系统赋值
+    /// </summary>
+    public string Parameter { get; set; }
+
+    /// <summary>
+    /// 获取小工具的名称
+    /// </summary>
+    /// <returns></returns>
+    string GetWidgetName();
 
     /// <summary>
     /// 获取小工具的Html代码

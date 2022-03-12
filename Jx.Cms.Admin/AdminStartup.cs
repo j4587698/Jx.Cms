@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Reflection;
 using Furion;
+using Jx.Cms.Service.Both;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,7 @@ namespace Jx.Cms.Admin
     [AppStartup(-1)]
     public class AdminStartup : AppStartup
     {
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.Configure<CookiePolicyOptions>(op =>

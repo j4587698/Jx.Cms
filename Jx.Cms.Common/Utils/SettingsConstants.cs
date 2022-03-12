@@ -26,5 +26,16 @@
         /// 版权键
         /// </summary>
         public const string CopyRightKey = "copyright";
+
+        /// <summary>
+        /// 备案信息的键
+        /// </summary>
+        public const string BeiAnKey = "beian";
+
+        public static string[] GetAllSystemKey()
+        {
+            return new[] { TitleKey, SubTitleKey, UrlKey, CopyRightKey, BeiAnKey };
+        }
+        
     }
 }

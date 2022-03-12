@@ -1,10 +1,14 @@
 ﻿@page "/Appearance/Widget"
 @using Jx.Cms.Common.Attribute
 @using Furion
+@using Furion.JsonSerialization
+@using Jx.Cms.Admin.Vo
+@using Jx.Cms.Common.Components
 @using Jx.Cms.Common.Enum
-@using Jx.Cms.Common.Widgets
+@using Jx.Cms.Common.Vo
+@using Jx.Cms.Plugin.Widgets
 @using Jx.Cms.Service.Both.Impl
-@using Console = System.Console
+@using Microsoft.CSharp.RuntimeBinder
 
 @inject SettingsService SettingsService
 @inject ToastService ToastService
@@ -21,7 +25,7 @@
                         <WidgetCard HeaderText="@widget.DisplayName">
                             <CardHeader>
                             添加到：
-                            <Select style="width: 100px" TValue="string" Items="typeof(WidgetMenuType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, widget.Name)"></Select>
+                            <Select style="width: 100px" TValue="string" Items="typeof(WidgetSidebarType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, new WidgetVo(){Id = Guid.NewGuid(), Name = widget.Name})"></Select>
                             </CardHeader>
                             <CardBody>
                                 @widget.Description
@@ -34,24 +38,24 @@
         
     </div>
     <div class="col col-4">
-        @foreach (var menu in typeof(WidgetMenuType).ToSelectList())
+        @foreach (var menu in typeof(WidgetSidebarType).ToSelectList())
         {
             <Card HeaderText="@menu.Text">
                 <CardBody>
                     @if (SavedWidgetType.ContainsKey(menu.Value))
                     {
-                        var widgets = SavedWidgetType[menu.Value].Split(',');
-                        foreach (var widgetName in widgets)
+                        var widgets = SavedWidgetType[menu.Value];
+                        foreach (var widgetVo in widgets)
                         {
-                            if (WidgetTypes.Any(x => x.Name == widgetName))
+                            if (WidgetTypes.Any(x => x.Name == widgetVo.Name))
                             {
-                                var widget = WidgetTypes.First(x => x.Name == widgetName);
+                                var widget = WidgetTypes.First(x => x.Name == widgetVo.Name);
                                 <WidgetCard HeaderText="@widget.DisplayName">
                                     <CardHeader>
                                         <Button>移除</Button>
                                     </CardHeader>
                                     <CardBody>
-
+                                        @CreateSystemBody(menu.Value, widget.SystemBodyType, widgetVo)
                                     </CardBody>
                                 </WidgetCard>
                             }
@@ -69,7 +73,7 @@
 
     private List<IWidget> WidgetTypes { get; set; }
     
-    private Dictionary<string, string> SavedWidgetType { get; set; }
+    private Dictionary<string, List<WidgetVo>> SavedWidgetType { get; set; }
 
     protected override void OnInitialized()
     {
@@ -77,17 +81,45 @@
 
         WidgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
-        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType)));
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
     }
 
-    private Task OnAddWidget(string menuName, string widgetName)
+    private Task OnAddWidget(string menuName, WidgetVo widget)
     {
-        List<string> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<string>() : SavedWidgetType[menuName].Split(',').ToList();
-        widgets.Add(widgetName);
-        SettingsService.SetValue(menuName, string.Join(',', widgets));
-        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType)));
+        List<WidgetVo> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
+        widgets.Add(widget);
+        SettingsService.SetValue(menuName, JSON.Serialize(widgets));
+        WidgetCache.UpdateCache();
+        //SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
         StateHasChanged();
         return Task.CompletedTask;
+    }
+
+    private RenderFragment CreateSystemBody(string menuName, Type widgetType, WidgetVo widgetVo)
+    {
+        if (widgetType == null)
+        {
+            return null;
+        }
+        if (!typeof(WidgetComponentBase).IsAssignableFrom(widgetType))
+        {
+            throw new RuntimeBinderException($"小工具后台必须继承自{nameof(WidgetComponentBase)}");
+        }
+        return new BootstrapDynamicComponent(widgetType, new Dictionary<string, object>()
+        {
+            {nameof(WidgetComponentBase.WidgetId), widgetVo.Id},
+            {nameof(WidgetComponentBase.Parameter), widgetVo.Parameter},
+            {nameof(WidgetComponentBase.OnParameterSave), EventCallback.Factory.Create<string>(this, parameter =>
+            {
+                widgetVo.Parameter = parameter;
+                var widgets = SavedWidgetType[menuName];
+                SettingsService.SetValue(menuName, JSON.Serialize(widgets));
+                WidgetCache.UpdateCache();
+                StateHasChanged();
+            }) 
+            }
+        }).Render();
+
     }
 
 }
