@@ -30,6 +30,17 @@ namespace Jx.Cms.Admin.ViewModel
         [Required]
         public string CopyRight { get; set; }
 
+        /// <summary>
+        /// 备案信息
+        /// </summary>
+        public string BeiAn { get; set; }
+
+        /// <summary>
+        /// 每页显示数量
+        /// </summary>
+        [Required]
+        public int CountPerPage { get; set; }
+
         public static SystemSettingsVm Init()
         {
             var settings = new SystemSettingsVm();
@@ -38,6 +49,9 @@ namespace Jx.Cms.Admin.ViewModel
             settings.SubTitle = settingsService.GetValue(SettingsConstants.SubTitleKey) ?? "a new open source asp.net cms";
             settings.CopyRight = settingsService.GetValue(SettingsConstants.CopyRightKey) ?? "Copyright Your WebSite.Some Rights Reserved.";
             settings.Url = settingsService.GetValue(SettingsConstants.UrlKey);
+            settings.BeiAn = settingsService.GetValue(SettingsConstants.BeiAnKey);
+            settings.CountPerPage = int.TryParse(settingsService.GetValue(SettingsConstants.CountPerPageKey), out var count) ? count : 10;
+            
             if (settings.Url == null)
             {
                 var request = Furion.App.HttpContext.Request;
@@ -53,6 +67,8 @@ namespace Jx.Cms.Admin.ViewModel
             settingsService.SetValue(SettingsConstants.SubTitleKey, SubTitle);
             settingsService.SetValue(SettingsConstants.CopyRightKey, CopyRight);
             settingsService.SetValue(SettingsConstants.UrlKey, Url);
+            settingsService.SetValue(SettingsConstants.BeiAnKey, BeiAn);
+            settingsService.SetValue(SettingsConstants.CountPerPageKey, CountPerPage.ToString());
         }
     }
 }

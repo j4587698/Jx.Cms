@@ -50,21 +50,7 @@
                   <div class="dropdown-menu" aria-labelledby="@menuEntity.Id">
                     @foreach (var menu in menuEntity.Children)
                     {
-                      @switch (menu.MenuType)
-                      {
-                        case MenuTypeEnum.Page:
-                          break;
-                        case MenuTypeEnum.Article:
-                          <a class="dropdown-item" href="/Post/@menu.TypeId">@Html.Raw(menu.NavTitle)</a>
-                          break;
-                        case MenuTypeEnum.CustomUrl:
-                          <a class="dropdown-item" href="@menu.Url">@Html.Raw(menu.NavTitle)</a>
-                          break;
-                        case MenuTypeEnum.Catalogue:
-                          break;
-                        default:
-                          throw new ArgumentOutOfRangeException();
-                      }
+                      <a class="dropdown-item" menu="menu"></a>
                     }
                   </div>
                 </li>
@@ -72,21 +58,7 @@
               else
               {
                 <li class="nav-item">
-                  @switch (menuEntity.MenuType)
-                  {
-                    case MenuTypeEnum.Page:
-                      break;
-                    case MenuTypeEnum.Article:
-                      <a class="nav-link" href="/Post/@menuEntity.TypeId">@Html.Raw(menuEntity.NavTitle)</a>
-                      break;
-                    case MenuTypeEnum.CustomUrl:
-                      <a class="nav-link" href="@menuEntity.Url">@Html.Raw(menuEntity.NavTitle)</a>
-                      break;
-                    case MenuTypeEnum.Catalogue:
-                      break;
-                    default:
-                      throw new ArgumentOutOfRangeException();
-                  }
+                  <a class="dropdown-item" menu="menuEntity"></a>
                 </li>
               }
             }

@@ -8,6 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Jx.Cms.Plugin
 {
+    [AppStartup(int.MaxValue - 100)]
     public class PluginStartup: AppStartup
     {
         public void ConfigureServices(IServiceCollection services)

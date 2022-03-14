@@ -379,6 +379,12 @@
       <_ContentIncludedByDefault Remove="Plugin\HighlightingPlugin\plugin.json" />
       <_ContentIncludedByDefault Remove="Test\abc\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Pages\test\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Default\Home\Index.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Default\Catalogue\Index.cshtml" />
+      <AdditionalFiles Include="Pages\Default\Home\Index.cshtml" />
     </ItemGroup>
 
 </Project>

@@ -8,6 +8,11 @@ namespace Jx.Cms.Service.Both.Impl
 {
     public class LabelService: ILabelService, ITransient
     {
+        public LabelEntity GetLabelById(int id)
+        {
+            return LabelEntity.Find(id);
+        }
+
         public List<LabelEntity> LabelNameToLabels(List<string> labelNames)
         {
             return LabelEntity.Select.Where(x => labelNames.Contains(x.Name)).ToList();

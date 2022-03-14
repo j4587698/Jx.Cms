@@ -38,7 +38,8 @@ namespace Jx.Cms.Web
             app.UseRouting();
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapAreaControllerRoute("user", "User", "/User/{controller=Home}/{action=Index}/{id?}");
+                //endpoints.MapAreaControllerRoute("user", "User", "/User/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
             });
         }

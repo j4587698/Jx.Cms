@@ -24,7 +24,17 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
+                <BootstrapInputNumber @bind-Value="@_systemSettings.CountPerPage" DisplayText="每页显示数量"></BootstrapInputNumber>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
                 <Textarea rows="5" @bind-Value="@_systemSettings.CopyRight" DisplayText="版权信息"></Textarea>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <Textarea rows="5" @bind-Value="@_systemSettings.BeiAn" DisplayText="备案信息"></Textarea>
             </div>
         </div>
         <div class="row">

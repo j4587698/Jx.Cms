@@ -32,9 +32,14 @@
         /// </summary>
         public const string BeiAnKey = "beian";
 
+        /// <summary>
+        /// 每页显示数量的键
+        /// </summary>
+        public const string CountPerPageKey = "contperpage";
+
         public static string[] GetAllSystemKey()
         {
-            return new[] { TitleKey, SubTitleKey, UrlKey, CopyRightKey, BeiAnKey };
+            return new[] { TitleKey, SubTitleKey, UrlKey, CopyRightKey, BeiAnKey, CountPerPageKey };
         }
         
     }

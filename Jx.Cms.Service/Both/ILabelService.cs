@@ -9,6 +9,13 @@ namespace Jx.Cms.Service.Admin
     public interface ILabelService
     {
         /// <summary>
+        /// 根据Id获取Label
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        LabelEntity GetLabelById(int id);
+        
+        /// <summary>
         /// 通过标签名查询标签是否已存在，并返回存在的标签
         /// </summary>
         /// <param name="labelNames">标签名列表</param>

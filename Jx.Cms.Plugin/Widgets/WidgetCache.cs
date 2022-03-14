@@ -7,6 +7,7 @@ using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.Entities.Settings;
+using Masuit.Tools;
 
 namespace Jx.Cms.Plugin.Widgets;
 
@@ -19,7 +20,7 @@ public class WidgetCache
         var widgetsVos = SettingsEntity
             .Where(x => x.Type == SettingsConstants.SystemType &&
                         Enum.GetNames(typeof(WidgetSidebarType)).Contains(x.Name))
-            .ToDictionary(x => x.Name, x => JSON.Deserialize<List<WidgetVo>>(x.Value));
+            .ToDictionary(x => x.Name, x => x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value));
         var widgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
         EnabledWidget.Clear();

@@ -1,25 +1,18 @@
 ﻿using System.IO;
 using Furion;
-using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Plugin;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
-using Jx.Cms.Themes.Util;
 using Masuit.Tools.Core.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.FileProviders;
 
 namespace Jx.Cms.Themes
 {
@@ -33,6 +26,15 @@ namespace Jx.Cms.Themes
             }
             
             services.AddStaticHttpContext();
+            
+            services.Configure<RazorViewEngineOptions>(options =>
+            {
+                options.AreaViewLocationFormats.Clear();
+                options.AreaViewLocationFormats.Add("/{2}/Views/{1}/{0}.cshtml");
+                options.AreaViewLocationFormats.Add("/{2}/Views/Shared/{0}.cshtml");
+                options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+                options.ViewLocationExpanders.Add(new TemplateViewLocationExpander());
+            });
 
             services.AddRazorPages(options =>
             {

@@ -8,7 +8,7 @@
 <BootstrapInput @bind-Value="Context.Name" DisplayText="菜单名"></BootstrapInput>
 <Select Items="(typeof(MenuTypeEnum).ToSelectList())" @bind-Value="Context.MenuType" IsDisabled="true" DisplayText="菜单类型"></Select>
 <BootstrapInput @bind-Value="Context.NavTitle" DisplayText="导航标签"></BootstrapInput>
-<Checkbox @bind-Value="Context.OpenInNewWindow" DisplayText=""></Checkbox>在新标签页打开链接<br />
+<Switch @bind-Value="Context.OpenInNewWindow" DisplayText="在新标签页打开链接" OnText="是" OffText="否"></Switch>
 <BootstrapInputNumber @bind-Value="Context.Order"  DisplayText="排序位置（大者在前）"></BootstrapInputNumber>
 <Select Items="_menuItems" @bind-Value="Context.ParentId" DisplayText="父菜单"></Select>
 @if (Context.MenuType == MenuTypeEnum.CustomUrl)

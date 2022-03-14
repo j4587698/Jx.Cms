@@ -15,6 +15,7 @@ using Newtonsoft.Json.Linq;
 
 namespace Jx.Cms.DbContext
 {
+    [AppStartup(int.MaxValue - 50)]
     public class DbStartup: AppStartup
     {
 
