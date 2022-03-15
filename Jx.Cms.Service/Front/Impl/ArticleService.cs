@@ -7,6 +7,7 @@ using Jx.Cms.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Utils;
 using Markdig;
+using Masuit.Tools.Models;
 
 namespace Jx.Cms.Service.Front.Impl
 {
@@ -17,7 +18,7 @@ namespace Jx.Cms.Service.Front.Impl
     {
         public ArticleModel GetArticleById(int id)
         {
-            var article = ArticleEntity.Select.Where(x => x.Id == id).Include(x => x.Catalogue).IncludeMany(x => x.Comments).IncludeMany(x => x.Labels).First();
+            var article = ArticleEntity.Select.Where(x => x.Id == id && !x.IsPage).Include(x => x.Catalogue).IncludeMany(x => x.Labels).First();
             if (article == null)
             {
                 return null;
@@ -26,10 +27,15 @@ namespace Jx.Cms.Service.Front.Impl
             {
                 article.Content = Markdown.ToHtml(article.Content);
             }
-            article.ReadingVolume = article.ReadingVolume + 1;
+
+            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().ToTreeList();
+            //article.Comments.ToTreeGeneral(x => x.Id, x => x.ParentId);
+            article.ReadingVolume += 1;
             ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume);
-            var model = new ArticleModel();
-            model.Body = article;
+            var model = new ArticleModel
+            {
+                Body = article
+            };
             PluginUtil.OnArticleShow(model);
             return model;
         }

@@ -11,13 +11,8 @@
 @inject NavigationManager _navigationManager
 @inject IAdminUserService _adminUserService
 
-<Message />
-<Toast />
-<SweetAlert />
-<Dialog></Dialog>
-
 <Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true" AdditionalAssemblies="new[] { GetType().Assembly }"
-        ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@GetIconSideMenuItems()">
+        ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@_menuItems">
     <Header>
         <span class="ms-3 flex-sm-fill d-none d-sm-block">JX.CMS</span>
         <div class="flex-fill d-sm-none">
@@ -63,6 +58,12 @@
     private List<MenuItem> _menuItems;
 
     private AdminUserEntity _adminUser;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        GetIconSideMenuItems();
+    }
 
 
     private IEnumerable<MenuItem> GetIconSideMenuItems()

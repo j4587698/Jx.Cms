@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FreeSql;
@@ -34,8 +35,13 @@ namespace Jx.Cms.Entities.Article
         public int ParentId { get; set; }
 
         [Description("父评论")]
+        [Navigate(nameof(ParentId))]
         public CommentEntity Parent { get; set; }
         
+        [Description("子评论")]
+        [Navigate(nameof(ParentId))]
+        public List<CommentEntity> Child { get; set; }
+
         [Description("根评论Id")]
         public int RootId { get; set; }
 

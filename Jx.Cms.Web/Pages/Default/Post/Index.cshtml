@@ -62,4 +62,9 @@
     }
 </div>
 
+<div id="commentDiv">
+    @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
+</div>
+
+
 @Html.Raw(Model.BodyExt)

@@ -75,7 +75,7 @@ namespace Jx.Cms.Common.Utils
         /// <returns></returns>
         public static string GetWebAvatarUrl(string email)
         {
-            return $"https://cn.gravatar.com/avatar/{email.ToLower().MDString()}";
+            return $"https://cravatar.cn/avatar/{email.ToLower().MDString()}";
         }
 
         /// <summary>

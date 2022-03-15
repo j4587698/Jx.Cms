@@ -8,6 +8,7 @@
 @using Jx.Cms.Common.Vo
 @using Jx.Cms.Plugin.Widgets
 @using Jx.Cms.Service.Both.Impl
+@using Masuit.Tools
 @using Microsoft.CSharp.RuntimeBinder
 
 @inject SettingsService SettingsService
@@ -25,7 +26,7 @@
                         <WidgetCard HeaderText="@widget.DisplayName">
                             <CardHeader>
                             添加到：
-                            <Select style="width: 100px" TValue="string" Items="typeof(WidgetSidebarType).ToSelectList()" OnValueChanged="(arg) => OnAddWidget(arg, new WidgetVo(){Id = Guid.NewGuid(), Name = widget.Name})"></Select>
+                            <Select style="width: 100px" @bind-Value="BindMenu" Items="SelectedItems" OnValueChanged="(arg) => OnAddWidget(arg, new WidgetVo(){Id = Guid.NewGuid(), Name = widget.Name})"></Select>
                             </CardHeader>
                             <CardBody>
                                 @widget.Description
@@ -52,7 +53,7 @@
                                 var widget = WidgetTypes.First(x => x.Name == widgetVo.Name);
                                 <WidgetCard HeaderText="@widget.DisplayName">
                                     <CardHeader>
-                                        <Button>移除</Button>
+                                        <PopConfirmButton Content="确认删除此小工具吗？" Text="移除" OnConfirm="() => RemoveWidget(menu.Value, widgetVo)"></PopConfirmButton>
                                     </CardHeader>
                                     <CardBody>
                                         @CreateSystemBody(menu.Value, widget.SystemBodyType, widgetVo)
@@ -71,27 +72,39 @@
 
 @code {
 
+    private List<SelectedItem> SelectedItems { get; set; }
+
     private List<IWidget> WidgetTypes { get; set; }
     
     private Dictionary<string, List<WidgetVo>> SavedWidgetType { get; set; }
+    
+    private string BindMenu { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
+        SelectedItems = typeof(WidgetSidebarType).ToSelectList().ToList();
+        SelectedItems.Insert(0, new SelectedItem("", "请选择"));
+
         WidgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
-        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
     }
 
     private Task OnAddWidget(string menuName, WidgetVo widget)
     {
+        if (menuName.IsNullOrEmpty())
+        {
+            return Task.CompletedTask;
+        }
         List<WidgetVo> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
         widgets.Add(widget);
         SettingsService.SetValue(menuName, JSON.Serialize(widgets));
         WidgetCache.UpdateCache();
         //SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
         StateHasChanged();
+        BindMenu = "";
         return Task.CompletedTask;
     }
 
@@ -120,6 +133,16 @@
             }
         }).Render();
 
+    }
+
+    private Task RemoveWidget(string menuName, WidgetVo widget)
+    {
+        List<WidgetVo> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
+        widgets.Remove(widget);
+        SettingsService.SetValue(menuName, JSON.Serialize(widgets));
+        WidgetCache.UpdateCache();
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
 }

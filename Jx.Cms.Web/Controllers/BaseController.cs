@@ -1,5 +1,7 @@
-﻿using Furion;
+﻿using System.Security.Claims;
+using Furion;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.Service.Admin;
 using Jx.Cms.Service.Both;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -18,5 +20,11 @@ public abstract class BaseController : Controller
         }
 
         ViewData["menu"] = App.GetService<IMenuService>().GetAllMenuTree();
+
+        if (App.User != null)
+        {
+            ViewData["user"] = App.GetService<IAdminUserService>()
+                .GetUserByUserName(App.User.FindFirst(ClaimTypes.Name)!.Value);
+        }
     }
 }

@@ -12,6 +12,7 @@
 
     <ItemGroup>
       <Folder Include="db" />
+      <Folder Include="Pages\Default\Shared" />
       <Folder Include="Plugin" />
       <Folder Include="wwwroot\Default" />
     </ItemGroup>

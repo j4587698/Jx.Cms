@@ -21,7 +21,16 @@
     <link href="/Default/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
     <!-- Custom styles for this template -->
-    <link href="/Default/css/clean-blog.min.css" rel="stylesheet">
+    <link href="/Default/css/clean-blog.css" rel="stylesheet">
+    
+    <!-- Bootstrap core JavaScript -->
+        <script src="/Default/vendor/jquery/jquery.min.js"></script>
+        <script src="/Default/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    
+        <!-- Custom scripts for this template -->
+      <script src="/Default/js/clean-blog.min.js"></script>
+
+    @await RenderSectionAsync("header", false)
 
   </head>
 
@@ -82,13 +91,7 @@
       </div>
     </footer>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="/Default/vendor/jquery/jquery.min.js"></script>
-    <script src="/Default/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <!-- Custom scripts for this template -->
-    <script src="/Default/js/clean-blog.min.js"></script>
-
+  @await RenderSectionAsync("body", false)
   </body>
 
 </html>

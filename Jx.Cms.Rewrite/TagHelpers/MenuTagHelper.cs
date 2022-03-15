@@ -18,7 +18,7 @@ public class MenuTagHelper : TagHelper
         switch (Menu.MenuType)
         {
             case MenuTypeEnum.Page:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetPageUrl(App.GetService<IPageService>().GetArticleById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href", RewriteUtil.GetPageUrl(App.GetService<IPageService>().GetPageById(Menu.TypeId)));
                 break;
             case MenuTypeEnum.Article:
                 output.Attributes.SetAttribute("href", RewriteUtil.GetArticleUrl(App.GetService<IArticleService>().GetArticleById(Menu.TypeId)));

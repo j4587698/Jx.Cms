@@ -1,6 +1,7 @@
 ﻿@using Jx.Cms.Common.Utils
 @using Jx.Cms.Entities.Article
 @using Masuit.Tools.Html
+@using Humanizer
 @model Jx.Cms.Themes.Vm.CatalogueVm
 
 @{
@@ -57,7 +58,7 @@
           </a>
           <p class="post-meta">
             <a href="#">@articleEntity.Author</a>
-            @articleEntity.PublishTime.ToString("yyyy-MM-dd")</p>
+            @articleEntity.PublishTime.Humanize()</p>
         </div>
       }
       <hr>

@@ -13,7 +13,8 @@
 
 @attribute [Menu("164DD37C-8347-42AC-8D60-0D38F03D2E67", "文章列表", "/Article/All", 10, iconClass:"fa fa-newspaper-o", parentId:MenuIds.ArticleId)]
 
-<Table @ref="_table" TItem="ArticleEntity" ShowToolbar="true" ShowDefaultButtons="false" IsBordered="true" IsPagination="true" ShowExtendButtons="true" PageItemsSource="_pageItemSource" OnQueryAsync="OnQueryAsync">
+<Table @ref="_table" TItem="ArticleEntity" ShowToolbar="true" ShowDefaultButtons="false" IsBordered="true" IsPagination="true" ShowExtendButtons="true" 
+       ShowEditButtonCallback="item => false" ShowDeleteButtonCallback="item => false" PageItemsSource="_pageItemSource" OnQueryAsync="OnQueryAsync">
     <TableToolbarTemplate>
             <TableToolbarButton TItem="ArticleEntity" Color="Color.Success" OnClick="@AddAsync" Icon="fa fa-plus" Text="新建文章" />
         </TableToolbarTemplate>
@@ -76,7 +77,7 @@
 
     private Func<Task> DeleteAsync(ArticleEntity context) => async () =>
     {
-        var ret = await PageService.DeleteArticle(context);
+        var ret = await PageService.DeletePage(context);
         if (ret)
         {
             await _table.QueryAsync();

@@ -43,7 +43,7 @@ namespace Jx.Cms.Service.Both.Impl
 
         public List<CommentEntity> GetCommentTreeCteByArticleId(int articleId)
         {
-            return CommentEntity.Where(x => x.ArticleEntity.Id == articleId && x.ParentId == 0).OrderByDescending(x => x.CreateTime).AsTreeCte().ToList();
+            return CommentEntity.Where(x => x.ArticleId == articleId && x.ParentId == 0).AsTreeCte().OrderByDescending(x => x.CreateTime).ToTreeList();
         }
     }
 }

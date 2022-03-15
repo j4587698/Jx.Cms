@@ -9,6 +9,8 @@
 @using Mapster
 @using System.Security.Claims
 @using Furion
+@using Jx.Cms.Plugin.Model
+@using Jx.Cms.Plugin.Utils
 
 @inject NavigationManager NavigationManager
 @inject IPageService PageService
@@ -62,21 +64,30 @@
 
     private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
 
-    private IEnumerable<SelectedItem> Catalogs { get; set; }
+    private List<EditorExtModel> EditorExtModels { get; set; }
+    
+    private List<EditorToolbarButton> ToolbarButtons { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        Article = Id == 0 ? new ArticleEntity(){IsPage = true, PublishTime = DateTime.Now} : PageService.GetArticleById(Id);
-        
-        Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
+        EditorExtModels = PluginUtil.OnArticleEditorShow();
+        ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
+        var mediaButton = new EditorToolbarButton
+        {
+            Tooltip = "选择媒体",
+            ButtonName = "selectMedia",
+            IconClass = "fa fa-picture-o"
+        };
+        ToolbarButtons.Add(mediaButton);
+        Article = Id == 0 ? new ArticleEntity(){IsPage = true, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published} : PageService.GetPageById(Id);
     }
 
     private async Task OnValidSubmit(EditContext arg)
     {
-        Article.Author = App.User?.FindFirstValue(ClaimTypes.Name);
+        Article.Author = App.GetService<IAdminUserService>().GetUserByUserName(App.User?.FindFirstValue(ClaimTypes.Name)).NickName;
         
-        var ret = PageService.SaveArticle(Article);
+        var ret = PageService.SavePage(Article);
         await ToastService.Show(new ToastOption()
         {
             Category = ret?ToastCategory.Success: ToastCategory.Error,
