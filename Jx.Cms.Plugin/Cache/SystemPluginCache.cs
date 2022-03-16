@@ -27,6 +27,6 @@ public class SystemPluginCache : IPluginCache
 
     public static IEnumerable<ISystemPlugin> GetSystemPlugins()
     {
-        return _systemTypes.Select(x => Activator.CreateInstance(x) as ISystemPlugin);
+        return _systemTypes == null ? Array.Empty<ISystemPlugin>() : _systemTypes.Select(x => Activator.CreateInstance(x) as ISystemPlugin);
     }
 }

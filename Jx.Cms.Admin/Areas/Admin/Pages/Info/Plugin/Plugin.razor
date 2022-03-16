@@ -7,12 +7,14 @@
 @inject ToastService ToastService
 @inject SwalService SwalService
 @inject IPluginService PluginService
+@inject IDispatchService<string> DispatchService
 
 @attribute [Menu("BFA18170-C2BC-4352-AFB7-E8A15F4C07E1", "插件列表", "/Plugin", 10, iconClass:"fa fa-newspaper-o")]
 
 <h3>插件列表</h3>
 
-<Table TItem="PluginConfig" IsBordered="true" Items="@_pluginConfigs" ShowExtendButtons="true" ShowDefaultButtons="false" ShowRefresh="true">
+<Table TItem="PluginConfig" IsBordered="true" Items="@_pluginConfigs" ShowExtendButtons="true" ShowDefaultButtons="false" ShowRefresh="true"
+       ShowDeleteButtonCallback="item => false" ShowEditButtonCallback="item => false">
     <TableToolbarTemplate>
         <TableToolbarButton TItem="PluginConfig" Text="添加"></TableToolbarButton>
     </TableToolbarTemplate>
@@ -43,6 +45,11 @@
         {
             context.IsEnable = !context.IsEnable;
             ToastService.Success("处理成功", $"插件{context.PluginName}{(context.IsEnable ? "启用" : "禁用")}成功");
+            DispatchService.Dispatch(new DispatchEntry<string>()
+            {
+                Name = "menu",
+                Entry = "plugin"
+            });
         }
         else
         {

@@ -11,6 +11,7 @@
 @inject IThemeConfigService ThemeConfigService
 @inject NavigationManager NavigationManager
 @inject ToastService ToastService
+@inject IDispatchService<string> DispatchService
 
 <ListView Items="_themeConfigs" TItem="ThemeConfig">
     <HeaderTemplate>
@@ -46,6 +47,11 @@
         ThemeConfigService.EnableTheme(themeConfig);
         ToastService?.Success("设置成功", "主题设置成功");
         _themeConfigs = ThemeConfigService.GetAllThemes();
+        DispatchService.Dispatch(new DispatchEntry<string>()
+        {
+            Name = "menu",
+            Entry = "theme"
+        });
     }
 
 }

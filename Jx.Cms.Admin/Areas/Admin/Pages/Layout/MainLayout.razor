@@ -1,6 +1,7 @@
 ﻿@using Jx.Cms.Common.Extensions
 @using Furion
 @using Jx.Cms.Common.Attribute
+@using Jx.Cms.Common.Utils
 @using Jx.Cms.Entities.Admin
 @using Jx.Cms.Plugin.Utils
 @using Jx.Cms.Service.Admin
@@ -10,6 +11,7 @@
 @inject MessageService _messageService
 @inject NavigationManager _navigationManager
 @inject IAdminUserService _adminUserService
+@inject IDispatchService<string> DispatchService
 
 <Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true" AdditionalAssemblies="new[] { GetType().Assembly }"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@_menuItems">
@@ -17,9 +19,11 @@
         <span class="ms-3 flex-sm-fill d-none d-sm-block">JX.CMS</span>
         <div class="flex-fill d-sm-none">
         </div>
-        <Widget></Widget>
-        <img src="/Admin/Image/LoadLocalAvatar?name=@_adminUser.NickName" class="layout-avatar-right"/>
-        <span class="mx-3 d-none d-sm-block">@_adminUser.NickName</span>
+        <Logout ImageUrl="@Util.GetWebAvatarUrl(_adminUser.Email)" DisplayName="@_adminUser.NickName" UserName="@_adminUser.UserName">
+            <LinkTemplate>
+                <LogoutLink Url="/Admin/Logout"></LogoutLink>
+            </LinkTemplate>
+        </Logout>
     </Header>
     <Side>
         <div class="layout-banner">
@@ -63,10 +67,21 @@
     {
         base.OnInitialized();
         GetIconSideMenuItems();
+        DispatchService.Subscribe(Notify);
     }
 
+    private Task Notify(DispatchEntry<string> payload)
+    {
+        if (payload.Name != "menu")
+        {
+            return Task.CompletedTask;
+        }
+        GetIconSideMenuItems();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
 
-    private IEnumerable<MenuItem> GetIconSideMenuItems()
+    private void GetIconSideMenuItems()
     {
         _adminUser = _adminUserService.GetUserByUserName(App.User.Identity.Name);
         var menuAttributes = _adminMenuService.GetAllMenu();
@@ -81,7 +96,6 @@
             GenerateMenu(menuItem, attribute.Id, menuAttributes);
             _menuItems.Add(menuItem);
         }
-        return _menuItems;
     }
 
     private void GenerateMenu(MenuItem item, string parentId, List<MenuAttribute> menuAttributes)
@@ -101,5 +115,13 @@
             items.Add(menuItem);
         }
         item.Items = items;
+    }
+    
+    private void Dispose(bool disposing)
+    {
+        if (disposing)
+        {
+            DispatchService.UnSubscribe(Notify);
+        }
     }
 }

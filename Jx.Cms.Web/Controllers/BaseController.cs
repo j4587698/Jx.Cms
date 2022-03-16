@@ -23,8 +23,12 @@ public abstract class BaseController : Controller
 
         if (App.User != null)
         {
-            ViewData["user"] = App.GetService<IAdminUserService>()
-                .GetUserByUserName(App.User.FindFirst(ClaimTypes.Name)!.Value);
+            var username = App.User.FindFirst(ClaimTypes.Name);
+            if (username != null)
+            {
+                ViewData["user"] = App.GetService<IAdminUserService>()
+                    .GetUserByUserName(username.Value);
+            }
         }
     }
 }

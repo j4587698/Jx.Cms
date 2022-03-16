@@ -22,6 +22,6 @@ public class ArticlePluginCache : IPluginCache
 
     public static IEnumerable<IArticlePlugin> GetArticlePlugins()
     {
-        return _articleTypes.Select(x => Activator.CreateInstance(x) as IArticlePlugin);
+        return _articleTypes == null ? Array.Empty<IArticlePlugin>() :_articleTypes.Select(x => Activator.CreateInstance(x) as IArticlePlugin);
     }
 }
