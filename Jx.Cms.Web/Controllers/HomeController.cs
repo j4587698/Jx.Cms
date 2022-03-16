@@ -25,7 +25,8 @@ public class HomeController : BaseController
             Articles = App.GetService<IArticleService>().GetArticlePageWithCount(pageNum, count, out var totalCount),
             PageNum = pageNum,
             PageSize = count,
-            TotalCount = totalCount
+            TotalCount = totalCount,
+            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalCount)
         };
         return View(indexVm);
     }

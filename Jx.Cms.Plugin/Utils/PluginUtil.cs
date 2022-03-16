@@ -7,6 +7,7 @@ using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Article;
 using Jx.Cms.Entities.Settings;
+using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
 using Masuit.Tools;
@@ -117,12 +118,9 @@ namespace Jx.Cms.Plugin.Utils
         /// <returns></returns>
         public static ArticleModel OnArticleShow(ArticleModel articleModel)
         {
-            var articlePlugin = new List<Type>();
-            DefaultPlugin.ArticlePlugins.ForEach(x => articlePlugin.AddRange(x.Value));
-            foreach (var type in articlePlugin)
+            foreach (var instance in ArticlePluginCache.GetArticlePlugins())
             {
-                 var instance = Activator.CreateInstance(type) as IArticlePlugin;
-                 instance?.OnArticleShow(articleModel);
+                instance?.OnArticleShow(articleModel);
             }
             return articleModel;
         }
@@ -134,12 +132,8 @@ namespace Jx.Cms.Plugin.Utils
         public static List<EditorExtModel> OnArticleEditorShow()
         {
             var extModels = new List<EditorExtModel>();
-            var articlePlugin = new List<Type>();
-            DefaultPlugin.ArticlePlugins.ForEach(x => articlePlugin.AddRange(x.Value));
-            foreach (var type in articlePlugin)
+            foreach (var instance in ArticlePluginCache.GetArticlePlugins())
             {
-                var instance = Activator.CreateInstance(type) as IArticlePlugin;
-                
                 var ret = instance?.AddEditorToolbarButton(App.GetService<DialogService>());
                 if (ret != null)
                 {
@@ -153,11 +147,8 @@ namespace Jx.Cms.Plugin.Utils
         public static List<PluginMenuModel> OnMenuShow()
         {
             var menuModel = new List<PluginMenuModel>();
-            var menuPlugin = new List<Type>();
-            DefaultPlugin.SystemPlugins.ForEach(x => menuPlugin.AddRange(x.Value));
-            foreach (var plugin in menuPlugin)
+            foreach (var instance in SystemPluginCache.GetSystemPlugins())
             {
-                var instance = Activator.CreateInstance(plugin) as ISystemPlugin;
                 var ret = instance?.AddMenuItem();
                 if (ret != null && ret.Count > 0)
                 {

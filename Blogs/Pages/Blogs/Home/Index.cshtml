@@ -1,17 +1,20 @@
-﻿@page
+﻿@model Jx.Cms.Themes.Vm.IndexVm
 @using Blogs.Enum
 @using Blogs.Model
 @using Blogs.Utils
 @using Humanizer
-@using Jx.Cms.Common.Utils
+@using Jx.Cms.Rewrite
 @using Masuit.Tools.Html
-@model Blogs.Pages.Blogs.Index
 
+@{
+	var blogs = ViewBag.blogs as Dictionary<string, string>;
+}
 <div id="content" class="site-content">	
 	<div class="clear"></div>
 	<div id="contentab">	
 		<section id="primary" class="content-area">
 			<main id="main" class="site-main" role="main">
+				
 				<div id="post_list_box" class="border_gray">
 					@{
 						int tds = 0;
@@ -19,44 +22,46 @@
 					@foreach (var article in Model.Articles)
 					{
 						tds++;
-						<article id="post-@article.Id" class="archive-list @if(tds % 2 == 0){@("shuangshu");}">
+						<article id="post-@article.Id" class="archive-list @if (tds % 2 == 0){@("shuangshu");}">
 							<div class="post-date-ribbon">
 								<div class="corner"></div>@article.PublishTime.ToString("yyyy年MM月dd日")</div>
-							@if(Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()){
-							<header class="entry-header">
-								<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
-							</header>
-							<figure class="thumbnail">
-								<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
-							</figure>
-							}
-							else 
+							@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString())
 							{
-							<figure class="thumbnail">
-								@if(Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()){
+								<header class="entry-header">
+									<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
+								</header>
+								<figure class="thumbnail">
 									<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
-								}
-								else
-								{
-									<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(270, 180))</a>
-								}
-							</figure>
-							<header class="entry-header">
-								<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
-							</header>
+								</figure>
 							}
-							
+							else
+							{
+								<figure class="thumbnail">
+									@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString())
+									{
+										<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
+									}
+									else
+									{
+										<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(270, 180))</a>
+									}
+								</figure>
+								<header class="entry-header">
+									<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
+								</header>
+							}
+
 							<div class="entry-content">
 								<div class="archive-content">
 									@{
 										var content = article.Content.RemoveHtmlTag();
 									}
-									@if ((Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
-									     (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && Model.Settings[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
+									@if ((blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
+									     (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
 									{
 										@content.Truncate(80)
 									}
-									else if (Model.Settings[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
+									else if (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
 									{
 										@content.Truncate(120)
 									}
@@ -76,7 +81,7 @@
 						</article><!-- #post -->
 
 					}
-				</div>		
+				</div>
 			</main><!-- .site-main -->
 			<nav class="navigation pagination" role="navigation">
 				<div class="nav-links">
@@ -110,14 +115,10 @@
 				</div>
 			</nav>
 		</section><!-- .content-area -->
-
+		@if (blogs[nameof(SettingsModel.Sidebar)] != SidebarEnum.None.ToString())
+		{
+			<sidebar sidebar="MainMenu"></sidebar>
+		}
 	</div>
 	<div class="clear"></div>
 </div>
-
-@section header{
-	<title>@Model.Settings[SettingsConstants.TitleKey]@if (Model.PageNum > 1)
-	                                            {
-		                                            @("-第" + Model.PageNum + "页")
-	                                            }-@Model.Settings[SettingsConstants.SubTitleKey]</title>
-}

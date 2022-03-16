@@ -6,6 +6,7 @@ using Jx.Cms.Admin.Components.WidgetCompnents;
 using Jx.Cms.Common.Components;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Plugin.Widgets;
+using Masuit.Tools;
 using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Admin.Widgets;
@@ -27,12 +28,20 @@ public class TextWidget : IWidget
 
     public string GetWidgetName()
     {
+        if (Parameter.IsNullOrEmpty())
+        {
+            return "";
+        }
         var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
         return parameters.ContainsKey("Title") ? parameters["Title"] : "";
     }
 
     public string GetWidgetHtml()
     {
+        if (Parameter.IsNullOrEmpty())
+        {
+            return "";
+        }
         var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
         return $"<div class=\"textwidget\">{(parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
     }

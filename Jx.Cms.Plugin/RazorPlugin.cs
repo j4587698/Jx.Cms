@@ -5,6 +5,7 @@ using System.Linq;
 using System.Reflection;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
@@ -43,14 +44,14 @@ namespace Jx.Cms.Plugin
                 config.IsUnloadable = true;
                 config.PreferSharedTypes = true;
             });
-            AddToPartManager(plugin, partManager);
+            var assembly = plugin.LoadDefaultAssembly();
+            AddToPartManager(plugin, partManager, assembly);
             PluginLoaders.Add(themeConfig.ThemeType, plugin);
-            DefaultPlugin.LoadPluginType(themeConfig.ThemeType.ToString(), plugin);
+            AssemblyCache.AddAssembly(assembly);
         }
 
-        private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
+        private static void AddToPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager, Assembly pluginAssembly)
         {
-            var pluginAssembly = pluginLoader.LoadDefaultAssembly();
             var partFactory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
             foreach (var applicationPart in partFactory.GetApplicationParts(pluginAssembly))
             {
@@ -77,17 +78,16 @@ namespace Jx.Cms.Plugin
         {
             if (PluginLoaders.Remove(themeConfig.ThemeType, out var plugin))
             {
-                RemoveFromPartManager(plugin, partManager);
-                DefaultPlugin.UnLoadPluginType(themeConfig.ThemeType.ToString());
+                var pluginAssembly = AssemblyCache.RemoveAssembly(plugin.LoadDefaultAssembly());
+                RemoveFromPartManager(plugin, partManager, pluginAssembly);
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
             }
         }
 
-        private static void RemoveFromPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager)
+        private static void RemoveFromPartManager(PluginLoader pluginLoader, ApplicationPartManager partManager, Assembly pluginAssembly)
         {
-            var pluginAssembly = pluginLoader.LoadDefaultAssembly();
             var partFactory = ApplicationPartFactory.GetApplicationPartFactory(pluginAssembly);
             foreach (var applicationPart in partFactory.GetApplicationParts(pluginAssembly))
             {

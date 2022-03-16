@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Entities.Front;
@@ -12,9 +13,9 @@ public class MenuTagHelper : TagHelper
 {
     public MenuEntity Menu { get; set; }
 
-    public override void Process(TagHelperContext context, TagHelperOutput output)
+    public override async Task ProcessAsync(TagHelperContext context, TagHelperOutput output)
     {
-        base.Process(context, output);
+        await base.ProcessAsync(context, output);
         switch (Menu.MenuType)
         {
             case MenuTypeEnum.Page:

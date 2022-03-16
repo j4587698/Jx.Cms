@@ -7,9 +7,10 @@ using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.Entities.Settings;
+using Jx.Cms.Plugin.Widgets;
 using Masuit.Tools;
 
-namespace Jx.Cms.Plugin.Widgets;
+namespace Jx.Cms.Plugin.Cache;
 
 public class WidgetCache
 {
@@ -21,7 +22,7 @@ public class WidgetCache
             .Where(x => x.Type == SettingsConstants.SystemType &&
                         Enum.GetNames(typeof(WidgetSidebarType)).Contains(x.Name))
             .ToDictionary(x => x.Name, x => x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value));
-        var widgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
+        var widgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
         EnabledWidget.Clear();
         foreach (var name in Enum.GetNames(typeof(WidgetSidebarType)))
@@ -36,8 +37,9 @@ public class WidgetCache
             {
                 var type = widgetTypes.FirstOrDefault(x => x.Name == vo.Name);
                 if (type == null) continue;
-                type.Parameter = vo.Parameter;
-                widgets.Add(type);
+                var widget = Activator.CreateInstance(type.GetType()) as IWidget;
+                widget.Parameter = vo.Parameter;
+                widgets.Add(widget);
             }
             EnabledWidget.Add(widgetSidebarType, widgets);
         }
@@ -45,6 +47,6 @@ public class WidgetCache
 
     public static List<IWidget> GetSidebarWidgets(WidgetSidebarType widgetSidebarType)
     {
-        return EnabledWidget.ContainsKey(widgetSidebarType) ? EnabledWidget[widgetSidebarType] : null;
+        return EnabledWidget.ContainsKey(widgetSidebarType) ? EnabledWidget[widgetSidebarType] : new List<IWidget>();
     }
 }

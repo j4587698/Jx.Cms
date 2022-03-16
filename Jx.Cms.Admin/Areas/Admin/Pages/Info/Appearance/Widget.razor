@@ -6,6 +6,7 @@
 @using Jx.Cms.Common.Components
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Common.Vo
+@using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Widgets
 @using Jx.Cms.Service.Both.Impl
 @using Masuit.Tools
@@ -87,7 +88,7 @@
         SelectedItems = typeof(WidgetSidebarType).ToSelectList().ToList();
         SelectedItems.Insert(0, new SelectedItem("", "请选择"));
 
-        WidgetTypes = App.EffectiveTypes.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
+        WidgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
         SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
     }

@@ -18,7 +18,6 @@
 
     <ItemGroup>
       <Folder Include="Model" />
-      <Folder Include="TagHelpers" />
     </ItemGroup>
 
 </Project>

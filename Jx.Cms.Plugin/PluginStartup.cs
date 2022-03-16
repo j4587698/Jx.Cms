@@ -1,4 +1,5 @@
 ﻿using Furion;
+using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Middlewares;
 using Jx.Cms.Plugin.Options;
 using Jx.Cms.Plugin.Widgets;

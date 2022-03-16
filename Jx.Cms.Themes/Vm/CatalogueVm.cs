@@ -29,4 +29,9 @@ public class CatalogueVm
     /// 每页数量
     /// </summary>
     public int PageSize { get; set; }
+    
+    /// <summary>
+    /// 页码信息
+    /// </summary>
+    public Dictionary<string, int> Pagination { get; set; }
 }

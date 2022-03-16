@@ -1,39 +1,32 @@
 ﻿@using Blogs.Model
-@using Blogs.Pages.Blogs
 @using Humanizer
 @using Jx.Cms.Common.Utils
 @using Jx.Cms.Entities.Front
 @using Jx.Cms.Service.Both
+@using Jx.Cms.Themes.Vm
 @using Masuit.Tools
 @using Masuit.Tools.Html
 @inject ISettingsService SettingsService
 @inject IMenuService MenuService
 @{
-	var type = ViewBag.type;
-	if (type != null)
-	{
-		type = type.Substring(type.LastIndexOf('/') + 1);
-	}
+	var type = ViewBag.type as string;
 
-	var settings = ViewBag.settings;
+	var settings = ViewBag.settings as Dictionary<string, string>;
 
-	var blogs = ViewBag.blogs;
+	var blogs = ViewBag.blogs as Dictionary<string, string>;
 
 	var menus = MenuService.GetAllMenuTree();
 
-	void CreateMenu(MenuEntity menuEntity)
+	async Task CreateMenu(MenuEntity menuEntity)
 	{
-		<li class="navbar-item"><a href="http://test.jvxiang.com/" title="@menuEntity.Title" @if(menuEntity.HasChildren)
-		{
-			@("class=sf-with-ul");
-		}
-	>@Html.Raw(menuEntity.NavTitle)</a>
+		<li class="navbar-item"><a menu="@menuEntity" title="@menuEntity.Title" class="@(menuEntity.HasChildren ? "sf-with-ul" : "")">
+		@Html.Raw(menuEntity.NavTitle)</a>
 		@if (menuEntity.HasChildren)
 		{
 		<ul>
 		 @foreach (var menu in menuEntity.Children)
 			{
-				CreateMenu(menu);
+				await CreateMenu(menu);
 			}
 		</ul>
 		}
@@ -53,8 +46,13 @@
 <meta name="HandheldFriendly" content="true"/>
 <meta name="robots" content="index,follow"/>
 @await RenderSectionAsync("header", false)
-@if (type == "Index")
+@if (type == "Home")
 {
+	var index = Model as IndexVm;
+	<title>@settings[SettingsConstants.TitleKey]@if (index.PageNum > 1)
+	                                         {
+		                                         @("-第" + index.PageNum + "页")
+	                                         }-@settings[SettingsConstants.SubTitleKey]</title>
 	<meta name="Keywords" content="@blogs[nameof(SettingsModel.Keywords)],@settings[SettingsConstants.TitleKey]">
 	<meta name="description" content="@blogs[nameof(SettingsModel.Description)]">
 }
@@ -64,16 +62,16 @@ else if (type == "Category")
 	<meta name="Keywords" content="{if $category.Metas.Blogs_flgjc}{$category.Metas.Blogs_flgjc}{else}{$category.Name}{/if},{$name}">
 	<meta name="description" content="{$category.Intro}">
 }
-else if (type == "Article")
+else if (type == "Post")
 {
-	var article = Model as Article;
-	<title>@($"{article?._article.Body.Title}{blogs[nameof(SettingsModel.Connector)]}{article._article.Body.Catalogue.Name}{blogs[nameof(SettingsModel.Connector)]}{settings[SettingsConstants.TitleKey]}")</title>
-	var tag = article._article.Body.Labels;
-	var keywords = tag.IsNullOrEmpty() ? article._article.Body.Title : string.Join(",", tag.Select(x => x.Name));
-	var description = article._article.Body.Description.IsNullOrEmpty() ? article._article.Body.Content.RemoveHtmlTag().Truncate(135) : article._article.Body.Description.RemoveHtmlTag().Truncate(135);
+	var article = Model as PostVm;
+	<title>@($"{article!.Article.Title}{blogs[nameof(SettingsModel.Connector)]}{article.Article.Catalogue.Name}{blogs[nameof(SettingsModel.Connector)]}{settings[SettingsConstants.TitleKey]}")</title>
+	var tag = article.Article.Labels;
+	var keywords = tag.IsNullOrEmpty() ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
+	var description = article.Article.Description.IsNullOrEmpty() ? article.Article.Content.RemoveHtmlTag().Truncate(135) : article.Article.Description.RemoveHtmlTag().Truncate(135);
 	<meta name="keywords" content="@keywords"/>
 	<meta name="description" content="@description"/>
-	<meta name="author" content="@article._article.Body.Author">
+	<meta name="author" content="@article.Article.Author">
 }else if (type == "Page"){
 	<title>{if $article.Metas.Blogs_pstitle}{$article.Metas.Blogs_pstitle}{else}{$title}{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
 	<meta name="keywords" content="{if $article.Metas.Blogs_psguanjianci}{$article.Metas.Blogs_psguanjianci}{else}{$title},{$name}{/if}"/>
@@ -86,7 +84,7 @@ else if (type == "Article")
 // {/php}
 	<meta name="description" content="{$description}"/>
 	<meta name="author" content="{$article.Author.StaticName}">
-}else if(type == "Tag") {
+}else if(type == "Label") {
 	<title>{if $tag->Metas->Blogs_bqtitle}{$tag.Metas.Blogs_bqtitle}{else}{$tag.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
 	<meta name="Keywords" content="{if $tag->Metas->Blogs_bqgjc}{$tag.Metas.Blogs_bqgjc}{else}{$tag.Name}{/if},{$name}">
 	<meta name="description" content="{$tag.Intro}">
@@ -136,12 +134,26 @@ else
 		<div id="menu-box">
 			<div id="top-menu">
 				<div class="logo-site">
-					<h1 class="site-title">
-						<a href="/" title="{$name}-{$title}">
+					@if (type == "Home")
+					{
+						@:<h1 class="site-title">
+					}
+					else
+					{
+						@:<div>
+					}
+						<a href="/" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]">
 							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]"/>
 							<span>@settings[SettingsConstants.TitleKey]</span>
 						</a>
-					</h1>
+						@if (type == "Home")
+						{
+						  @:</h1>
+						}
+						else
+						{
+							@:</div>
+						}
 				</div><!-- .logo-site -->			
 				<span class="nav-search"><i class="fas fa-search"></i></span>
 				<div id="site-nav-wrap">
@@ -152,7 +164,7 @@ else
 							<ul id="menu-main" class="down-menu nav-menu sf-js-enabled sf-arrows">
 								@foreach (var menu in menus)
 								{
-									CreateMenu(menu);
+									await CreateMenu(menu);
 								}
 							</ul>
 						</div> 
@@ -170,8 +182,8 @@ else
 	</div>	
 	<div class="clear"></div>
 </div>
-@if(type == "Index"){
-<nav class="breadcrumb" @if (blogs[nameof(SettingsModel.Notice)] == "")
+@if(type == "Home"){
+	<nav class="breadcrumb" @if (blogs[nameof(SettingsModel.Notice)] == "")
                         {
 	                        @("style = 'height:15px;'")
                         }>
@@ -188,14 +200,25 @@ else
 }
 else
 {
-	//template:breadcrumb
+	<nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
+		@if (type == "Catalogue")
+		{
+			@:&nbsp;&gt;&nbsp;
+			<a href="{$category.Url}" target="_blank">{$category.Name}</a>
+			@:&nbsp;&gt;&nbsp;文章
+		}
+		{if $type=='article'}&nbsp;&gt;&nbsp;<a href="{$article.Category.Url}" target="_blank">{$article.Category.Name}</a>&nbsp;&gt;&nbsp;正文{/if}
+		{if $type=='page'}&nbsp;&gt;&nbsp;{$title}{/if}
+		{if $type=='author'}&nbsp;&gt;&nbsp;{$title}发表的文章{/if}
+		{if $type=='date'}&nbsp;&gt;&nbsp;发表于{$title}的文章{/if}
+		{if $type=='tag'}&nbsp;&gt;&nbsp;{$title}标签文章{/if}</nav>
 }
 
 </div>
 @RenderBody()
 <div id="footer">
 <div class="foot">
-@if (type == "Index")
+@if (type == "Home")
 {
 	<div id="links">
 		<ul class="linkcat"> <li><strong>友情链接：</strong></li>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Plugin;
 using Microsoft.AspNetCore.Http;
 
@@ -16,19 +17,16 @@ namespace Jx.Cms.Plugin.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            var plugins = DefaultPlugin.SystemPlugins;
+            var plugins = SystemPluginCache.GetSystemPlugins();
             foreach (var plugin in plugins)
             {
-                foreach (var type in plugin.Value)
+                var ret = plugin?.AddMiddleware(context);
+                if (ret != true)
                 {
-                    var instance = Activator.CreateInstance(type) as ISystemPlugin;
-                    var ret = instance?.AddMiddleware(context);
-                    if (ret != true)
-                    {
-                        return;
-                    }
+                    return;
                 }
             }
+
             await _next.Invoke(context);
         }
     }

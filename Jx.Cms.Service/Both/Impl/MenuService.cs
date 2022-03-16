@@ -26,7 +26,7 @@ namespace Jx.Cms.Service.Both.Impl
 
         public List<MenuEntity> GetAllMenuTree()
         {
-            return MenuEntity.Select.OrderByDescending(x => x.Order).ToTreeList();
+            return MenuEntity.Select.Where(x => x.ParentId == 0).AsTreeCte().OrderByDescending(x => x.Order).ToTreeList();
         }
 
         public List<MenuEntity> GetMenuByParentId(int parentId = 0)

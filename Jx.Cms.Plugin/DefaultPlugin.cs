@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Furion;
 using Furion.Localization;
+using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;
 using StackExchange.Profiling.Internal;
@@ -17,16 +18,6 @@ namespace Jx.Cms.Plugin
         /// 已挂载插件列表
         /// </summary>
         private static readonly Dictionary<string, PluginLoader> Plugins = new();
-
-        /// <summary>
-        /// 文章插件列表
-        /// </summary>
-        internal static readonly Dictionary<string, List<Type>> ArticlePlugins = new();
-
-        /// <summary>
-        /// 系统相关插件列表
-        /// </summary>
-        internal static readonly Dictionary<string, List<Type>> SystemPlugins = new();
 
         public static Assembly GetAssemblyByPluginId(string pluginId)
         {
@@ -51,14 +42,14 @@ namespace Jx.Cms.Plugin
                 configure.PreferSharedTypes = true;
             });
             Plugins.Add(pluginConfig.PluginId, plugin);
-            LoadPluginType(pluginConfig.PluginId, plugin);
+            AssemblyCache.AddAssembly(plugin.LoadDefaultAssembly());
         }
 
         public static void UnloadPlugin(PluginConfig pluginConfig)
         {
             if (Plugins.TryRemove(pluginConfig.PluginId, out PluginLoader plugin))
             {
-                UnLoadPluginType(pluginConfig.PluginId);
+                AssemblyCache.RemoveAssembly(plugin.LoadDefaultAssembly());
                 plugin.Dispose();
                 GC.Collect();
                 GC.WaitForPendingFinalizers();
@@ -72,44 +63,6 @@ namespace Jx.Cms.Plugin
                 plugin.Reload();
             }
         }
-
-        internal static void LoadPluginType(string pluginName, PluginLoader plugin)
-        {
-            var types = plugin.LoadDefaultAssembly().GetTypes();
-            // 文章相关插件列表
-            var articleList = new List<Type>();
-            foreach (var article in types.Where(x => typeof(IArticlePlugin).IsAssignableFrom(x) && !x.IsAbstract))
-            {
-                articleList.Add(article);
-            }
-
-            if (articleList.Count > 0)
-            {
-                ArticlePlugins.Add(pluginName, articleList);
-            }
-            
-            // 系统相关插件列表
-            var systemList = new List<Type>();
-            systemList.AddRange(types.Where(x => typeof(ISystemPlugin).IsAssignableFrom(x) && !x.IsAbstract).ToList());
-
-            if (systemList.Count > 0)
-            {
-                SystemPlugins.Add(pluginName, systemList);
-                foreach (var instance in systemList.Select(system => Activator.CreateInstance(system) as ISystemPlugin))
-                {
-                    instance?.PluginEnable();
-                }
-            }
-        }
-
-        internal static void UnLoadPluginType(string pluginName)
-        {
-            ArticlePlugins.TryRemove(pluginName, out _);
-            SystemPlugins.TryRemove(pluginName, out List<Type> systemList);
-            foreach (var instance in systemList.Select(system => Activator.CreateInstance(system) as ISystemPlugin))
-            {
-                instance?.PluginDisable();
-            }
-        }
+        
     }
 }
