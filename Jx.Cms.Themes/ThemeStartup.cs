@@ -4,6 +4,7 @@ using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
+using Jx.Cms.Themes.RazorCompiler;
 using Masuit.Tools.Core.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

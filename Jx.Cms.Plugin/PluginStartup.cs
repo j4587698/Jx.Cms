@@ -2,7 +2,6 @@
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Middlewares;
 using Jx.Cms.Plugin.Options;
-using Jx.Cms.Plugin.Widgets;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;

@@ -1,10 +1,8 @@
 ﻿@page "/Article/Write"
 @page "/Article/Write/{Id:int}"
-@using Jx.Cms.Service
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Entities.Article
-@using Jx.Cms.Service.Admin
 @using Jx.Cms.Admin.ViewModel
 @using Jx.Cms.Plugin.Components
 @using Jx.Cms.Plugin.Model
@@ -13,6 +11,7 @@
 @using Furion
 @using System.Security.Claims
 @using Jx.Cms.Common.Components
+@using Jx.Cms.DbContext.Service.Admin
 @using Masuit.Tools
 
 @inject NavigationManager NavigationManager

@@ -1,6 +1,6 @@
 ﻿using Furion;
 using Jx.Cms.Entities.Article;
-using Jx.Cms.Service.Front.Impl;
+using Jx.Cms.Plugin.Service.Front.Impl;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
 

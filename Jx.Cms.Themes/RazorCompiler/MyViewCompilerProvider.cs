@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.Extensions.Logging;
 
-namespace Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation
+namespace Jx.Cms.Themes.RazorCompiler
 {
     public class MyViewCompilerProvider : IViewCompilerProvider
     {

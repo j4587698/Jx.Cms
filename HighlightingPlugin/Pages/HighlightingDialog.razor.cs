@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
+using Jx.Cms.DbContext.Service.Both.Impl;
 using Jx.Cms.Plugin.Components;
-using Jx.Cms.Service.Both.Impl;
 using Microsoft.AspNetCore.Components;
 
 namespace HighlightingPlugin.Pages

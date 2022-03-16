@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Furion;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Service.Both;
+using Jx.Cms.DbContext.Service.Both;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 

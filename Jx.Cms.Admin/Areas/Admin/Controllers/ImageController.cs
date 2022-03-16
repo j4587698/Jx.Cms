@@ -2,8 +2,7 @@
 using System.Net.Mime;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Service;
-using Jx.Cms.Service.Admin;
+using Jx.Cms.Themes.Service;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 

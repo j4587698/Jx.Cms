@@ -18,5 +18,15 @@ namespace Jx.Cms.Common.Utils
         /// </summary>
         public static readonly string PluginPath = Path.GetFullPath(
             Path.Combine(Directory.GetCurrentDirectory(), "Plugin"));
+        
+        /// <summary>
+        /// 默认菜单名
+        /// </summary>
+        public const string Menu = "menu";
+        
+        /// <summary>
+        /// 默认友情链接名
+        /// </summary>
+        public const string Link = "link";
     }
 }

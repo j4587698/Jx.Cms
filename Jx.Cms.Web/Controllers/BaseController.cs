@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using Furion;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Service.Admin;
-using Jx.Cms.Service.Both;
+using Jx.Cms.DbContext.Service.Admin;
+using Jx.Cms.DbContext.Service.Both;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

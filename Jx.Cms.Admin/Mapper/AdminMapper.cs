@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using Jx.Cms.Admin.ViewModel;
+using Jx.Cms.DbContext.Service.Both;
 using Jx.Cms.Entities.Article;
-using Jx.Cms.Service.Admin;
 using Mapster;
 
 namespace Jx.Cms.Admin.Mapper

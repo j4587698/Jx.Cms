@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Components;
-using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Plugin.Model
 {

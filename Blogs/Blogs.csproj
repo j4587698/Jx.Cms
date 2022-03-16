@@ -20,9 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Rewrite\Jx.Cms.Rewrite.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Service\Jx.Cms.Service.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
     </ItemGroup>
 
     <ItemGroup>

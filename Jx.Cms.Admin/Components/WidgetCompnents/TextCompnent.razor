@@ -1,12 +1,9 @@
-﻿@using Jx.Cms.Service.Both
-@using System.ComponentModel
+﻿@using System.ComponentModel
 @using Furion.JsonSerialization
 @using Jx.Cms.Admin.Vo
 @using Masuit.Tools
 
 @inherits Jx.Cms.Common.Components.WidgetComponentBase
-@inject IWidgetSettingsService _widgetSettingsService
-@inject IWidgetSettingsService widgetSettingsService
 
 <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Normal">
     <BootstrapInput @bind-Value="Title"></BootstrapInput>

@@ -9,6 +9,7 @@ using Jx.Cms.Common.Utils;
 using Jx.Cms.Entities.Settings;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.PartManager;
+using Jx.Cms.Themes.RazorCompiler;
 using Masuit.Tools.Core.Net;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;

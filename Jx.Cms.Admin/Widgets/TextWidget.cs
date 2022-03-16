@@ -5,7 +5,7 @@ using Furion.JsonSerialization;
 using Jx.Cms.Admin.Components.WidgetCompnents;
 using Jx.Cms.Common.Components;
 using Jx.Cms.Common.Enum;
-using Jx.Cms.Plugin.Widgets;
+using Jx.Cms.Plugin.Plugin;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Components;
 

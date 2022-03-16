@@ -6,7 +6,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Entities\Jx.Cms.Entities.csproj" />
       <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
     </ItemGroup>
 
@@ -14,10 +13,6 @@
       <PackageReference Include="DeviceDetector.NET" Version="4.3.0" />
       <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="6.0.2" />
       <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="6.0.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Model" />
     </ItemGroup>
 
 </Project>

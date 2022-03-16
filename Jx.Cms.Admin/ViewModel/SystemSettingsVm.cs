@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Service.Both;
+using Jx.Cms.DbContext.Service.Both;
 
 namespace Jx.Cms.Admin.ViewModel
 {

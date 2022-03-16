@@ -13,4 +13,9 @@
       <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.0.100" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Entities" />
+      <Folder Include="Service" />
+    </ItemGroup>
+
 </Project>
