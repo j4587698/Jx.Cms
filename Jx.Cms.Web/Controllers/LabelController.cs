@@ -1,6 +1,7 @@
 ﻿using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
 
@@ -35,7 +36,8 @@ public class LabelController : BaseController
             PageNum = pageNum,
             PageSize = count,
             TotalCount = totalCount,
-            Label = label
+            Label = label,
+            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalCount)
         };
         return View(labelVm);
     }

@@ -26,7 +26,8 @@ public class CatalogService : ICatalogService, ITransient
 
         return ArticleEntity.Where(x => x.IsPage == false && catalogues.Contains(x.CatalogueId))
             .OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).Count(out count)
-            .IncludeMany(x => x.Comments.Select(y => new CommentEntity() { Id = y.Id })).ToList();
+            .IncludeMany(x => x.Comments.Select(y => new CommentEntity() { Id = y.Id }))
+            .Include(x => x.Catalogue).ToList();
     }
     
 }

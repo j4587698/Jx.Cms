@@ -4,6 +4,7 @@
 @using Jx.Cms.Entities.Article
 @using Jx.Cms.Entities.Front
 @using System.Collections
+@using AngleSharp
 @using Jx.Cms.DbContext.Service.Admin
 @using Jx.Cms.DbContext.Service.Both
 @inject IPageService PageService
@@ -327,9 +328,12 @@
         });
     }
 
-    private Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
+    private async Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
     {
-        return Task.FromResult(MenuService.SaveMenu(arg));
+        var context = BrowsingContext.New(Configuration.Default);
+        var document = await context.OpenAsync(req => req.Content(arg.NavTitle));
+        arg.NavTitle = document.Body!.InnerHtml;
+        return MenuService.SaveMenu(arg);
     }
 
     private Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg)

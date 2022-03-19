@@ -24,7 +24,8 @@ public class PostController : BaseController
             BodyExt = model.Footer,
             Relevant = articleService.GetRelevantArticle(model.Body),
             PrevArticle = articleService.GetPrevArticle(id),
-            NextArticle = articleService.GetNextArticle(id)
+            NextArticle = articleService.GetNextArticle(id),
+            CommentCount = model.CommentCount
         };
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorName), out var nikeName);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorEmail), out var email);

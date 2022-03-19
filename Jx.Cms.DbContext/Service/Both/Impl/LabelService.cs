@@ -27,12 +27,12 @@ namespace Jx.Cms.DbContext.Service.Both.Impl
 
         public List<ArticleEntity> GetArticleFormLabelId(int id, int pageNumber, int pageSize)
         {
-            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Id == id)).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Id == id)).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
         public List<ArticleEntity> GetArticleFormLabelId(int id, int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Id == id)).Count(out count).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Id == id)).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
         public List<ArticleEntity> GetArticleFormLabelName(string name)

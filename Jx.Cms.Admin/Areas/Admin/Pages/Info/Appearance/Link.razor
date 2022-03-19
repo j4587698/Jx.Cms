@@ -4,6 +4,7 @@
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.DbContext.Service.Both
 @using Jx.Cms.Entities.Front
+@using AngleSharp
 
 @inject ISettingsService SettingsService
 @inject IMenuService MenuService
@@ -38,9 +39,12 @@
         });
     }
 
-    private Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
+    private async Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
     {
-        return Task.FromResult(MenuService.SaveMenu(arg));
+        var context = BrowsingContext.New(Configuration.Default);
+        var document = await context.OpenAsync(req => req.Content(arg.NavTitle));
+        arg.NavTitle = document.Body!.InnerHtml;
+        return MenuService.SaveMenu(arg);
     }
 
     private Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg)

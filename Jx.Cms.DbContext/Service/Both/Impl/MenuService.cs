@@ -38,17 +38,17 @@ namespace Jx.Cms.DbContext.Service.Both.Impl
 
         public List<MenuEntity> GetAllMenuTree()
         {
-            return GetAllCustomMenus(Constants.Menu);
+            return GetAllCustomMenuTree(Constants.Menu);
         }
 
         public List<MenuEntity> GetAllLinkTree()
         {
-            return GetAllCustomMenus(Constants.Link);
+            return GetAllCustomMenuTree(Constants.Link);
         }
 
         public List<MenuEntity> GetAllCustomMenuTree(string menuName)
         {
-            return MenuEntity.Select.Where(x => x.ParentId == 0 && x.MenuName == menuName).AsTreeCte().OrderByDescending(x => x.Order).ToTreeList();
+            return MenuEntity.Where(x => x.ParentId == 0 && x.MenuName == menuName).AsTreeCte().OrderByDescending(x => x.Order).ToTreeList();
         }
 
         public List<MenuEntity> GetMenuByParentId(int parentId = 0)

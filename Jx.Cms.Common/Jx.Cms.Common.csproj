@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="AngleSharp" Version="0.16.1" />
       <PackageReference Include="BootstrapBlazor" Version="6.4.5-beta01" />
       <PackageReference Include="Furion" Version="3.0.6" />
       <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.0.6" />

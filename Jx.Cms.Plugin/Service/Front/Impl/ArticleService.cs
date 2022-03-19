@@ -25,13 +25,14 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
                 article.Content = Markdown.ToHtml(article.Content);
             }
 
-            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().ToTreeList();
+            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().Count(out var count).ToTreeList();
             //article.Comments.ToTreeGeneral(x => x.Id, x => x.ParentId);
             article.ReadingVolume += 1;
-            ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume);
+            ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume).ExecuteAffrows();
             var model = new ArticleModel
             {
-                Body = article
+                Body = article,
+                CommentCount = count
             };
             PluginUtil.OnArticleShow(model);
             return model;
@@ -79,7 +80,8 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
 
             if (articles.Count < count)
             {
-               articles.AddRange(ArticleEntity.Where(x => !x.IsPage && x.CatalogueId == baseArticle.CatalogueId).Include(x => x.Catalogue).Take(count - articles.Count).ToList());
+               var ids = articles.Select(x => x.Id);
+               articles.AddRange(ArticleEntity.Where(x => !x.IsPage && x.CatalogueId == baseArticle.CatalogueId && !ids.Contains(x.Id)).Include(x => x.Catalogue).Take(count - articles.Count).ToList());
             }
 
             return articles;

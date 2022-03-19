@@ -11,6 +11,11 @@ public class PostVm
     public ArticleEntity Article { get; set; }
 
     /// <summary>
+    /// 总评论数
+    /// </summary>
+    public long CommentCount { get; set; }
+
+    /// <summary>
     /// 前一篇文章
     /// </summary>
     public ArticleEntity PrevArticle { get; set; }

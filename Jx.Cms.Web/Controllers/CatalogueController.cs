@@ -34,6 +34,7 @@ public class CatalogueController : BaseController
         catalogueVm.PageNum = pageNum;
         catalogueVm.PageSize = count;
         catalogueVm.TotalCount = totalPage;
+        catalogueVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalPage);
         return View(catalogueVm);
     }
 }

@@ -1,15 +1,28 @@
 ﻿@model Jx.Cms.Themes.Vm.IndexVm
 @using Blogs.Enum
 @using Blogs.Model
-@using Blogs.Utils
-@using Humanizer
-@using Jx.Cms.Rewrite
-@using Jx.Cms.Themes.Util
-@using Masuit.Tools.Html
 
 @{
 	var blogs = ViewBag.blogs as Dictionary<string, string>;
 }
+
+<nav class="breadcrumb"
+     @if (blogs[nameof(SettingsModel.Notice)] == "")
+     {
+	     @("style = 'height:15px;'")
+     }>
+	@if (blogs[nameof(SettingsModel.Notice)] != "")
+	{
+		<div id="scrolldiv">
+			<div class="bull"></div>
+			<div class="scrolltext">
+				<ul style="margin-top: 0px;">@Html.Raw(blogs[nameof(SettingsModel.Notice)])</ul>
+			</div>
+		</div>
+		<script type="text/javascript">$(document).ready(function() {$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});})</script>
+	}
+</nav>
+
 <div id="content" class="site-content">	
 	<div class="clear"></div>
 	<div id="contentab">	
@@ -17,71 +30,8 @@
 			<main id="main" class="site-main" role="main">
 				
 				<div id="post_list_box" class="border_gray">
-					@{
-						int tds = 0;
-					}
-					@foreach (var article in Model.Articles)
-					{
-						tds++;
-						<article id="post-@article.Id" class="archive-list @if (tds % 2 == 0){@("shuangshu");}">
-							<div class="post-date-ribbon">
-								<div class="corner"></div>@article.PublishTime.ToString("yyyy年MM月dd日")</div>
-							@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString())
-							{
-								<header class="entry-header">
-									<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
-								</header>
-								<figure class="thumbnail">
-									<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
-								</figure>
-							}
-							else
-							{
-								<figure class="thumbnail">
-									@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString())
-									{
-										<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
-									}
-									else
-									{
-										<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(270, 180))</a>
-									}
-								</figure>
-								<header class="entry-header">
-									<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
-								</header>
-							}
-
-							<div class="entry-content">
-								<div class="archive-content">
-									@{
-										var content = article.Content.RemoveHtmlTag();
-									}
-									@if ((blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
-									     (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
-									{
-										@content.Truncate(80)
-									}
-									else if (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
-									{
-										@content.Truncate(120)
-									}
-									else
-									{
-										@content.Truncate(80)
-									}
-								</div>
-								<div class="entry-meta">
-									<span class="post_cat"><i class="fas fa-folder" aria-hidden="true"></i>&nbsp;<a href="{$article.Category.Url}" target="_blank" rel="category tag">@(article.Catalogue?.Name ?? "未分类")</a></span>
-									<span class="views"><i class="fas fa-users" aria-hidden="true"></i>&nbsp;@article.ReadingVolume 人阅读</span>
-									<span class="comment sllpl"><i class="fas fa-comment" aria-hidden="true"></i>&nbsp;@(article.Comments?.Count ?? 0) 条评论</span>
-								</div>
-								<div class="readMore"><a href="@RewriteUtil.GetArticleUrl(article)" rel="nofollow">阅读全文</a></div>
-								<div class="clear"></div>
-							</div><!-- .entry-content -->
-						</article><!-- #post -->
-
-					}
+					@await Html.PartialAsync("_articleList", Model.Articles, ViewData);
+					
 				</div>
 			</main><!-- .site-main -->
 			<nav class="navigation pagination" role="navigation">
@@ -94,23 +44,23 @@
 						}
 						else if (pagination.Key == "‹")
 						{
-							<span class="prev"><a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+							<span class="prev"><a class="page-numbers" index-page-num="@pagination.Value" title="上一页"><i class="fa fa-angle-left"></i></a></span>
 						}
 						else if (pagination.Key == ">")
 						{
-							<span class="next"><a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+							<span class="next"><a class="page-numbers" index-page-num="@pagination.Value" title="下一页"><i class="fa fa-angle-right"></i></a></span>
 						}
 						else if (pagination.Key == "<<")
 						{
-							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+							<a class="page-numbers" index-page-num="@pagination.Value" title="第1页"><i class="fa fa-angle-double-left"></i></a>
 						}
 						else if (pagination.Key == ">>")
 						{
-							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+							<a class="page-numbers" index-page-num="@pagination.Value" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
 						}
 						else
 						{
-							<a class="page-numbers" href="@RewriteUtil.GetIndexUrl(pagination.Value)" title="第 @pagination.Key 页">@pagination.Key</a>
+							<a class="page-numbers" index-page-num="@pagination.Value" title="第 @pagination.Key 页">@pagination.Key</a>
 						}
 					}
 				</div>

@@ -10,6 +10,11 @@ public class PageVm
     public ArticleEntity Article { get; set; }
 
     /// <summary>
+    /// 评论总条数
+    /// </summary>
+    public long CommentCount { get; set; }
+
+    /// <summary>
     /// 插件扩展头
     /// </summary>
     public string HeaderExt { get; set; }

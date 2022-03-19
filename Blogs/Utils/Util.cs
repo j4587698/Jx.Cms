@@ -60,6 +60,12 @@ namespace Blogs.Utils
             return sUrlList;
         }
 
+        /// <summary>
+        /// 根据HttpContext获取URL
+        /// </summary>
+        /// <param name="httpContext"></param>
+        /// <param name="url"></param>
+        /// <returns></returns>
         public static string GetUrl(this HttpContext httpContext, string url)
         {
             if (url.StartsWith("http"))
@@ -69,5 +75,16 @@ namespace Blogs.Utils
 
             return $"{httpContext.Request.Scheme}://{httpContext.Request.Host}{(url.StartsWith("/")?"":"/")}{url}";
         }
+
+        /// <summary>
+        /// 回复内容添加表情
+        /// </summary>
+        /// <param name="content"></param>
+        /// <returns></returns>
+        public static string BiaoQing(string content)
+		{
+            Regex regex = new Regex(@"(\[face_[0-3][0-9]{0,1}\])");
+            return regex.Replace(content, @"<img src='/Blogs/Image/smilies/\$1.gif' alt='$1' class='wp-smiley'>");
+		}
     }
 }

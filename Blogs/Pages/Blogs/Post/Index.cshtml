@@ -1,0 +1,131 @@
+﻿@using Jx.Cms.Themes.Util
+@using Blogs.Model
+@using Blogs.Utils
+@using Furion
+@using Masuit.Tools
+@model Jx.Cms.Themes.Vm.PostVm
+
+@Html.Raw(Model.HeaderExt)
+
+@{
+	var blogs = ViewBag.blogs as Dictionary<string, string>;
+}
+
+<nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
+	&nbsp;&gt;&nbsp;<a catalogue="@Model.Article.Catalogue" target="_blank">@Model.Article.Catalogue.Name</a>&nbsp;&gt;&nbsp;正文
+</nav>
+
+<div id="content" class="site-content">	
+	<div class="clear"></div>
+	<div id="primary" class="content-area">
+		<main id="main" class="site-main" role="main">
+			<article id="post-@Model.Article.Id" class="post-@Model.Article.Id post type-post status-publish format-standard hentry category-@(Model.Article.Catalogue == null ? "无" : Model.Article.Catalogue.Alias):">
+				<header class="entry-header">
+					<h1 class="entry-title">@Model.Article.Title</h1>						
+					<div class="single_info">
+						<i class="fas fa-user"></i>&nbsp;@Model.Article.Author&nbsp;
+						<span class="date"><i class="fas fa-clock"></i>&nbsp;@Model.Article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
+						<span class="views"><i class="fas fa-users"></i>&nbsp;@Model.Article.ReadingVolume 人阅读</span>
+						<span class="comment"><i class="fas fa-comment"></i>&nbsp;@(Model.CommentCount) 条评论</span>
+						@if (ViewData["user"] != null)
+						{
+							<span class="edit"><i class="fas fa-pencil-alt"></i>&nbsp;<a href="/Admin/Article/Write/@Model.Article.Id" rel="nofollow">编辑</a></span>
+						}
+					</div>							
+				</header><!-- .entry-header -->
+				<div class="entry-content">
+					<div class="single-content">
+						@Html.Raw(Model.Article.Content)																
+					</div>
+					<div class="clear"></div>
+					<div class="xiaoshi">
+						<div class="single_banquan">	
+							<strong>本文地址：</strong><a article="@Model.Article" title="@Model.Article.Title"  target="_blank">@App.HttpContext.GetUrl(RewriteUtil.GetArticleUrl(Model.Article))</a><br/>
+							<strong>版权声明：</strong>本文为原创文章，版权归&nbsp;<a href="{$article.Author.Url}" target="_blank">@Model.Article.Author</a>&nbsp;所有，欢迎分享本文，转载请保留出处！
+						</div>
+					</div>
+					<div class="clear"></div>
+					{template:social}					
+					<div class="clear"></div>
+					<div class="post-navigation">
+						<div class="post-previous">
+							@if(Model.PrevArticle != null){
+								<a article="@Model.PrevArticle" rel="prev"><span>PREVIOUS:</span>@Model.PrevArticle.Title</a> 
+							}
+							else{
+								<span>PREVIOUS:</span><a href="JavaScript:void(0)">已经是最后一篇了</a> 
+							}
+						</div>
+						<div class="post-next">
+							@if(Model.NextArticle != null){
+								<a article="@Model.NextArticle" rel="next"><span>NEXT:</span>@Model.NextArticle.Title</a> 
+							}
+							else {
+								<span>NEXT:</span><a href="JavaScript:void(0)">已经是最新一篇了</a> 
+							}
+						</div>
+					</div>
+					<nav class="nav-single-c"> 	
+						<nav class="navigation post-navigation" role="navigation">		
+							<h2 class="screen-reader-text">文章导航</h2>		
+							<div class="nav-links">	
+								@if(Model.PrevArticle != null){
+									<div class="nav-previous"> <a article="@Model.PrevArticle" rel="prev"><span class="meta-nav-r" aria-hidden="true"><i class="fas fa-angle-left"></i></span></a> </div>
+								}
+								@if(Model.NextArticle != null){
+									<div class="nav-next"> <a article="@Model.NextArticle" rel="next"><span class="meta-nav-l" aria-hidden="true"><i class="fas fa-angle-right"></i></span> </a> </div>
+								}
+							</div>	
+						</nav>
+					</nav>
+        
+        
+				</div><!-- .entry-content -->
+			</article><!-- #post -->
+			<div class="tab-site">
+				<div id="layout-tab">
+					<div class="tit">
+						<span class="name"><i class="fas fa-bookmark"></i>&nbsp;相关文章</span>
+						<span class="plxiaoshi"><span class="keyword">
+								<i class="fas fa-tags"></i>&nbsp;关键词：@if (Model.Article.Labels != null)
+								                                     {
+									                                     @foreach (var label in Model.Article.Labels)
+									                                     {
+										                                     <a label="@label" target="_blank" rel="tag">@label.Name</a>
+									                                     }
+								                                     } 
+							</span>
+						</span>
+					</div>
+					@if (Model.Relevant is {Count: > 0 })
+					{
+						<ul class="tab-bd">
+							@foreach (var article in Model.Relevant)
+							{
+								<li><span class="post_spliter">•</span><a article="@article" target="_blank">@article.Title</a></li>
+							}
+
+						</ul>
+					}
+				</div>
+			</div>
+			<div class="clear"></div>
+		@if (Model.Article.CanComment)
+        {
+	        <div id="commentDiv">
+		        @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments.ToList(), ViewData)
+	        </div>
+        }
+        else
+        {
+        	<p class="no-comments">评论已关闭！</p>
+        }
+		</main><!-- .site-main -->
+	</div><!-- .content-area -->
+	@if (blogs!.ContainsKey(nameof(SettingsModel.Sidebar)) && !blogs[nameof(SettingsModel.Sidebar)].IsNullOrEmpty())
+	{
+		<sidebar></sidebar>
+	}
+</div>
+<div class="clear"></div>
+@Html.Raw(@Model.BodyExt)

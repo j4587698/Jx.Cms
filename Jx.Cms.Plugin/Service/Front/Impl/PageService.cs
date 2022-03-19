@@ -21,13 +21,14 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
                 article.Content = Markdown.ToHtml(article.Content);
             }
 
-            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().ToTreeList();
-            //article.Comments.ToTreeGeneral(x => x.Id, x => x.ParentId);
+            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().Count(out var count).ToTreeList();
+            
             article.ReadingVolume += 1;
-            ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume);
+            ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume).ExecuteAffrows();
             var model = new ArticleModel
             {
-                Body = article
+                Body = article,
+                CommentCount = count
             };
             PluginUtil.OnArticleShow(model);
             return model;
