@@ -5,13 +5,13 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
 {
     public class PaginationService: IPaginationService, ITransient
     {
-        public Dictionary<string, int> GetPagination(int pageNo, int pageSize, int totalCount)
+        public Dictionary<string, long> GetPagination(int pageNo, int pageSize, long totalCount)
         {
             if (pageNo == 0)
             {
                 pageNo = 1;
             }
-            var result = new Dictionary<string, int>();
+            var result = new Dictionary<string, long>();
             var totalPage = totalCount % pageSize == 0 ? totalCount / pageSize : totalCount / pageSize + 1;
             var startNo = 1;
             if (totalPage <= 10)

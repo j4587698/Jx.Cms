@@ -17,6 +17,8 @@ namespace Jx.Cms.Themes.Model
         public string CatalogueUrl { get; set; }
 
         public string LabelUrl { get; set; }
+        
+        public string DateUrl { get; set; }
 
 
         private static RewriterModel _rewriterModel;

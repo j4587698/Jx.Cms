@@ -54,6 +54,17 @@ namespace Jx.Cms.Plugin.Service.Front
         List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize);
 
         /// <summary>
+        /// 根据年月分页获取文章
+        /// </summary>
+        /// <param name="year">年份</param>
+        /// <param name="month">月份</param>
+        /// <param name="pageNumber">第几页</param>
+        /// <param name="pageSize">每页条数</param>
+        /// <param name="count">总数</param>
+        /// <returns></returns>
+        List<ArticleEntity> GetArticleWithDate(int year, int month, int pageNumber, int pageSize, out long count);
+
+        /// <summary>
         /// 根据标签名获取文章
         /// </summary>
         /// <param name="label">标签名（如果标签名相同则会全部查出）</param>

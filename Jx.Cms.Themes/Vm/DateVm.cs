@@ -3,13 +3,23 @@ using Jx.Cms.Entities.Article;
 
 namespace Jx.Cms.Themes.Vm;
 
-public class IndexVm
+public class DateVm
 {
+    /// <summary>
+    /// 年份信息
+    /// </summary>
+    public int Year { get; set; }
+
+    /// <summary>
+    /// 月份信息
+    /// </summary>
+    public int Month { get; set; }
+    
     /// <summary>
     /// 文章列表
     /// </summary>
     public List<ArticleEntity> Articles { get; set; }
-
+    
     /// <summary>
     /// 文章总数量
     /// </summary>
@@ -24,7 +34,7 @@ public class IndexVm
     /// 每页数量
     /// </summary>
     public int PageSize { get; set; }
-
+    
     /// <summary>
     /// 页码信息
     /// </summary>

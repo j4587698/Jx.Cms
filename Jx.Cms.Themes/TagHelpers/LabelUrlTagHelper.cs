@@ -9,7 +9,7 @@ public class LabelUrlTagHelper : TagHelper
 {
     public LabelEntity Label { get; set; }
 
-    public int LabelPageNum { get; set; } = 1;
+    public long LabelPageNum { get; set; } = 1;
     
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {

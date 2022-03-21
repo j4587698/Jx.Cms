@@ -68,11 +68,24 @@ else if (type == "Post")
 	<meta name="Keywords" content="{if $tag->Metas->Blogs_bqgjc}{$tag.Metas.Blogs_bqgjc}{else}{$tag.Name}{/if},{$name}">
 	<meta name="description" content="{$tag.Intro}">
 }
-else 
+else if(type == "Date")
 {
-<title>{$title}{$zbp->Config('Blogs')->lianjiefu}{$name}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}</title>
-<meta name="Keywords" content="{$title},{$name}">
-<meta name="description" content="{$title}{$zbp->Config('Blogs')->lianjiefu}{$name}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}"> 
+	var date = Model as DateVm;
+	<title>@($"{date.Year}年{date.Month}月的文章")
+		@if (date.PageNum > 1)
+		{
+			@blogs![nameof(SettingsModel.Connector)]
+			@($"第{date.PageNum}页")
+		}
+		@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]</title>
+	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]">
+	<meta name="description" content="@($"{date.Year}年{date.Month}月的文章")
+                                      		@if (date.PageNum > 1)
+                                      		{
+                                      			@blogs![nameof(SettingsModel.Connector)]
+                                      			@($"第{date.PageNum}页")
+                                      		}
+                                      		@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]">
 }
 <link rel="shortcut icon" href="{$host}zb_users/theme/Blogs/Image/{php}Blogs_Get_Logo('favicon','ico');{/php}">
 <link rel="profile" href="http://gmpg.org/xfn/11">
@@ -158,29 +171,8 @@ else
 	</div>	
 	<div class="clear"></div>
 </div>
-	@if (type == "Post")
-		{
-		}
-		else if (type == "Page")
-		{
-			var page1 = Model as PageVm;
-			@page1.Article.Title
-		}
-		else if (type == "author")
-		{
-			@:&nbsp;&gt;&nbsp;{$title}
-		}
-		else if (type == "date")
-		{
-			@:&nbsp;&gt;&nbsp;发表于{$title}的文章
-		}
-		else if (type == "Label")
-		{
-			var label = Model as LabelVm;
-			@:&nbsp;&gt;&nbsp;@label.Label.Name 标签文章
-		}
 
-		@RenderBody()
+	@RenderBody()
 <div id="footer">
 	<div class="foot">
 		@if (type == "Home")

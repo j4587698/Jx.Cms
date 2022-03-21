@@ -6,7 +6,7 @@ namespace Jx.Cms.Themes.TagHelpers;
 [HtmlTargetElement("a", Attributes = "index-page-num")]
 public class IndexUrlTagHelper : TagHelper
 {
-    public int IndexPageNum { get; set; }
+    public long IndexPageNum { get; set; }
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {

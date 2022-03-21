@@ -57,7 +57,7 @@ namespace Jx.Cms.Themes.Util
         /// </summary>
         /// <param name="pageNo">当前为第几页</param>
         /// <returns></returns>
-        public static string GetIndexUrl(int pageNo = 1)
+        public static string GetIndexUrl(long pageNo = 1)
         {
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
@@ -74,7 +74,7 @@ namespace Jx.Cms.Themes.Util
         /// <param name="label">标签</param>
         /// <param name="pageNo">第几页</param>
         /// <returns></returns>
-        public static string GetLabelUrl(LabelEntity label, int pageNo = 1)
+        public static string GetLabelUrl(LabelEntity label, long pageNo = 1)
         {
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
@@ -86,7 +86,13 @@ namespace Jx.Cms.Themes.Util
             return template.Set("id", label.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", label.Name).Render();
         }
 
-        public static string GetCatalogueUrl(CatalogEntity catalogEntity, int pageNo = 1)
+        /// <summary>
+        /// 获取分类标签
+        /// </summary>
+        /// <param name="catalogEntity"></param>
+        /// <param name="pageNo"></param>
+        /// <returns></returns>
+        public static string GetCatalogueUrl(CatalogEntity catalogEntity, long pageNo = 1)
         {
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
@@ -95,6 +101,18 @@ namespace Jx.Cms.Themes.Util
             }
             var template = Template.Create(rewriterModel.CatalogueUrl);
             return template.Set("id", catalogEntity.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", catalogEntity.Alias.IsNullOrEmpty() ? catalogEntity.Name : catalogEntity.Alias).Render();
+        }
+
+        public static string GetDateUrl(int year, int month, long pageNo)
+        {
+            var rewriterModel = RewriterModel.GetSettings();
+            if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
+            {
+                return $"/Date?year={year}&month={month}&pageNum={pageNo}";
+            }
+            var template = Template.Create(rewriterModel.DateUrl);
+            return template.Set("year", year.ToString()).Set("month", month.ToString())
+                .Set("pageNum", pageNo.ToString()).Render();
         }
 
         public static string AnalysisArticle(string url, RewriterModel rewriterModel)
@@ -252,13 +270,13 @@ namespace Jx.Cms.Themes.Util
         
         public static string AnalysisCatalogue(string url, RewriterModel rewriterModel)
         {
-            List<string> labelList = RewriteTemplate.CreateUrl(rewriterModel.CatalogueUrl);
-            if (labelList == null || labelList.Count == 0)
+            List<string> catalogueList = RewriteTemplate.CreateUrl(rewriterModel.CatalogueUrl);
+            if (catalogueList == null || catalogueList.Count == 0)
             {
                 return null;
             }
 
-            var result = RewriteTemplate.AnalysisUrl(url, labelList);
+            var result = RewriteTemplate.AnalysisUrl(url, catalogueList);
 
             if (result.isSuccess)
             {
@@ -277,6 +295,30 @@ namespace Jx.Cms.Themes.Util
                     var catalogEntity = CatalogEntity.Where(x => x.Alias == result.result["alias"] || x.Name == result.result["alias"]).First();
                     return catalogEntity == null ? null : $"?id={catalogEntity.Id}&pageNum={result.result["page"]}";
                 }
+            }
+
+            return null;
+        }
+
+        public static string AnalysisDate(string url, RewriterModel rewriterModel)
+        {
+            List<string> dateList = RewriteTemplate.CreateUrl(rewriterModel.DateUrl);
+            if (dateList == null || dateList.Count == 0)
+            {
+                return null;
+            }
+
+            var result = RewriteTemplate.AnalysisUrl(url, dateList);
+
+            if (result.isSuccess)
+            {
+                if (!(result.result.ContainsKey("pageNum") && result.result.ContainsKey("year") && result.result.ContainsKey("month")))
+                {
+                    return null;
+                }
+
+                return
+                    $"?year={result.result.ContainsKey("year")}&month={result.result.ContainsKey("month")}&pageNum={result.result.ContainsKey("pageNum")}";
             }
 
             return null;

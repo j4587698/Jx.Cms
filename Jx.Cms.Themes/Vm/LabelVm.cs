@@ -33,5 +33,5 @@ public class LabelVm
     /// <summary>
     /// 页码信息
     /// </summary>
-    public Dictionary<string, int> Pagination { get; set; }
+    public Dictionary<string, long> Pagination { get; set; }
 }

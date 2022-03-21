@@ -14,6 +14,6 @@ namespace Jx.Cms.Plugin.Service.Front
         /// <param name="pageSize">每页数量</param>
         /// <param name="totalCount">总数量</param>
         /// <returns>key为</returns>
-        Dictionary<string, int> GetPagination(int pageNo, int pageSize, int totalCount);
+        Dictionary<string, long> GetPagination(int pageNo, int pageSize, long totalCount);
     }
 }

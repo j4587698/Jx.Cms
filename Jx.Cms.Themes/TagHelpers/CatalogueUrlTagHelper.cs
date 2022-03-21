@@ -9,7 +9,7 @@ public class CatalogueUrlTagHelper : TagHelper
 {
     public CatalogEntity Catalogue { get; set; }
 
-    public int CataloguePageNum { get; set; } = 1;
+    public long CataloguePageNum { get; set; } = 1;
 
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
