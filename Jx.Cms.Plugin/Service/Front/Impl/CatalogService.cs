@@ -1,18 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl;
 
 public class CatalogService : ICatalogService, ITransient
 {
-    public CatalogEntity GetCatalogueById(int id)
+    public CatalogEntity GetCatalogById(int id)
     {
         return CatalogEntity.Find(id);
     }
 
-    public List<ArticleEntity> GetArticlesByCatalogueId(int id, bool includeChildren, int pageNumber, int pageSize, out long count)
+    public List<ArticleEntity> GetArticlesByCatalogId(int id, bool includeChildren, int pageNumber, int pageSize, out long count)
     {
         List<int> catalogues = new List<int>();
         if (includeChildren)

@@ -4,7 +4,7 @@ using FreeSql;
 using FreeSql.DataAnnotations;
 using Jx.Cms.Common.Enum;
 
-namespace Jx.Cms.Entities.Front
+namespace Jx.Cms.DbContext.Entities.Front
 {
     [Description("菜单")]
     public class MenuEntity: BaseEntity<MenuEntity, int>

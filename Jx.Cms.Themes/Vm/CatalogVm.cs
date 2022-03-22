@@ -1,14 +1,14 @@
 ﻿using System.Collections.Generic;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Themes.Vm;
 
-public class CatalogueVm
+public class CatalogVm
 {
     /// <summary>
     /// 分类目录
     /// </summary>
-    public CatalogEntity Catalogue { get; set; }
+    public CatalogEntity Catalog { get; set; }
     
     /// <summary>
     /// 文章列表

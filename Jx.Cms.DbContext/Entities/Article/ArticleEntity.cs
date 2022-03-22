@@ -5,9 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using FreeSql;
 using FreeSql.DataAnnotations;
 using Jx.Cms.Common.Enum;
-using Jx.Cms.Entities.Admin;
 
-namespace Jx.Cms.Entities.Article
+namespace Jx.Cms.DbContext.Entities.Article
 {
     [Description("文章")]
     public class ArticleEntity : BaseEntity<ArticleEntity, int>
@@ -37,8 +36,8 @@ namespace Jx.Cms.Entities.Article
         public string Content { get; set; }
 
         [Description("标签")]
-        [Navigate(ManyToMany = typeof(ArticleLabelEntity))]
-        public List<LabelEntity> Labels { get; set; }
+        [Navigate(ManyToMany = typeof(ArticleTagEntity))]
+        public List<TagEntity> Labels { get; set; }
         
         [Description("阅读量")]
         public int ReadingVolume { get; set; }

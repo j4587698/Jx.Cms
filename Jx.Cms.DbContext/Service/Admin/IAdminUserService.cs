@@ -1,4 +1,4 @@
-﻿using Jx.Cms.Entities.Admin;
+﻿using Jx.Cms.DbContext.Entities.Admin;
 
 namespace Jx.Cms.DbContext.Service.Admin
 {

@@ -1,13 +1,13 @@
 ﻿@using Blogs.Enum
 @using Blogs.Model
-@model Jx.Cms.Themes.Vm.CatalogueVm
+@model Jx.Cms.Themes.Vm.LabelVm
 
 @{
 	var blogs = ViewBag.blogs as Dictionary<string, string>;
 }
 
 <nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
-    &nbsp;&gt;&nbsp;<a catalogue="@Model.Catalogue" target="_blank">@Model.Catalogue.Name</a>&nbsp;&gt;&nbsp;文章
+    &nbsp;&gt;&nbsp;@Model.Tag.Name 标签文章
 </nav>
 
 <div id="content" class="site-content">	
@@ -31,23 +31,23 @@
                         }
                         else if (pagination.Key == "‹")
                         {
-                            <span class="prev"><a class="page-numbers" catalogue="@Model.Catalogue" catalogue-page-num="@pagination.Value" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+                            <span class="prev"><a class="page-numbers" tag="@Model.Tag" label-page-num="@pagination.Value" title="上一页"><i class="fa fa-angle-left"></i></a></span>
                         }
                         else if (pagination.Key == ">")
                         {
-                            <span class="next"><a class="page-numbers" catalogue="@Model.Catalogue" catalogue-page-num="@pagination.Value" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+                            <span class="next"><a class="page-numbers" tag="@Model.Tag" label-page-num="@pagination.Value" title="下一页"><i class="fa fa-angle-right"></i></a></span>
                         }
                         else if (pagination.Key == "<<")
                         {
-                            <a class="page-numbers" catalogue="@Model.Catalogue" catalogue-page-num="@pagination.Value" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+                            <a class="page-numbers" tag="@Model.Tag" label-page-num="@pagination.Value" title="第1页"><i class="fa fa-angle-double-left"></i></a>
                         }
                         else if (pagination.Key == ">>")
                         {
-                            <a class="page-numbers" catalogue="@Model.Catalogue" catalogue-page-num="@pagination.Value" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+                            <a class="page-numbers" tag="@Model.Tag" label-page-num="@pagination.Value" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
                         }
                         else
                         {
-                            <a class="page-numbers" catalogue="@Model.Catalogue" catalogue-page-num="@pagination.Value" title="第 @pagination.Key 页">@pagination.Key</a>
+                            <a class="page-numbers" tag="@Model.Tag" label-page-num="@pagination.Value" title="第 @pagination.Key 页">@pagination.Key</a>
                         }
                     }
                 </div>

@@ -1,8 +1,8 @@
-﻿@model IEnumerable<Jx.Cms.Entities.Article.CommentEntity>
-@using Jx.Cms.Entities.Admin
-@using Jx.Cms.Entities.Article
+﻿@model IEnumerable<Jx.Cms.DbContext.Entities.Article.CommentEntity>
 @using Humanizer
 @using Jx.Cms.Common.Utils
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.DbContext.Entities.Article
 
 @{
     void CreateComments(IEnumerable<CommentEntity> commentEntities)

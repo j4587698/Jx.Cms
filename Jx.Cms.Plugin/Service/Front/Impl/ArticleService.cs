@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Utils;
 using Markdig;
@@ -81,7 +81,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
             if (baseArticle.Labels is {Count: > 0})
             {
                 var ids = baseArticle.Labels.Select(x => x.Id).ToList();
-                var articleIds = ArticleLabelEntity.Where(x => ids.Contains(x.LabelId)).GroupBy(x => x.ArticleId).ToList(x => x.Key);
+                var articleIds = ArticleTagEntity.Where(x => ids.Contains(x.LabelId)).GroupBy(x => x.ArticleId).ToList(x => x.Key);
                 articles.AddRange(ArticleEntity.Where(x => articleIds.Contains(x.Id) && x.IsPage == false).Include(x => x.Catalogue).Take(count).ToList());
             }
 

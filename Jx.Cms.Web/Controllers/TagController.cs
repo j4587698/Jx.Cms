@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Web.Controllers;
 
-public class LabelController : BaseController
+public class TagController : BaseController
 {
     public IActionResult Index(int id, int pageNum)
     {
@@ -20,7 +20,7 @@ public class LabelController : BaseController
         {
             settings.CountPerPage = 10;
         }
-        var labelService = App.GetService<ILabelService>();
+        var labelService = App.GetService<ITagService>();
         var label = labelService.GetLabelById(id);
         if (label == null)
         {
@@ -37,7 +37,7 @@ public class LabelController : BaseController
             PageNum = pageNum,
             PageSize = settings.CountPerPage,
             TotalCount = totalCount,
-            Label = label,
+            Tag = label,
             Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(labelVm);

@@ -89,9 +89,9 @@
 						<span class="plxiaoshi"><span class="keyword">
 								<i class="fas fa-tags"></i>&nbsp;关键词：@if (Model.Article.Labels != null)
 								                                     {
-									                                     @foreach (var label in Model.Article.Labels)
+									                                     @foreach (var tag in Model.Article.Labels)
 									                                     {
-										                                     <a label="@label" target="_blank" rel="tag">@label.Name</a>
+										                                     <a tag="@tag" target="_blank" rel="tag">@tag.Name</a>
 									                                     }
 								                                     } 
 							</span>

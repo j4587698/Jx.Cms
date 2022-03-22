@@ -2,8 +2,8 @@
 using System.Threading.Tasks;
 using Furion;
 using Jx.Cms.Common.Enum;
+using Jx.Cms.DbContext.Entities.Front;
 using Jx.Cms.DbContext.Service.Admin;
-using Jx.Cms.Entities.Front;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 
@@ -29,7 +29,7 @@ public class MenuUrlTagHelper : TagHelper
                 output.Attributes.SetAttribute("href", Menu.Url);
                 break;
             case MenuTypeEnum.Catalogue:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetCatalogueUrl(App.GetService<ICatalogService>().FindCatalogById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href", RewriteUtil.GetCatalogUrl(App.GetService<ICatalogService>().FindCatalogById(Menu.TypeId)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

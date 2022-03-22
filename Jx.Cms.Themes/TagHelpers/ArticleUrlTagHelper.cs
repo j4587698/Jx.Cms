@@ -1,4 +1,4 @@
-﻿using Jx.Cms.Entities.Article;
+﻿using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 

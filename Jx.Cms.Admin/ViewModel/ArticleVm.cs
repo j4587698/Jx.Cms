@@ -2,8 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using Jx.Cms.Common.Enum;
-using Jx.Cms.Entities.Admin;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Admin.ViewModel
 {

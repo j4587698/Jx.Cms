@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Themes.Vm;
 
@@ -8,7 +8,7 @@ public class LabelVm
     /// <summary>
     /// 文章的信息
     /// </summary>
-    public LabelEntity Label { get; set; }
+    public TagEntity Tag { get; set; }
     
     /// <summary>
     /// 文章列表

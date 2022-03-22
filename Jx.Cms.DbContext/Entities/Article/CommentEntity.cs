@@ -1,11 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FreeSql;
 using FreeSql.DataAnnotations;
 
-namespace Jx.Cms.Entities.Article
+namespace Jx.Cms.DbContext.Entities.Article
 {
     [Description("评论")]
     public class CommentEntity: BaseEntity<CommentEntity, int>

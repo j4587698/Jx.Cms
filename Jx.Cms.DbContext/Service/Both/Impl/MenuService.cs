@@ -3,7 +3,7 @@ using System.Linq;
 using FreeSql;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Entities.Front;
+using Jx.Cms.DbContext.Entities.Front;
 
 namespace Jx.Cms.DbContext.Service.Both.Impl
 {

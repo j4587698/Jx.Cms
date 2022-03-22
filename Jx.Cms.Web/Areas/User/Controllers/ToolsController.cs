@@ -1,8 +1,8 @@
 ﻿using System.Linq;
 using Furion.DataValidation;
 using Jx.Cms.Common.Vo;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.DbContext.Service.Both;
-using Jx.Cms.Entities.Article;
 using Mapster;
 using Masuit.Tools.Html;
 using Microsoft.AspNetCore.Mvc;

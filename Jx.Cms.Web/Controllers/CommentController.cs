@@ -1,6 +1,6 @@
 ﻿using Furion;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.DbContext.Service.Both;
-using Jx.Cms.Entities.Article;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Web.Controllers;

@@ -1,27 +1,27 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.DbContext.Service.Both.Impl
 {
-    public class LabelService: ILabelService, ITransient
+    public class TagService: ITagService, ITransient
     {
-        public LabelEntity GetLabelById(int id)
+        public TagEntity GetLabelById(int id)
         {
-            return LabelEntity.Find(id);
+            return TagEntity.Find(id);
         }
 
-        public List<LabelEntity> LabelNameToLabels(List<string> labelNames)
+        public List<TagEntity> LabelNameToLabels(List<string> labelNames)
         {
-            return LabelEntity.Select.Where(x => labelNames.Contains(x.Name)).ToList();
+            return TagEntity.Select.Where(x => labelNames.Contains(x.Name)).ToList();
         }
 
-        public List<LabelEntity> AllLabelNameToLabels(List<string> labelNames)
+        public List<TagEntity> AllLabelNameToLabels(List<string> labelNames)
         {
             var labels = LabelNameToLabels(labelNames);
             var existLabels = labels.Select(x => x.Name);
-            labels.AddRange(labelNames.Except(existLabels).Select(x => new LabelEntity() {Name = x}));
+            labels.AddRange(labelNames.Except(existLabels).Select(x => new TagEntity() {Name = x}));
             return labels;
         }
 
@@ -37,7 +37,7 @@ namespace Jx.Cms.DbContext.Service.Both.Impl
 
         public List<ArticleEntity> GetArticleFormLabelName(string name)
         {
-            return LabelEntity.Select.IncludeMany(x => x.Articles).Where(x => x.Name == name).First()?.Articles;
+            return TagEntity.Select.IncludeMany(x => x.Articles).Where(x => x.Name == name).First()?.Articles;
         }
     }
 }

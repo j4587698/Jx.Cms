@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FreeSql;
 
-namespace Jx.Cms.Entities.Article
+namespace Jx.Cms.DbContext.Entities.Article
 {
     /// <summary>
     /// 分类目录

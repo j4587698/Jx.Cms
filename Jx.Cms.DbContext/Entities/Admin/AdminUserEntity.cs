@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using FreeSql;
 
-namespace Jx.Cms.Entities.Admin
+namespace Jx.Cms.DbContext.Entities.Admin
 {
     [Description("系统用户信息表")]
     public class AdminUserEntity: BaseEntity<AdminUserEntity, Guid>

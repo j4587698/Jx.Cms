@@ -4,7 +4,7 @@ using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Furion.RemoteRequest.Extensions;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 using Masuit.Tools.Html;
 using Microsoft.AspNetCore.Http;
 

@@ -3,7 +3,6 @@ using System.Linq;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
-using Jx.Cms.Entities.Settings;
 
 namespace Jx.Cms.DbContext.Service.Both.Impl
 {

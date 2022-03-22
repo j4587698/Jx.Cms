@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using FreeSql;
 
-namespace Jx.Cms.Entities.Settings
+namespace Jx.Cms.DbContext.Entities.Settings
 {
     [Description("插件列表")]
     public class PluginEntity: BaseEntity<PluginEntity, int>

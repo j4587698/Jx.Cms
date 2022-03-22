@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Themes.Vm;
 

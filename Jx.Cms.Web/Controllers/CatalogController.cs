@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Web.Controllers;
 
-public class CatalogueController : BaseController
+public class CatalogController : BaseController
 {
     // GET
     public IActionResult Index(int id, int pageNum)
@@ -23,19 +23,19 @@ public class CatalogueController : BaseController
         }
 
         var catalogueService = App.GetService<ICatalogService>();
-        var catalogue = catalogueService.GetCatalogueById(id);
+        var catalogue = catalogueService.GetCatalogById(id);
         if (catalogue == null)
         {
             return new NotFoundResult();
         }
 
-        var catalogueVm = new CatalogueVm();
-        catalogueVm.Articles = catalogueService.GetArticlesByCatalogueId(id, false, pageNum, settings.CountPerPage, out var totalPage);
-        catalogueVm.Catalogue = catalogue;
-        catalogueVm.PageNum = pageNum;
-        catalogueVm.PageSize = settings.CountPerPage;
-        catalogueVm.TotalCount = totalPage;
-        catalogueVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
-        return View(catalogueVm);
+        var catalogVm = new CatalogVm();
+        catalogVm.Articles = catalogueService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
+        catalogVm.Catalog = catalogue;
+        catalogVm.PageNum = pageNum;
+        catalogVm.PageSize = settings.CountPerPage;
+        catalogVm.TotalCount = totalPage;
+        catalogVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
+        return View(catalogVm);
     }
 }

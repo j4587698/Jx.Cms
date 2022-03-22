@@ -384,7 +384,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\Default\Catalogue\Index.cshtml" />
+      <AdditionalFiles Include="Pages\Default\Catalog\Index.cshtml" />
       <AdditionalFiles Include="Pages\Default\Home\Index.cshtml" />
     </ItemGroup>
 

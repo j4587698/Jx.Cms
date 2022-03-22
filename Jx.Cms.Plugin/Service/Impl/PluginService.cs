@@ -2,7 +2,7 @@
 using System.Linq;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.Entities.Settings;
+using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin.Utils;
 
 namespace Jx.Cms.Plugin.Service.Impl

@@ -2,10 +2,10 @@
 using FreeSql;
 using FreeSql.DataAnnotations;
 
-namespace Jx.Cms.Entities.Article
+namespace Jx.Cms.DbContext.Entities.Article
 {
     [Description("文章标签多多关系表")]
-    public class ArticleLabelEntity: BaseEntity<ArticleLabelEntity, int>
+    public class ArticleTagEntity: BaseEntity<ArticleTagEntity, int>
     {
         [Column(IsPrimary = false, IsIgnore = true)]
         public override int Id { get; set; }
@@ -22,6 +22,6 @@ namespace Jx.Cms.Entities.Article
         public int LabelId { get; set; }
 
         [Navigate(nameof(LabelId))]
-        public LabelEntity LabelEntity { get; set; }
+        public TagEntity TagEntity { get; set; }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Furion.DependencyInjection;
-using Jx.Cms.Entities.Admin;
+using Jx.Cms.DbContext.Entities.Admin;
 using Masuit.Tools;
 using Masuit.Tools.Security;
 

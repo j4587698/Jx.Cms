@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Rewrite;
 using Jx.Cms.Themes.Model;
 using Masuit.Tools;
@@ -71,19 +71,19 @@ namespace Jx.Cms.Themes.Util
         /// <summary>
         /// 获取标签页Url
         /// </summary>
-        /// <param name="label">标签</param>
+        /// <param name="tagel">标签</param>
         /// <param name="pageNo">第几页</param>
         /// <returns></returns>
-        public static string GetLabelUrl(LabelEntity label, long pageNo = 1)
+        public static string GetTagUrl(TagEntity tag, long pageNo = 1)
         {
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
             {
-                return $"/Label?id={label.Id}&pageNum={pageNo}";
+                return $"/Label?id={tag.Id}&pageNum={pageNo}";
             }
 
             var template = Template.Create(rewriterModel.LabelUrl);
-            return template.Set("id", label.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", label.Name).Render();
+            return template.Set("id", tag.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", tag.Name).Render();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace Jx.Cms.Themes.Util
         /// <param name="catalogEntity"></param>
         /// <param name="pageNo"></param>
         /// <returns></returns>
-        public static string GetCatalogueUrl(CatalogEntity catalogEntity, long pageNo = 1)
+        public static string GetCatalogUrl(CatalogEntity catalogEntity, long pageNo = 1)
         {
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
@@ -236,7 +236,7 @@ namespace Jx.Cms.Themes.Util
             return null;
         }
 
-        public static string AnalysisLabel(string url, RewriterModel rewriterModel)
+        public static string AnalysisTag(string url, RewriterModel rewriterModel)
         {
             List<string> labelList = RewriteTemplate.CreateUrl(rewriterModel.LabelUrl);
             if (labelList == null || labelList.Count == 0)
@@ -260,7 +260,7 @@ namespace Jx.Cms.Themes.Util
 
                 if (result.result.ContainsKey("alias"))
                 {
-                    var labelEntity = LabelEntity.Where(x => x.Name == result.result["alias"]).First();
+                    var labelEntity = TagEntity.Where(x => x.Name == result.result["alias"]).First();
                     return labelEntity == null ? null : $"?id={labelEntity.Id}&pageNum={result.result["page"]}";
                 }
             }
@@ -268,7 +268,7 @@ namespace Jx.Cms.Themes.Util
             return null;
         }
         
-        public static string AnalysisCatalogue(string url, RewriterModel rewriterModel)
+        public static string AnalysisCatalog(string url, RewriterModel rewriterModel)
         {
             List<string> catalogueList = RewriteTemplate.CreateUrl(rewriterModel.CatalogueUrl);
             if (catalogueList == null || catalogueList.Count == 0)

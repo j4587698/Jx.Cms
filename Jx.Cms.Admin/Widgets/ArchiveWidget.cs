@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text.Encodings.Web;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;

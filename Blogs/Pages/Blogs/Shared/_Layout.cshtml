@@ -36,10 +36,10 @@
 }
 else if (type == "Catalogue")
 {
-	var catalogue = Model as CatalogueVm;
-	<title>@catalogue!.Catalogue.Name @if (catalogue.PageNum > 1){@blogs![nameof(SettingsModel.Connector)] @($"第{catalogue.PageNum}页")}@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
-	<meta name="Keywords" content="@catalogue!.Catalogue.Name,@settings.Title">
-	<meta name="description" content="@catalogue.Catalogue.Description">
+	var catalogue = Model as CatalogVm;
+	<title>@catalogue!.Catalog.Name @if (catalogue.PageNum > 1){@blogs![nameof(SettingsModel.Connector)] @($"第{catalogue.PageNum}页")}@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
+	<meta name="Keywords" content="@catalogue!.Catalog.Name,@settings.Title">
+	<meta name="description" content="@catalogue.Catalog.Description">
 }
 else if (type == "Post")
 {

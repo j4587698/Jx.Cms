@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 using Microsoft.AspNetCore.Components;
 
 namespace Jx.Cms.Admin.Components

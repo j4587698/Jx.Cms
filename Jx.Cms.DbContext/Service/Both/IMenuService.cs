@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Jx.Cms.Entities.Front;
+using Jx.Cms.DbContext.Entities.Front;
 
 namespace Jx.Cms.DbContext.Service.Both
 {

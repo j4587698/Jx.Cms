@@ -2,7 +2,7 @@
 using FreeSql;
 using Jx.Cms.Common.Enum;
 
-namespace Jx.Cms.Entities.Settings
+namespace Jx.Cms.DbContext.Entities.Settings
 {
     [Description("伪静态规则")]
     public class RewriteEntity:BaseEntity<RewriteEntity, int>

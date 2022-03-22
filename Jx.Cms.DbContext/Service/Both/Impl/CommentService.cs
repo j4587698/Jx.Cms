@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using Furion.DependencyInjection;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.DbContext.Service.Both.Impl
 {

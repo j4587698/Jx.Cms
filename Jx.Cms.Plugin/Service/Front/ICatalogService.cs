@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Jx.Cms.Entities.Article;
+using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Front;
 
@@ -13,7 +13,7 @@ public interface ICatalogService
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    CatalogEntity GetCatalogueById(int id);
+    CatalogEntity GetCatalogById(int id);
 
     /// <summary>
     /// 根据分类目录Id获取下面所有文章
@@ -24,5 +24,5 @@ public interface ICatalogService
     /// <param name="pageSize"></param>
     /// <param name="count"></param>
     /// <returns></returns>
-    List<ArticleEntity> GetArticlesByCatalogueId(int id, bool includeChildren, int pageNumber, int pageSize, out long count);
+    List<ArticleEntity> GetArticlesByCatalogId(int id, bool includeChildren, int pageNumber, int pageSize, out long count);
 }

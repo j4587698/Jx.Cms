@@ -7,7 +7,6 @@ using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
-using Jx.Cms.Entities.Settings;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;

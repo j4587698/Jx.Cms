@@ -57,7 +57,7 @@ public class RewriteMiddleware
             return;
         }
 
-        url = RewriteUtil.AnalysisCatalogue(context.Request.Path, settings);
+        url = RewriteUtil.AnalysisCatalog(context.Request.Path, settings);
         if (url != null)
         {
             context.Request.Path = "/Catalogue";
@@ -66,10 +66,19 @@ public class RewriteMiddleware
             return;
         }
 
-        url = RewriteUtil.AnalysisLabel(context.Request.Path, settings);
+        url = RewriteUtil.AnalysisTag(context.Request.Path, settings);
         if (url != null)
         {
-            context.Request.Path = "/Label";
+            context.Request.Path = "/Tag";
+            context.Request.QueryString = new QueryString(url);
+            await _next.Invoke(context);
+            return;
+        }
+        
+        url = RewriteUtil.AnalysisDate(context.Request.Path, settings);
+        if (url != null)
+        {
+            context.Request.Path = "/Date";
             context.Request.QueryString = new QueryString(url);
             await _next.Invoke(context);
             return;
