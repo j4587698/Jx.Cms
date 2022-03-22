@@ -16,9 +16,10 @@ public class CatalogueController : BaseController
         {
             pageNum = 1;
         }
-        if (!int.TryParse(ViewData[SettingsConstants.CountPerPageKey] as string, out var count))
+        var settings = ViewData["settings"] as SystemSettingsVm;
+        if (settings.CountPerPage == 0)
         {
-            count = 10;
+            settings.CountPerPage = 10;
         }
 
         var catalogueService = App.GetService<ICatalogService>();
@@ -29,12 +30,12 @@ public class CatalogueController : BaseController
         }
 
         var catalogueVm = new CatalogueVm();
-        catalogueVm.Articles = catalogueService.GetArticlesByCatalogueId(id, false, pageNum, count, out var totalPage);
+        catalogueVm.Articles = catalogueService.GetArticlesByCatalogueId(id, false, pageNum, settings.CountPerPage, out var totalPage);
         catalogueVm.Catalogue = catalogue;
         catalogueVm.PageNum = pageNum;
-        catalogueVm.PageSize = count;
+        catalogueVm.PageSize = settings.CountPerPage;
         catalogueVm.TotalCount = totalPage;
-        catalogueVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalPage);
+        catalogueVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
         return View(catalogueVm);
     }
 }

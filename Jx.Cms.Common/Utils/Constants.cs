@@ -28,5 +28,10 @@ namespace Jx.Cms.Common.Utils
         /// 默认友情链接名
         /// </summary>
         public const string Link = "link";
+
+        /// <summary>
+        /// 系统默认菜单名
+        /// </summary>
+        public const string SystemType = "system";
     }
 }

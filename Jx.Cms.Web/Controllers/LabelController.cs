@@ -15,9 +15,10 @@ public class LabelController : BaseController
         {
             pageNum = 1;
         }
-        if (!int.TryParse(ViewData[SettingsConstants.CountPerPageKey] as string, out var count))
+        var settings = ViewData["settings"] as SystemSettingsVm;
+        if (settings.CountPerPage == 0)
         {
-            count = 10;
+            settings.CountPerPage = 10;
         }
         var labelService = App.GetService<ILabelService>();
         var label = labelService.GetLabelById(id);
@@ -25,7 +26,7 @@ public class LabelController : BaseController
         {
             return new NotFoundResult();
         }
-        var articles = labelService.GetArticleFormLabelId(id, pageNum, count, out var totalCount);
+        var articles = labelService.GetArticleFormLabelId(id, pageNum, settings.CountPerPage, out var totalCount);
         if (articles == null)
         {
             return new NotFoundResult();
@@ -34,10 +35,10 @@ public class LabelController : BaseController
         {
             Articles = articles,
             PageNum = pageNum,
-            PageSize = count,
+            PageSize = settings.CountPerPage,
             TotalCount = totalCount,
             Label = label,
-            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalCount)
+            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(labelVm);
     }

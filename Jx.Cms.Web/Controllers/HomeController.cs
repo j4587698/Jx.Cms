@@ -16,17 +16,19 @@ public class HomeController : BaseController
             pageNum = 1;
         }
 
-        if (!int.TryParse(ViewData[SettingsConstants.CountPerPageKey] as string, out var count))
+        var settings = ViewData["settings"] as SystemSettingsVm;
+        if (settings.CountPerPage == 0)
         {
-            count = 10;
+            settings.CountPerPage = 10;
         }
+
         var indexVm = new IndexVm
         {
-            Articles = App.GetService<IArticleService>().GetArticlePageWithCount(pageNum, count, out var totalCount),
+            Articles = App.GetService<IArticleService>().GetArticlePageWithCount(pageNum, settings.CountPerPage, out var totalCount),
             PageNum = pageNum,
-            PageSize = count,
+            PageSize = settings.CountPerPage,
             TotalCount = totalCount,
-            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, count, (int)totalCount)
+            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(indexVm);
     }

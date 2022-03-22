@@ -6,6 +6,7 @@ using Furion.JsonSerialization;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Common.Vo;
+using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Entities.Settings;
 using Jx.Cms.Plugin.Plugin;
 using Masuit.Tools;
@@ -19,7 +20,7 @@ public class WidgetCache
     public static void UpdateCache()
     {
         var widgetsVos = SettingsEntity
-            .Where(x => x.Type == SettingsConstants.SystemType &&
+            .Where(x => x.Type == Constants.SystemType &&
                         Enum.GetNames(typeof(WidgetSidebarType)).Contains(x.Name))
             .ToDictionary(x => x.Name, x => x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value));
         var widgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))

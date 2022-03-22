@@ -5,6 +5,5 @@
 @{
     Layout = "Shared/_Layout";
     ViewBag.type = ViewContext.RouteData.Values["controller"]?.ToString();
-    ViewBag.settings = SettingsService.GetValuesByNames(SettingsConstants.GetAllSystemKey());
     ViewBag.blogs = SettingsService.GetAllValues("Blogs");
 }

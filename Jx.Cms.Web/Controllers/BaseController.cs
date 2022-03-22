@@ -3,6 +3,7 @@ using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Service.Admin;
 using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -13,11 +14,10 @@ public abstract class BaseController : Controller
     public override void OnActionExecuting(ActionExecutingContext context)
     {
         base.OnActionExecuting(context);
-        var settings = App.GetService<ISettingsService>().GetValuesByNames(SettingsConstants.GetAllSystemKey());
-        foreach (var setting in settings)
-        {
-            ViewData[setting.Key] = setting.Value;
-        }
+        var settings = SystemSettingsVm.Init();
+
+        ViewData["settings"] = settings;
+        
 
         ViewData["menu"] = App.GetService<IMenuService>().GetAllMenuTree();
 

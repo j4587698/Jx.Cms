@@ -1,6 +1,7 @@
 ﻿@page "/Settings/SystemSettings"
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Admin.ViewModel
+@using Jx.Cms.Themes.Vm
 
 @inject ToastService ToastService
 
@@ -34,7 +35,7 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <Textarea rows="5" @bind-Value="@_systemSettings.BeiAn" DisplayText="备案信息"></Textarea>
+                <BootstrapInput rows="5" @bind-Value="@_systemSettings.BeiAn" DisplayText="备案信息"></BootstrapInput>
             </div>
         </div>
         <div class="row">

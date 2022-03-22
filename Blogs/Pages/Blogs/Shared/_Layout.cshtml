@@ -1,17 +1,12 @@
 ﻿@using Blogs.Model
-@using Humanizer
-@using Jx.Cms.Common.Utils
-@using Jx.Cms.DbContext.Service.Both
-@using Jx.Cms.Entities.Front
 @using Jx.Cms.Themes.Vm
 @using Masuit.Tools
 @using Masuit.Tools.Html
-@inject ISettingsService SettingsService
-@inject IMenuService MenuService
+
 @{
 	var type = ViewBag.type as string;
 
-	var settings = ViewBag.settings as Dictionary<string, string>;
+	var settings = ViewData["settings"] as SystemSettingsVm;
 
 	var blogs = ViewBag.blogs as Dictionary<string, string>;
 
@@ -32,24 +27,24 @@
 @if (type == "Home")
 {
 	var index = Model as IndexVm;
-	<title>@settings![SettingsConstants.TitleKey]@if (index!.PageNum > 1)
+	<title>@settings.Title @if (index!.PageNum > 1)
 	                                         {
 		                                         @("-第" + index.PageNum + "页")
-	                                         }-@settings[SettingsConstants.SubTitleKey]</title>
-	<meta name="Keywords" content="@blogs![nameof(SettingsModel.Keywords)],@settings[SettingsConstants.TitleKey]">
+	                                         }-@settings.Title</title>
+	<meta name="Keywords" content="@blogs![nameof(SettingsModel.Keywords)],@settings.Title">
 	<meta name="description" content="@blogs[nameof(SettingsModel.Description)]">
 }
 else if (type == "Catalogue")
 {
 	var catalogue = Model as CatalogueVm;
-	<title>@catalogue!.Catalogue.Name @if (catalogue.PageNum > 1){@blogs![nameof(SettingsModel.Connector)] @($"第{catalogue.PageNum}页")}@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]</title>
-	<meta name="Keywords" content="@catalogue!.Catalogue.Name,@settings![SettingsConstants.TitleKey]">
+	<title>@catalogue!.Catalogue.Name @if (catalogue.PageNum > 1){@blogs![nameof(SettingsModel.Connector)] @($"第{catalogue.PageNum}页")}@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
+	<meta name="Keywords" content="@catalogue!.Catalogue.Name,@settings.Title">
 	<meta name="description" content="@catalogue.Catalogue.Description">
 }
 else if (type == "Post")
 {
 	var article = Model as PostVm;
-	<title>@($"{article!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{article.Article.Catalogue.Name}{blogs[nameof(SettingsModel.Connector)]}{settings![SettingsConstants.TitleKey]}")</title>
+	<title>@($"{article!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{article.Article.Catalogue.Name}{blogs[nameof(SettingsModel.Connector)]}{settings.Title}")</title>
 	var tag = article.Article.Labels;
 	var keywords = tag.IsNullOrEmpty() ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
 	var description = article.Article.Description.IsNullOrEmpty() ? article.Article.Content.RemoveHtmlTag(135) : article.Article.Description.RemoveHtmlTag(135);
@@ -59,9 +54,9 @@ else if (type == "Post")
 }else if (type == "Page")
 {
 	var page = Model as PageVm;
-	<title>@($"{page!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{settings![SettingsConstants.TitleKey]}")</title>
-	<meta name="keywords" content="@($"{page.Article.Title},{settings![SettingsConstants.TitleKey]}")"/>
-	<meta name="description" content="{$description}"/>
+	<title>@($"{page!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{settings.Title}")</title>
+	<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
+	<meta name="description" content="@($"{page!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{settings.Title}")"/>
 	<meta name="author" content="@(page.Article.Content.RemoveHtmlTag(135))" />
 }else if(type == "Label") {
 	<title>{if $tag->Metas->Blogs_bqtitle}{$tag.Metas.Blogs_bqtitle}{else}{$tag.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
@@ -77,15 +72,15 @@ else if(type == "Date")
 			@blogs![nameof(SettingsModel.Connector)]
 			@($"第{date.PageNum}页")
 		}
-		@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]</title>
-	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]">
+		@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
+	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs![nameof(SettingsModel.Connector)]@settings.Title">
 	<meta name="description" content="@($"{date.Year}年{date.Month}月的文章")
                                       		@if (date.PageNum > 1)
                                       		{
                                       			@blogs![nameof(SettingsModel.Connector)]
                                       			@($"第{date.PageNum}页")
                                       		}
-                                      		@blogs![nameof(SettingsModel.Connector)]@settings![SettingsConstants.TitleKey]">
+                                      		@blogs![nameof(SettingsModel.Connector)]@settings.Title">
 }
 <link rel="shortcut icon" href="{$host}zb_users/theme/Blogs/Image/{php}Blogs_Get_Logo('favicon','ico');{/php}">
 <link rel="profile" href="http://gmpg.org/xfn/11">
@@ -134,9 +129,9 @@ else if(type == "Date")
 					{
 						@:<div class="site-title">
 					}
-						<a href="/" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]">
-							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]" title="@settings[SettingsConstants.TitleKey]-@settings[SettingsConstants.SubTitleKey]"/>
-							<span>@settings[SettingsConstants.TitleKey]</span>
+						<a href="/" title="@settings.Title-@settings.SubTitle">
+							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings.Title-@settings.SubTitle" title="@settings.Title-@settings.SubTitle"/>
+							<span>@settings.Title</span>
 						</a>
 						@if (type == "Home")
 						{
@@ -186,10 +181,10 @@ else if(type == "Date")
 		<div class="ps">
 			<div class="p p2">
 				<div class="clear"></div>
-				<div class="site-info">Copyright ©  @settings[SettingsConstants.TitleKey] @if (settings.ContainsKey(SettingsConstants.BeiAnKey) && !settings[SettingsConstants.BeiAnKey].IsNullOrEmpty())
+				<div class="site-info">Copyright ©  @settings.Title @if (!settings.BeiAn.IsNullOrEmpty())
 				                                                                          {
 					                                                                          @("|")
-					                                                                          <a href="http://beian.miit.gov.cn" target="_blank" rel="nofollow">@settings[SettingsConstants.BeiAnKey]</a>
+					                                                                          <a href="http://beian.miit.gov.cn" target="_blank" rel="nofollow">@settings.BeiAn</a>
 				                                                                          }<span class="footer-tag">&nbsp; | &nbsp; Theme by <a href="http://yigujin.wang/"  target="_blank" title="免费响应式博客主题BlogsV2.0">Blogs</a>&nbsp; | &nbsp; Powered by <a href="http://www.jvxiang.com/" title="JX.CMS" target="_blank">JX.CMS</a></span></div>
 			</div>
 		</div>

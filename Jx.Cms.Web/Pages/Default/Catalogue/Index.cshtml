@@ -2,9 +2,11 @@
 @using Jx.Cms.Entities.Article
 @using Masuit.Tools.Html
 @using Humanizer
+@using Jx.Cms.Themes.Vm
 @model Jx.Cms.Themes.Vm.CatalogueVm
 
 @{
+  var settings = ViewData["settings"] as SystemSettingsVm;
   var TotalPage = Model.TotalCount % Model.PageSize == 0 ? Model.TotalCount / Model.PageSize : Model.TotalCount / Model.PageSize + 1;
   var StartNo = 0;
   if (TotalPage < 5)
@@ -32,7 +34,7 @@
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="site-heading">
               <h1>分类目录 @Model.Catalogue.Name</h1>
-              <span class="subheading">@ViewData[SettingsConstants.TitleKey]</span>
+              <span class="subheading">@settings.Title</span>
             </div>
           </div>
         </div>

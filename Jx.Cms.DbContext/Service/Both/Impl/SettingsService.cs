@@ -2,6 +2,7 @@
 using System.Linq;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Entities.Settings;
 
 namespace Jx.Cms.DbContext.Service.Both.Impl
@@ -35,12 +36,12 @@ namespace Jx.Cms.DbContext.Service.Both.Impl
 
         public Dictionary<string, string> GetAllValues()
         {
-            return GetAllValues(SettingsConstants.SystemType);
+            return GetAllValues(Constants.SystemType);
         }
 
         public Dictionary<string, string> GetValuesByNames(IEnumerable<string> names)
         {
-            return GetValuesByNames(SettingsConstants.SystemType, names);
+            return GetValuesByNames(Constants.SystemType, names);
         }
 
         public Dictionary<string, string> GetValuesByNames(string type, IEnumerable<string> names)
