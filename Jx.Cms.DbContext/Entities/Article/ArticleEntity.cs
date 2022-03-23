@@ -59,5 +59,9 @@ namespace Jx.Cms.DbContext.Entities.Article
         [Description("评论列表")]
         [Navigate(nameof(CommentEntity.ArticleId))]
         public ICollection<CommentEntity> Comments { get; set; }
+        
+        [Description("扩展字段")]
+        [Navigate(nameof(ArticleMetaEntity.ArticleId))]
+        public ICollection<ArticleMetaEntity> Metas { get; set; }
     }
 }

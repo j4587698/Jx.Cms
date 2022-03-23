@@ -12,6 +12,8 @@
 @using Jx.Cms.Common.Components
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.DbContext.Service.Admin
+@using Jx.Cms.Plugin.Cache
+@using Jx.Cms.Plugin.Plugin
 @using Masuit.Tools
 
 @inject NavigationManager NavigationManager
@@ -63,6 +65,10 @@
                 <BootstrapInput @bind-Value="@Article.Labels" DisplayText="文章标签(用,隔开)" ShowLabel="true"></BootstrapInput>
             </div>
         </div>
+        @foreach (var extModel in BottomExt)
+        {
+            @RenderExt(extModel)
+        }
     </div>
     <div class="col-lg-3 col-md-4">
         <div class="row">
@@ -85,6 +91,10 @@
                 <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime" DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime" />
             </div>
         </div>
+        @foreach (var extModel in RightExt)
+        {
+            @RenderExt(extModel);
+        }
     </div>
 </ValidateForm>
 @code {
@@ -100,11 +110,18 @@
     private List<EditorExtModel> EditorExtModels { get; set; }
     
     private List<EditorToolbarButton> ToolbarButtons { get; set; }
+    
+    private IEnumerable<IArticlePlugin> ArticlePlugins { get; set; }
+    
+    private IEnumerable<ArticleExtModel> BottomExt { get; set; }
+    
+    private IEnumerable<ArticleExtModel> RightExt { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        EditorExtModels = PluginUtil.OnArticleEditorShow();
+        ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
+        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         var mediaButton = new EditorToolbarButton
         {
@@ -114,18 +131,22 @@
         };
         ToolbarButtons.Add(mediaButton);
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
-        Article = (Id == 0 ? new ArticleEntity(){IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published} : ArticleService.GetArticleById(Id)).Adapt<ArticleVm>();
+        var articleEntity = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : ArticleService.GetArticleById(Id);
+        BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, articleEntity);
+        RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, articleEntity);
+        Article = articleEntity.Adapt<ArticleVm>();
         if (Article.CatalogueId == 0 && Catalogs.Any())
         {
             Article.CatalogueId = Catalogs.First().Value.ConvertTo<int>();
         }
+        
     }
 
     private async Task OnValidSubmit(EditContext arg)
     {
-        Article.Author = App.User?.FindFirstValue(ClaimTypes.Name);
-
-        var ret = ArticleService.SaveArticle(Article.Adapt<ArticleEntity>());
+        Article.Author = App.GetService<IAdminUserService>().GetUserByUserName(App.User?.FindFirstValue(ClaimTypes.Name)).NickName;
+        var article = Article.Adapt<ArticleEntity>();
+        var ret = ArticleService.SaveArticle(article);
         await ToastService.Show(new ToastOption()
         {
             Category = ret?ToastCategory.Success: ToastCategory.Error,
@@ -134,6 +155,10 @@
         });
         if (ret)
         {
+            foreach (var articlePlugin in ArticlePlugins)
+            {
+                articlePlugin?.OnArticleSaved(article);
+            }
             NavigationManager.NavigateTo("Article/All");
         }        
     }
@@ -170,5 +195,23 @@
         var res = await model.OnToolbarClick(await PluginDialogService.ShowModal(option, type, DialogService));
         return res;
     }
+
+    RenderFragment<ArticleExtModel> RenderExt => articleExtModel =>
+        @<div class="row">
+            <div class="form-group col-12">
+                @switch (articleExtModel.ArticleExtTypeEnum)
+                {
+                    case ArticleExtTypeEnum.Input:
+                        <BootstrapInput @bind-Value="@articleExtModel.Value" DisplayText="@articleExtModel.DisplayName" ShowLabel="true"></BootstrapInput>
+                        break;
+                    case ArticleExtTypeEnum.Select:
+                        <Select style="width: 100%" Items="@articleExtModel.Items.Select(x => new SelectedItem(x, x))" @bind-Value="articleExtModel.Value" DisplayText="@articleExtModel.DisplayName"></Select>
+                        break;
+                    case ArticleExtTypeEnum.TextArea:
+                        <Textarea @bind-Value="@articleExtModel.Value" DisplayText="@articleExtModel.DisplayName"></Textarea>
+                        break;
+                }
+            </div>
+        </div>;
 
 }

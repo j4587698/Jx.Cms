@@ -8,7 +8,9 @@
 @using Furion
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.DbContext.Service.Admin
+@using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Model
+@using Jx.Cms.Plugin.Plugin
 @using Jx.Cms.Plugin.Utils
 
 @inject NavigationManager NavigationManager
@@ -66,11 +68,18 @@
     private List<EditorExtModel> EditorExtModels { get; set; }
     
     private List<EditorToolbarButton> ToolbarButtons { get; set; }
+    
+    private IEnumerable<IArticlePlugin> ArticlePlugins { get; set; }
+    
+    private IEnumerable<ArticleExtModel> BottomExt { get; set; }
+    
+    private IEnumerable<ArticleExtModel> RightExt { get; set; }
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        EditorExtModels = PluginUtil.OnArticleEditorShow();
+        ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
+        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         var mediaButton = new EditorToolbarButton
         {

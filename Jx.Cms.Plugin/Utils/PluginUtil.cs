@@ -5,6 +5,7 @@ using System.Linq;
 using BootstrapBlazor.Components;
 using Furion;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Model;
@@ -128,10 +129,10 @@ namespace Jx.Cms.Plugin.Utils
         /// 文章列表显示时执行
         /// </summary>
         /// <returns></returns>
-        public static List<EditorExtModel> OnArticleEditorShow()
+        public static List<EditorExtModel> OnArticleEditorShow(IEnumerable<IArticlePlugin> articlePlugins)
         {
             var extModels = new List<EditorExtModel>();
-            foreach (var instance in ArticlePluginCache.GetArticlePlugins())
+            foreach (var instance in articlePlugins)
             {
                 var ret = instance?.AddEditorToolbarButton(App.GetService<DialogService>());
                 if (ret != null)
@@ -141,6 +142,46 @@ namespace Jx.Cms.Plugin.Utils
             }
 
             return extModels;
+        }
+
+        /// <summary>
+        /// 获取底部扩展内容
+        /// </summary>
+        /// <param name="articlePlugins"></param>
+        /// <param name="articleEntity"></param>
+        /// <returns></returns>
+        public static List<ArticleExtModel> GetBottomExtModels(IEnumerable<IArticlePlugin> articlePlugins, ArticleEntity articleEntity)
+        {
+            var articleExtModels = new List<ArticleExtModel>();
+            foreach (var articlePlugin in articlePlugins)
+            {
+                var ret = articlePlugin?.BottomExt(articleEntity);
+                if (ret != null)
+                {
+                    articleExtModels.AddRange(ret);
+                }
+            }
+            return articleExtModels;
+        }
+        
+        /// <summary>
+        /// 获取右侧扩展内容
+        /// </summary>
+        /// <param name="articlePlugins"></param>
+        /// <param name="articleEntity"></param>
+        /// <returns></returns>
+        public static List<ArticleExtModel> GetRightExtModels(IEnumerable<IArticlePlugin> articlePlugins, ArticleEntity articleEntity)
+        {
+            var articleExtModels = new List<ArticleExtModel>();
+            foreach (var articlePlugin in articlePlugins)
+            {
+                var ret = articlePlugin?.RightExt(articleEntity);
+                if (ret != null)
+                {
+                    articleExtModels.AddRange(ret);
+                }
+            }
+            return articleExtModels;
         }
 
         public static List<PluginMenuModel> OnMenuShow()

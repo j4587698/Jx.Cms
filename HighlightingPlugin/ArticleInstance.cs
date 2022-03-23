@@ -3,8 +3,10 @@ using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
 using HighlightingPlugin.Pages;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
+using Microsoft.AspNetCore.Components;
 
 namespace HighlightingPlugin
 {
@@ -15,6 +17,11 @@ namespace HighlightingPlugin
             articleModel.Header += "<link rel=\"stylesheet\" href=\"/highlight/styles/default.css\">";
             articleModel.Footer += "<script src=\"/highlight/highlight.pack.js\"></script><script>hljs.highlightAll();</script>";
             return articleModel;
+        }
+
+        public void OnArticleSaved(ArticleEntity articleEntity)
+        {
+            
         }
 
         public EditorExtModel AddEditorToolbarButton(DialogService dialogService)
@@ -52,7 +59,14 @@ namespace HighlightingPlugin
             };
             return extModel;
         }
-        
+
+        public RenderFragment<ArticleEntity> BottomRender { get; } = article => builder =>
+        {
+            builder.OpenComponent<Settings>(0);
+            
+            builder.CloseComponent();
+        };
+
         /// <summary>
         /// Html to Esc
         /// </summary>

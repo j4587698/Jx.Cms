@@ -48,5 +48,8 @@ namespace Jx.Cms.Admin.ViewModel
 
         [Description("是否为Markdown")]
         public bool IsMarkdown { get; set; }
+        
+        [Description("扩展字段")]
+        public ICollection<ArticleMetaEntity> Metas { get; set; }
     }
 }

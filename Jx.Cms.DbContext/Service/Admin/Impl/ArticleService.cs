@@ -8,7 +8,7 @@ namespace Jx.Cms.DbContext.Service.Admin.Impl
     {
         public ArticleEntity GetArticleById(int id)
         {
-            return ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            return ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Metas).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
         }
 
         public List<ArticleEntity> GetAllArticle()
@@ -33,7 +33,8 @@ namespace Jx.Cms.DbContext.Service.Admin.Impl
 
         public bool SaveArticle(ArticleEntity articleEntity)
         {
-            articleEntity.Save().SaveMany("Labels");
+            articleEntity.Save().SaveMany(nameof(ArticleEntity.Labels));
+            articleEntity.SaveMany(nameof(ArticleEntity.Metas));
             return true;
         }
     }

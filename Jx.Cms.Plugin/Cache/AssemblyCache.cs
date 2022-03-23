@@ -56,7 +56,7 @@ public class AssemblyCache
         {
             _assemblyList.Remove(ass);
             TypeList = _assemblyList.SelectMany(u => u.GetTypes()
-                .Where(u => u.IsPublic && !u.IsDefined(typeof(SuppressSnifferAttribute), false)));
+                .Where(x => x.IsPublic && !x.IsDefined(typeof(SuppressSnifferAttribute), false)));
             var caches = _assemblyList.SelectMany(x =>
                 x.GetTypes().Where(y => typeof(IPluginCache).IsAssignableFrom(y) && !y.IsAbstract));
             foreach (var cache in caches)
