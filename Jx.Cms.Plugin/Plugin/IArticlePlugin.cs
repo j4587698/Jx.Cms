@@ -21,6 +21,16 @@ namespace Jx.Cms.Plugin.Plugin
         }
 
         /// <summary>
+        /// 保存前执行
+        /// </summary>
+        /// <param name="articleEntity"></param>
+        /// <returns></returns>
+        bool OnArticleBeforeSave(ArticleEntity articleEntity)
+        {
+            return true;
+        }
+
+        /// <summary>
         /// 文章保存时处理
         /// </summary>
         /// <param name="articleEntity"></param>

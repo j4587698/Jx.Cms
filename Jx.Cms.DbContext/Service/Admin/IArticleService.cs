@@ -54,5 +54,12 @@ namespace Jx.Cms.DbContext.Service.Admin
         /// <param name="articleEntity">文章</param>
         /// <returns>是否成功</returns>
         bool SaveArticle(ArticleEntity articleEntity);
+
+        /// <summary>
+        /// 删除文章，同时删除meta和tag
+        /// </summary>
+        /// <param name="articleEntity"></param>
+        /// <returns></returns>
+        bool DeleteArticle(ArticleEntity articleEntity);
     }
 }

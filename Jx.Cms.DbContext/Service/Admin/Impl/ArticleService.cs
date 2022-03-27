@@ -37,5 +37,16 @@ namespace Jx.Cms.DbContext.Service.Admin.Impl
             articleEntity.SaveMany(nameof(ArticleEntity.Metas));
             return true;
         }
+
+        public bool DeleteArticle(ArticleEntity articleEntity)
+        {
+            var ret = articleEntity.Delete();
+            if (ret)
+            {
+                ArticleMetaEntity.Where(x => x.ArticleId == articleEntity.Id).ToUpdate().Set(x => x.IsDeleted, true).ExecuteAffrows();
+                ArticleTagEntity.Where(x => x.ArticleId == articleEntity.Id).ToUpdate().Set(x => x.IsDeleted, true).ExecuteAffrows();
+            }
+            return ret;
+        }
     }
 }

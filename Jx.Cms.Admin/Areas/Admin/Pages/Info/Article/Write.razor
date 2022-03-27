@@ -9,6 +9,7 @@
 @using Mapster
 @using Furion
 @using System.Security.Claims
+@using DeviceDetectorNET
 @using Jx.Cms.Common.Components
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.DbContext.Service.Admin
@@ -146,6 +147,13 @@
     {
         Article.Author = App.GetService<IAdminUserService>().GetUserByUserName(App.User?.FindFirstValue(ClaimTypes.Name)).NickName;
         var article = Article.Adapt<ArticleEntity>();
+        foreach (var articlePlugin in ArticlePlugins)
+        {
+            if (articlePlugin?.OnArticleBeforeSave(article) != true)
+            {
+                return;
+            }
+        }
         var ret = ArticleService.SaveArticle(article);
         await ToastService.Show(new ToastOption()
         {
@@ -199,16 +207,34 @@
     RenderFragment<ArticleExtModel> RenderExt => articleExtModel =>
         @<div class="row">
             <div class="form-group col-12">
+                @{
+                    ArticleMetaEntity articleMetaEntity = null;
+                }
+                @if (Article.Metas == null || !Article.Metas.Any(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name))
+                {
+                    articleMetaEntity = new ArticleMetaEntity()
+                    {
+                        PluginName = articleExtModel.PluginName,
+                        Name = articleExtModel.Name,
+                        Value = articleExtModel.DefaultValue
+                    };
+                    Article.Metas ??= new List<ArticleMetaEntity>();
+                    Article.Metas.Add(articleMetaEntity);
+                }
+                else
+                {
+                    articleMetaEntity = Article.Metas.First(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name);
+                }
                 @switch (articleExtModel.ArticleExtTypeEnum)
                 {
                     case ArticleExtTypeEnum.Input:
-                        <BootstrapInput @bind-Value="@articleExtModel.Value" DisplayText="@articleExtModel.DisplayName" ShowLabel="true"></BootstrapInput>
+                        <BootstrapInput @bind-Value="@articleMetaEntity.Value" DisplayText="@articleExtModel.DisplayName" ShowLabel="true"></BootstrapInput>
                         break;
                     case ArticleExtTypeEnum.Select:
-                        <Select style="width: 100%" Items="@articleExtModel.Items.Select(x => new SelectedItem(x, x))" @bind-Value="articleExtModel.Value" DisplayText="@articleExtModel.DisplayName"></Select>
+                        <Select style="width: 100%" Items="@articleExtModel.Items.Select(x => new SelectedItem(x, x))" @bind-Value="articleMetaEntity.Value" DisplayText="@articleExtModel.DisplayName"></Select>
                         break;
                     case ArticleExtTypeEnum.TextArea:
-                        <Textarea @bind-Value="@articleExtModel.Value" DisplayText="@articleExtModel.DisplayName"></Textarea>
+                        <Textarea @bind-Value="@articleMetaEntity.Value" DisplayText="@articleExtModel.DisplayName"></Textarea>
                         break;
                 }
             </div>

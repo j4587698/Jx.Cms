@@ -29,9 +29,9 @@ public class ArticleExtModel
     public ArticleExtTypeEnum ArticleExtTypeEnum { get; set; }
 
     /// <summary>
-    /// 扩展的值
+    /// 默认值，只有文章参数中没有时使用
     /// </summary>
-    public string Value { get; set; }
+    public string DefaultValue { get; set; }
 
     /// <summary>
     /// 扩展的选项，目前只有Select需要

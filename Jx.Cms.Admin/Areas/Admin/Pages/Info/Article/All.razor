@@ -76,7 +76,7 @@
 
     private Func<Task> DeleteAsync(ArticleEntity context) => async () =>
     {
-        var ret = await PageService.DeletePage(context);
+        var ret = ArticleService.DeleteArticle(context);
         if (ret)
         {
             await _table.QueryAsync();
