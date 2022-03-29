@@ -34,7 +34,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
                 Body = article,
                 CommentCount = count
             };
-            PluginUtil.OnArticleShow(model);
+            model = PluginUtil.OnArticleShow(model);
             return model;
         }
 

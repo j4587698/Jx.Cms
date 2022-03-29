@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using Furion;
 using Furion.Localization;
+using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;

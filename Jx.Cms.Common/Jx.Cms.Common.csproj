@@ -31,4 +31,8 @@
       <Folder Include="wwwroot" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Compile Remove="Components\CmsDynamicComponent.cs" />
+    </ItemGroup>
+
 </Project>

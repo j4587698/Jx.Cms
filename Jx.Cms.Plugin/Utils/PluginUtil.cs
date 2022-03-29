@@ -13,6 +13,7 @@ using Jx.Cms.Plugin.Plugin;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
+using Console = System.Console;
 
 namespace Jx.Cms.Plugin.Utils
 {
@@ -107,7 +108,7 @@ namespace Jx.Cms.Plugin.Utils
             {
                 return false;
             }
-            Directory.Delete(Path.GetDirectoryName(plugin.PluginPath), true);
+            Directory.Delete(Path.GetDirectoryName(plugin.PluginPath)!, true);
             return true;
         }
 

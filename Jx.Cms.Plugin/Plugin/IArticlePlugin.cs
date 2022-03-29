@@ -24,9 +24,11 @@ namespace Jx.Cms.Plugin.Plugin
         /// 保存前执行
         /// </summary>
         /// <param name="articleEntity"></param>
+        /// <param name="errorMsg">错误描述</param>
         /// <returns></returns>
-        bool OnArticleBeforeSave(ArticleEntity articleEntity)
+        bool OnArticleBeforeSave(ArticleEntity articleEntity, out string errorMsg)
         {
+            errorMsg = "";
             return true;
         }
 

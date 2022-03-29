@@ -149,8 +149,9 @@
         var article = Article.Adapt<ArticleEntity>();
         foreach (var articlePlugin in ArticlePlugins)
         {
-            if (articlePlugin?.OnArticleBeforeSave(article) != true)
+            if (articlePlugin.OnArticleBeforeSave(article, out var errorMsg) != true)
             {
+                await ToastService.Error("保存失败", errorMsg);
                 return;
             }
         }
