@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="FreeSql.All" Version="3.0.100" />
+      <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.0.100" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Entities" />
+      <Folder Include="Service" />
+    </ItemGroup>
+
+</Project>
