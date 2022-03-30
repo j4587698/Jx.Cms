@@ -1,8 +1,10 @@
+using System;
 using System.IO;
 using System.Net.Http;
 using BootstrapBlazor.Components;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes;
+using Jx.Cms.Web.Middlewares;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -28,19 +30,47 @@ namespace Jx.Cms.Web
             services.AddScoped<HttpContextAccessor>();
             services.AddHttpClient();
             services.AddScoped<HttpClient>();
+            services.Configure<CookiePolicyOptions>(op =>
+            {
+                op.CheckConsentNeeded = context => true;
+                op.MinimumSameSitePolicy = SameSiteMode.None;
+            });
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie(op =>
+            {
+                op.LoginPath = "/Admin/Login";
+            });
+            services.AddServerSideBlazor();
+            services.AddBootstrapBlazor();
+            services.AddSignalR(o =>
+            {
+                o.EnableDetailedErrors = true;
+                o.MaximumReceiveMessageSize = Int64.MaxValue;
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostEnvironment env)
         {
+            app.UseMiddleware<InstallMiddleware>("/Install/Step1");
             app.UseInject();
             // app.ApplicationServices.RegisterProvider();
             app.UseRouting();
+            app.UseCookiePolicy();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 //endpoints.MapAreaControllerRoute("user", "User", "/User/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
+                endpoints.MapAreaControllerRoute("install", "Install", "/Install/{controller}/{action}");
+                endpoints.MapBlazorHub("~/Install/_blazor");
+                endpoints.MapFallbackToAreaPage("~/Install/{*clientroutes:nonfile}","/_InstallHost", "Install");
+                
+                endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapBlazorHub("~/Admin/_blazor");
+                endpoints.MapFallbackToAreaPage("~/Admin/{*clientroutes:nonfile}","/_AdminHost", "Admin");
             });
         }
     }

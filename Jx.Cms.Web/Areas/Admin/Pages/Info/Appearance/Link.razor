@@ -1,0 +1,64 @@
+﻿@page "/Appearance/Link"
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.DbContext.Service.Both
+@using AngleSharp
+@using Jx.Cms.DbContext.Entities.Front
+
+@inject ISettingsService SettingsService
+@inject IMenuService MenuService
+
+@attribute [Menu("65C021C1-C8C1-43D3-8177-AEE795753A62", "友情链接", "/Appearance/Link", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
+
+ <Table TItem="MenuEntity" IsBordered="true" ShowExtendButtons="true" ShowToolbar="true" EditMode="EditMode.InCell"
+               OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" OnAddAsync="OnAddAsync">
+            <TableColumns>
+                <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
+                <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
+                <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
+                <TableColumn @bind-Field="@context.Url" Text="链接地址"></TableColumn>
+                <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
+                    <Template Context="value">
+                        @(value.Value?"是":"否")
+                    </Template>
+                </TableColumn>
+            </TableColumns>
+ </Table>
+
+@code {
+
+    private List<MenuEntity> links;
+    
+    private Task<QueryData<MenuEntity>> OnQueryAsync(QueryPageOptions arg)
+    {
+        links = MenuService.GetAllLinks();
+        return Task.FromResult(new QueryData<MenuEntity>()
+        {
+            Items = links
+        });
+    }
+
+    private async Task<bool> OnSaveAsync(MenuEntity arg, ItemChangedType changedType)
+    {
+        var context = BrowsingContext.New(Configuration.Default);
+        var document = await context.OpenAsync(req => req.Content(arg.NavTitle));
+        arg.NavTitle = document.Body!.InnerHtml;
+        return MenuService.SaveMenu(arg);
+    }
+
+    private Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg)
+    {
+        return Task.FromResult(MenuService.DeleteMenu(arg));
+    }
+
+    private Task<MenuEntity> OnAddAsync()
+    {
+        var menuEntity = new MenuEntity
+        {
+            MenuType = MenuTypeEnum.CustomUrl,
+            MenuName = Constants.Link
+        };
+        return Task.FromResult(menuEntity);
+    }
+
+}
