@@ -7,7 +7,7 @@ namespace Jx.Cms.Common.Enum
     {
         [Description("已通过")]
         Pass,
-        [Description("需要检查")]
+        [Description("待审核")]
         NeedCheck,
         
     }

@@ -1,4 +1,5 @@
 ﻿@using Blogs.Model
+@using Jx.Cms.Themes.Vm
 @using Masuit.Tools
 @model Jx.Cms.Themes.Vm.PageVm
 
@@ -6,6 +7,7 @@
 
 @{
 	var blogs = ViewBag.blogs as Dictionary<string, string>;
+    var settings = ViewData["settings"] as SystemSettingsVm;
 }
 
 <nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
@@ -44,7 +46,7 @@
 
             <div class="clear"></div>
 
-            @if (Model.Article.CanComment)
+            @if (settings.CanComment && Model.Article.CanComment)
             {
                 <div id="commentDiv">
                     @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments.ToList(), ViewData)

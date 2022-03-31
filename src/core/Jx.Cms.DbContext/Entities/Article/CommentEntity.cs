@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using FreeSql;
 using FreeSql.DataAnnotations;
+using Jx.Cms.Common.Enum;
 
 namespace Jx.Cms.DbContext.Entities.Article
 {
@@ -51,5 +52,8 @@ namespace Jx.Cms.DbContext.Entities.Article
         [Description("内容")]
         [MaxLength(2048)]
         public string Content { get; set; }
+
+        [Description("评论状态")]
+        public CommentStatusEnum Status { get; set; }
     }
 }

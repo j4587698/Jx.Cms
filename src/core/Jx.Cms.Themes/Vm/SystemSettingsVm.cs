@@ -43,6 +43,16 @@ namespace Jx.Cms.Themes.Vm
         /// </summary>
         [Required]
         public int CountPerPage { get; set; }
+        
+        /// <summary>
+        /// 是否允许评论
+        /// </summary>
+        public bool CanComment { get; set; }
+        
+        /// <summary>
+        /// 评论需要被审核
+        /// </summary>
+        public bool CommentNeedVerify { get; set; }
 
         public static SystemSettingsVm Init()
         {

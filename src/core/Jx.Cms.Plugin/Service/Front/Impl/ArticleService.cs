@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
+using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Utils;
@@ -25,7 +26,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
                 article.Content = Markdown.ToHtml(article.Content);
             }
 
-            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id).AsTreeCte().Count(out var count).ToTreeList();
+            article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id && x.Status == CommentStatusEnum.Pass).AsTreeCte().Count(out var count).ToTreeList();
             //article.Comments.ToTreeGeneral(x => x.Id, x => x.ParentId);
             article.ReadingVolume += 1;
             ArticleEntity.Where(x => x.Id == id).ToUpdate().Set(x => x.ReadingVolume, article.ReadingVolume).ExecuteAffrows();

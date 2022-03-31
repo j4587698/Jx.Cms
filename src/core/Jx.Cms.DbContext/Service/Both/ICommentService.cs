@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.DbContext.Service.Both
@@ -64,6 +65,24 @@ namespace Jx.Cms.DbContext.Service.Both
         /// <returns></returns>
         List<CommentEntity> GetAllCommentByArticleId(int articleId);
 
+        /// <summary>
+        /// 以树形获取某个文章下的评论
+        /// </summary>
+        /// <param name="articleId"></param>
+        /// <returns></returns>
         List<CommentEntity> GetCommentTreeCteByArticleId(int articleId);
+
+        /// <summary>
+        /// 切换评论审核状态
+        /// </summary>
+        /// <param name="commentId"></param>
+        /// <param name="commentStatus"></param>
+        void ChangeStatus(int commentId, CommentStatusEnum commentStatus);
+
+        /// <summary>
+        /// 删除评论
+        /// </summary>
+        /// <param name="commentEntity"></param>
+        bool DeleteComment(CommentEntity commentEntity);
     }
 }

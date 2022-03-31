@@ -6,43 +6,30 @@
 
 @attribute [Menu("CB0C129D-48D7-4E0A-BA1B-EE1912D3580D", "系统设置", "/Settings/SystemSettings", iconClass:"fa fa-newspaper-o",  parentId:MenuIds.SettingsId)]
 
-    <ValidateForm Model="@_systemSettings">
-        <div class="row">
-            <div class="form-group col-12">
+<ValidateForm Model="@_systemSettings" OnValidSubmit="Save">
+    <Row ItemsPerRow="ItemsPerRow.Two">
+        <h3>伪静态设置</h3>
+        <Button ButtonType="ButtonType.Submit" style="float: right">保存</Button>
+    </Row>
+    <Tab IsCard="true">
+        <TabItem Text="系统设置">
+            <Row ItemsPerRow="ItemsPerRow.One">
                 <BootstrapInput @bind-Value="@_systemSettings.Title" DisplayText="标题"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@_systemSettings.SubTitle" DisplayText="副标题"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
                 <BootstrapInput @bind-Value="@_systemSettings.Url" DisplayText="网站地址"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInputNumber @bind-Value="@_systemSettings.CountPerPage" DisplayText="每页显示数量"></BootstrapInputNumber>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
                 <Textarea rows="5" @bind-Value="@_systemSettings.CopyRight" DisplayText="版权信息"></Textarea>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput rows="5" @bind-Value="@_systemSettings.BeiAn" DisplayText="备案信息"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Button OnClick="@Save">保存配置</Button>
-            </div>
-        </div>
-    </ValidateForm>
+                <BootstrapInput @bind-Value="@_systemSettings.BeiAn" DisplayText="备案信息"></BootstrapInput>
+            </Row>
+        </TabItem>
+        <TabItem Text="文章设置">
+            <Row ItemsPerRow="ItemsPerRow.One">
+                <BootstrapInputNumber @bind-Value="@_systemSettings.CountPerPage" DisplayText="每页显示数量"></BootstrapInputNumber>
+                <Switch @bind-Value="@_systemSettings.CanComment" DisplayText="允许评论"></Switch>
+                <Switch @bind-Value="@_systemSettings.CommentNeedVerify" DisplayText="评论需要审核"></Switch>
+            </Row>
+        </TabItem>
+    </Tab>
+</ValidateForm>
 
 
 @code {
@@ -55,12 +42,13 @@
         _systemSettings = SystemSettingsVm.Init();
     }
 
-    private void Save()
+    private Task Save(EditContext editContext)
     {
         _systemSettings.Save();
         ToastService?.Show(new ToastOption()
         {
             Content = "保存成功"
         });
+        return Task.CompletedTask;
     }
 }
