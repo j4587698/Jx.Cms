@@ -169,6 +169,20 @@
       <_ContentIncludedByDefault Remove="wwwroot\is-cache\f\e\b\e\6\6\8\f\9\8\5\a\febe668f985a.meta" />
       <_ContentIncludedByDefault Remove="Theme\Blogs\theme.json" />
       <_ContentIncludedByDefault Remove="Theme\DemoPlugin\theme.json" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\0\0\f\1\2\4\3\c\3\f\d\f\00f1243c3fdf.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\0\0\f\1\2\4\3\c\3\f\d\f\00f1243c3fdf.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\1\e\8\2\5\c\7\9\d\1\f\3\1e825c79d1f3.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\1\e\8\2\5\c\7\9\d\1\f\3\1e825c79d1f3.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\4\1\4\3\a\a\f\b\5\6\9\b\4143aafb569b.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\4\1\4\3\a\a\f\b\5\6\9\b\4143aafb569b.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\8\3\6\5\c\3\c\b\c\6\6\7\8365c3cbc667.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\8\3\6\5\c\3\c\b\c\6\6\7\8365c3cbc667.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\a\a\a\b\a\0\7\b\a\f\f\3\aaaba07baff3.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\a\a\a\b\a\0\7\b\a\f\f\3\aaaba07baff3.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\b\a\c\1\0\4\8\c\7\f\6\0\bac1048c7f60.meta" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\b\a\c\1\0\4\8\c\7\f\6\0\bac1048c7f60.png" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\e\2\9\1\c\4\f\a\e\5\7\0\e291c4fae570.jpg" />
+      <_ContentIncludedByDefault Remove="wwwroot\is-cache\e\2\9\1\c\4\f\a\e\5\7\0\e291c4fae570.meta" />
     </ItemGroup>
 
 </Project>
