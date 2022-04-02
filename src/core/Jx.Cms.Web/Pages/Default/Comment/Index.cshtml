@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Jx.Cms.DbContext.Entities.Article.CommentEntity>
+@using Humanizer
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.DbContext.Entities.Article
+
+@{
+    void CreateComments(IEnumerable<CommentEntity> commentEntities)
+    {
+        foreach (var commentEntity in commentEntities)
+        {
+            <div class="media mt-4"> <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="@Util.GetWebAvatarUrl(commentEntity.AuthorEmail)"/></a>
+                <div class="media-body">
+                    <div class="row">
+                        <div class="col-8 d-flex">
+                            <h5>@commentEntity.AuthorName</h5> <span>- @commentEntity.CreateTime.Humanize()</span>
+                        </div>
+                        <div class="col-4">
+                            <div class="pull-right reply"> <a href="javascript:void(0)" onclick="reply('@commentEntity.Id', '@commentEntity.AuthorName')"><span><i class="fa fa-reply"></i> 回复</span></a> </div>
+                        </div>
+                    </div>
+                    @commentEntity.Content
+                    @if (commentEntity.Child is { Count: > 0 })
+                    {
+                        CreateComments(commentEntity.Child);
+                    }
+                </div>
+            </div>
+        }
+    }
+}
+<div class="comment">
+    <div class="container mb-5 mt-5">
+        <div class="card">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <form id="comment">
+                            @if (ViewData["user"] != null)
+                            {
+                                var user = ViewData["user"] as AdminUserEntity;
+                                <input type="hidden" name="@nameof(CommentEntity.AuthorName)" value="@user!.NickName"/>
+                                <input type="hidden" name="@nameof(CommentEntity.AuthorEmail)" value="@user!.Email"/>
+                                <input type="hidden" name="@nameof(CommentEntity.AuthorUrl)" value="@user!.HomePage"/>
+                                <label class="col-12 form-group">
+                                    @user.NickName 发表评论：
+                                </label>
+                            }
+                            else
+                            {
+                                <div class="col-12 form-group">
+                                    <label for="nikeName">昵称(必填)：</label>
+                                    <input id="nikeName" name="@nameof(CommentEntity.AuthorName)" type="text" class="form-control" value="@ViewData[nameof(CommentEntity.AuthorName)]"/>
+                                </div>
+                                <div class="col-12 form-group">
+                                    <label for="email">邮箱（必填）：</label>
+                                    <input id="email" name="@nameof(CommentEntity.AuthorEmail)" type="text" class="form-control" value="@ViewData[nameof(CommentEntity.AuthorEmail)]"/>
+                                </div>
+                                <div class="col-12 form-group">
+                                    <label for="email">网址：</label>
+                                    <input id="email" name="@nameof(CommentEntity.AuthorUrl)" type="text" class="form-control" value="@ViewData[nameof(CommentEntity.AuthorUrl)]"/>
+                                </div>
+                            }
+                            <input type="hidden" name="@nameof(CommentEntity.ArticleId)" value="@ViewData[nameof(CommentEntity.ArticleId)]"/>
+                            <input type="hidden" name="@nameof(CommentEntity.ParentId)"/>
+                            <div class="col-12 form-group">
+                                <span class="badge badge-primary" id="replyTo" style="display: none"></span>
+                                <textarea name="@nameof(CommentEntity.Content)" type="text" class="form-control"></textarea>
+                            </div>
+                            <div class="col-12 form-group">
+                                <button class="btn btn-primary" type="submit">发表评论</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            @if (Model.Any())
+                            {
+                                CreateComments(Model);
+                            }
+                            else
+                            {
+                                @:<h3>还没有评论，快来抢沙发吧</h3>
+                            }
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    <script src="/User/common.js"></script>
+    <script>
+          function reply(id, name) {
+                 $("[name='@nameof(CommentEntity.ParentId)']").val(id)
+                 var replyTo = $("#replyTo");
+                 replyTo.html('回复' + name + '<i id="clearReply" class="fa fa-times" style="margin-left: 8px;width: 4px;height: 4px;margin-right: 4px"></i>')
+                 replyTo.show();    
+                 $("#clearReply").click(function (){
+                                 $("[name='@nameof(CommentEntity.ParentId)']").val(0)
+                                 $("#replyTo").hide(); 
+                             });
+                 console.log("reply click");
+            }
+    </script>
+

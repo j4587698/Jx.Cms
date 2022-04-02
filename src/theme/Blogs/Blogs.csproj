@@ -1,0 +1,46 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+      <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="wwwroot/**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <None Update="screenshot.jpg">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\core\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <UpToDateCheckInput Remove="Pages\Blogs\Shared\_Layout.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />
+      <UpToDateCheckInput Remove="Pages\Shared\_ViewStart.cshtml" />
+    </ItemGroup>
+
+    <Target Name="SetAllProjectReferenceAsPublic" AfterTargets="AssignProjectConfiguration" BeforeTargets="ResolveProjectReferences" Condition="'$(OutputType)' == 'Library' and $(AssemblyName.EndsWith('Tests')) == 'false' ">
+        <ItemGroup>
+            <ProjectReferenceWithConfiguration Update="@(ProjectReferenceWithConfiguration)">
+                <Private>false</Private>
+            </ProjectReferenceWithConfiguration>
+            <ProjectReference Update="@(ProjectReference)">
+                <Private>false</Private>
+            </ProjectReference>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;copy $(TargetDir)\theme.json $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;" />
+    </Target>
+</Project>

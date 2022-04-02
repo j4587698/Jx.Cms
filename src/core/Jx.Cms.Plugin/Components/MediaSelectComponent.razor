@@ -1,0 +1,157 @@
+﻿@using System.IO
+@using System.Text
+@using BootstrapBlazor.Components
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Common.Vo
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.Plugin.Service.Both
+@using Mapster
+@using Masuit.Tools
+
+@implements IResultDialog
+
+@inject ToastService ToastService
+@inject MessageService MessageService
+@inject IMediaService MediaService
+
+<Row>
+    <ButtonUpload TValue="string" BrowserButtonText="上传新媒体文件" IsMultiple="true" ShowProgress="true" OnChange="@OnClickToUpload" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
+</Row>
+
+<div class="row">
+    <div class="col-9">
+        <Row ItemsPerRow="ItemsPerRow.One">
+            已选中 @MediaInfoVos.Count(x => x.IsSelected) 个媒体文件
+            <ListView TItem="MediaInfoVo" Items="@MediaInfoVos" OnListViewItemClick="OnListViewItemClick">
+                <BodyTemplate>
+                    <Card Color="context.IsSelected ? Color.Dark : Color.None" IsCenter="true">
+                        <CardHeader>
+                            <div style="width: 150px;white-space: nowrap;overflow: hidden;-o-text-overflow: ellipsis;text-overflow: ellipsis;">@context.Name</div>
+                        </CardHeader>
+                        <CardBody>
+                            @if (context.MediaType == MediaTypeEnum.Image)
+                            {
+                                <img src="@context.Url?width=150&height=150" alt="@context.Name"/>
+                            }
+                            else if (context.MediaType == MediaTypeEnum.Audio)
+                            {
+                                <i style="width: 150px;height: 150px;font-size: 180px" class="fa fa-file-audio-o fa-5x"></i>
+                            }
+                            else if (context.MediaType == MediaTypeEnum.Video)
+                            {
+                                <i style="width: 150px;height: 150px" class="fa fa-file-video-o fa-5x"></i>
+                            }
+                            else
+                            {
+                                <i style="width: 150px;height: 150px;font-size: 180px" class="fa fa-file-o" aria-hidden="true"></i>
+                            }
+                        </CardBody>
+                    </Card>
+                </BodyTemplate>
+            </ListView>
+        </Row>
+    </div>
+    <div class="col-3">
+        @if (SelectedMedia != null)
+        {
+            <Row ItemsPerRow="ItemsPerRow.One">
+                <img src="@SelectedMedia.Url" style="width: 100%"/>
+                <BootstrapInput @bind-Value="@SelectedMedia.Name" ShowLabel="true" DisplayText="媒体名" Readonly="true"></BootstrapInput>
+                <BootstrapInput @bind-Value="@SelectedMedia.Url" ShowLabel="true" DisplayText="地址" Readonly="true"></BootstrapInput>
+                <BootstrapInput TValue="string" Value="@SelectedMedia.CreateTime.ToString("yyyy年MM月dd日")" ShowLabel="true" DisplayText="媒体名" Readonly="true"></BootstrapInput>
+            </Row>
+        }
+        
+    </div>
+</div>
+
+
+@code {
+    /// 要搜索的文件类型
+    [Parameter]
+    public string[] FileType { get; set; } = { ".jpg", ".jpeg", ".png", ".gif", ".mp3", ".mp4", ".wav", ".webm" };
+
+    /// 选择事件
+    [Parameter]
+    public EventCallback<string> MediaSelected { get; set; }
+
+    private List<MediaInfoVo> MediaInfoVos { get; set; }
+    
+    private MediaInfoVo SelectedMedia { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        MediaInfoVos = MediaService.GetAllMedias().Select(x => x.Adapt<MediaInfoVo>()).ToList();
+    }
+
+    public async Task<bool> OnClosing(DialogResult result)
+    {
+        var ret = true;
+        if (result == DialogResult.Yes && !MediaInfoVos.Any(x => x.IsSelected))
+        {
+            await MessageService.Show(new MessageOption()
+            {
+                Content = "请至少选择一个媒体文件！"
+            });
+            ret = false;
+        }
+        return ret;
+    }
+
+    public async Task OnClose(DialogResult result)
+    {
+        if (result == DialogResult.Yes)
+        {
+            StringBuilder sb = new StringBuilder();
+            var selectMedia = MediaInfoVos.Where(x => x.IsSelected);
+            foreach (var mediaInfoVo in selectMedia)
+            {
+                switch (mediaInfoVo.MediaType)
+                {
+                    case MediaTypeEnum.Image:
+                        sb.AppendLine($"<img src={mediaInfoVo.Url} alt={mediaInfoVo.Name}></img>");
+                        break;
+                    case MediaTypeEnum.Video:
+                        sb.AppendLine($@"<video src='{mediaInfoVo.Url}' controls='controls'>
+                        您的浏览器不支持 video 标签。
+                        </video>");
+                        break;
+                    case MediaTypeEnum.Audio:
+                        sb.AppendLine($@"<audio src='{mediaInfoVo.Url}'>
+                        您的浏览器不支持 audio 标签。
+                        </audio>");
+                        break;
+                    case MediaTypeEnum.UnKnow:
+                        sb.AppendLine(mediaInfoVo.Url);
+                        break;
+                    default:
+                        throw new ArgumentOutOfRangeException();
+                }
+            }
+            await MediaSelected.InvokeAsync(sb.ToString());
+        }
+    }
+
+    private Task OnListViewItemClick(MediaInfoVo arg)
+    {
+        arg.IsSelected = !arg.IsSelected;
+        SelectedMedia = arg.IsSelected ? arg : null;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnClickToUpload(UploadFile file)
+    {
+        if (!FileType.Any(x => x.Contains(Path.GetExtension(file.OriginFileName ?? ""))))
+        {
+            ToastService.Error($"不支持的文件类型，目前只支持{FileType.Join()}类型的文件");
+            return Task.CompletedTask;
+        }
+        MediaService.AddMedia(file);
+        MediaInfoVos = MediaService.GetAllMedias().Select(x => x.Adapt<MediaInfoVo>()).ToList();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}

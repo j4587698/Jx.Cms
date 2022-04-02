@@ -1,0 +1,187 @@
+﻿@page "/Settings/RewriteSettings"
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.Rewrite
+@using Jx.Cms.Themes.Model
+@using Masuit.Tools
+@using Microsoft.AspNetCore.Components
+
+@inject ToastService ToastService
+@attribute [Menu("CB0C129D-48D7-4E0A-BA1B-EE1912D3580D", "伪静态设置", "/Settings/RewriteSettings", iconClass:"fa fa-newspaper-o",  parentId:MenuIds.SettingsId)]
+<br/>
+
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>伪静态设置</h3>
+    <Button OnClick="Save" style="float: right">保存</Button>
+</Row>
+
+<table class="table">
+    <tbody>
+    <tr>
+        <td style="width: 20%">静态化选项 </td>
+        <td style="width: 80%"><RadioList TValue="string" Items="@_optionItem" OnSelectedChanged="OnSelectedChanged"></RadioList ></td>
+    </tr>
+    <tr>
+        <td>文章URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.ArticleUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_articleItems" IsVertical="true" OnSelectedChanged="ArticleChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    <tr>
+        <td>页面的URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.PageUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_pageItems" IsVertical="true" OnSelectedChanged="PageChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    <tr>
+        <td>首页URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.IndexUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_indexItems" IsVertical="true" OnSelectedChanged="IndexChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    <tr>
+        <td>分类目录URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.CatalogueUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_catalogueItems" IsVertical="true" OnSelectedChanged="CatalogueChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    <tr>
+        <td>标签页URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.LabelUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_labelItems" IsVertical="true" OnSelectedChanged="LabelChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    </tbody>
+</table>
+
+<style>
+    .radio-list .form-check {
+        width: 300px;
+    }
+</style>
+
+@code {
+    
+    // 伪静态选项Radio
+    private IEnumerable<SelectedItem> _optionItem;
+
+    // 文章推荐Radio
+    private readonly IEnumerable<SelectedItem> _articleItems = new[]
+    {
+        new SelectedItem("/post/{{id}}.html", "/post/{{id}}.html"), new SelectedItem("/post/{{alias}}.html", "/post/{{alias}}.html")
+            , new SelectedItem("/{{year}}/{{month}}/{{id}}/", "/{{year}}/{{month}}/{{id}}/"), new SelectedItem("/{{category}}/{{alias}}/", "/{{category}}/{{alias}}/")
+    };
+    
+    // 页面推荐Radio
+    private readonly IEnumerable<SelectedItem> _pageItems = new[]
+    {
+        new SelectedItem("/{{id}}.html", "/{{id}}.html"), new SelectedItem("/{{alias}}.html", "/{{alias}}.html")
+        , new SelectedItem("/{{alias}}/", "/{{alias}}/")
+    };
+    
+    // 首页推荐Radio
+    private readonly IEnumerable<SelectedItem> _indexItems = new[]
+    {
+        new SelectedItem("/page_{{page}}.html", "/page_{{page}}.html"), new SelectedItem("/page_{{page}}/", "/page_{{page}}/")
+        , new SelectedItem("/page/{{page}}/", "/page/{{page}}/")
+    };
+    
+    // 分类推荐Radio
+    private readonly IEnumerable<SelectedItem> _catalogueItems = new[]
+    {
+        new SelectedItem("/catalogue_{{id}}_{{page}}.html", "/catalogue_{{id}}_{{page}}.html"), new SelectedItem("/catalogue_{{id}}_{{page}}/", "/catalogue_{{id}}_{{page}}/")
+        , new SelectedItem("/catalogue/{{id}}/{{page}}/", "/catalogue/{{id}}/{{page}}/"), new SelectedItem("/catalogue/{{alias}}.{{page}}.html/", "/catalogue/{{alias}}.{{page}}.html/")
+    };
+    
+    // 标签推荐Radio
+    private readonly IEnumerable<SelectedItem> _labelItems = new[]
+    {
+        new SelectedItem("/label_{{id}}_{{page}}.html", "/label_{{id}}_{{page}}.html"), new SelectedItem("/label_{{id}}_{{page}}/", "/label_{{id}}_{{page}}/")
+        , new SelectedItem("/label/{{id}}/{{page}}/", "/label/{{id}}/{{page}}/"), new SelectedItem("/label/{{alias}}.{{page}}.html/", "/label/{{alias}}.{{page}}.html/")
+    };
+
+    private RewriterModel RewriterModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        RewriterModel = RewriterModel.GetSettings();
+        if (RewriterModel.RewriteOption.IsNullOrEmpty())
+        {
+            RewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+        }
+        _optionItem = typeof(RewriteOptionEnum).ToSelectList().ToList();
+        _isDisabled = RewriterModel.RewriteOption != RewriteOptionEnum.Rewrite.ToString();
+        _optionItem.First(x => x.Value == RewriterModel.RewriteOption).Active = true;
+        StateHasChanged();
+    }
+
+    // 是否禁用
+    private bool _isDisabled = false;
+
+    private Task ArticleChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.ArticleUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task PageChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.PageUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task IndexChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.IndexUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task CatalogueChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.CatalogueUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task LabelChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.LabelUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private void Save()
+    {
+        RewriterModel.SaveSettings(RewriterModel);
+        ToastService.Success("修改成功", "伪静态规则设置成功");
+    }
+
+    private Task OnSelectedChanged(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.RewriteOption = arg2;
+        if (arg2 == RewriteOptionEnum.Dynamic.ToString())
+        {
+            _isDisabled = true;
+        }
+        else if (arg2 == RewriteOptionEnum.Rewrite.ToString())
+        {
+            _isDisabled = false;
+        }
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+}

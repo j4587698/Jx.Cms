@@ -1,0 +1,70 @@
+﻿@using System.Diagnostics.CodeAnalysis
+<div class="row justify-content-md-center">
+    <div class="col-md-auto">
+        <Circle Width="@Width" Value="@Value" Color="@Color" StrokeWidth="10" ShowProgress="false" class="m-auto">
+                <div class="count-down">
+                    <h2>@(CountDownSecond - NowSecond)</h2>
+                </div>
+            </Circle>
+    </div>
+</div>
+<style>
+    .count-down{
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-flow: column;
+    }
+</style>
+    
+@code {
+    
+    [NotNull]
+    [Parameter]
+    public int CountDownSecond { get; set; }
+
+    [Parameter]
+    public int Width { get; set; } = 250;
+
+    [Parameter]
+    public Color Color { get; set; } = Color.Success;
+
+    private int NowSecond { get; set; }
+    
+    private int Value { get; set; } 
+    
+    /// <summary>
+    /// 获得/设置 倒计时结束时回调委托
+    /// </summary>
+    [Parameter]
+    public Func<Task> OnTimeout { get; set; }
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        Value = 100;
+        OnStart();
+    }
+
+    private void OnStart()
+    {
+        Task.Run(async () =>
+        {
+            do
+            {
+                await Task.Delay(1000);
+                NowSecond++;
+                Value = (int)((1 - NowSecond * 1.0 / CountDownSecond) * 100);
+                await InvokeAsync(StateHasChanged);
+            } while (NowSecond < CountDownSecond);
+            await Task.Delay(1000);
+            OnTimeout?.Invoke();
+        });
+    }
+
+}

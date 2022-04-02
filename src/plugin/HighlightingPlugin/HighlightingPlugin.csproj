@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+    </PropertyGroup>
+
+
+    <ItemGroup>
+      <EmbeddedResource Include="wwwroot/**" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+        <SupportedPlatform Include="browser" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="6.0.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+    </ItemGroup>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;copy $(TargetDir)\plugin.json $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;" />
+    </Target>
+</Project>

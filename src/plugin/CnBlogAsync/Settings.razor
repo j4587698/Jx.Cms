@@ -1,0 +1,75 @@
+﻿@using System.ComponentModel.DataAnnotations
+@using BootstrapBlazor.Components
+@using CnBlogAsync.Options
+@using Jx.Cms.Plugin.Service.Both
+@using Console = System.Console
+@inject ISettingsService SettingsService 
+@inject ToastService ToastService
+
+<Toast></Toast>
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>博客园同步设置</h3>
+    <Button OnClick="Modify" style="float: right">验证并保存</Button>
+</Row>
+
+
+<Row RowType="RowType.Inline" ItemsPerRow="ItemsPerRow.One">
+    <BootstrapInput @bind-Value="@_blogName" DisplayText="博客名" ShowLabel="true"></BootstrapInput>
+    <BootstrapInput @bind-Value="@_username" DisplayText="用户名" ShowLabel="true"></BootstrapInput>
+    <BootstrapPassword @bind-Value="@_password" DisplayText="密码" ShowLabel="true"></BootstrapPassword>
+    <Select @bind-Value="@_defaultValue" DisplayText="是否默认推送" ShowLabel="true">
+        <Options>
+            <SelectOption Text="是" Value="是"></SelectOption>
+            <SelectOption Text="否" Value="否"></SelectOption>
+        </Options>
+    </Select>
+</Row>
+
+
+@code {
+    
+    [Required(ErrorMessage = "博客名不能为空")]
+    private string _blogName;
+
+    [Required(ErrorMessage = "用户不能为空")]
+    private string _username;
+
+    [Required(ErrorMessage = "密码不能为空")]
+    private string _password;
+
+    private string _defaultValue;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var values = SettingsService.GetAllValues(Constants.PluginName);
+        values.TryGetValue(Constants.BlogName, out _blogName);
+        values.TryGetValue(Constants.BlogUserName, out _username);
+        values.TryGetValue(Constants.BlogPassword, out _password);
+        if (!values.TryGetValue(Constants.BlogDefaultValue, out _defaultValue))
+        {
+            _defaultValue = "是";
+        }
+    }
+
+    private void Modify()
+    {
+        var option = new CnBlogsOption(_blogName, _username, _password);
+        var client = new Client(option);
+        try
+        {
+            client.GetUsersBlogs();
+        }
+        catch (Exception e)
+        {
+            ToastService.Error("验证失败", e.Message);
+            return;
+        }
+        SettingsService.SetValue(Constants.PluginName, Constants.BlogName, _blogName);
+        SettingsService.SetValue(Constants.PluginName, Constants.BlogUserName, _username);
+        SettingsService.SetValue(Constants.PluginName, Constants.BlogPassword, _password);
+        SettingsService.SetValue(Constants.PluginName, Constants.BlogDefaultValue, _defaultValue);
+        ToastService.Success("修改成功", "配置博客园同步信息成功");
+    }
+
+}

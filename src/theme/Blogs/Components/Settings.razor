@@ -1,0 +1,64 @@
+﻿@using Blogs.Model
+@using Blogs.Utils
+@using Blogs.Enum
+@inject ToastService ToastService
+
+<Toast></Toast>
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>Blogs主题设置</h3>
+    <Button OnClick="Save" style="float: right">保存</Button>
+</Row>
+
+
+<Tab>
+    <TabItem Text="基本设置">
+        <ColorPicker @bind-Value="@_settingsModel.Color" ShowLabel="true"></ColorPicker>
+        @foreach (var color in _colors)
+        {
+            <div class='color-box' data-color='@color' style='display:inline;background-color:#@color' @onclick="@(e => { _settingsModel.Color = color;})"></div>
+        }
+        <div class="clearfix"></div>
+        <Select Items="typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
+        <Select Items="typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar" ShowLabel="true"></Select>
+        <BootstrapInput @bind-Value="@_settingsModel.Connector" ShowLabel="true"></BootstrapInput>
+        <BootstrapInput @bind-Value="@_settingsModel.Keywords" ShowLabel="true"></BootstrapInput>
+        <BootstrapInput @bind-Value="@_settingsModel.Description" ShowLabel="true"></BootstrapInput>
+        <Textarea @bind-Value="@_settingsModel.Notice" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="@_settingsModel.RightMenu" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="@_settingsModel.WelcomeMessage" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="@_settingsModel.HeaderExtendCode" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="@_settingsModel.FooterExtendCode" ShowLabel="true"></Textarea>
+    </TabItem>
+</Tab>
+
+<style>
+    .color-box {
+    float:left;
+    width:30px;
+    height:30px;
+    margin:5px;
+    border: 1px solid white;
+    cursor: pointer; 
+    box-sizing: border-box;
+    }
+</style>
+
+@code {
+
+    private SettingsModel _settingsModel;
+    
+    private readonly string[] _colors = {"C01E22", "0088cc", "FF5E52", "2CDB87", "00D6AC", "EA84FF", "FDAC5F", "FD77B2", "0DAAEA", "C38CFF", "FF926F", "8AC78F", "C7C183"};
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _settingsModel = ThemeSettings.GetSettings();
+    }
+
+    private void Save()
+    {
+        ThemeSettings.SaveSettings(_settingsModel);
+        ToastService.Success("修改成功", "Blogs主题设置成功");
+    }
+
+}

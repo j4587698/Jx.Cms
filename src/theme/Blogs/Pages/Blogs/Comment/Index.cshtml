@@ -1,0 +1,152 @@
+﻿@using Jx.Cms.Common.Utils
+@using Humanizer
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.DbContext.Entities.Article
+@model List<Jx.Cms.DbContext.Entities.Article.CommentEntity>
+
+@{
+	void CreateComment(CommentEntity comment, int floor)
+	{
+		<div class="msg" id="cmt@(comment.Id)">
+		        <div id="anchor-cmt@(comment.Id)">
+			        <div id="comment-cmt@(comment.Id)"></div></div>
+		        <li class="comment even thread-even}" id="comment-@(comment.Id)">
+			        <div id="div-comment-@(comment.Id)" class="comment-body">
+			        <img alt='@comment.AuthorName' src="@Util.GetWebAvatarUrl(@comment.AuthorEmail)" class='avatar avatar-50 photo' height='50' width='50'/>
+			        <div class="comment-author">
+				        <strong><span class="duzhe"><a href="@comment.AuthorUrl" rel="external nofollow" target="_blank" class="url">@comment.AuthorName</a></span></strong>
+				        @if (comment.ParentId != 0)
+				        {
+					        <span class="reply_tz">@comment.CreateTime.Humanize()
+						        <a rel="nofollow" class="comment-reply-link" href="#comment" onclick="blogs_comment('@comment.Id')" aria-label="回复给@(comment.AuthorName)">&nbsp;
+							        <i class="fas fa-reply"></i>&nbsp;回复</a></span>
+					        <br>
+					        @:</div><p><a class="at" href="#comment-@(comment.Id)">@@@comment.Parent.AuthorName</a>@Html.Raw(Blogs.Utils.Util.BiaoQing(comment.Content))<label id="AjaxComment@(comment.Id)"></label></p>
+				        }
+				        else
+				        {
+					        string floorName = "";
+					        if (floor == 1)
+					        {
+						        floorName = @"&nbsp;<span class='pinglunqs plshafa'>沙发</span>";
+					        }
+					        else if (floor == 2)
+					        {
+						        floorName = @"&nbsp;<span class='pinglunqs plbandeng'>板凳</span>";
+					        }
+					        else if (floor == 3)
+					        {
+						        floorName = @"<span class='pinglunqs pldiban'>地板</span>";
+					        }
+					        else
+					        {
+						        floorName = @$"<span class='floor'>&nbsp;{floor}楼</span>";
+					        }
+					        <span class="revertcomment"><a rel="nofollow" class="comment-reply-link" href="#comment" onclick="blogs_comment('@comment.Id')" aria-label="回复给@(comment.AuthorName)">&nbsp;@@回复</a></span>
+					        <br>
+					        <span class="comment-meta commentmetadata"> <span class="comment-aux"> <span class="xiaoshi">发表于</span>@comment.CreateTime.Humanize()@Html.Raw(floorName)</span></span>
+					        @:</div><p>@Html.Raw(Blogs.Utils.Util.BiaoQing(comment.Content))<label id="AjaxComment@(comment.Id)"></label></p>
+				        }
+
+			        </div>
+			        <ul class="children">
+				        @if (comment.Child != null && comment.Child.Count > 0){
+							foreach (var child in comment.Child)
+							{
+								CreateComment(child, 1);
+							}
+						}
+			        </ul>
+		        </li>
+	        </div>
+	}
+}
+
+<div id="commentszbplk" class="commentszbp-area">
+    <div id="divCommentPost" class="comment-divCommentPost">
+    			<h3 id="reply-title" class="comment-reply-title"><i class="fas fa-comments"></i>&nbsp;发表评论
+    			<small><a rel="nofollow" id="cancel-reply" href="#divCommentPost" style="display:none;">取消回复</a></small>
+    			</h3>
+    			<form method="post" id="comment" target="_self" >
+    			<input type="hidden" name="@nameof(CommentEntity.ArticleId)" id="inpId" value="@ViewData[nameof(CommentEntity.ArticleId)]" />
+    			<input type="hidden" name="@nameof(CommentEntity.ParentId)" id="inpRevID" value="0" />
+    			@if (ViewData["user"] != null)
+			    {
+				    var user = ViewData["user"] as AdminUserEntity;
+				    <div class="user_avatar"><img alt="@user.NickName" src="@Util.GetWebAvatarUrl(user.Email)" class="avatar avatar-50 photo" height="50" width="50">当前用户：
+					    <a href="@user.HomePage">@user.NickName</a>
+					    <a href="/Admin/Logout" title="退出">&nbsp;退出</a>
+					    <input type="hidden" name="@nameof(CommentEntity.AuthorName)" id="inpName" value="@user.NickName" />
+					    <input type="hidden" name="@nameof(CommentEntity.AuthorEmail)" id="inpEmail" value="@user.Email" />
+						<input type="hidden" name="@nameof(CommentEntity.AuthorUrl)" id="inpHomePage" value="@user.HomePage" />
+					</div>
+			    }
+			    else
+			    {
+				    <div id="comment-author-info">
+					    <p class="comment-form-author">
+						    <input type="text" name="@nameof(CommentEntity.AuthorName)" id="inpName" class="commenttext" value="@ViewData[nameof(CommentEntity.AuthorName)]" tabindex="1" />
+						    <label for="inpName">昵称（必填）</label>
+					    </p>
+					    <p class="comment-form-email">
+						    <input type="text" name="@nameof(CommentEntity.AuthorEmail)" id="inpEmail" class="commenttext" value="@ViewData[nameof(CommentEntity.AuthorEmail)]" tabindex="2" />
+						    <label for="inpEmail">邮箱（必填）</label>
+					    </p>
+					    <p class="comment-form-url">
+						    <input type="text" name="@nameof(CommentEntity.AuthorUrl)" id="inpHomePage" class="commenttext" value="@ViewData[nameof(CommentEntity.AuthorUrl)]" tabindex="3" />
+						    <label for="inpHomePage">网址</label>
+					    </p>
+					    {if $option['ZC_COMMENT_VERIFY_ENABLE']}
+					    <p><input type="text" name="inpVerify" id="inpVerify" class="text" value="" size="28" tabindex="4" /> 
+						    <img style="width:{$option['ZC_VERIFYCODE_WIDTH']}px;height:{$option['ZC_VERIFYCODE_HEIGHT']}px;cursor:pointer;" src="{$article.ValidCodeUrl}" alt="" title="" onclick="javascript:this.src='{$article.ValidCodeUrl}&amp;tm='+Math.random();"/></p>{/if}
+				    </div>
+			    }
+
+			    <p class="smiley-box">
+    <a href="javascript:grin('[face_01]')"><img src="/Blogs/Image/smilies/face_01.gif" alt="" title="呵呵" /></a><a href="javascript:grin('[face_02]')"><img src="/Blogs/Image/smilies/face_02.gif" alt="" title="嘻嘻" /></a><a href="javascript:grin('[face_03]')"><img src="/Blogs/Image/smilies/face_03.gif" alt="" title="哈哈" /></a><a href="javascript:grin('[face_04]')"><img src="/Blogs/Image/smilies/face_04.gif" alt="" title="偷笑" /></a><a href="javascript:grin('[face_05]')"><img src="/Blogs/Image/smilies/face_05.gif" alt="" title="挖鼻屎" /></a><a href="javascript:grin('[face_06]')"><img src="/Blogs/Image/smilies/face_06.gif" alt="" title="互粉" /></a><a href="javascript:grin('[face_07]')"><img src="/Blogs/Image/smilies/face_07.gif" alt="" title="吃惊" /></a><a href="javascript:grin('[face_08]')"><img src="/Blogs/Image/smilies/face_08.gif" alt="" title="疑问" /></a><a href="javascript:grin('[face_09]')"><img src="/Blogs/Image/smilies/face_09.gif" alt="" title="怒火" /></a><a href="javascript:grin('[face_10]')"><img src="/Blogs/Image/smilies/face_10.gif" alt="" title="睡觉" /></a><a href="javascript:grin('[face_11]')"><img src="/Blogs/Image/smilies/face_11.gif" alt="" title="鼓掌" /></a><a href="javascript:grin('[face_12]')"><img src="/Blogs/Image/smilies/face_12.gif" alt="" title="抓狂" /></a><a href="javascript:grin('[face_13]')"><img src="/Blogs/Image/smilies/face_13.gif" alt="" title="黑线" /></a><a href="javascript:grin('[face_14]')"><img src="/Blogs/Image/smilies/face_14.gif" alt="" title="阴险" /></a><a href="javascript:grin('[face_15]')"><img src="/Blogs/Image/smilies/face_15.gif" alt="" title="懒得理你" /></a><a href="javascript:grin('[face_16]')"><img src="/Blogs/Image/smilies/face_16.gif" alt="" title="嘘" /></a><a href="javascript:grin('[face_17]')"><img src="/Blogs/Image/smilies/face_17.gif" alt="" title="亲亲" /></a><a href="javascript:grin('[face_18]')"><img src="/Blogs/Image/smilies/face_18.gif" alt="" title="可怜" /></a><a href="javascript:grin('[face_19]')"><img src="/Blogs/Image/smilies/face_19.gif" alt="" title="害羞" /></a><a href="javascript:grin('[face_20]')"><img src="/Blogs/Image/smilies/face_20.gif" alt="" title="思考" /></a><a href="javascript:grin('[face_21]')"><img src="/Blogs/Image/smilies/face_21.gif" alt="" title="失望" /></a><a href="javascript:grin('[face_22]')"><img src="/Blogs/Image/smilies/face_22.gif" alt="" title="挤眼" /></a><a href="javascript:grin('[face_23]')"><img src="/Blogs/Image/smilies/face_23.gif" alt="" title="委屈" /></a><a href="javascript:grin('[face_24]')"><img src="/Blogs/Image/smilies/face_24.gif" alt="" title="太开心" /></a><a href="javascript:grin('[face_26]')"><img src="/Blogs/Image/smilies/face_25.gif" alt="" title="哈欠" /></a><a href="javascript:grin('[face_26]')"><img src="/Blogs/Image/smilies/face_26.gif" alt="" title="晕" /></a><a href="javascript:grin('[face_27]')"><img src="/Blogs/Image/smilies/face_27.gif" alt="" title="泪" /></a><a href="javascript:grin('[face_28]')"><img src="/Blogs/Image/smilies/face_28.gif" alt="" title="困" /></a><a href="javascript:grin('[face_29]')"><img src="/Blogs/Image/smilies/face_29.gif" alt="" title="悲伤" /></a><a href="javascript:grin('[face_30]')"><img src="/Blogs/Image/smilies/face_30.gif" alt="" title="衰" /></a><a href="javascript:grin('[face_31]')"><img src="/Blogs/Image/smilies/face_31.gif" alt="" title="围观" /></a><a href="javascript:grin('[face_32]')"><img src="/Blogs/Image/smilies/face_32.gif" alt="" title="给力" /></a><a href="javascript:grin('[face_33]')"><img src="/Blogs/Image/smilies/face_33.gif" alt="" title="囧" /></a><a href="javascript:grin('[face_34]')"><img src="/Blogs/Image/smilies/face_34.gif" alt="" title="威武" /></a><a href="javascript:grin('[face_35]')"><img src="/Blogs/Image/smilies/face_35.gif" alt="" title="OK" /></a><a href="javascript:grin('[face_36]')"><img src="/Blogs/Image/smilies/face_36.gif" alt="" title="赞" /></a><br />
+    		        </p>
+    		        <p class="comment-form-comment"><textarea id="txaArticle" name="@nameof(CommentEntity.Content)" rows="4" tabindex="4"></textarea></p>
+    
+    				<p class="comment-tool"><span class="single-tag"><a class="smiley" href="" title="插入表情">表情</a></span></p>
+    
+    				<p class="form-submit">
+    					<input id="submit" name="sumbit" type="submit" tabindex="5" value="提交评论" />
+    				</p>
+    			</form>
+    			<script type="text/javascript">
+    				document.getElementById("txaArticle").onkeydown = function (moz_ev){
+    				var ev = null;
+    				if (window.event){
+    				ev = window.event;
+    				}else{
+    				ev = moz_ev;
+    				}
+    				if (ev != null && ev.ctrlKey && ev.keyCode == 13){
+    				document.getElementById("submit").click();}
+    				}
+    			</script>
+    		</div>
+
+</div>
+<label id="AjaxCommentBegin"></label>
+@if(Model is {Count: > 0 })
+{
+	var floor = 1;
+<div id="commentszbplb" class="commentszbp-area">
+    <h3 id="pinglunliebiao"><i class="fas fa-comments"></i>&nbsp;评论列表</h3>
+    <ol class="commentzpb-list">
+        @foreach (var comment in Model)
+        {
+	        CreateComment(comment, floor);
+				floor++;
+			}
+    </ol>
+</div>
+	<label id="AjaxCommentEnd"></label>
+}else{
+<div id="commentszbpmy" class="commentszbp-area">
+    <h3 id="meiyoupinglun">还没有留言，还不快点抢沙发？</h3>
+</div>
+}
+
+<script src="/User/common.js"></script>

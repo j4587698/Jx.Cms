@@ -1,0 +1,70 @@
+﻿@model Jx.Cms.Themes.Vm.PostVm
+
+
+@Html.Raw(Model.HeaderExt)
+<!-- Page Header -->
+<header class="masthead" style="background-image: url('/Default/img/post-bg.jpg')">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                <div class="post-heading">
+                    <h1>@Model.Article.Title</h1>
+                    <span class="meta">
+                        <a href="#">@Model.Article.Author</a>
+                        @Model.Article.PublishTime.ToString("yyyy-MM-dd hh:mm:ss")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-md-10 mx-auto">
+                @Html.Raw(Model.Article.Content)
+            </div>
+        </div>
+    </div>
+</article>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-8 col-md-10 mx-auto">
+            <small class="text-muted">标签：@if(Model.Article.Labels != null)
+                                         {
+                                             foreach (var label in Model.Article.Labels)
+                                             {
+                                                 <a label="@label"><span class="label">@label.Name</span></a>
+                                             }
+                                         }</small>
+        </div>
+    </div>
+</div>
+<div class="clearfix">
+    @if (Model.PrevArticle != null)
+    {
+        <a class="btn btn-primary float-left" article="@Model.PrevArticle">&larr; @Model.PrevArticle.Title</a>
+    }
+    else
+    {
+        <button class="btn btn-primary float-left">已经是最新一篇啦</button>
+    }
+  
+    @if (Model.NextArticle != null)
+    {
+        <a class="btn btn-primary float-right" article="@Model.NextArticle">@Model.NextArticle.Title &rarr;</a>
+    }
+    else
+    {
+        <button class="btn btn-primary float-right">已经是最后一篇啦</button>
+    }
+</div>
+
+<div id="commentDiv">
+    @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
+</div>
+
+
+@Html.Raw(Model.BodyExt)

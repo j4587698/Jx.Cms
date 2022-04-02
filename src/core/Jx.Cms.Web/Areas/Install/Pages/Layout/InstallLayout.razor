@@ -1,0 +1,86 @@
+﻿@using System.IO
+@using System.Text.RegularExpressions
+@using Jx.Cms.Common.Utils
+@inherits LayoutComponentBase  
+
+@inject NavigationManager NavigationManager
+
+<Message />
+<Toast />
+<SweetAlert />
+<Card Color="Color.None" style="height: 100vh">
+      <CardHeader>
+            <Steps IsCenter="true" Items="_stepItems">
+            </Steps>
+      </CardHeader>
+      <CardBody>
+            <CascadingValue Value=Next>
+            @Body
+            </CascadingValue >
+      </CardBody>
+</Card>
+
+@code {
+
+      private int _nowStep = 0;
+
+      private List<StepItem> _stepItems = new List<StepItem>()
+      {
+            new()
+            {
+                  Description = "同意用户协议",
+                  Status = StepStatus.Process,
+                  Title = "同意协议"
+            },
+            new ()
+            {
+                  Description = "配置所需的数据库信息",
+                  Status = StepStatus.Wait,
+                  Title = "设置数据库"
+            },
+            new()
+            {
+                  Description = "设置管理员账户信息",
+                  Status = StepStatus.Wait,
+                  Title = "设置管理员"
+            },
+            new()
+            {
+                  Description = "设置完成，准备开工",
+                  Status = StepStatus.Wait,
+                  Title = "完成设置"
+            }
+      };
+
+      public EventCallback Next=> EventCallback.Factory.Create(this, NextStep);
+
+      protected override void OnInitialized()
+      {
+            base.OnInitialized();
+            if (Util.IsInstalled)
+            {
+                  NavigationManager.NavigateTo("/Admin");
+            }
+            var mc = Regex.Match(NavigationManager.Uri, @"Step(\d)$");
+            if (!mc.Success || mc.Groups.Count == 0)
+            {
+                  NavigationManager.NavigateTo("/Install/Step1");
+            }
+            if (int.Parse(mc.Groups[1].Value) != _nowStep + 1)
+            {
+                  NavigationManager.NavigateTo($"Step{_nowStep + 1}");
+            }
+      }
+
+      private void NextStep()
+      {
+            _stepItems[_nowStep].Status = StepStatus.Finish;
+            _nowStep++;
+            if (_nowStep < _stepItems.Count)
+            {
+                  NavigationManager.NavigateTo($"Step{_nowStep + 1}");
+                  _stepItems[_nowStep].Status = StepStatus.Process; 
+            }
+      }
+
+}

@@ -1,0 +1,8 @@
+{
+  "ThemeName": "MyFeature",
+  "ThemeDisplayName": "测试主题",
+  "Version": "1.0",
+  "ThemeDescription": "这是一个测试主题",
+  "ScreenShot": "screenshot.jpg",
+  "ThemeType": 3
+}

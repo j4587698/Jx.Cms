@@ -1,0 +1,75 @@
+﻿@model Jx.Cms.Themes.Vm.IndexVm
+@using Blogs.Enum
+@using Blogs.Model
+
+@{
+	var blogs = ViewBag.blogs as Dictionary<string, string>;
+}
+
+<nav class="breadcrumb"
+     @if (blogs[nameof(SettingsModel.Notice)] == "")
+     {
+	     @("style = 'height:15px;'")
+     }>
+	@if (blogs[nameof(SettingsModel.Notice)] != "")
+	{
+		<div id="scrolldiv">
+			<div class="bull"></div>
+			<div class="scrolltext">
+				<ul style="margin-top: 0px;">@Html.Raw(blogs[nameof(SettingsModel.Notice)])</ul>
+			</div>
+		</div>
+		<script type="text/javascript">$(document).ready(function() {$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});})</script>
+	}
+</nav>
+
+<div id="content" class="site-content">	
+	<div class="clear"></div>
+	<div id="contentab">	
+		<section id="primary" class="content-area">
+			<main id="main" class="site-main" role="main">
+				
+				<div id="post_list_box" class="border_gray">
+					@await Html.PartialAsync("_articleList", Model.Articles, ViewData);
+					
+				</div>
+			</main><!-- .site-main -->
+			<nav class="navigation pagination" role="navigation">
+				<div class="nav-links">
+					@foreach (var pagination in Model.Pagination)
+					{
+						if (pagination.Key == Model.PageNum.ToString())
+						{
+							<span class='page-numbers current'>@pagination.Key</span>
+						}
+						else if (pagination.Key == "‹")
+						{
+							<span class="prev"><a class="page-numbers" index-page-num="@pagination.Value" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+						}
+						else if (pagination.Key == ">")
+						{
+							<span class="next"><a class="page-numbers" index-page-num="@pagination.Value" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+						}
+						else if (pagination.Key == "<<")
+						{
+							<a class="page-numbers" index-page-num="@pagination.Value" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+						}
+						else if (pagination.Key == ">>")
+						{
+							<a class="page-numbers" index-page-num="@pagination.Value" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+						}
+						else
+						{
+							<a class="page-numbers" index-page-num="@pagination.Value" title="第 @pagination.Key 页">@pagination.Key</a>
+						}
+					}
+				</div>
+			</nav>
+		</section><!-- .content-area -->
+		@if (blogs[nameof(SettingsModel.Sidebar)] != SidebarEnum.None.ToString())
+		{
+			<sidebar sidebar="MainMenu"></sidebar>
+		}
+	</div>
+	<div class="clear"></div>
+</div>

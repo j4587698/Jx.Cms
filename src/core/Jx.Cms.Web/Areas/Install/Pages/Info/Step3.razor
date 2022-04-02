@@ -1,0 +1,73 @@
+@page "/Step3"
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.Plugin.Service.Admin
+@using Jx.Cms.Web.ViewModel
+@using Mapster
+
+@inject IAdminUserService AdminUserService
+
+<div class="container">
+    <ValidateForm Model="@InstallInfoVm" OnValidSubmit="@OnSubmit">
+    <h2>管理员设置</h2>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.UserName" DisplayText="管理员用户名"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.Email" DisplayText="邮箱"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.NickName" DisplayText="昵称"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.Password" DisplayText="管理员密码" type="password"></BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@InstallInfoVm.RePassword" DisplayText="管理员密码重复" type="password" ValidateRules="@_validators">
+                </BootstrapInput>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group m-auto">
+                <Button ButtonType="ButtonType.Submit">确认</Button>
+            </div>
+        </div>
+    </ValidateForm>
+</div>
+
+@code {
+    [CascadingParameter]
+    public EventCallback Next { get; set; }
+
+    private InstallInfoVm InstallInfoVm { get; set; }
+    
+    private List<IValidator> _validators;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        InstallInfoVm = new InstallInfoVm(){UserName = "Admin"};
+        _validators = new List<IValidator>()
+        {
+            new InstallValidator()
+        };
+    }
+
+    private async Task OnSubmit(EditContext arg)
+    {
+        AdminUserService.Register(InstallInfoVm.Adapt<AdminUserEntity>());
+        System.IO.File.Create("install.lock");
+        Util.IsInstalled = true;
+        await Next.InvokeAsync();
+    }
+
+}
