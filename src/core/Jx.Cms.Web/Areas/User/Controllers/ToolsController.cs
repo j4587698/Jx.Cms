@@ -3,7 +3,7 @@ using Furion.DataValidation;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.DbContext.Entities.Article;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Themes.Vm;
 using Mapster;
 using Masuit.Tools.Html;

@@ -1,5 +1,5 @@
 ﻿using Furion;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Masuit.Tools.Reflection;
 
 namespace Jx.Cms.Themes.Model

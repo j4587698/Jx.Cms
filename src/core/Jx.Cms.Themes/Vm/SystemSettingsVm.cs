@@ -1,7 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Masuit.Tools;
 using Masuit.Tools.Reflection;
 

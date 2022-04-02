@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Furion.DynamicApiController;
 using Jx.Cms.Common.Extensions;
-using Jx.Cms.DbContext.Service.Admin;
+using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Web.Vo;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;

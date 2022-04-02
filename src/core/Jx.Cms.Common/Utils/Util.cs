@@ -94,14 +94,14 @@ namespace Jx.Cms.Common.Utils
             return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
                 .Where(x => ext.Contains(Path.GetExtension(x).ToLower())).Select(x => new MediaInfoVo()
                 {
-                    MediaName = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
+                    Name = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
                     Url = x.Substring(App.WebHostEnvironment.WebRootPath.Length), IsSelected = false,
                     MediaType = Path.GetExtension(x).ToLower() switch
                     {
                         ".jpg" or ".jpeg" or ".png" or ".gif" => MediaTypeEnum.Image,
                         ".mp3" or ".wav" => MediaTypeEnum.Audio,
                         ".mp4" or ".webm" => MediaTypeEnum.Video,
-                        _ => MediaTypeEnum.Unknow
+                        _ => MediaTypeEnum.UnKnow
                 }
                 }).ToList();
         }

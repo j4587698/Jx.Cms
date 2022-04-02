@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Admin
+namespace Jx.Cms.Plugin.Service.Admin
 {
     /// <summary>
     /// 页面服务

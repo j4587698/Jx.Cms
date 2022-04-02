@@ -1,6 +1,6 @@
 ﻿using Jx.Cms.DbContext.Entities.Admin;
 
-namespace Jx.Cms.DbContext.Service.Admin
+namespace Jx.Cms.Plugin.Service.Admin
 {
     public interface IAdminUserService
     {

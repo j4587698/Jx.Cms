@@ -8,5 +8,5 @@ public enum MediaTypeEnum
     Image,
     Video,
     Audio,
-    Unknow
+    UnKnow
 }

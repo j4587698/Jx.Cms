@@ -2,7 +2,7 @@
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Both
+namespace Jx.Cms.Plugin.Service.Both
 {
     /// <summary>
     /// 评论相关

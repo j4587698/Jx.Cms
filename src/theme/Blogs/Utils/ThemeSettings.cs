@@ -1,7 +1,7 @@
 ﻿using Blogs.Enum;
 using Blogs.Model;
 using Furion;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Masuit.Tools.Reflection;
 using Masuit.Tools.Systems;
 

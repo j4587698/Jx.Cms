@@ -4,7 +4,7 @@ using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
 
-namespace Jx.Cms.DbContext.Service.Both.Impl
+namespace Jx.Cms.Plugin.Service.Both.Impl
 {
     public class SettingsService: ISettingsService, ITransient
     {

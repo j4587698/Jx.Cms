@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.DbContext.Entities.Front;
 
-namespace Jx.Cms.DbContext.Service.Both
+namespace Jx.Cms.Plugin.Service.Both
 {
     /// <summary>
     /// 菜单相关

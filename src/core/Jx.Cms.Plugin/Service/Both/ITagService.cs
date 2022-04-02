@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Both
+namespace Jx.Cms.Plugin.Service.Both
 {
     /// <summary>
     /// 标签相关服务

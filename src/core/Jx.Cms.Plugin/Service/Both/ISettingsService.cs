@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Jx.Cms.DbContext.Service.Both
+namespace Jx.Cms.Plugin.Service.Both
 {
     public interface ISettingsService
     {

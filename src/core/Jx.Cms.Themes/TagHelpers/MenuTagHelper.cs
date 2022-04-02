@@ -2,8 +2,8 @@
 using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Front;
-using Jx.Cms.DbContext.Service.Admin;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Admin;
+using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;

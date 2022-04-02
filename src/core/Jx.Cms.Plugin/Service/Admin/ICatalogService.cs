@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Admin
+namespace Jx.Cms.Plugin.Service.Admin
 {
     /// <summary>
     /// 分类目录

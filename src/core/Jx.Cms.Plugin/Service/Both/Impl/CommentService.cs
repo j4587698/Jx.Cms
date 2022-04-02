@@ -4,7 +4,7 @@ using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Both.Impl
+namespace Jx.Cms.Plugin.Service.Both.Impl
 {
     public class CommentService: ICommentService, ITransient
     {

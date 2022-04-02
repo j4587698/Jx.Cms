@@ -1,6 +1,6 @@
 ﻿using Furion;
 using Jx.Cms.Common.Utils;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;

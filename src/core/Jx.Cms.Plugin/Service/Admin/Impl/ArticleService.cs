@@ -2,7 +2,7 @@
 using Furion.DependencyInjection;
 using Jx.Cms.DbContext.Entities.Article;
 
-namespace Jx.Cms.DbContext.Service.Admin.Impl
+namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
     public class ArticleService: IArticleService, ITransient
     {

@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Front;
-using Jx.Cms.DbContext.Service.Admin;
+using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 

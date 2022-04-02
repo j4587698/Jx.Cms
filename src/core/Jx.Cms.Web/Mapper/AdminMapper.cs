@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using Jx.Cms.DbContext.Entities.Article;
-using Jx.Cms.DbContext.Service.Both;
+using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Web.ViewModel;
 using Mapster;
 

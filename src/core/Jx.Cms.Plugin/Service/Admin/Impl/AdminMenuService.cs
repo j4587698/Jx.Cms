@@ -5,7 +5,7 @@ using Furion.DependencyInjection;
 using Jx.Cms.Common.Attribute;
 using Microsoft.AspNetCore.Components;
 
-namespace Jx.Cms.DbContext.Service.Admin.Impl
+namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
     /// <summary>
     /// 菜单相关

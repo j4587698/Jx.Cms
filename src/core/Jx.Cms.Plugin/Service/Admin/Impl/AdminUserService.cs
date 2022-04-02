@@ -3,7 +3,7 @@ using Jx.Cms.DbContext.Entities.Admin;
 using Masuit.Tools;
 using Masuit.Tools.Security;
 
-namespace Jx.Cms.DbContext.Service.Admin.Impl
+namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
     public class AdminUserService: ITransient, IAdminUserService
     {

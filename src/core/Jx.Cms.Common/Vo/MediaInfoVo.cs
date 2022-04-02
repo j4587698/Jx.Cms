@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Jx.Cms.Common.Enum;
 
 namespace Jx.Cms.Common.Vo
@@ -11,7 +12,7 @@ namespace Jx.Cms.Common.Vo
         /// <summary>
         /// 媒体名称
         /// </summary>
-        public string MediaName { get; set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// 媒体信息
@@ -37,5 +38,10 @@ namespace Jx.Cms.Common.Vo
         /// 是否被选中
         /// </summary>
         public bool IsSelected { get; set; }
+
+        /// <summary>
+        /// 创建时间
+        /// </summary>
+        public DateTime CreateTime { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Front;
 
-namespace Jx.Cms.DbContext.Service.Both.Impl
+namespace Jx.Cms.Plugin.Service.Both.Impl
 {
     public class MenuService: IMenuService, ITransient
     {
