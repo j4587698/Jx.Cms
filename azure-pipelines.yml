@@ -1,0 +1,35 @@
+# Docker
+- task: Docker@2
+  inputs:
+    containerRegistry: 'j4587698Docker'
+    repository: 'j4587698/Jx.Cms'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
+# Build a Docker image
+# https://docs.microsoft.com/azure/devops/pipelines/languages/docker
+
+trigger:
+- master
+
+resources:
+- repo: self
+
+variables:
+  tag: '$(Build.BuildId)'
+
+stages:
+- stage: Build
+  displayName: Build image
+  jobs:
+  - job: Build
+    displayName: Build
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    - task: Docker@2
+      displayName: Build an image
+      inputs:
+        command: build
+        dockerfile: '**/Dockerfile'
+        tags: |
+          $(tag)
