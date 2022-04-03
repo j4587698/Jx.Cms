@@ -1,4 +1,5 @@
 ﻿using Furion;
+using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Middlewares;
 using Jx.Cms.Plugin.Options;
@@ -14,7 +15,10 @@ namespace Jx.Cms.Plugin
         public void ConfigureServices(IServiceCollection services)
         {
             services.ConfigureOptions<UiConfigureOptions>();
-            WidgetCache.UpdateCache();
+            if (Util.IsInstalled)
+            {
+                WidgetCache.UpdateCache();
+            }
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

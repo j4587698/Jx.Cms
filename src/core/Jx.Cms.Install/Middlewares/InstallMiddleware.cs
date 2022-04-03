@@ -3,7 +3,7 @@ using Jx.Cms.Common.Utils;
 using Masuit.Tools;
 using Microsoft.AspNetCore.Http;
 
-namespace Jx.Cms.Web.Middlewares
+namespace Jx.Cms.Install.Middlewares
 {
     /// <summary>
     /// 安装判断中间件

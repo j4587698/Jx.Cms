@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Install\Jx.Cms.Install.csproj" />
       <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
     </ItemGroup>
 
@@ -187,6 +188,14 @@
       <_ContentIncludedByDefault Remove="wwwroot\is-cache\b\a\c\1\0\4\8\c\7\f\6\0\bac1048c7f60.png" />
       <_ContentIncludedByDefault Remove="wwwroot\is-cache\e\2\9\1\c\4\f\a\e\5\7\0\e291c4fae570.jpg" />
       <_ContentIncludedByDefault Remove="wwwroot\is-cache\e\2\9\1\c\4\f\a\e\5\7\0\e291c4fae570.meta" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\_InstallHost.cshtml" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Info\Step1.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Info\Step2.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Info\Step3.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Info\Step4.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Info\_imports.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\Layout\InstallLayout.razor" />
+      <_ContentIncludedByDefault Remove="Areas\Install\Pages\_Imports.razor" />
     </ItemGroup>
 
 </Project>
