@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Jx.Cms.Web.ViewModel
+namespace Jx.Cms.Install.ViewModel
 {
     /// <summary>
     /// 安装信息

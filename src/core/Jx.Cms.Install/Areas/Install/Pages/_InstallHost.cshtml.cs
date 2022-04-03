@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace Jx.Cms.Web.Areas.Install.Pages
+namespace Jx.Cms.Install.Areas.Install.Pages
 {
     public class _InstallModel : PageModel
     {

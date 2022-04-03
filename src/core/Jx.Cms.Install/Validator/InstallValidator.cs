@@ -3,10 +3,10 @@ using System.ComponentModel.DataAnnotations;
 using BootstrapBlazor.Components;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext;
-using Jx.Cms.Web.ViewModel;
+using Jx.Cms.Install.ViewModel;
 using Masuit.Tools;
 
-namespace Jx.Cms.Web.Validator
+namespace Jx.Cms.Install.Validator
 {
     /// <summary>
     /// 
