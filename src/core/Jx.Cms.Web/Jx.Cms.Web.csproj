@@ -2,6 +2,9 @@
 
     <PropertyGroup>
         <TargetFramework>net6.0</TargetFramework>
+        <UserSecretsId>21a18568-7087-4a37-979d-a41fd0958ebd</UserSecretsId>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <DockerfileContext>..\..\..</DockerfileContext>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,6 +21,7 @@
 
     <ItemGroup>
       <PackageReference Include="BootstrapBlazor.Markdown" Version="6.0.1" />
+      <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
     </ItemGroup>
 
     <ItemGroup>
