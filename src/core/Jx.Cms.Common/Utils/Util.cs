@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Furion;
@@ -31,7 +32,7 @@ namespace Jx.Cms.Common.Utils
 
         static Util()
         {
-            IsInstalled = File.Exists("install.lock");
+            IsInstalled = File.Exists(Path.Combine(AppContext.BaseDirectory, "config", "install.lock"));
             FontCollection collection = new FontCollection();
             //Family = collection.Add(Resource.GetResource("font.ttf"));
             Family = collection.Install(Resource.GetResource("font.ttf"));
