@@ -67,23 +67,21 @@ namespace Jx.Cms.DbContext
         {
             if (!dbConfig.DbType.IsNullOrEmpty() && Enum.TryParse(dbConfig.DbType, true, out DataType dataType))
             {
-                IFreeSql freeSql = null;
                 var isDevelopment = App.WebHostEnvironment?.IsDevelopment() ?? true;
+                string connStr = "";
                 switch (dataType)
                 {
                     case DataType.MySql:
-                        var connStr = $"data source={dbConfig.DbName};PORT={dbConfig.DbPort};database={dbConfig.DbName}; uid={dbConfig.Username};pwd={dbConfig.Password};";
-                        freeSql = new FreeSqlBuilder()
-                            .UseAutoSyncStructure(isDevelopment)
-                            .UseNoneCommandParameter(true)
-                            .UseConnectionString(dataType, connStr)
-                            .Build();
+                        connStr = $"Data Source={dbConfig.DbUrl};Port={dbConfig.DbPort};User ID={dbConfig.Username};Password={dbConfig.Password}; Initial Catalog={dbConfig.DbName};Charset=utf8; SslMode=none;Min pool size=1";
                         break;
                     case DataType.SqlServer:
+                        connStr = $"Data Source={dbConfig.DbUrl},{dbConfig.DbPort};User Id={dbConfig.Username};Password={dbConfig.Password};Initial Catalog={dbConfig.DbName};TrustServerCertificate=true;Pooling=true;Min Pool Size=1";
                         break;
                     case DataType.PostgreSQL:
+                        connStr = $"Host={dbConfig.DbUrl};Port={dbConfig.DbPort};Username={dbConfig.Username};Password={dbConfig.Password}; Database={dbConfig.DbName};Pooling=true;Minimum Pool Size=1";
                         break;
                     case DataType.Oracle:
+                        connStr = $"user id={dbConfig.Username};password={dbConfig.Password}; data source=//{dbConfig.DbUrl}:{dbConfig.DbPort}/{dbConfig.DbName};Pooling=true;Min Pool Size=1";
                         break;
                     case DataType.Sqlite:
                         var path = Path.GetDirectoryName(dbConfig.DbName);
@@ -91,18 +89,19 @@ namespace Jx.Cms.DbContext
                         {
                             Directory.CreateDirectory(path);
                         }
-                        freeSql = new FreeSqlBuilder()
-                            .UseAutoSyncStructure(isDevelopment)
-                            .UseNoneCommandParameter(true)
-                            .UseConnectionString(dataType, $"data source={(dbConfig.DbName.EndsWith(".db")?dbConfig.DbName : dbConfig.DbName + ".db")}")
-                            .Build();
 
+                        connStr = $"data source={(dbConfig.DbName.EndsWith(".db")?dbConfig.DbName : dbConfig.DbName + ".db")}";
                         break;
                     default:
                         "数据库类型不在指定范围内".LogError<DbStartup>();
                         return (false, "数据库类型不在指定范围内");
                 }
-
+                var freeSql = new FreeSqlBuilder()
+                    .UseAutoSyncStructure(isDevelopment)
+                    .UseNoneCommandParameter(true)
+                    .UseConnectionString(dataType, connStr)
+                    .Build();
+                
                 if (freeSql == null)
                 {
                     "数据库初始化失败".LogError<DbStartup>();
