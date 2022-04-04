@@ -22,5 +22,9 @@ RUN dotnet publish "Jx.Cms.Web.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
+ENV \
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false \
+    LC_ALL=zh_CN.UTF-8 \
+    LANG=zh_CN.UTF-8
 COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "Jx.Cms.Web.dll"]
