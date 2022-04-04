@@ -23,14 +23,15 @@ public class ArchiveWidget : IWidget
     public string GetWidgetHtml()
     {
         var list = ArticleEntity.Select.Where(x => !x.IsPage)
-            .GroupBy(x => x.PublishTime.ToString("yyyy年MM月")).OrderByDescending(x => x.Value.PublishTime).Take(20)
-            .ToList(x => new { x.Key, count = x.Count(), publishTime = x.Value.PublishTime });
+            .GroupBy(x => x.PublishTime.ToString("yyyy年MM月")).OrderByDescending(x => x.Key).Take(20)
+            .ToList(x => new { x.Key, count = x.Count() });
         TagBuilder ulTag = new TagBuilder("ul");
         foreach (var archive in list)
         {
+            var publishTime = DateOnly.ParseExact(archive.Key, "yyyy年MM月");
             var liTag = new TagBuilder("li");
             var aTag = new TagBuilder("a");
-            aTag.MergeAttribute("href", RewriteUtil.GetDateUrl(archive.publishTime.Year, archive.publishTime.Month, 1));
+            aTag.MergeAttribute("href", RewriteUtil.GetDateUrl(publishTime.Year, publishTime.Month, 1));
             aTag.MergeAttribute("title", archive.Key);
             aTag.InnerHtml.Append($"{archive.Key}({archive.count})");
             liTag.InnerHtml.AppendHtml(aTag);
