@@ -53,6 +53,7 @@ namespace Jx.Cms.Themes
         {
             app.UseStaticHttpContext();
             app.UseMiddleware<RedirectMiddleware>();
+            app.UseMiddleware<RewriteMiddleware>();
         }
     }
 }
