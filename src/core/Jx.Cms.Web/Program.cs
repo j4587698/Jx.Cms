@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Jx.Cms.Common;
@@ -14,6 +15,10 @@ namespace Jx.Cms.Web
     {
         public static void Main(string[] args)
         {
+            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "config")))
+            {
+                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "config"));
+            }
             CreateHostBuilder(args).Build().Run();
         }
 

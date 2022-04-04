@@ -49,8 +49,8 @@ namespace Jx.Cms.DbContext
                     x.GetTypes().Where(y => y.BaseType != null && y.BaseType.IsGenericType && y.BaseType.GetGenericTypeDefinition() == typeof(BaseEntity<,>)
                                             && y.FullName != null && !y.FullName.Contains("FreeSql")));
                 BaseEntity.Orm.CodeFirst.SyncStructure(types.ToArray());
-                var filePath = App.WebHostEnvironment.ContentRootFileProvider.GetFileInfo("appsettings.json").PhysicalPath;
-                var jObject = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath));
+                var filePath = Path.Combine(AppContext.BaseDirectory, "config", "dbsettings.json");
+                var jObject = File.Exists(filePath) ? JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath)) : new JObject();
                 jObject["Db"] = JObject.Parse(JsonConvert.SerializeObject(dbConfig));
                 File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
             }

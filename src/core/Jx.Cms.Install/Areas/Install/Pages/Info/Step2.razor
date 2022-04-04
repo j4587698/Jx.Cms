@@ -90,11 +90,21 @@
             await SwalService.Show(new SwalOption()
             {
                 Category = SwalCategory.Error,
-                Title = ret.msg
+                Title = "建库失败",
+                Content = ret.msg
             });
             return;
         }
-        DbStartup.CreateTables(DbConfig);
+        if (!DbStartup.CreateTables(DbConfig))
+        {
+            await SwalService.Show(new SwalOption()
+            {
+                Category = SwalCategory.Error,
+                Title = "建表失败",
+                Content = "数据表创建失败"
+            });
+            return;
+        }
         SystemSettingsVm settingsVm = SystemSettingsVm.Init();
         settingsVm.Title = "JX.CMS";
         settingsVm.SubTitle = "一个基于ASP.NET CORE的CMS";

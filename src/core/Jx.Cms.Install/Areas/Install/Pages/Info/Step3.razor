@@ -5,6 +5,7 @@
 @using Jx.Cms.Install.ViewModel
 @using Jx.Cms.Plugin.Service.Admin
 @using Mapster
+@using System.IO
 
 @inject IAdminUserService AdminUserService
 
@@ -66,7 +67,7 @@
     private async Task OnSubmit(EditContext arg)
     {
         AdminUserService.Register(InstallInfoVm.Adapt<AdminUserEntity>());
-        System.IO.File.Create("install.lock");
+        File.Create(Path.Combine(AppContext.BaseDirectory, "config", "install.lock"));
         Util.IsInstalled = true;
         await Next.InvokeAsync();
     }
