@@ -33,8 +33,17 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
 
         public bool SaveArticle(ArticleEntity articleEntity)
         {
-            articleEntity.Save().SaveMany(nameof(ArticleEntity.Labels));
-            articleEntity.SaveMany(nameof(ArticleEntity.Metas));
+            articleEntity.Save();
+            if (articleEntity.Labels != null)
+            {
+                articleEntity.SaveMany(nameof(ArticleEntity.Labels));
+            }
+
+            if (articleEntity.Metas != null)
+            {
+                articleEntity.SaveMany(nameof(ArticleEntity.Metas));
+            }
+            
             return true;
         }
 
