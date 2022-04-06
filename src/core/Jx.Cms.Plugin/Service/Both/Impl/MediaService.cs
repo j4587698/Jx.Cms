@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
 using Furion.DependencyInjection;
@@ -14,7 +15,7 @@ namespace Jx.Cms.Plugin.Service.Both.Impl;
 
 public class MediaService : IMediaService, ITransient
 {
-    public void AddMedia(UploadFile file)
+    public async Task<bool> AddMediaAsync(UploadFile file)
     {
         var urlBase = Path.Combine("upload", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
         var dir = Path.Combine(App.WebHostEnvironment.WebRootPath, urlBase);
@@ -23,7 +24,11 @@ public class MediaService : IMediaService, ITransient
             Directory.CreateDirectory(dir);
         }
         var fileName = Stopwatch.GetTimestamp().ToBinary(8) + Path.GetExtension(file.OriginFileName);
-        file.SaveToFile(Path.Combine(dir, fileName));
+        if (!await file.SaveToFile(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024))
+        {
+            return false;
+        }
+
         MediaEntity mediaEntity = new MediaEntity();
         mediaEntity.Url = Path.Combine("/", urlBase, fileName).Replace('\\', '/');
         MimeMapper mapper = new MimeMapper();
@@ -37,6 +42,7 @@ public class MediaService : IMediaService, ITransient
             _ => MediaTypeEnum.UnKnow
         };
         mediaEntity.Save();
+        return true;
     }
 
     public IEnumerable<MediaEntity> GetAllMedias()
