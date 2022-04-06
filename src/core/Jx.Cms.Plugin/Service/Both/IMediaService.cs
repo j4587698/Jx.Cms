@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Jx.Cms.DbContext.Entities.Article;
 
@@ -10,7 +11,7 @@ public interface IMediaService
     /// 添加媒体文件
     /// </summary>
     /// <param name="file"></param>
-    void AddMedia(UploadFile file);
+    Task<bool> AddMediaAsync(UploadFile file);
 
     /// <summary>
     /// 获取所有的媒体文件

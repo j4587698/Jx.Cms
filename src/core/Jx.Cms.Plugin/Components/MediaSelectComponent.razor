@@ -141,17 +141,20 @@
         return Task.CompletedTask;
     }
 
-    private Task OnClickToUpload(UploadFile file)
+    private async Task OnClickToUpload(UploadFile file)
     {
         if (!FileType.Any(x => x.Contains(Path.GetExtension(file.OriginFileName ?? ""))))
         {
             ToastService.Error($"不支持的文件类型，目前只支持{FileType.Join()}类型的文件");
-            return Task.CompletedTask;
+            return;
         }
-        MediaService.AddMedia(file);
+        if (!await MediaService.AddMediaAsync(file))
+        {
+            ToastService.Error($"文件上传失败:{file.Error}");
+            return;
+        }
         MediaInfoVos = MediaService.GetAllMedias().Select(x => x.Adapt<MediaInfoVo>()).ToList();
         StateHasChanged();
-        return Task.CompletedTask;
     }
 
 }
