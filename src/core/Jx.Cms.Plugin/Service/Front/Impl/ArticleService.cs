@@ -16,7 +16,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
     {
         public ArticleModel GetArticleById(int id)
         {
-            var article = ArticleEntity.Select.Where(x => x.Id == id && !x.IsPage).Include(x => x.Catalogue).IncludeMany(x => x.Labels).First();
+            var article = ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.Id == id && !x.IsPage).Include(x => x.Catalogue).IncludeMany(x => x.Labels).First();
             if (article == null)
             {
                 return null;
@@ -56,24 +56,24 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
 
         public List<ArticleEntity> GetArticlePageWithCount(int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage == false).OrderByDescending(x => x.PublishTime).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
+            return ArticleEntity.Select.Where(x => x.IsPage == false && x.Status == ArticleStatusEnum.Published).OrderByDescending(x => x.PublishTime).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
         public List<ArticleEntity> GetArticlePage(int pageNumber, int pageSize)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage == false).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).Include(x => x.Catalogue).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
+            return ArticleEntity.Select.Where(x => x.IsPage == false && x.Status == ArticleStatusEnum.Published).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).Include(x => x.Catalogue).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
         public List<ArticleEntity> GetArticleWithDate(int year, int month, int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.PublishTime.Year == year && x.PublishTime.Month == month && !x.IsPage)
+            return ArticleEntity.Select.Where(x => x.PublishTime.Year == year && x.PublishTime.Month == month && !x.IsPage && x.Status == ArticleStatusEnum.Published)
                 .Count(out count).Page(pageNumber, pageSize)
                 .Include(x => x.Catalogue).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
         public List<ArticleEntity> GetArticleByLabel(string label, int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Name == label)).Count(out count).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
+            return ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.Labels.AsSelect().Any(y => y.Name == label)).Count(out count).OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).IncludeMany(x => x.Comments.Select(y => new CommentEntity(){Id = y.Id})).ToList();
         }
 
         public List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10)
@@ -83,13 +83,13 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
             {
                 var ids = baseArticle.Labels.Select(x => x.Id).ToList();
                 var articleIds = ArticleTagEntity.Where(x => ids.Contains(x.LabelId)).GroupBy(x => x.ArticleId).ToList(x => x.Key);
-                articles.AddRange(ArticleEntity.Where(x => articleIds.Contains(x.Id) && x.IsPage == false).Include(x => x.Catalogue).Take(count).ToList());
+                articles.AddRange(ArticleEntity.Where(x => x.Status == ArticleStatusEnum.Published && articleIds.Contains(x.Id) && x.IsPage == false).Include(x => x.Catalogue).Take(count).ToList());
             }
 
             if (articles.Count < count)
             {
                var ids = articles.Select(x => x.Id);
-               articles.AddRange(ArticleEntity.Where(x => !x.IsPage && x.CatalogueId == baseArticle.CatalogueId && !ids.Contains(x.Id)).Include(x => x.Catalogue).Take(count - articles.Count).ToList());
+               articles.AddRange(ArticleEntity.Where(x => x.Status == ArticleStatusEnum.Published && !x.IsPage && x.CatalogueId == baseArticle.CatalogueId && !ids.Contains(x.Id)).Include(x => x.Catalogue).Take(count - articles.Count).ToList());
             }
 
             return articles;
