@@ -12,7 +12,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
     {
         public ArticleModel GetPageById(int id)
         {
-            var article = ArticleEntity.Select.Where(x => x.Id == id && x.IsPage).First();
+            var article = ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.Id == id && x.IsPage).First();
             if (article == null)
             {
                 return null;
@@ -37,17 +37,17 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
 
         public List<ArticleEntity> GetAllPage()
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).ToList();
+            return ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.IsPage).ToList();
         }
 
         public List<ArticleEntity> GetPageWithPage(int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
+            return ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.IsPage).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
         public List<ArticleEntity> GetPageWithPage(int pageNumber, int pageSize)
         {
-            return ArticleEntity.Select.Where(x => x.IsPage).Include(x => x.Catalogue).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.Status == ArticleStatusEnum.Published && x.IsPage).Include(x => x.Catalogue).Page(pageNumber, pageSize).ToList();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using Furion.DependencyInjection;
+using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl;
@@ -24,7 +25,7 @@ public class CatalogService : ICatalogService, ITransient
             catalogues.Add(id);
         }
 
-        return ArticleEntity.Where(x => x.IsPage == false && catalogues.Contains(x.CatalogueId))
+        return ArticleEntity.Where(x => x.Status == ArticleStatusEnum.Published && x.IsPage == false && catalogues.Contains(x.CatalogueId))
             .OrderByDescending(x => x.PublishTime).Page(pageNumber, pageSize).Count(out count)
             .IncludeMany(x => x.Comments.Select(y => new CommentEntity() { Id = y.Id }))
             .Include(x => x.Catalogue).ToList();
