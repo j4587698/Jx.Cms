@@ -5,7 +5,6 @@ using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Utils;
-using Markdig;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl
 {
@@ -20,10 +19,6 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
             if (article == null)
             {
                 return null;
-            }
-            if (article.IsMarkdown)
-            {
-                article.Content = Markdown.ToHtml(article.Content);
             }
 
             article.Comments = CommentEntity.Where(x => x.ParentId == 0 && x.ArticleId == article.Id && x.Status == CommentStatusEnum.Pass).AsTreeCte().Count(out var count).ToTreeList();
