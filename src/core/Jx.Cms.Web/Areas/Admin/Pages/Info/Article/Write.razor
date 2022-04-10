@@ -39,13 +39,16 @@
         <div class="row">
             <div class="form-group col-12">
                 <label>文章内容</label>
+                <Row ItemsPerRow="ItemsPerRow.Four">
+                    <Button OnClick="AddMedia">添加媒体</Button>
+                </Row>
                 @if (Article.IsMarkdown)
                 {
-                    <Markdown @bind-Value="@Article.Content" Language="zh-CN" Height="400"></Markdown>
+                    <Markdown @ref="_markdown" Language="zh-CN" Height="400" @bind-Value="@Article.MarkdownContent" @bind-Html="@Article.Content"></Markdown>
                 }
                 else
                 {
-                    <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content" CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor> 
+                    <Editor @ref="_editor" IsEditor="true" Height="400" @bind-Value="@Article.Content" CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor> 
                 }
             </div>
         </div>
@@ -100,6 +103,10 @@
     [Parameter]
     public int Id { get; set; }
 
+    private Editor _editor;
+
+    private Markdown _markdown;
+
     private ArticleVm Article { get; set; }
 
     private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
@@ -122,13 +129,6 @@
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
-        var mediaButton = new EditorToolbarButton
-        {
-            Tooltip = "选择媒体",
-            ButtonName = "selectMedia",
-            IconClass = "fa fa-picture-o"
-        };
-        ToolbarButtons.Add(mediaButton);
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
         var articleEntity = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : ArticleService.GetArticleById(Id);
         BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, articleEntity);
@@ -175,24 +175,32 @@
         Article.Content = "";
         return Task.CompletedTask;;
     }
+    
+    private async Task AddMedia()
+    {
+        string ret = "";
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+        {
+            Title = "请选择媒体",
+            IsScrolling = true,
+            Size = Size.ExtraLarge,
+            ComponentParamters = new Dictionary<string, object>
+            {
+                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x)}
+            }
+        });
+        if (Article.IsMarkdown)
+        {
+            await _markdown.DoMethodAsync("insertText", ret);
+        }
+        else
+        {
+            await _editor.DoMethodAysnc("pasteHTML", ret);
+        }
+    }
 
     private async Task<string> OnClickButton(string arg)
     {
-        if (arg == "selectMedia")
-        {
-            string ret = "";
-            await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
-            {
-                Title = "请选择媒体",
-                IsScrolling = true,
-                Size = Size.ExtraLarge,
-                ComponentParamters = new Dictionary<string, object>
-                {
-                    {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x)}
-                }
-            });
-            return ret;
-        }
         var model = EditorExtModels.Find(x => x.ToolbarButton.ButtonName == arg);
         if (model == null)
         {

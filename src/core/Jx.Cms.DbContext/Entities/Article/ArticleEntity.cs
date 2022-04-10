@@ -35,6 +35,10 @@ namespace Jx.Cms.DbContext.Entities.Article
         [MaxLength(-1)]
         public string Content { get; set; }
 
+        [Description("Markdown内容")]
+        [MaxLength(-1)]
+        public string MarkdownContent { get; set; }
+
         [Description("标签")]
         [Navigate(ManyToMany = typeof(ArticleTagEntity))]
         public List<TagEntity> Labels { get; set; }

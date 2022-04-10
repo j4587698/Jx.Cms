@@ -33,6 +33,9 @@ namespace Jx.Cms.Web.ViewModel
         
         [Description("文章内容")]
         public string Content { get; set; }
+        
+        [Description("Markdown内容")]
+        public string MarkdownContent { get; set; }
 
         [Description("标签")]
         public string Labels { get; set; }
