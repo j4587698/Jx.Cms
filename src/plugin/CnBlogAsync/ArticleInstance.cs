@@ -7,7 +7,6 @@ using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Plugin.Service.Front;
-using Markdig;
 using Masuit.Tools;
 using Masuit.Tools.AspNetCore.Mime;
 using Masuit.Tools.Html;
@@ -45,6 +44,10 @@ public class ArticleInstance : IArticlePlugin
     public bool OnArticleBeforeSave(ArticleEntity articleEntity, out string errorMsg)
     {
         errorMsg = "";
+        if (articleEntity.Status != ArticleStatusEnum.Published)
+        {
+            return true;
+        }
         if (articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.EnableFlag).Value != "是")
         {
             return true;
@@ -60,10 +63,6 @@ public class ArticleInstance : IArticlePlugin
         var client = new Client(option);
         client.GetUsersBlogs();
         var content = articleEntity.Content;
-        if (articleEntity.IsMarkdown)
-        {
-            content = Markdown.ToHtml(articleEntity.Content);
-        }
 
         var imgs = content.MatchImgSrcs();
         var mimeMapper = new MimeMapper();
@@ -85,7 +84,7 @@ public class ArticleInstance : IArticlePlugin
         var catalogue = App.GetService<ICatalogService>().GetCatalogById(articleEntity.CatalogueId);
         if (catalogue != null)
         {
-            if (!categories.Any(x => x.Title == $"[随笔分类]{catalogue.Name}"))
+            if (categories.All(x => x.Title != $"[随笔分类]{catalogue.Name}"))
             {
                 client.NewCategory(new WpCategory()
                 {
