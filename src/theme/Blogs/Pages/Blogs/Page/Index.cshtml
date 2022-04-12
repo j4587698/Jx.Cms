@@ -1,12 +1,13 @@
 ﻿@using Blogs.Model
 @using Jx.Cms.Themes.Vm
 @using Masuit.Tools
+@using Blogs.Enum
 @model Jx.Cms.Themes.Vm.PageVm
 
 @Html.Raw(Model.HeaderExt)
 
 @{
-	var blogs = ViewBag.blogs as Dictionary<string, string>;
+	var blogs = ViewBag.blogs as SettingsModel;
     var settings = ViewData["settings"] as SystemSettingsVm;
 }
 
@@ -56,7 +57,7 @@
             }
         </main><!-- .site-main -->
     </div><!-- .content-area -->
-    @if (blogs!.ContainsKey(nameof(SettingsModel.Sidebar)) && !blogs[nameof(SettingsModel.Sidebar)].IsNullOrEmpty())
+    @if (blogs.Sidebar != SidebarEnum.None)
     {
         <sidebar></sidebar>
     }

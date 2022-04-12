@@ -3,7 +3,7 @@
 @model Jx.Cms.Themes.Vm.DateVm
 
 @{
-	var blogs = ViewBag.blogs as Dictionary<string, string>;
+	var blogs = ViewBag.blogs as SettingsModel;
 }
 
 <nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
@@ -17,7 +17,7 @@
             <main id="main" class="site-main" role="main">
 				
                 <div id="post_list_box" class="border_gray">
-                    @await Html.PartialAsync("_articleList", Model.Articles, ViewData);
+                    @await Html.PartialAsync("_articleList", Model.Articles, ViewData)
 					
                 </div>
             </main><!-- .site-main -->
@@ -53,7 +53,7 @@
                 </div>
             </nav>
         </section><!-- .content-area -->
-        @if (blogs[nameof(SettingsModel.Sidebar)] != SidebarEnum.None.ToString())
+        @if (blogs.Sidebar != SidebarEnum.None)
         {
             <sidebar sidebar="MainMenu"></sidebar>
         }

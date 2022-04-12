@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
 using Furion;
@@ -48,6 +49,16 @@ public class MediaService : IMediaService, ITransient
     public IEnumerable<MediaEntity> GetAllMedias()
     {
         return MediaEntity.Select.OrderByDescending(x => x.CreateTime).ToList();
+    }
+
+    public IEnumerable<MediaEntity> GetMediasByMediaType(MediaTypeEnum mediaTypeEnum)
+    {
+        return MediaEntity.Where(x => x.MediaType == mediaTypeEnum).OrderByDescending(x => x.CreateTime).ToList();
+    }
+
+    public IEnumerable<MediaEntity> GetMediasByExtensions(IEnumerable<string> extensions)
+    {
+        return GetAllMedias().Where(x => extensions.Contains(Path.GetExtension(x.Name)));
     }
 
     public void ModifyMedia(MediaEntity media)

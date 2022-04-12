@@ -6,6 +6,10 @@ namespace Blogs.Model
     [Description("设置类")]
     public class SettingsModel
     {
+        [DisplayName("Logo路径")] public string LogoUrl { get; set; } = "/Blogs/Image/logo1.png";
+        
+        [DisplayName("Favicon路径")] public string FaviconUrl { get; set; } = "/Blogs/Image/favicon1.ico";
+        
         [DisplayName("颜色风格")] public string Color { get; set; } = "";
 
         [DisplayName("博客布局")] public BlogLayoutEnum Layout { get; set; } = BlogLayoutEnum.Left;
