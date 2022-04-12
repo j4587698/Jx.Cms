@@ -3,20 +3,20 @@
 @using Blogs.Model
 
 @{
-	var blogs = ViewBag.blogs as Dictionary<string, string>;
+	var blogs = ViewBag.blogs as SettingsModel;
 }
 
 <nav class="breadcrumb"
-     @if (blogs[nameof(SettingsModel.Notice)] == "")
+     @if (blogs.Notice == "")
      {
 	     @("style = 'height:15px;'")
      }>
-	@if (blogs[nameof(SettingsModel.Notice)] != "")
+	@if (blogs.Notice != "")
 	{
 		<div id="scrolldiv">
 			<div class="bull"></div>
 			<div class="scrolltext">
-				<ul style="margin-top: 0px;">@Html.Raw(blogs[nameof(SettingsModel.Notice)])</ul>
+				<ul style="margin-top: 0px;">@Html.Raw(blogs.Notice)</ul>
 			</div>
 		</div>
 		<script type="text/javascript">$(document).ready(function() {$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});})</script>
@@ -30,7 +30,7 @@
 			<main id="main" class="site-main" role="main">
 				
 				<div id="post_list_box" class="border_gray">
-					@await Html.PartialAsync("_articleList", Model.Articles, ViewData);
+					@await Html.PartialAsync("_articleList", Model.Articles, ViewData)
 					
 				</div>
 			</main><!-- .site-main -->
@@ -66,7 +66,7 @@
 				</div>
 			</nav>
 		</section><!-- .content-area -->
-		@if (blogs[nameof(SettingsModel.Sidebar)] != SidebarEnum.None.ToString())
+		@if (blogs.Sidebar != SidebarEnum.None)
 		{
 			<sidebar sidebar="MainMenu"></sidebar>
 		}

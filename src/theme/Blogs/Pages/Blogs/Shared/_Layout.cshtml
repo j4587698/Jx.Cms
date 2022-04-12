@@ -8,7 +8,7 @@
 
 	var settings = ViewData["settings"] as SystemSettingsVm;
 
-	var blogs = ViewBag.blogs as Dictionary<string, string>;
+	var blogs = ViewBag.blogs as SettingsModel;
 
 }
 
@@ -31,20 +31,20 @@
 	                                         {
 		                                         @("-第" + index.PageNum + "页")
 	                                         }-@settings.Title</title>
-	<meta name="Keywords" content="@blogs![nameof(SettingsModel.Keywords)],@settings.Title">
-	<meta name="description" content="@blogs[nameof(SettingsModel.Description)]">
+	<meta name="Keywords" content="@blogs.Keywords,@settings.Title">
+	<meta name="description" content="@blogs.Description">
 }
 else if (type == "Catalogue")
 {
 	var catalogue = Model as CatalogVm;
-	<title>@catalogue!.Catalog.Name @if (catalogue.PageNum > 1){@blogs![nameof(SettingsModel.Connector)] @($"第{catalogue.PageNum}页")}@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
+	<title>@catalogue!.Catalog.Name @if (catalogue.PageNum > 1){@blogs.Connector @($"第{catalogue.PageNum}页")}@blogs.Connector@settings.Title</title>
 	<meta name="Keywords" content="@catalogue!.Catalog.Name,@settings.Title">
 	<meta name="description" content="@catalogue.Catalog.Description">
 }
 else if (type == "Post")
 {
 	var article = Model as PostVm;
-	<title>@($"{article!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{article.Article.Catalogue.Name}{blogs[nameof(SettingsModel.Connector)]}{settings.Title}")</title>
+	<title>@($"{article!.Article.Title}{blogs.Connector}{article.Article.Catalogue.Name}{blogs.Connector}{settings.Title}")</title>
 	var tag = article.Article.Labels;
 	var keywords = tag.IsNullOrEmpty() ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
 	var description = article.Article.Description.IsNullOrEmpty() ? article.Article.Content.RemoveHtmlTag(135) : article.Article.Description.RemoveHtmlTag(135);
@@ -54,11 +54,11 @@ else if (type == "Post")
 }else if (type == "Page")
 {
 	var page = Model as PageVm;
-	<title>@($"{page!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{settings.Title}")</title>
+	<title>@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")</title>
 	<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
-	<meta name="description" content="@($"{page!.Article.Title}{blogs![nameof(SettingsModel.Connector)]}{settings.Title}")"/>
+	<meta name="description" content="@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")"/>
 	<meta name="author" content="@(page.Article.Content.RemoveHtmlTag(135))" />
-}else if(type == "Label") {
+}else if(type == "Tag") {
 	<title>{if $tag->Metas->Blogs_bqtitle}{$tag.Metas.Blogs_bqtitle}{else}{$tag.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
 	<meta name="Keywords" content="{if $tag->Metas->Blogs_bqgjc}{$tag.Metas.Blogs_bqgjc}{else}{$tag.Name}{/if},{$name}">
 	<meta name="description" content="{$tag.Intro}">
@@ -69,20 +69,20 @@ else if(type == "Date")
 	<title>@($"{date.Year}年{date.Month}月的文章")
 		@if (date.PageNum > 1)
 		{
-			@blogs![nameof(SettingsModel.Connector)]
+			@blogs.Connector
 			@($"第{date.PageNum}页")
 		}
-		@blogs![nameof(SettingsModel.Connector)]@settings.Title</title>
-	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs![nameof(SettingsModel.Connector)]@settings.Title">
+		@blogs.Connector@settings.Title</title>
+	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs.Connector@settings.Title">
 	<meta name="description" content="@($"{date.Year}年{date.Month}月的文章")
                                       		@if (date.PageNum > 1)
                                       		{
-                                      			@blogs![nameof(SettingsModel.Connector)]
+                                      			@blogs.Connector
                                       			@($"第{date.PageNum}页")
                                       		}
-                                      		@blogs![nameof(SettingsModel.Connector)]@settings.Title">
+                                      		@blogs.Connector@settings.Title">
 }
-<link rel="shortcut icon" href="{$host}zb_users/theme/Blogs/Image/{php}Blogs_Get_Logo('favicon','ico');{/php}">
+<link rel="shortcut icon" href="@blogs.FaviconUrl">
 <link rel="profile" href="http://gmpg.org/xfn/11">
 <!--[if lt IE 9]><script src="/Blogs/js/html5-css3.js"></script><![endif]-->
 <link rel="stylesheet" rev="stylesheet" href="/Blogs/css/style.css" type="text/css" media="all"/>
@@ -103,7 +103,7 @@ else if(type == "Date")
 </div>
 <![endif]-->
 <link rel="stylesheet" id="font-awesome-four-css" href="/Blogs/fonts/fontawesome-all.css" type='text/css' media='all'/>
-@Html.Raw(blogs[nameof(SettingsModel.HeaderExtendCode)])
+@Html.Raw(blogs.HeaderExtendCode)
 </head>
 <body>
 <div id="page" class="hfeed site">
@@ -111,10 +111,10 @@ else if(type == "Date")
 		<nav id="top-header">
 			<div class="top-nav">
 				<div id="user-profile">
-				@blogs[nameof(SettingsModel.WelcomeMessage)]
+				@blogs.WelcomeMessage
 				</div>	
 				<div class="menu-youshangjiao-container">
-					<ul id="menu-youshangjiao" class="top-menu">@Html.Raw(blogs[nameof(SettingsModel.RightMenu)])</ul>
+					<ul id="menu-youshangjiao" class="top-menu">@Html.Raw(blogs.RightMenu)</ul>
 				</div>		
 			</div>
 		</nav><!-- #top-header -->
@@ -130,7 +130,7 @@ else if(type == "Date")
 						@:<div class="site-title">
 					}
 						<a href="/" title="@settings.Title-@settings.SubTitle">
-							<img src="/Blogs/Image/logo1.png" width="220" height="50" alt="@settings.Title-@settings.SubTitle" title="@settings.Title-@settings.SubTitle"/>
+							<img src="@blogs.LogoUrl" width="220" height="50" alt="@settings.Title-@settings.SubTitle" title="@settings.Title-@settings.SubTitle"/>
 							<span>@settings.Title</span>
 						</a>
 						@if (type == "Home")
@@ -215,7 +215,7 @@ $('.single-content').find('a').each(function(){
 </script>
 }
 <script src="/Blogs/js/superfish.js" type="text/javascript"></script>
-@blogs[nameof(SettingsModel.FooterExtendCode)]
+@blogs.FooterExtendCode
 </div>
 </body>
 </html>

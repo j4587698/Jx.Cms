@@ -8,7 +8,7 @@
 
 @{
 	var tds = 0;
-	var blogs = ViewBag.blogs as Dictionary<string, string>;
+	var blogs = ViewBag.blogs as SettingsModel;
 }
 @foreach (var article in Model)
 {
@@ -16,7 +16,7 @@
 	<article id="post-@article.Id" class="archive-list @if (tds % 2 == 0){@("shuangshu");}">
 		<div class="post-date-ribbon">
 			<div class="corner"></div>@article.PublishTime.ToString("yyyy年MM月dd日")</div>
-		@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString())
+		@if (blogs.Layout == BlogLayoutEnum.Bottom)
 		{
 			<header class="entry-header">
 				<h2 class="entry-title"><a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@article.Title</a></h2>
@@ -28,7 +28,7 @@
 		else
 		{
 			<figure class="thumbnail">
-				@if (blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString())
+				@if (blogs.Layout == BlogLayoutEnum.Top)
 				{
 					<a href="@RewriteUtil.GetArticleUrl(article)" title="@article.Title">@Html.Raw(article.GetThumbnail(768, 220))</a>
 				}
@@ -47,12 +47,12 @@
 				@{
 					var content = article.Content.RemoveHtmlTag();
 				}
-				@if ((blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Bottom.ToString()) ||
-				     (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString() && blogs[nameof(SettingsModel.Layout)] == BlogLayoutEnum.Top.ToString()))
+				@if ((blogs.Sidebar == SidebarEnum.None && blogs.Layout == BlogLayoutEnum.Bottom) ||
+				     (blogs.Sidebar == SidebarEnum.None && blogs.Layout == BlogLayoutEnum.Top))
 				{
 					@content.Truncate(80)
 				}
-				else if (blogs[nameof(SettingsModel.Sidebar)] == SidebarEnum.None.ToString())
+				else if (blogs.Sidebar == SidebarEnum.None)
 				{
 					@content.Truncate(120)
 				}

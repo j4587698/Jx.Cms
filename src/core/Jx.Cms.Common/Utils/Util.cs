@@ -5,6 +5,7 @@ using System.Linq;
 using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
+using Masuit.Tools.Reflection;
 using Masuit.Tools.Security;
 using Microsoft.Extensions.FileProviders;
 using SixLabors.Fonts;
@@ -131,5 +132,35 @@ namespace Jx.Cms.Common.Utils
             stream.Position = 0;
             return stream;
         }
+
+        /// <summary>
+        /// 字典转实例转实例
+        /// </summary>
+        /// <param name="values"></param>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T DictionaryToInstance<T>(this Dictionary<string, string> values) where T: class, new()
+        {
+            T t = new T();
+            var properties = t.GetProperties();
+            foreach (var property in properties)
+            {
+                if (values.ContainsKey(property.Name))
+                {
+                    if (property.PropertyType.IsEnum)
+                    {
+                        property.SetValue(t, System.Enum.Parse(property.PropertyType, values[property.Name]));
+                        continue;
+                    }
+                    property.SetValue(t,
+                        property.PropertyType != typeof(string)
+                            ? Convert.ChangeType(values[property.Name], property.PropertyType)
+                            : values[property.Name]);
+                }
+            }
+
+            return t;
+        }
+        
     }
 }

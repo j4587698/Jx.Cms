@@ -1,7 +1,10 @@
 ﻿@using Blogs.Model
 @using Blogs.Utils
 @using Blogs.Enum
+@using Jx.Cms.Common.Vo
+@using Jx.Cms.Plugin.Components
 @inject ToastService ToastService
+@inject DialogService DialogService
 
 <Toast></Toast>
 <Row ItemsPerRow="ItemsPerRow.Two">
@@ -11,11 +14,25 @@
 
 
 <Tab>
+    <TabItem Text="图片设置">
+        <Row ItemsPerRow="ItemsPerRow.One">
+            <BootstrapInputGroup >
+                <BootstrapInputGroupLabel DisplayText="LOGO图片（300X70）"></BootstrapInputGroupLabel>
+                <BootstrapInput @bind-Value="@_settingsModel.LogoUrl" Readonly="true"></BootstrapInput>
+                <Button OnClick="SelectLogo">选择Logo</Button>
+            </BootstrapInputGroup>
+            <BootstrapInputGroup >
+                <BootstrapInputGroupLabel DisplayText="favicon图标（16X16）"></BootstrapInputGroupLabel>
+                <BootstrapInput @bind-Value="@_settingsModel.FaviconUrl" Readonly="true"></BootstrapInput>
+                <Button OnClick="SelectIco">选择Ico</Button>
+            </BootstrapInputGroup>
+        </Row>
+    </TabItem>
     <TabItem Text="基本设置">
         <ColorPicker @bind-Value="@_settingsModel.Color" ShowLabel="true"></ColorPicker>
         @foreach (var color in _colors)
         {
-            <div class='color-box' data-color='@color' style='display:inline;background-color:#@color' @onclick="@(e => { _settingsModel.Color = color;})"></div>
+            <div class='color-box' data-color='@color' style='display:inline;background-color:#@color' @onclick="@(e => { _settingsModel.Color = color; })"></div>
         }
         <div class="clearfix"></div>
         <Select Items="typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
@@ -59,6 +76,39 @@
     {
         ThemeSettings.SaveSettings(_settingsModel);
         ToastService.Success("修改成功", "Blogs主题设置成功");
+    }
+
+    private async Task SelectLogo()
+    {
+        IEnumerable<MediaInfoVo> ret = null;
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+        {
+            Title = "请选择媒体",
+            IsScrolling = true,
+            Size = Size.ExtraLarge,
+            ComponentParamters = new Dictionary<string, object>
+            {
+                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x)}
+            }
+        });
+        _settingsModel.LogoUrl = ret.First().Url;
+    }
+    
+    private async Task SelectIco()
+    {
+        IEnumerable<MediaInfoVo> ret = null;
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+        {
+            Title = "请选择媒体",
+            IsScrolling = true,
+            Size = Size.ExtraLarge,
+            ComponentParamters = new Dictionary<string, object>
+            {
+                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x)},
+                {nameof(MediaSelectComponent.FileType), new []{".ico"}}
+            }
+        });
+        _settingsModel.FaviconUrl = ret.First().Url;
     }
 
 }

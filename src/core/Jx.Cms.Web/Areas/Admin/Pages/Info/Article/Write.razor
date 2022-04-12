@@ -8,6 +8,8 @@
 @using Mapster
 @using Furion
 @using System.Security.Claims
+@using System.Text
+@using Jx.Cms.Common.Vo
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Plugin
@@ -178,7 +180,7 @@
     
     private async Task AddMedia()
     {
-        string ret = "";
+        IEnumerable<MediaInfoVo> ret = null;
         await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
         {
             Title = "请选择媒体",
@@ -186,16 +188,49 @@
             Size = Size.ExtraLarge,
             ComponentParamters = new Dictionary<string, object>
             {
-                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<string>(this, x => ret = x)}
+                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x)}
             }
         });
+        StringBuilder sb = new StringBuilder();
+        foreach (var mediaInfoVo in ret)
+        {
+            switch (mediaInfoVo.MediaType)
+            {
+                case MediaTypeEnum.Image:
+                    if (Article.IsMarkdown)
+                    {
+                        sb.Append($"![{mediaInfoVo.Name}]({mediaInfoVo.Url})");
+                    }
+                    else
+                    {
+                        sb.AppendLine($"<img src={mediaInfoVo.Url} alt={mediaInfoVo.Name}></img>");
+                    }
+                    
+                    break;
+                case MediaTypeEnum.Video:
+                    sb.AppendLine($@"<video src='{mediaInfoVo.Url}' controls='controls'>
+                        您的浏览器不支持 video 标签。
+                        </video>");
+                    break;
+                case MediaTypeEnum.Audio:
+                    sb.AppendLine($@"<audio src='{mediaInfoVo.Url}'>
+                        您的浏览器不支持 audio 标签。
+                        </audio>");
+                    break;
+                case MediaTypeEnum.UnKnow:
+                    sb.AppendLine(mediaInfoVo.Url);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
         if (Article.IsMarkdown)
         {
-            await _markdown.DoMethodAsync("insertText", ret);
+            await _markdown.DoMethodAsync("insertText", sb.ToString());
         }
         else
         {
-            await _editor.DoMethodAysnc("pasteHTML", ret);
+            await _editor.DoMethodAysnc("pasteHTML", sb.ToString());
         }
     }
 
