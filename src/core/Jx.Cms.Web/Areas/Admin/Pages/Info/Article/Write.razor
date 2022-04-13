@@ -24,7 +24,7 @@
 @inject DialogService DialogService
 @inject PluginDialogService PluginDialogService
 
-@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Article/Write", 5, iconClass:"fa fa-pencil", parentId:MenuIds.ArticleId)]
+@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Article/Write", 5, parentId:MenuIds.ArticleId)]
 
 <ValidateForm class="row" Model="Article" OnValidSubmit="@OnValidSubmit">
     <div class="col-lg-9 col-md-8">

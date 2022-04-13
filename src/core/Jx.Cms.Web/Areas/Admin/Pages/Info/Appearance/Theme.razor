@@ -5,7 +5,7 @@
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Themes.Service
 
-@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题列表", "/Appearance/Theme", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
+@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题列表", "/Appearance/Theme", 10, ParentId = MenuIds.AppearanceId)]
 
 @inject IThemeConfigService ThemeConfigService
 @inject NavigationManager NavigationManager

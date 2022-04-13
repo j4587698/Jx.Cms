@@ -9,7 +9,7 @@
 @inject NavigationManager NavigationManager
 @inject ToastService ToastService
 
-@attribute [Menu("164DD37C-8347-42AC-8D60-0D38F03D2E67", "页面列表", "/Page/All", 10, iconClass:"fa fa-newspaper-o", parentId:MenuIds.PageId)]
+@attribute [Menu("164DD37C-8347-42AC-8D60-0D38F03D2E67", "页面列表", "/Page/All", 10, parentId:MenuIds.PageId)]
 
 <Table @ref="_table" TItem="ArticleEntity" ShowToolbar="true" ShowDefaultButtons="false" IsBordered="true" IsPagination="true" ShowExtendButtons="true" 
        ShowEditButtonCallback="item => false" ShowDeleteButtonCallback="item => false" PageItemsSource="_pageItemSource" OnQueryAsync="OnQueryAsync">
