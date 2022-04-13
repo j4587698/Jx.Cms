@@ -7,7 +7,7 @@
 @inject ICommentService CommentService
 @inject ToastService ToastService
 
-@attribute [Menu("0A8D80A4-7F14-4AA4-85E7-5945AF03F80F", "评论列表", "/Comment", 10, iconClass:"fa fa-newspaper-o")]
+@attribute [Menu("0A8D80A4-7F14-4AA4-85E7-5945AF03F80F", "评论列表", "/Comment", 80, iconClass:"fa fa-comments")]
 
 <Table @ref="_table" TItem="CommentEntity" IsBordered="true" IsPagination="true" ShowDefaultButtons="false" ShowExtendButtons="true" OnQueryAsync="OnQueryAsync">
     <RowButtonTemplate>

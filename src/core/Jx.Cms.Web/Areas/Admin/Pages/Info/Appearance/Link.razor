@@ -8,7 +8,7 @@
 @inject ISettingsService SettingsService
 @inject IMenuService MenuService
 
-@attribute [Menu("65C021C1-C8C1-43D3-8177-AEE795753A62", "友情链接", "/Appearance/Link", 10, iconClass:"fa fa-newspaper-o", MenuIds.AppearanceId)]
+@attribute [Menu("65C021C1-C8C1-43D3-8177-AEE795753A62", "友情链接", "/Appearance/Link", 10, ParentId = MenuIds.AppearanceId)]
 
  <Table TItem="MenuEntity" IsBordered="true" ShowExtendButtons="true" ShowToolbar="true" EditMode="EditMode.InCell"
                OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" OnAddAsync="OnAddAsync">
