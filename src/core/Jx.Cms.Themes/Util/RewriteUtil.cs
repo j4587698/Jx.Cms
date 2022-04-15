@@ -112,7 +112,7 @@ namespace Jx.Cms.Themes.Util
             }
             var template = Template.Create(rewriterModel.DateUrl);
             return template.Set("year", year.ToString()).Set("month", month.ToString())
-                .Set("pageNum", pageNo.ToString()).Render();
+                .Set("page", pageNo.ToString()).Render();
         }
 
         public static string AnalysisArticle(string url, RewriterModel rewriterModel)
@@ -312,13 +312,13 @@ namespace Jx.Cms.Themes.Util
 
             if (result.isSuccess)
             {
-                if (!(result.result.ContainsKey("pageNum") && result.result.ContainsKey("year") && result.result.ContainsKey("month")))
+                if (!(result.result.ContainsKey("page") && result.result.ContainsKey("year") && result.result.ContainsKey("month")))
                 {
                     return null;
                 }
 
                 return
-                    $"?year={result.result.ContainsKey("year")}&month={result.result.ContainsKey("month")}&pageNum={result.result.ContainsKey("pageNum")}";
+                    $"?year={result.result["year"]}&month={result.result["month"]}&pageNum={result.result["page"]}";
             }
 
             return null;

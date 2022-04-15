@@ -58,7 +58,15 @@
     </tr>
     <tr>
         <td></td>
-        <td><RadioList TValue="string" Items="@_labelItems" IsVertical="true" OnSelectedChanged="LabelChange" IsDisabled="_isDisabled"></RadioList></td>
+        <td><RadioList TValue="string" Items="@_tagItems" IsVertical="true" OnSelectedChanged="LabelChange" IsDisabled="_isDisabled"></RadioList></td>
+    </tr>
+    <tr>
+        <td>日期页URL配置</td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.DateUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+    </tr>
+    <tr>
+        <td></td>
+        <td><RadioList TValue="string" Items="@_dateItems" IsVertical="true" OnSelectedChanged="DateChange" IsDisabled="_isDisabled"></RadioList></td>
     </tr>
     </tbody>
 </table>
@@ -103,10 +111,17 @@
     };
     
     // 标签推荐Radio
-    private readonly IEnumerable<SelectedItem> _labelItems = new[]
+    private readonly IEnumerable<SelectedItem> _tagItems = new[]
     {
-        new SelectedItem("/label_{{id}}_{{page}}.html", "/label_{{id}}_{{page}}.html"), new SelectedItem("/label_{{id}}_{{page}}/", "/label_{{id}}_{{page}}/")
-        , new SelectedItem("/label/{{id}}/{{page}}/", "/label/{{id}}/{{page}}/"), new SelectedItem("/label/{{alias}}.{{page}}.html/", "/label/{{alias}}.{{page}}.html/")
+        new SelectedItem("/tag_{{id}}_{{page}}.html", "/tag_{{id}}_{{page}}.html"), new SelectedItem("/tag_{{id}}_{{page}}/", "/tag_{{id}}_{{page}}/")
+        , new SelectedItem("/tag/{{id}}/{{page}}/", "/tag/{{id}}/{{page}}/"), new SelectedItem("/tag/{{alias}}.{{page}}.html/", "/tag/{{alias}}.{{page}}.html")
+    };
+    
+    // 日期推荐Radio
+    private readonly IEnumerable<SelectedItem> _dateItems = new[]
+    {
+        new SelectedItem("/date_{{id}}_{{page}}.html", "/date_{{id}}_{{page}}.html"), new SelectedItem("/date_{{year}}_{{month}}_{{page}}/", "/date_{{year}}_{{page}}/")
+        , new SelectedItem("/date/{{id}}/{{page}}/", "/date/{{id}}/{{page}}/"), new SelectedItem("/date/{{year}}.{{month}}.{{page}}.html", "/date/{{year}}.{{month}}.{{page}}.html")
     };
 
     private RewriterModel RewriterModel { get; set; }
@@ -159,6 +174,13 @@
     private Task LabelChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.TagUrl = arg2;
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task DateChange(IEnumerable<SelectedItem> arg1, string arg2)
+    {
+        RewriterModel.DateUrl = arg2;
         StateHasChanged();
         return Task.CompletedTask;
     }
