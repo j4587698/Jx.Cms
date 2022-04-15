@@ -54,7 +54,7 @@
     </tr>
     <tr>
         <td>标签页URL配置</td>
-        <td><BootstrapInput @bind-Value="@RewriterModel.LabelUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
+        <td><BootstrapInput @bind-Value="@RewriterModel.TagUrl" IsDisabled="@_isDisabled"></BootstrapInput></td>
     </tr>
     <tr>
         <td></td>
@@ -158,7 +158,7 @@
     
     private Task LabelChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
-        RewriterModel.LabelUrl = arg2;
+        RewriterModel.TagUrl = arg2;
         StateHasChanged();
         return Task.CompletedTask;
     }

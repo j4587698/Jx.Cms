@@ -41,7 +41,7 @@ namespace Jx.Cms.DbContext.Entities.Article
 
         [Description("标签")]
         [Navigate(ManyToMany = typeof(ArticleTagEntity))]
-        public List<TagEntity> Labels { get; set; }
+        public List<TagEntity> Tags { get; set; }
         
         [Description("阅读量")]
         public int ReadingVolume { get; set; }

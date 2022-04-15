@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Razor.TagHelpers;
 
 namespace Jx.Cms.Themes.TagHelpers;
 
-[HtmlTargetElement("a", Attributes = "label")]
+[HtmlTargetElement("a", Attributes = "tag")]
 public class TagUrlTagHelper : TagHelper
 {
     public TagEntity Tag { get; set; }

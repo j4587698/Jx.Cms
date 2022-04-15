@@ -8,7 +8,7 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
     {
         public ArticleEntity GetArticleById(int id)
         {
-            return ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Metas).IncludeMany(x => x.Labels).First() ?? new ArticleEntity();
+            return ArticleEntity.Select.Where(x => x.Id == id).IncludeMany(x => x.Metas).IncludeMany(x => x.Tags).First() ?? new ArticleEntity();
         }
 
         public List<ArticleEntity> GetAllArticle()
@@ -28,15 +28,15 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
 
         public List<ArticleEntity> GetArticleByLabel(string label, int pageNumber, int pageSize, out long count)
         {
-            return ArticleEntity.Select.Where(x => x.Labels.AsSelect().Any(y => y.Name == label)).OrderByDescending(x => x.Id).Count(out count).Page(pageNumber, pageSize).ToList();
+            return ArticleEntity.Select.Where(x => x.Tags.AsSelect().Any(y => y.Name == label)).OrderByDescending(x => x.Id).Count(out count).Page(pageNumber, pageSize).ToList();
         }
 
         public bool SaveArticle(ArticleEntity articleEntity)
         {
             articleEntity.Save();
-            if (articleEntity.Labels != null)
+            if (articleEntity.Tags != null)
             {
-                articleEntity.SaveMany(nameof(ArticleEntity.Labels));
+                articleEntity.SaveMany(nameof(ArticleEntity.Tags));
             }
 
             if (articleEntity.Metas != null)

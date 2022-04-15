@@ -45,7 +45,7 @@ else if (type == "Post")
 {
 	var article = Model as PostVm;
 	<title>@($"{article!.Article.Title}{blogs.Connector}{article.Article.Catalogue.Name}{blogs.Connector}{settings.Title}")</title>
-	var tag = article.Article.Labels;
+	var tag = article.Article.Tags;
 	var keywords = tag.IsNullOrEmpty() ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
 	var description = article.Article.Description.IsNullOrEmpty() ? article.Article.Content.RemoveHtmlTag(135) : article.Article.Description.RemoveHtmlTag(135);
 	<meta name="keywords" content="@keywords"/>
@@ -58,10 +58,12 @@ else if (type == "Post")
 	<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
 	<meta name="description" content="@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")"/>
 	<meta name="author" content="@(page.Article.Content.RemoveHtmlTag(135))" />
-}else if(type == "Tag") {
-	<title>{if $tag->Metas->Blogs_bqtitle}{$tag.Metas.Blogs_bqtitle}{else}{$tag.Name}{/if}{if $page>'1'}{$zbp->Config('Blogs')->lianjiefu}第{$pagebar.PageNow}页{/if}{$zbp->Config('Blogs')->lianjiefu}{$name}</title>
-	<meta name="Keywords" content="{if $tag->Metas->Blogs_bqgjc}{$tag.Metas.Blogs_bqgjc}{else}{$tag.Name}{/if},{$name}">
-	<meta name="description" content="{$tag.Intro}">
+}else if(type == "Tag")
+{
+	var tag = Model as TagVm;
+	<title>@($"{tag.Tag.Name}{(tag.PageNum > 1 ? "第" + tag.PageNum + "页" : "")}{blogs.Connector}{settings.Title}")</title>
+	<meta name="Keywords" content="@tag.Tag.Name">
+	<meta name="description" content="@tag.Tag.Name 的文章">
 }
 else if(type == "Date")
 {
