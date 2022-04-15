@@ -32,9 +32,9 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-            <small class="text-muted">标签：@if(Model.Article.Labels != null)
+            <small class="text-muted">标签：@if(Model.Article.Tags != null)
                                          {
-                                             foreach (var tag in Model.Article.Labels)
+                                             foreach (var tag in Model.Article.Tags)
                                              {
                                                  <a tag="@tag"><span class="label">@tag.Name</span></a>
                                              }

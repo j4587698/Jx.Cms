@@ -3,7 +3,7 @@ using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Themes.Vm;
 
-public class LabelVm
+public class TagVm
 {
     /// <summary>
     /// 文章的信息

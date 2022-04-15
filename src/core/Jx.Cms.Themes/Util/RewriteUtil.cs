@@ -79,10 +79,10 @@ namespace Jx.Cms.Themes.Util
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
             {
-                return $"/Label?id={tag.Id}&pageNum={pageNo}";
+                return $"/Tag?id={tag.Id}&pageNum={pageNo}";
             }
 
-            var template = Template.Create(rewriterModel.LabelUrl);
+            var template = Template.Create(rewriterModel.TagUrl);
             return template.Set("id", tag.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", tag.Name).Render();
         }
 
@@ -238,7 +238,7 @@ namespace Jx.Cms.Themes.Util
 
         public static string AnalysisTag(string url, RewriterModel rewriterModel)
         {
-            List<string> labelList = RewriteTemplate.CreateUrl(rewriterModel.LabelUrl);
+            List<string> labelList = RewriteTemplate.CreateUrl(rewriterModel.TagUrl);
             if (labelList == null || labelList.Count == 0)
             {
                 return null;

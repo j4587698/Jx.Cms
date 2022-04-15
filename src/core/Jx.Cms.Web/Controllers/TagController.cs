@@ -31,7 +31,7 @@ public class TagController : BaseController
         {
             return new NotFoundResult();
         }
-        var labelVm = new LabelVm()
+        var labelVm = new TagVm()
         {
             Articles = articles,
             PageNum = pageNum,

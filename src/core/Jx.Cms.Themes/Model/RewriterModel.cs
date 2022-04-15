@@ -16,7 +16,7 @@ namespace Jx.Cms.Themes.Model
 
         public string CatalogueUrl { get; set; }
 
-        public string LabelUrl { get; set; }
+        public string TagUrl { get; set; }
         
         public string DateUrl { get; set; }
 

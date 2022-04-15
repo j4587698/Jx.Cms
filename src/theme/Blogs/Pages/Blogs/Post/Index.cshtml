@@ -88,9 +88,9 @@
 					<div class="tit">
 						<span class="name"><i class="fas fa-bookmark"></i>&nbsp;相关文章</span>
 						<span class="plxiaoshi"><span class="keyword">
-								<i class="fas fa-tags"></i>&nbsp;关键词：@if (Model.Article.Labels != null)
+								<i class="fas fa-tags"></i>&nbsp;关键词：@if (Model.Article.Tags != null)
 								                                     {
-									                                     @foreach (var tag in Model.Article.Labels)
+									                                     @foreach (var tag in Model.Article.Tags)
 									                                     {
 										                                     <a tag="@tag" target="_blank" rel="tag">@tag.Name</a>
 									                                     }
