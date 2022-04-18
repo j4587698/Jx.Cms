@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Furion.RemoteRequest.Extensions;
 using Jx.Cms.DbContext.Entities.Article;
+using Masuit.Tools;
 using Masuit.Tools.Html;
 using Microsoft.AspNetCore.Http;
 
@@ -43,6 +44,10 @@ namespace Blogs.Utils
         /// <returns>图片的URL列表</returns> 
         public static string[] GetHtmlImageUrlList(string sHtmlText)
         {
+            if (sHtmlText.IsNullOrEmpty())
+            {
+                return Array.Empty<string>();
+            }
             // 定义正则表达式用来匹配 img 标签 
             Regex regImg =
                 new Regex(
