@@ -14,6 +14,7 @@
 @using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Plugin
 @using Jx.Cms.Plugin.Service.Admin
+@using Jx.Cms.Plugin.Service.Both
 @using Jx.Cms.Web.ViewModel
 @using Masuit.Tools
 
@@ -23,10 +24,11 @@
 @inject ToastService ToastService
 @inject DialogService DialogService
 @inject PluginDialogService PluginDialogService
+@inject ITagService TagService
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "/Article/Write", 5, parentId:MenuIds.ArticleId)]
 
-<ValidateForm class="row" Model="Article" OnValidSubmit="@OnValidSubmit">
+<ValidateForm class="row" ValidateAllProperties="true" Model="Article" OnValidSubmit="OnValidSubmit">
     <div class="col-lg-9 col-md-8">
         <div class="row">
             <div class="form-group col-12">
@@ -59,16 +61,27 @@
                 <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
             </div>
         </div>
+        <label class="form-label">标签</label>
+        <div class="row g-3">
+            @if (Article.Tags != null)
+            {
+                foreach (var tag in Article.Tags)
+                {
+                    <div class="col-auto">
+                        <Tag Color="Color.Primary" ShowDismiss="true" OnDismiss="() => TagClose(tag)">@tag</Tag>
+                    </div>
+                }
+            }
+            <div class="col-auto">
+                <AutoComplete onkeydown="enter_down(event);" ShowLabel="false" Items="@AllTags" IsSelectAllTextOnFocus="true" OnEnterAsync="TagPress"/>
+            </div>
+        </div>
         <div class="row">
             <div class="form-group col-12">
                 <Textarea @bind-Value="@Article.Description" DisplayText="描述" ShowLabel="true"></Textarea>
             </div>
         </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@Article.Labels" DisplayText="文章标签(用,隔开)" ShowLabel="true"></BootstrapInput>
-            </div>
-        </div>
+        
         @foreach (var extModel in BottomExt)
         {
             @RenderExt(extModel)
@@ -108,6 +121,8 @@
     private Editor _editor;
 
     private Markdown _markdown;
+    
+    private IEnumerable<string> AllTags { get; set; }
 
     private ArticleVm Article { get; set; }
 
@@ -128,14 +143,15 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        AllTags = TagService.GetAllTags().Select(x => x.Name);
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
-        var articleEntity = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : ArticleService.GetArticleById(Id);
-        BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, articleEntity);
-        RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, articleEntity);
-        Article = articleEntity.Adapt<ArticleVm>();
+        var article = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : ArticleService.GetArticleById(Id);
+        BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, article);
+        RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, article);
+        Article = article.Adapt<ArticleVm>();
         if (Article.CatalogueId == 0 && Catalogs.Any())
         {
             Article.CatalogueId = Catalogs.First().Value.ConvertTo<int>();
@@ -170,6 +186,25 @@
             }
             NavigationManager.NavigateTo("Article/All");
         }        
+    }
+
+    private Task TagPress(string value)
+    {
+        if (value.IsNullOrEmpty() || Article.Tags.Any(x => x == value))
+        {
+            return Task.CompletedTask;
+        }
+        
+        Article.Tags.Add(value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+    
+    private Task TagClose(string tagName)
+    {
+        Article.Tags.Remove(tagName);
+        StateHasChanged();
+        return Task.CompletedTask;
     }
 
     private Task OnValueChanged(bool arg)
@@ -284,3 +319,4 @@
         </div>;
 
 }
+

@@ -7,35 +7,40 @@ namespace Jx.Cms.Plugin.Service.Both.Impl
 {
     public class TagService: ITagService, ITransient
     {
-        public TagEntity GetLabelById(int id)
+        public TagEntity GetTagById(int id)
         {
             return TagEntity.Find(id);
         }
 
-        public List<TagEntity> LabelNameToLabels(List<string> labelNames)
+        public List<TagEntity> GetAllTags()
         {
-            return TagEntity.Select.Where(x => labelNames.Contains(x.Name)).ToList();
+            return TagEntity.Select.ToList();
         }
 
-        public List<TagEntity> AllLabelNameToLabels(List<string> labelNames)
+        public List<TagEntity> TagNameToTags(List<string> tagNames)
         {
-            var labels = LabelNameToLabels(labelNames);
+            return TagEntity.Select.Where(x => tagNames.Contains(x.Name)).ToList();
+        }
+
+        public List<TagEntity> AllTagNameToTags(List<string> tagNames)
+        {
+            var labels = TagNameToTags(tagNames);
             var existLabels = labels.Select(x => x.Name);
-            labels.AddRange(labelNames.Except(existLabels).Select(x => new TagEntity() {Name = x}));
+            labels.AddRange(tagNames.Except(existLabels).Select(x => new TagEntity() {Name = x}));
             return labels;
         }
 
-        public List<ArticleEntity> GetArticleFormLabelId(int id, int pageNumber, int pageSize)
+        public List<ArticleEntity> GetArticleFromTagId(int id, int pageNumber, int pageSize)
         {
             return ArticleEntity.Select.Where(x => x.Tags.AsSelect().Any(y => y.Id == id)).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
-        public List<ArticleEntity> GetArticleFormLabelId(int id, int pageNumber, int pageSize, out long count)
+        public List<ArticleEntity> GetArticleFromTagId(int id, int pageNumber, int pageSize, out long count)
         {
             return ArticleEntity.Select.Where(x => x.Tags.AsSelect().Any(y => y.Id == id)).Count(out count).Page(pageNumber, pageSize).Include(x => x.Catalogue).ToList();
         }
 
-        public List<ArticleEntity> GetArticleFormLabelName(string name)
+        public List<ArticleEntity> GetArticleFromTagName(string name)
         {
             return TagEntity.Select.IncludeMany(x => x.Articles).Where(x => x.Name == name).First()?.Articles;
         }

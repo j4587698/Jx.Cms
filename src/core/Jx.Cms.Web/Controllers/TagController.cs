@@ -21,12 +21,12 @@ public class TagController : BaseController
             settings.CountPerPage = 10;
         }
         var labelService = App.GetService<ITagService>();
-        var label = labelService.GetLabelById(id);
+        var label = labelService.GetTagById(id);
         if (label == null)
         {
             return new NotFoundResult();
         }
-        var articles = labelService.GetArticleFormLabelId(id, pageNum, settings.CountPerPage, out var totalCount);
+        var articles = labelService.GetArticleFromTagId(id, pageNum, settings.CountPerPage, out var totalCount);
         if (articles == null)
         {
             return new NotFoundResult();

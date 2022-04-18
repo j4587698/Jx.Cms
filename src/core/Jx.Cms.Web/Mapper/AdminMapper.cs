@@ -18,8 +18,8 @@ namespace Jx.Cms.Web.Mapper
         public void Register(TypeAdapterConfig config)
         {
             config.ForType<ArticleEntity, ArticleVm>()
-                .Map(dest => dest.Labels, src => src.Tags == null ? "" : string.Join(",",src.Tags.Select(x => x.Name)));
-            config.ForType<ArticleVm, ArticleEntity>().Map(dest => dest.Tags, src => src.Labels == null ? null:_tagService.AllLabelNameToLabels(src.Labels.Split(new []{','}).ToList()));
+                .Map(dest => dest.Tags, src => src.Tags == null ? null : src.Tags.Select(x => x.Name));
+            config.ForType<ArticleVm, ArticleEntity>().Map(dest => dest.Tags, src => src.Tags == null ? null:_tagService.AllTagNameToTags(src.Tags));
         }
     }
 }
