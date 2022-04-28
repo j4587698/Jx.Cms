@@ -54,6 +54,11 @@ namespace Jx.Cms.Themes.Vm
         /// </summary>
         public bool CommentNeedVerify { get; set; }
 
+        /// <summary>
+        /// 文章编辑时默认使用Markdown编辑器
+        /// </summary>
+        public bool EditWithMarkdown { get; set; }
+
         public static SystemSettingsVm Init()
         {
             var settings = new SystemSettingsVm();
