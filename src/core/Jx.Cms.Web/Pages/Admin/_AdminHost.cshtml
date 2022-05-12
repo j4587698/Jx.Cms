@@ -1,0 +1,25 @@
+﻿@page "/"
+@using Jx.Cms.Web
+@addTagHelper *,Microsoft.AspNetCore.Mvc.TagHelpers
+
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+<title>后台管理 - JX.CMS</title>
+<link rel="icon" href="favicon.ico" type="image/ico">
+<meta name="author" content="JX">
+<link rel="stylesheet" href="/_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css">
+<link rel="stylesheet" href="/Admin/css/font-awesome.min.css">
+<link rel="stylesheet" href="/Jx.Cms.Web.styles.css">
+<base href="~/" />
+</head>
+<body>
+    <component type="typeof(AppStartup)" render-mode="Server"/>
+    <script type="text/javascript" src="/_framework/blazor.server.js"></script>
+    <script src="/_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+<script src="/Admin/js/summernote-zh-CN.min.js"></script>
+<script src="/Admin/js/cms.js"></script>
+</body>
+</html>

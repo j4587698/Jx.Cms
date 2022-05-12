@@ -33,7 +33,7 @@ namespace Jx.Cms.Themes
                 candidateStates.Add(candidates[i]);
             }
 
-            if (candidateStates.OrderByDescending(x => x.Score).First().Values!.Any(x => x.Key == "area"))
+            if (candidateStates.MaxBy(x => x.Score).Values!.Any(x => x.Value?.ToString()?.StartsWith("/Admin") == true))
             {
                 return Task.CompletedTask;
             }
