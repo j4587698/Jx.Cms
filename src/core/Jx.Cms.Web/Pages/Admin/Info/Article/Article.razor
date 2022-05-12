@@ -1,0 +1,14 @@
+﻿@page "/Admin/Article"
+@using Jx.Cms.Common.Attribute
+@inject NavigationManager NavigationManager
+
+@attribute [Menu(MenuIds.ArticleId, "文章列表", "Admin/Article", 100, iconClass:"fa fa-newspaper-o")]
+
+@code {
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        NavigationManager.NavigateTo("Admin/Article/All");
+    }
+
+}

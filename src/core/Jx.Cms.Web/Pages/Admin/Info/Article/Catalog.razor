@@ -1,0 +1,88 @@
+﻿@page "/Admin/Article/Catalog"
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.DbContext.Entities.Article
+@using Jx.Cms.Plugin.Service.Admin
+
+@inject ICatalogService CatalogService
+@inject DialogService DialogService
+
+@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "分类目录", "Admin/Article/Catalog", 4, ParentId = MenuIds.ArticleId)]
+
+<Table TItem="CatalogEntity"  IsStriped="true" IsBordered="true" IsMultipleSelect="true"
+       ShowToolbar="true" ShowExtendButtons="true" ShowSkeleton="true" IsPagination="true" PageItemsSource="_pageItemSource"
+       OnSaveAsync="@OnSaveAsync" OnQueryAsync="OnQueryAsync" OnDeleteAsync="@OnDeleteAsync">
+    <EditTemplate>
+        <div class="row">
+                <div class="from-group col-12">
+                    <BootstrapInput @bind-Value="@context.Name" DisplayText="分类名称"></BootstrapInput>
+                </div>
+            </div>
+            <div class="row">
+                <div class="from-group col-12">
+                    <BootstrapInput @bind-Value="@context.Alias" DisplayText="分类别名"></BootstrapInput>
+                </div>
+            </div>
+            <div class="row">
+                <div class="from-group col-12">
+                    <Select Items="@GetSelectItems(context.Id)" @bind-Value="@context.ParentId" DisplayText="父分类"></Select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="from-group col-12">
+                    <Textarea @bind-Value="@context.Description" DisplayText="描述"></Textarea>
+                </div>
+            </div>
+    </EditTemplate>
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Id" Text="分类Id"></TableColumn>
+        <TableColumn @bind-Field="@context.Name" Text="分类名称"></TableColumn>
+        <TableColumn @bind-Field="@context.Alias" Text="分类别名"></TableColumn>
+        <TableColumn @bind-Field="@context.Parent" Text="父分类">
+            <Template Context="value">
+                @if (value.Value == null)
+                {
+                    @("无")
+                }
+                else
+                {
+                    @value.Value.Name
+                }
+            </Template>
+        </TableColumn>
+    </TableColumns>
+</Table>
+
+@code {
+    private readonly IEnumerable<int> _pageItemSource = new[] {10, 20, 30, 40};
+
+    private IEnumerable<SelectedItem> GetSelectItems(int id)
+    {
+        var list = new List<SelectedItem>()
+        {
+            new SelectedItem("0", "无")
+        };
+        list.AddRange(CatalogService.GetAllCatalogs().Where(x => x.Id != id).Select(x => new SelectedItem(x.Id.ToString(), x.Name)));
+        return list;
+    }
+
+    private Task<QueryData<CatalogEntity>> OnQueryAsync(QueryPageOptions arg)
+    {
+        var catalogEntities = CatalogService.GetCatalogPage(arg.PageIndex - 1, arg.PageItems, out var count);
+        return Task.FromResult(new QueryData<CatalogEntity>()
+        {
+            Items = catalogEntities,
+            TotalCount = (int)count
+        });
+    }
+
+    private Task<bool> OnSaveAsync(CatalogEntity arg, ItemChangedType changedType)
+    {
+        return Task.FromResult(CatalogService.Save(arg));
+    }
+
+    private Task<bool> OnDeleteAsync(IEnumerable<CatalogEntity> arg)
+    {
+        return Task.FromResult(CatalogService.Delete(arg));
+    }
+
+}

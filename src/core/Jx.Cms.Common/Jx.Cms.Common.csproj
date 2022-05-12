@@ -10,7 +10,8 @@
 
     <ItemGroup>
       <PackageReference Include="AngleSharp" Version="0.16.1" />
-      <PackageReference Include="BootstrapBlazor" Version="6.5.16" />
+      <PackageReference Include="BootstrapBlazor" Version="6.6.6" />
+      <PackageReference Include="BootstrapBlazor.SummerNote" Version="6.0.0" />
       <PackageReference Include="Furion" Version="3.2.1" />
       <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.2.0" />
       <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="3.2.0" />

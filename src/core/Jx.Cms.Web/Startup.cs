@@ -63,9 +63,8 @@ namespace Jx.Cms.Web
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
                 
-                endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapBlazorHub("~/Admin/_blazor");
-                endpoints.MapFallbackToAreaPage("~/Admin/{*clientroutes:nonfile}","/_AdminHost", "Admin");
+                endpoints.MapBlazorHub("~/_blazor");
+                endpoints.MapFallbackToPage("~/Admin/{*clientroutes:nonfile}","/Admin/_AdminHost");
             });
         }
     }

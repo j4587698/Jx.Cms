@@ -1,0 +1,56 @@
+﻿@page "/Admin/Appearance/Theme"
+@using Jx.Cms.Themes.Util
+@using Jx.Cms.Common.Utils
+@using Masuit.Tools.Reflection
+@using Jx.Cms.Common.Attribute
+@using Jx.Cms.Themes.Service
+
+@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题列表", "Admin/Appearance/Theme", 10, ParentId = MenuIds.AppearanceId)]
+
+@inject IThemeConfigService ThemeConfigService
+@inject NavigationManager NavigationManager
+@inject ToastService ToastService
+@inject IDispatchService<string> DispatchService
+
+<ListView Items="_themeConfigs" TItem="ThemeConfig">
+    <HeaderTemplate>
+        <div>主题列表</div>
+    </HeaderTemplate>
+    <BodyTemplate>
+        <Card>
+            <CardBody>
+                <img src="/Admin/Image/LoadScreenShot?themeName=@context.ThemeName" alt="@context.ThemeDescription"/>
+                <div style="text-align: center">@context.ThemeDisplayName</div>
+            </CardBody>
+            <CardFooter>
+                <div class="row" style="margin: 10px auto;">
+                    <span style="align-self: center">@context.ThemeType.GetDescription()</span>
+                    <Button IsDisabled="@context.IsUsing" style="margin-left: auto" @onclick="() => { SelectTheme(context); }">@(context.IsUsing ? "已启用" : "启用")</Button>
+                </div>
+            </CardFooter>
+        </Card>
+    </BodyTemplate>
+</ListView>
+
+@code {
+    private List<ThemeConfig> _themeConfigs;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _themeConfigs = ThemeConfigService.GetAllThemes();
+    }
+
+    private void SelectTheme(ThemeConfig themeConfig)
+    {
+        ThemeConfigService.EnableTheme(themeConfig);
+        ToastService?.Success("设置成功", "主题设置成功");
+        _themeConfigs = ThemeConfigService.GetAllThemes();
+        DispatchService.Dispatch(new DispatchEntry<string>()
+        {
+            Name = "menu",
+            Entry = "theme"
+        });
+    }
+
+}

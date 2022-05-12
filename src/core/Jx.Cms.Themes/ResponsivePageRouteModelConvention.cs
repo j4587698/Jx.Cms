@@ -28,6 +28,12 @@ namespace Jx.Cms.Themes
             var themeName = path.Substring(1, themeNameIndex - 1);
             foreach (var selector in model.Selectors)
             {
+                if (selector.AttributeRouteModel!.Template.IsNullOrEmpty())
+                {
+                    selector.AttributeRouteModel.Template = "/Admin";
+                    selector.EndpointMetadata.Add(new ThemeNameAttribute("Admin"));
+                    continue;
+                }
                 if (selector.AttributeRouteModel.Template == themeName)
                 {
                     selector.AttributeRouteModel.Template = "/";
