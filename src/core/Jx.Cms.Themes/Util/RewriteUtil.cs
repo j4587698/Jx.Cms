@@ -97,7 +97,7 @@ namespace Jx.Cms.Themes.Util
             var rewriterModel = RewriterModel.GetSettings();
             if (rewriterModel.RewriteOption.IsNullOrEmpty() || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
             {
-                return $"/Catalogue?id={catalogEntity.Id}&pageNum={pageNo}";
+                return $"/Catalog?id={catalogEntity.Id}&pageNum={pageNo}";
             }
             var template = Template.Create(rewriterModel.CatalogueUrl);
             return template.Set("id", catalogEntity.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", catalogEntity.Alias.IsNullOrEmpty() ? catalogEntity.Name : catalogEntity.Alias).Render();
