@@ -60,7 +60,7 @@ public class RewriteMiddleware
         url = RewriteUtil.AnalysisCatalog(context.Request.Path, settings);
         if (url != null)
         {
-            context.Request.Path = "/Catalogue";
+            context.Request.Path = "/Catalog";
             context.Request.QueryString = new QueryString(url);
             await _next.Invoke(context);
             return;
