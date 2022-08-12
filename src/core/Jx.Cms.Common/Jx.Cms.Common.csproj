@@ -10,11 +10,11 @@
 
     <ItemGroup>
       <PackageReference Include="AngleSharp" Version="0.17.1" />
-      <PackageReference Include="BootstrapBlazor" Version="6.8.16" />
+      <PackageReference Include="BootstrapBlazor" Version="6.9.0" />
       <PackageReference Include="BootstrapBlazor.SummerNote" Version="6.0.2" />
-      <PackageReference Include="Furion" Version="3.8.9" />
-      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="3.8.9" />
-      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="3.8.9" />
+      <PackageReference Include="Furion" Version="4.1.14" />
+      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="4.1.14" />
+      <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.1.14" />
       <PackageReference Include="Humanizer.Core.zh-CN" Version="2.14.1" />
       <PackageReference Include="Masuit.Tools.Core" Version="2.4.8.6" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
@@ -28,7 +28,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Service\Both\Impl" />
       <Folder Include="wwwroot" />
     </ItemGroup>
 
