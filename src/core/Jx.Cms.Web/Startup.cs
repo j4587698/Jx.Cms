@@ -59,7 +59,7 @@ namespace Jx.Cms.Web
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
-                //endpoints.MapAreaControllerRoute("user", "User", "/User/{controller=Home}/{action=Index}/{id?}");
+                endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapDefaultControllerRoute();
                 endpoints.MapRazorPages();
                 

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jx.Cms.Web.Areas.Admin.Controllers
+namespace Jx.Cms.Web.Admin.Controllers
 {
     [Route("api/Admin/User")]
     public class UserController : IDynamicApiController

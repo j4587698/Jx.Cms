@@ -4,7 +4,7 @@ using Jx.Cms.Themes.Service;
 using Microsoft.AspNetCore.Mvc;
 using SixLabors.ImageSharp;
 
-namespace Jx.Cms.Web.Areas.Admin.Controllers
+namespace Jx.Cms.Web.Admin.Controllers
 {
     [Area("Admin")]
     public class ImageController : Controller
