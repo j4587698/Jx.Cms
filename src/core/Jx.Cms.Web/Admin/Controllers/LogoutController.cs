@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jx.Cms.Web.Areas.Admin.Controllers
+namespace Jx.Cms.Web.Admin.Controllers
 {
     [Authorize]
     [Area("Admin")]
