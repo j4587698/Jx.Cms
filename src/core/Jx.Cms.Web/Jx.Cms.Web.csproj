@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Admin\Pages" />
       <Folder Include="db" />
       <Folder Include="logs" />
       <Folder Include="Pages\Default\Shared" />
@@ -24,6 +23,12 @@
     <ItemGroup>
       <PackageReference Include="BootstrapBlazor.Markdown" Version="6.1.7" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\font-awesome.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\forms.min.css" />
+      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\login.min.css" />
     </ItemGroup>
 
 </Project>
