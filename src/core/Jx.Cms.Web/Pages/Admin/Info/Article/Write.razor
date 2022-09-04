@@ -15,6 +15,7 @@
 @using Jx.Cms.Plugin.Plugin
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Plugin.Service.Both
+@using Jx.Cms.Themes.Vm
 @using Jx.Cms.Web.ViewModel
 @using Masuit.Tools
 
@@ -121,7 +122,7 @@
     private Editor _editor;
 
     private Markdown _markdown;
-    
+
     private IEnumerable<string> AllTags { get; set; }
 
     private ArticleVm Article { get; set; }
@@ -143,12 +144,13 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
+        var settingsVm = SystemSettingsVm.Init();
         AllTags = TagService.GetAllTags().Select(x => x.Name);
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
-        var article = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : ArticleService.GetArticleById(Id);
+        var article = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published, IsMarkdown = settingsVm.EditWithMarkdown} : ArticleService.GetArticleById(Id);
         BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, article);
         RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, article);
         Article = article.Adapt<ArticleVm>();

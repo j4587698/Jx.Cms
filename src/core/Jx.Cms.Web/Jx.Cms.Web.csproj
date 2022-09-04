@@ -14,7 +14,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Admin\Pages" />
       <Folder Include="db" />
       <Folder Include="logs" />
       <Folder Include="Pages\Default\Shared" />

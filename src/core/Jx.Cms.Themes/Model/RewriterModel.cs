@@ -34,6 +34,7 @@ namespace Jx.Cms.Themes.Model
                 var index = prop[0].GetIndexParameters();
                 foreach (var settings in settingsEnumerable)
                 {
+                    if (_rewriterModel.GetType().GetProperty(settings.Key) == null) continue;
                     _rewriterModel.SetProperty(settings.Key, settings.Value??"");
                     //prop[0].SetValue(_rewriterModel, settings.Value);
                 }
