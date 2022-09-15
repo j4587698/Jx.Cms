@@ -4,8 +4,8 @@ using System.Linq.Expressions;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Rewrite;
 using Jx.Cms.Themes.Model;
-using Masuit.Tools;
-using Masuit.Tools.Strings;
+using Jx.Toolbox.Extensions;
+using Jx.Toolbox.Utils;
 
 namespace Jx.Cms.Themes.Util
 {
@@ -25,11 +25,11 @@ namespace Jx.Cms.Themes.Util
             }
 
             var template = Template.Create(rewriterModel.ArticleUrl);
-            return template.Set("id", articleEntity.Id.ToString()).Set("year", articleEntity.PublishTime.Year.ToString())
-                .Set("month", articleEntity.PublishTime.Month.ToString())
-                .Set("day", articleEntity.PublishTime.Day.ToString())
-                .Set("category", articleEntity.Catalogue == null ? "" : articleEntity.Catalogue.Alias.IsNullOrEmpty() ? articleEntity.Catalogue.Name : articleEntity.Catalogue.Alias)
-                .Set("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
+            return template.SetValue("id", articleEntity.Id.ToString()).SetValue("year", articleEntity.PublishTime.Year.ToString())
+                .SetValue("month", articleEntity.PublishTime.Month.ToString())
+                .SetValue("day", articleEntity.PublishTime.Day.ToString())
+                .SetValue("category", articleEntity.Catalogue == null ? "" : articleEntity.Catalogue.Alias.IsNullOrEmpty() ? articleEntity.Catalogue.Name : articleEntity.Catalogue.Alias)
+                .SetValue("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
         }
 
         /// <summary>
@@ -45,11 +45,11 @@ namespace Jx.Cms.Themes.Util
                 return $"/Page?id={articleEntity.Id}";
             }
             var template = Template.Create(rewriterModel.PageUrl);
-            return template.Set("id", articleEntity.Id.ToString()).Set("year", articleEntity.PublishTime.Year.ToString())
-                .Set("month", articleEntity.PublishTime.Month.ToString())
-                .Set("day", articleEntity.PublishTime.Day.ToString())
-                .Set("category", articleEntity.Catalogue.Alias)
-                .Set("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
+            return template.SetValue("id", articleEntity.Id.ToString()).SetValue("year", articleEntity.PublishTime.Year.ToString())
+                .SetValue("month", articleEntity.PublishTime.Month.ToString())
+                .SetValue("day", articleEntity.PublishTime.Day.ToString())
+                .SetValue("category", articleEntity.Catalogue.Alias)
+                .SetValue("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
         }
 
         /// <summary>
@@ -65,7 +65,7 @@ namespace Jx.Cms.Themes.Util
                 return $"/?pageNum={pageNo}";
             }
             var template = Template.Create(rewriterModel.IndexUrl);
-            return template.Set("page", pageNo.ToString()).Render();
+            return template.SetValue("page", pageNo.ToString()).Render();
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Jx.Cms.Themes.Util
             }
 
             var template = Template.Create(rewriterModel.TagUrl);
-            return template.Set("id", tag.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", tag.Name).Render();
+            return template.SetValue("id", tag.Id.ToString()).SetValue("page", pageNo.ToString()).SetValue("alias", tag.Name).Render();
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace Jx.Cms.Themes.Util
                 return $"/Catalog?id={catalogEntity.Id}&pageNum={pageNo}";
             }
             var template = Template.Create(rewriterModel.CatalogueUrl);
-            return template.Set("id", catalogEntity.Id.ToString()).Set("page", pageNo.ToString()).Set("alias", catalogEntity.Alias.IsNullOrEmpty() ? catalogEntity.Name : catalogEntity.Alias).Render();
+            return template.SetValue("id", catalogEntity.Id.ToString()).SetValue("page", pageNo.ToString()).SetValue("alias", catalogEntity.Alias.IsNullOrEmpty() ? catalogEntity.Name : catalogEntity.Alias).Render();
         }
 
         public static string GetDateUrl(int year, int month, long pageNo)
@@ -111,8 +111,8 @@ namespace Jx.Cms.Themes.Util
                 return $"/Date?year={year}&month={month}&pageNum={pageNo}";
             }
             var template = Template.Create(rewriterModel.DateUrl);
-            return template.Set("year", year.ToString()).Set("month", month.ToString())
-                .Set("page", pageNo.ToString()).Render();
+            return template.SetValue("year", year.ToString()).SetValue("month", month.ToString())
+                .SetValue("page", pageNo.ToString()).Render();
         }
 
         public static string AnalysisArticle(string url, RewriterModel rewriterModel)
@@ -138,13 +138,13 @@ namespace Jx.Cms.Themes.Util
                     switch (info.Key)
                     {
                         case "year":
-                            where = where.And(x => x.PublishTime.Year == info.Value.ConvertTo<int>());
+                            where = where.And(x => x.PublishTime.Year == int.Parse(info.Value));
                             break;
                         case "month":
-                            where = where.And(x => x.PublishTime.Month == info.Value.ConvertTo<int>());
+                            where = where.And(x => x.PublishTime.Month == int.Parse(info.Value));
                             break;
                         case "day":
-                            where = where.And(x => x.PublishTime.Day == info.Value.ConvertTo<int>());
+                            where = where.And(x => x.PublishTime.Day == int.Parse(info.Value));
                             break;
                         case "alias":
                             where = where.And(x =>

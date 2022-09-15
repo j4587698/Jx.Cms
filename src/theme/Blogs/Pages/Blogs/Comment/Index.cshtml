@@ -2,6 +2,7 @@
 @using Humanizer
 @using Jx.Cms.DbContext.Entities.Admin
 @using Jx.Cms.DbContext.Entities.Article
+@using Jx.Toolbox.Utils
 @model List<Jx.Cms.DbContext.Entities.Article.CommentEntity>
 
 @{
@@ -12,7 +13,7 @@
 			        <div id="comment-cmt@(comment.Id)"></div></div>
 		        <li class="comment even thread-even}" id="comment-@(comment.Id)">
 			        <div id="div-comment-@(comment.Id)" class="comment-body">
-			        <img alt='@comment.AuthorName' src="@Util.GetWebAvatarUrl(@comment.AuthorEmail)" class='avatar avatar-50 photo' height='50' width='50'/>
+			        <img alt='@comment.AuthorName' src="@Avatar.GetAvatarUrl(comment.AuthorEmail)" class='avatar avatar-50 photo' height='50' width='50'/>
 			        <div class="comment-author">
 				        <strong><span class="duzhe"><a href="@comment.AuthorUrl" rel="external nofollow" target="_blank" class="url">@comment.AuthorName</a></span></strong>
 				        @if (comment.ParentId != 0)
@@ -73,7 +74,7 @@
     			@if (ViewData["user"] != null)
 			    {
 				    var user = ViewData["user"] as AdminUserEntity;
-				    <div class="user_avatar"><img alt="@user.NickName" src="@Util.GetWebAvatarUrl(user.Email)" class="avatar avatar-50 photo" height="50" width="50">当前用户：
+				    <div class="user_avatar"><img alt="@user.NickName" src="@Avatar.GetAvatarUrl(user.Email)" class="avatar avatar-50 photo" height="50" width="50">当前用户：
 					    <a href="@user.HomePage">@user.NickName</a>
 					    <a href="/Admin/Logout" title="退出">&nbsp;退出</a>
 					    <input type="hidden" name="@nameof(CommentEntity.AuthorName)" id="inpName" value="@user.NickName" />

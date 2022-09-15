@@ -2,8 +2,7 @@
 using Blogs.Model;
 using Furion;
 using Jx.Cms.Plugin.Service.Both;
-using Masuit.Tools.Reflection;
-using Masuit.Tools.Systems;
+using Jx.Toolbox.Extensions;
 
 namespace Blogs.Utils
 {
@@ -18,11 +17,11 @@ namespace Blogs.Utils
             {
                 if (settings.Key == "Layout")
                 {
-                    model.SetProperty(settings.Key, (BlogLayoutEnum)typeof(BlogLayoutEnum).GetValue(settings.Value));
+                    model.SetProperty(settings.Key, settings.Value.ToEnum<BlogLayoutEnum>());
                 }
                 else if (settings.Key == "Sidebar")
                 {
-                    model.SetProperty(settings.Key, (SidebarEnum)typeof(SidebarEnum).GetValue(settings.Value));
+                    model.SetProperty(settings.Key, settings.Value.ToEnum<SidebarEnum>());
                 }
                 else
                 {
@@ -36,7 +35,7 @@ namespace Blogs.Utils
         public static void SaveSettings(SettingsModel settingsModel)
         {
             var settingsService = App.GetService<ISettingsService>();
-            var properties = settingsModel.GetProperties();
+            var properties = settingsModel.GetType().GetProperties();
             foreach (var property in properties)
             {
                 settingsService.SetValue("Blogs", property.Name, property.GetValue(settingsModel)?.ToString());

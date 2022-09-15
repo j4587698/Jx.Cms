@@ -5,7 +5,6 @@ using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
-using Masuit.Tools.Core.AspNetCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -25,8 +24,6 @@ namespace Jx.Cms.Themes
             {
                 Directory.CreateDirectory(Constants.ThemePath);
             }
-            
-            services.AddStaticHttpContext();
             
             services.Configure<RazorViewEngineOptions>(options =>
             {
@@ -51,7 +48,6 @@ namespace Jx.Cms.Themes
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseStaticHttpContext();
             app.UseMiddleware<RedirectMiddleware>();
             app.UseMiddleware<RewriteMiddleware>();
         }

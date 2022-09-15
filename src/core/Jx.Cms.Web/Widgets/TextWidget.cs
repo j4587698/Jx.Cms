@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Furion.JsonSerialization;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Web.Components.WidgetCompnents;
-using Masuit.Tools;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Web.Widgets;
 

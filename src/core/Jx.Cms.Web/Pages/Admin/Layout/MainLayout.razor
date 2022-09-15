@@ -5,6 +5,8 @@
 @using Jx.Cms.DbContext.Entities.Admin
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Plugin.Utils
+@using Jx.Toolbox.Utils
+@using Avatar = Jx.Toolbox.Utils.Avatar
 @inherits LayoutComponentBase
 
 @inject IAdminMenuService _adminMenuService
@@ -19,7 +21,7 @@
         <span class="ms-3 flex-sm-fill d-none d-sm-block">JX.CMS</span>
         <div class="flex-fill d-sm-none">
         </div>
-        <Logout ImageUrl="@Util.GetWebAvatarUrl(_adminUser.Email)" DisplayName="@_adminUser.NickName" UserName="@_adminUser.UserName">
+        <Logout ImageUrl="@Avatar.GetAvatarUrl(_adminUser.Email)" DisplayName="@_adminUser.NickName" UserName="@_adminUser.UserName">
             <LinkTemplate>
                 <LogoutLink Url="/Admin/Logout"></LogoutLink>
             </LinkTemplate>

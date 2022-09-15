@@ -1,5 +1,4 @@
 ﻿@using Jx.Cms.Common.Utils
-@using Masuit.Tools.Html
 @using Humanizer
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Themes.Vm
@@ -53,7 +52,7 @@
             </h2>
             <h3 class="post-subtitle">
               @{
-                var content = articleEntity.Content.RemoveHtmlTag();
+                var content = Toolbox.HtmlTools.Html.RemoveHtmlTag(articleEntity.Content);
               }
               @(content.Length > 120 ? content.Substring(120) : content)
             </h3>

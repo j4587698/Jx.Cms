@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Jx.Cms.Common.Utils;
-using Masuit.Tools;
 using Microsoft.AspNetCore.Http;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Install.Middlewares
 {

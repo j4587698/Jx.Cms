@@ -1,6 +1,6 @@
 ﻿using Furion;
 using Jx.Cms.Plugin.Service.Both;
-using Masuit.Tools.Reflection;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Themes.Model
 {
@@ -30,7 +30,7 @@ namespace Jx.Cms.Themes.Model
                 var settingsService = App.GetService<ISettingsService>();
                 var settingsEnumerable = settingsService.GetAllValues("Rewriter");
                 _rewriterModel = new RewriterModel();
-                var prop = _rewriterModel.GetProperties();
+                var prop = _rewriterModel.GetType().GetProperties();
                 var index = prop[0].GetIndexParameters();
                 foreach (var settings in settingsEnumerable)
                 {
@@ -47,7 +47,7 @@ namespace Jx.Cms.Themes.Model
         {
             _rewriterModel = rewriterModel;
             var settingsService = App.GetService<ISettingsService>();
-            var properties = rewriterModel.GetProperties();
+            var properties = rewriterModel.GetType().GetProperties();
             foreach (var property in properties)
             {
                 settingsService.SetValue("Rewriter", property.Name, property.GetValue(rewriterModel)?.ToString());

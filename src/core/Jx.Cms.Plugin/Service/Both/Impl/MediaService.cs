@@ -9,8 +9,7 @@ using Furion;
 using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
-using Masuit.Tools;
-using Masuit.Tools.AspNetCore.Mime;
+using Jx.Toolbox.Utils;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl;
 
@@ -24,7 +23,7 @@ public class MediaService : IMediaService, ITransient
         {
             Directory.CreateDirectory(dir);
         }
-        var fileName = Stopwatch.GetTimestamp().ToBinary(8) + Path.GetExtension(file.OriginFileName);
+        var fileName = NumberFormat.ToDecimalString(Stopwatch.GetTimestamp(), 36) + Path.GetExtension(file.OriginFileName);
         if (!await file.SaveToFile(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024))
         {
             return false;
@@ -32,8 +31,7 @@ public class MediaService : IMediaService, ITransient
 
         MediaEntity mediaEntity = new MediaEntity();
         mediaEntity.Url = Path.Combine("/", urlBase, fileName).Replace('\\', '/');
-        MimeMapper mapper = new MimeMapper();
-        var mime = mapper.GetMimeFromExtension(Path.GetExtension(fileName)).Split('/')[0];
+        var mime = Mime.GetTypeFormExtension(Path.GetExtension(fileName));
         mediaEntity.Name = file.OriginFileName;
         mediaEntity.MediaType = mime switch
         {

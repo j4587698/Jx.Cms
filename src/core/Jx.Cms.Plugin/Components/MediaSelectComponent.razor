@@ -6,7 +6,6 @@
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Plugin.Service.Both
 @using Mapster
-@using Masuit.Tools
 
 @implements IResultDialog
 
@@ -125,7 +124,7 @@
     {
         if (!FileType.Any(x => x.Contains(Path.GetExtension(file.OriginFileName ?? ""))))
         {
-            await ToastService.Error($"不支持的文件类型，目前只支持{FileType.Join()}类型的文件");
+            await ToastService.Error($"不支持的文件类型，目前只支持{string.Join(",",FileType)}类型的文件");
             return;
         }
         if (!await MediaService.AddMediaAsync(file))

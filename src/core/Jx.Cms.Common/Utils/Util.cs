@@ -5,8 +5,6 @@ using System.Linq;
 using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
-using Masuit.Tools.Reflection;
-using Masuit.Tools.Security;
 using Microsoft.Extensions.FileProviders;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
@@ -71,16 +69,6 @@ namespace Jx.Cms.Common.Utils
         }
 
         /// <summary>
-        /// 获取Avatar头像地址
-        /// </summary>
-        /// <param name="email"></param>
-        /// <returns></returns>
-        public static string GetWebAvatarUrl(string email)
-        {
-            return $"https://cravatar.cn/avatar/{email.ToLower().MDString()}";
-        }
-
-        /// <summary>
         /// 获取上传文件
         /// </summary>
         /// <param name="ext"></param>
@@ -142,7 +130,7 @@ namespace Jx.Cms.Common.Utils
         public static T DictionaryToInstance<T>(this Dictionary<string, string> values) where T: class, new()
         {
             T t = new T();
-            var properties = t.GetProperties();
+            var properties = t.GetType().GetProperties();
             foreach (var property in properties)
             {
                 if (values.ContainsKey(property.Name))

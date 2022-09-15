@@ -17,7 +17,8 @@
       <PackageReference Include="Furion.Extras.Logging.Serilog" Version="4.1.14" />
       <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.1.14" />
       <PackageReference Include="Humanizer.Core.zh-CN" Version="2.14.1" />
-      <PackageReference Include="Masuit.Tools.Core" Version="2.4.8.6" />
+      <PackageReference Include="Jx.Toolbox" Version="0.3.0" />
+      <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
       <PackageReference Include="SixLabors.ImageSharp.Web" Version="1.0.4" />

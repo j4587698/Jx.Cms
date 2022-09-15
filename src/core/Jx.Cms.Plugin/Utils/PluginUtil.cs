@@ -10,7 +10,7 @@ using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
-using Masuit.Tools;
+using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Components;
 using Newtonsoft.Json;
 using Console = System.Console;
