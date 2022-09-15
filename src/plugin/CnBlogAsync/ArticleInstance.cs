@@ -7,10 +7,9 @@ using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Plugin.Service.Front;
-using Masuit.Tools;
-using Masuit.Tools.AspNetCore.Mime;
-using Masuit.Tools.Html;
-using StackExchange.Profiling.Internal;
+using Jx.Toolbox.Extensions;
+using Jx.Toolbox.HtmlTools;
+using Jx.Toolbox.Utils;
 
 namespace CnBlogAsync;
 
@@ -64,8 +63,7 @@ public class ArticleInstance : IArticlePlugin
         client.GetUsersBlogs();
         var content = articleEntity.Content;
 
-        var imgs = content.MatchImgSrcs();
-        var mimeMapper = new MimeMapper();
+        var imgs = Html.GetAllImgSrc(content);
         foreach (var img in imgs)
         {
             if (!img.StartsWith("\\") && !img.StartsWith("/"))
@@ -75,7 +73,7 @@ public class ArticleInstance : IArticlePlugin
 
             var bytes = File.ReadAllBytes(Path.Combine(App.WebHostEnvironment.WebRootPath, img.TrimStart('\\', '/')));
             var media = client.NewMediaObject(Path.GetFileName(img),
-                mimeMapper.GetMimeFromExtension(Path.GetExtension(img)), bytes);
+                Mime.GetMimeFromExtension(Path.GetExtension(img)), bytes);
             content = content.Replace(img, media.URL);
         }
 

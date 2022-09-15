@@ -10,7 +10,6 @@ using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
-using Masuit.Tools.Core.Net;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
@@ -63,7 +62,7 @@ namespace Jx.Cms.Themes.Util
                 case ThemeChangeMode.Adaptive:
                     return PcThemeName;
                 case ThemeChangeMode.Auto:
-                    var userAgent = HttpContext2.Current?.Request.Headers[HeaderNames.UserAgent];
+                    var userAgent = App.HttpContext?.Request.Headers[HeaderNames.UserAgent];
                     if (!userAgent.HasValue)
                     {
                         return PcThemeName;
@@ -94,15 +93,15 @@ namespace Jx.Cms.Themes.Util
                 return null;
             }
             
-            var userAgent = HttpContext2.Current?.Request.Headers[HeaderNames.UserAgent];
+            var userAgent = App.HttpContext?.Request.Headers[HeaderNames.UserAgent];
             if (!userAgent.HasValue)
             {
                 return null;
             }
             
-            if (HttpContext2.Current?.Request.Host.Value != MobileDomain)
+            if (App.HttpContext?.Request.Host.Value != MobileDomain)
             {
-                var url = $"{HttpContext2.Current.Request.Scheme}://{MobileDomain}{HttpContext2.Current.Request.QueryString}";
+                var url = $"{App.HttpContext!.Request.Scheme}://{MobileDomain}{App.HttpContext.Request.QueryString}";
                 return url;
             }
 

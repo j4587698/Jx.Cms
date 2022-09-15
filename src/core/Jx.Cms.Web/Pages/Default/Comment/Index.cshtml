@@ -3,13 +3,14 @@
 @using Jx.Cms.Common.Utils
 @using Jx.Cms.DbContext.Entities.Admin
 @using Jx.Cms.DbContext.Entities.Article
+@using Jx.Toolbox.Utils
 
 @{
     void CreateComments(IEnumerable<CommentEntity> commentEntities)
     {
         foreach (var commentEntity in commentEntities)
         {
-            <div class="media mt-4"> <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="@Util.GetWebAvatarUrl(commentEntity.AuthorEmail)"/></a>
+            <div class="media mt-4"> <a class="pr-3" href="#"><img class="rounded-circle" alt="Bootstrap Media Another Preview" src="@Avatar.GetAvatarUrl(commentEntity.AuthorEmail)"/></a>
                 <div class="media-body">
                     <div class="row">
                         <div class="col-8 d-flex">

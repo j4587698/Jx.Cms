@@ -1,6 +1,6 @@
 using CnBlogAsync.Models;
 using CnBlogAsync.XmlRPC;
-using Masuit.Tools;
+using Jx.Toolbox.Extensions;
 
 namespace CnBlogAsync
 {

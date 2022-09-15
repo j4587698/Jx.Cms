@@ -5,8 +5,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Furion.RemoteRequest.Extensions;
 using Jx.Cms.DbContext.Entities.Article;
-using Masuit.Tools;
-using Masuit.Tools.Html;
+using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Blogs.Utils

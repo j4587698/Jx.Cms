@@ -17,7 +17,7 @@
 @using Jx.Cms.Plugin.Service.Both
 @using Jx.Cms.Themes.Vm
 @using Jx.Cms.Web.ViewModel
-@using Masuit.Tools
+@using Jx.Toolbox.Extensions
 
 @inject NavigationManager NavigationManager
 @inject IArticleService ArticleService
@@ -156,7 +156,7 @@
         Article = article.Adapt<ArticleVm>();
         if (Article.CatalogueId == 0 && Catalogs.Any())
         {
-            Article.CatalogueId = Catalogs.First().Value.ConvertTo<int>();
+            Article.CatalogueId = int.Parse(Catalogs.First().Value);
         }
         
     }

@@ -1,7 +1,9 @@
 ﻿@using Blogs.Model
+@using Furion.LinqBuilder
+@using Jx.Cms.Themes.TagHelpers
 @using Jx.Cms.Themes.Vm
-@using Masuit.Tools
-@using Masuit.Tools.Html
+@using Jx.Toolbox.Extensions
+@using Microsoft.AspNetCore.Mvc.TagHelpers
 
 @{
 	var type = ViewBag.type as string;
@@ -47,7 +49,7 @@ else if (type == "Post")
 	<title>@($"{article!.Article.Title}{blogs.Connector}{article.Article.Catalogue.Name}{blogs.Connector}{settings.Title}")</title>
 	var tag = article.Article.Tags;
 	var keywords = tag.IsNullOrEmpty() ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
-	var description = article.Article.Description.IsNullOrEmpty() ? article.Article.Content.RemoveHtmlTag(135) : article.Article.Description.RemoveHtmlTag(135);
+	var description = article.Article.Description.IsNullOrEmpty() ? Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Content, 135) : Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Description, 135);
 	<meta name="keywords" content="@keywords"/>
 	<meta name="description" content="@description"/>
 	<meta name="author" content="@article.Article.Author">
@@ -57,7 +59,7 @@ else if (type == "Post")
 	<title>@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")</title>
 	<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
 	<meta name="description" content="@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")"/>
-	<meta name="author" content="@(page.Article.Content.RemoveHtmlTag(135))" />
+	<meta name="author" content="@(Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(page.Article.Content, 135))" />
 }else if(type == "Tag")
 {
 	var tag = Model as TagVm;

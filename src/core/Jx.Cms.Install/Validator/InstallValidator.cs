@@ -4,7 +4,7 @@ using BootstrapBlazor.Components;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext;
 using Jx.Cms.Install.ViewModel;
-using Masuit.Tools;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Install.Validator
 {

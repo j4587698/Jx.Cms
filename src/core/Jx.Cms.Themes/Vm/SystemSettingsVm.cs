@@ -2,8 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Both;
-using Masuit.Tools;
-using Masuit.Tools.Reflection;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Themes.Vm
 {
@@ -64,7 +63,7 @@ namespace Jx.Cms.Themes.Vm
             var settings = new SystemSettingsVm();
             var settingsService = Furion.App.GetService<ISettingsService>();
             var values = settingsService.GetAllValues();
-            var properties = settings.GetProperties();
+            var properties = settings.GetType().GetProperties();
             foreach (var property in properties)
             {
                 if (values.ContainsKey(property.Name))
@@ -85,7 +84,7 @@ namespace Jx.Cms.Themes.Vm
         public void Save()
         {
             var settingsService = Furion.App.GetService<ISettingsService>();
-            var properties = this.GetProperties();
+            var properties = GetType().GetProperties();
             foreach (var property in properties)
             {
                 settingsService.SetValue(property.Name, property.GetValue(this)?.ToString());

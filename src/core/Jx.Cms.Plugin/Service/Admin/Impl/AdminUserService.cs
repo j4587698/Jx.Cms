@@ -1,7 +1,7 @@
 ﻿using Furion.DependencyInjection;
 using Jx.Cms.DbContext.Entities.Admin;
-using Masuit.Tools;
-using Masuit.Tools.Security;
+using Jx.Toolbox.Cryptography;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
@@ -17,15 +17,16 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
                 return false;
             }
 
-            adminUserEntity.Password = adminUserEntity.Password.MDString2(_salt);
+            adminUserEntity.Password = MD5.MD5String2WithSalt(adminUserEntity.Password, _salt);
             adminUserEntity.Insert();
             return true;
         }
 
         public AdminUserEntity Login(string username, string password)
         {
+            var passwordMd5 = MD5.MD5String2WithSalt(password, _salt);
             var entity = AdminUserEntity.Where(x =>
-                (x.UserName == username || x.Email == username) && x.Password == password.MDString2(_salt));
+                (x.UserName == username || x.Email == username) && x.Password == passwordMd5);
             if (entity.Count() == 1)
             {
                 return entity.First();

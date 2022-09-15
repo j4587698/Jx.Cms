@@ -3,7 +3,6 @@
 @using Blogs.Utils
 @using Humanizer
 @using Jx.Cms.Themes.Util
-@using Masuit.Tools.Html
 @model List<Jx.Cms.DbContext.Entities.Article.ArticleEntity>
 
 @{
@@ -45,7 +44,7 @@
 		<div class="entry-content">
 			<div class="archive-content">
 				@{
-					var content = article.Content.RemoveHtmlTag();
+					var content = Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Content);
 				}
 				@if ((blogs.Sidebar == SidebarEnum.None && blogs.Layout == BlogLayoutEnum.Bottom) ||
 				     (blogs.Sidebar == SidebarEnum.None && blogs.Layout == BlogLayoutEnum.Top))
