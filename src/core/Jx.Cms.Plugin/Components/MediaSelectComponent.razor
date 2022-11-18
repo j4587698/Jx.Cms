@@ -24,10 +24,10 @@
             <ListView TItem="MediaInfoVo" Items="@MediaInfoVos" OnListViewItemClick="OnListViewItemClick">
                 <BodyTemplate>
                     <Card Color="context.IsSelected ? Color.Dark : Color.None" IsCenter="true">
-                        <CardHeader>
+                        <HeaderTemplate>
                             <div style="width: 150px;white-space: nowrap;overflow: hidden;-o-text-overflow: ellipsis;text-overflow: ellipsis;">@context.Name</div>
-                        </CardHeader>
-                        <CardBody>
+                        </HeaderTemplate>
+                        <BodyTemplate>
                             @if (context.MediaType == MediaTypeEnum.Image)
                             {
                                 <img src="@context.Url?width=150&height=150" alt="@context.Name"/>
@@ -44,7 +44,7 @@
                             {
                                 <i style="width: 150px;height: 150px;font-size: 180px" class="fa fa-file-o" aria-hidden="true"></i>
                             }
-                        </CardBody>
+                        </BodyTemplate>
                     </Card>
                 </BodyTemplate>
             </ListView>

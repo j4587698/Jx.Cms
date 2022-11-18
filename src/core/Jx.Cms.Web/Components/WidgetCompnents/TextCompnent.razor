@@ -5,8 +5,8 @@
 @inherits Jx.Cms.Common.Components.WidgetComponentBase
 
 <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Normal">
-    <BootstrapInput @bind-Value="Title"></BootstrapInput>
-    <Textarea @bind-Value="Content"></Textarea>
+    <BootstrapInput @bind-Value="Title" ShowLabel="true"></BootstrapInput>
+    <Textarea @bind-Value="Content" ShowLabel="true"></Textarea>
     <Button OnClick="Callback">保存</Button>
 </Row>
 

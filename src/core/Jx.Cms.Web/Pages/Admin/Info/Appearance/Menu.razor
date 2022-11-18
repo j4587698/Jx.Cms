@@ -7,6 +7,7 @@
 @using Jx.Cms.DbContext.Entities.Front
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Plugin.Service.Both
+@using Constants = Jx.Cms.Common.Utils.Constants
 @inject IPageService PageService
 @inject IArticleService ArticleService
 @inject IMenuService MenuService
@@ -26,7 +27,7 @@
                             <CheckboxList @bind-Value="@_lateCatalogueValue" Items="@_lateCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@((int)_catalogueTotal)" ShowPaginationInfo="false" OnPageClick="OnCatalogueClick"></Pagination>
+                            <Pagination MaxPageLinkCount="3" PageCount="_cataloguePageCount" OnPageLinkClick="OnCatalogueClick"></Pagination>
                             <CheckboxList @bind-Value="@_allCatalogueValue" Items="@_allCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
@@ -44,7 +45,7 @@
                             <CheckboxList @bind-Value="@_lateArticleValue" Items="@_lateArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@((int)_articleTotal)" ShowPaginationInfo="false" OnPageClick="OnArticleClick"></Pagination>
+                            <Pagination MaxPageLinkCount="3" PageCount="_articlePageCount" OnPageLinkClick="OnArticleClick"></Pagination>
                             <CheckboxList @bind-Value="@_allArticleValue" Items="@_allArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
@@ -62,7 +63,7 @@
                             <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination PageItems="10" TotalCount="@((int)_pageTotal)" ShowPaginationInfo="false" OnPageClick="OnPageClick"></Pagination>
+                            <Pagination MaxPageLinkCount="3" PageCount="_pagePageCount" OnPageLinkClick="OnPageClick"></Pagination>
                             <CheckboxList @bind-Value="@_allPageValue" Items="@_allPage" ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
@@ -87,7 +88,7 @@
     </div>
     <div class="col-8">
         <h4>菜单结构</h4>
-        <Table TItem="MenuEntity" IsBordered="true" IsTree="true" OnTreeExpand="OnTreeExpand" @ref="@_table" ShowExtendButtons="true"
+        <Table TItem="MenuEntity" IsBordered="true" IsTree="true" OnTreeExpand="OnTreeExpand" @ref="_table" ShowExtendButtons="true"
                OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" TreeNodeConverter="@TreeNodeConverter">
             <TableColumns>
                 <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
@@ -111,6 +112,8 @@
 
     private Table<MenuEntity> _table;
 
+    private readonly int _pageSize = 1;
+
     #region Catalogue
 
     private string _pageCatalogue = "最近";
@@ -118,16 +121,18 @@
     private List<SelectedItem> _lateCatalogue;
     private string _lateCatalogueValue;
 
-    private long _catalogueTotal;
+    private int _cataloguePageCount;
     private List<SelectedItem> _allCatalogue;
     private string _allCatalogueValue;
     
     private List<SelectedItem> _searchCatalogue = new List<SelectedItem>();
     private string _searchCatalogueValue;
 
-    private Task OnCatalogueClick(int arg1, int arg2)
+    private Task OnCatalogueClick(int arg1)
     {
-        _allCatalogue = CatalogService.GetCatalogPage(arg1, arg2, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _allCatalogue = CatalogService.GetCatalogPage(arg1, _pageSize, out var total).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _cataloguePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
+        StateHasChanged();
         return Task.CompletedTask;
     }
     
@@ -139,7 +144,7 @@
 
     private void CatalogueSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString().Length > 1)
+        if (e.Value != null && e.Value.ToString()!.Length > 1)
         {
             _searchCatalogue = CatalogEntity.Select.Where(x => x.Name.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Name));
         }
@@ -180,22 +185,24 @@
     private List<SelectedItem> _latePage;
     private string _latePageValue;
 
-    private long _pageTotal;
+    private int _pagePageCount;
     private List<SelectedItem> _allPage;
     private string _allPageValue;
     
     private List<SelectedItem> _searchPage = new List<SelectedItem>();
     private string _searchPageValue;
 
-    private Task OnPageClick(int arg1, int arg2)
+    private Task OnPageClick(int arg1)
     {
-        _allPage = PageService.GetPageWithPage(arg1, arg2, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allPage = PageService.GetPageWithPage(arg1, _pageSize, out var total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _pagePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
+        StateHasChanged();
         return Task.CompletedTask;
     }
 
     private void PageSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString().Length > 1)
+        if (e.Value != null && e.Value.ToString()!.Length > 1)
         {
             _searchPage = ArticleEntity.Select.Where(x => x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
         }
@@ -233,24 +240,25 @@
 
     private List<SelectedItem> _lateArticle;
     private string _lateArticleValue;
-
-    private long _articleTotal;
+    
+    private int _articlePageCount;
     private List<SelectedItem> _allArticle;
     private string _allArticleValue;
     
     private List<SelectedItem> _searchArticle = new List<SelectedItem>();
     private string _searchArticleValue;
 
-    private Task OnArticleClick(int arg1, int arg2)
+    private Task OnArticleClick(int pageNo)
     {
-        _allArticle = ArticleService.GetArticlePage(arg1, arg2, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allArticle = ArticleService.GetArticlePage(pageNo, _pageSize, out var total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _articlePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
         StateHasChanged();
         return Task.CompletedTask;
     }
     
     private void ArticleSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString().Length > 1)
+        if (e.Value != null && e.Value.ToString()!.Length > 1)
         {
             _searchArticle = ArticleEntity.Select.Where(x => !x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
         }
@@ -347,14 +355,17 @@
     {
         base.OnInitialized();
         
-        _lateCatalogue = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
-        _allCatalogue = CatalogService.GetCatalogPage(1, 10, out _catalogueTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
-
-        _latePage = PageService.GetPageWithPage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        _allPage = PageService.GetPageWithPage(1, 10, out _pageTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _lateCatalogue = CatalogService.GetCatalogPage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _allCatalogue = CatalogService.GetCatalogPage(1, _pageSize, out var total).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
+        _cataloguePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
         
-        _lateArticle = ArticleService.GetArticlePage(1, 10).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        _allArticle = ArticleService.GetArticlePage(1, 10, out _articleTotal).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _latePage = PageService.GetPageWithPage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allPage = PageService.GetPageWithPage(1, _pageSize, out total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _pagePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
+        
+        _lateArticle = ArticleService.GetArticlePage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _allArticle = ArticleService.GetArticlePage(1, _pageSize, out total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
+        _articlePageCount = (int)(total / _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
     }
 
     private Task<IEnumerable<TableTreeNode<MenuEntity>>> TreeNodeConverter(IEnumerable<MenuEntity> arg)

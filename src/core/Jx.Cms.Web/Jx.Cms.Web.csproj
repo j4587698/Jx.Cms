@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor.Markdown" Version="6.1.7" />
+      <PackageReference Include="BootstrapBlazor.Markdown" Version="7.0.0" />
       <PackageReference Include="Jx.Toolbox" Version="0.3.0" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
     </ItemGroup>

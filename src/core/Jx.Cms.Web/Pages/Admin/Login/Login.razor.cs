@@ -63,7 +63,7 @@ public partial class Login
             Url = "/api/Admin/User/Login",
             Data = LoginVo
         };
-        var str = await AjaxService.GetMessage(ajaxOption);
+        var str = await AjaxService.InvokeAsync(ajaxOption);
         if (str.IsNullOrEmpty())
         {
             await MessageService.Show(new MessageOption()
