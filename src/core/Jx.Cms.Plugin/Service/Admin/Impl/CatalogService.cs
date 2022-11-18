@@ -24,6 +24,11 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
             return CatalogEntity.Select.Count(out count).OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
         }
 
+        public List<CatalogEntity> GetCatalogPage(int pageNumber, int pageSize)
+        {
+            return CatalogEntity.Select.OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
+        }
+
         public bool Save(CatalogEntity catalogEntity)
         {
             catalogEntity.Save();

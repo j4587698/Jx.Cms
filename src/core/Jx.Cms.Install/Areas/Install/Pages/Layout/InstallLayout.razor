@@ -5,19 +5,16 @@
 
 @inject NavigationManager NavigationManager
 
-<Message />
-<Toast />
-<SweetAlert />
 <Card Color="Color.None" style="height: 100vh">
-      <CardHeader>
+      <HeaderTemplate>
             <Steps IsCenter="true" Items="_stepItems">
             </Steps>
-      </CardHeader>
-      <CardBody>
+      </HeaderTemplate>
+      <BodyTemplate>
             <CascadingValue Value=Next>
             @Body
             </CascadingValue >
-      </CardBody>
+      </BodyTemplate>
 </Card>
 
 @code {

@@ -19,30 +19,29 @@
 <div class="row">
     <div class="col col-8">
         <Card HeaderText="小工具列表">
-            <CardBody>
+            <BodyTemplate>
                 <Row ItemsPerRow="ItemsPerRow.Two">
                     @foreach (var widget in WidgetTypes)
                     {
-                        <WidgetCard HeaderText="@widget.DisplayName">
-                            <CardHeader>
-                            添加到：
-                            <Select style="width: 100px" @bind-Value="BindMenu" Items="SelectedItems" OnValueChanged="(arg) => OnAddWidget(arg, new WidgetVo(){Id = Guid.NewGuid(), Name = widget.Name})"></Select>
-                            </CardHeader>
-                            <CardBody>
+                        <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                            <HeaderTemplate>
+                                添加到：<Select style="width: 100px" @bind-Value="BindMenu" Items="SelectedItems" OnValueChanged="(arg) => OnAddWidget(arg, new WidgetVo() { Id = Guid.NewGuid(), Name = widget.Name })"></Select>
+                            </HeaderTemplate>
+                            <BodyTemplate>
                                 @widget.Description
-                            </CardBody>
-                        </WidgetCard>
+                            </BodyTemplate>
+                        </Card>
                     }
                 </Row>
-            </CardBody>
+            </BodyTemplate>
         </Card>
         
     </div>
     <div class="col col-4">
         @foreach (var menu in typeof(WidgetSidebarType).ToSelectList())
         {
-            <Card HeaderText="@menu.Text">
-                <CardBody>
+            <Card IsCollapsible="true" HeaderText="@menu.Text">
+                <BodyTemplate>
                     @if (SavedWidgetType.ContainsKey(menu.Value))
                     {
                         var widgets = SavedWidgetType[menu.Value];
@@ -51,18 +50,22 @@
                             if (WidgetTypes.Any(x => x.Name == widgetVo.Name))
                             {
                                 var widget = WidgetTypes.First(x => x.Name == widgetVo.Name);
-                                <WidgetCard HeaderText="@widget.DisplayName">
-                                    <CardHeader>
-                                        <PopConfirmButton Content="确认删除此小工具吗？" Text="移除" OnConfirm="() => RemoveWidget(menu.Value, widgetVo)"></PopConfirmButton>
-                                    </CardHeader>
-                                    <CardBody>
+                                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                                    <HeaderTemplate>
+                                        <div class="pull-right">
+                                            <PopConfirmButton Color="Color.Danger" Content="确认删除此小工具吗？" 
+                                                              Text="移除" OnConfirm="() => RemoveWidget(menu.Value, widgetVo)"></PopConfirmButton>
+                                        </div>
+                                        
+                                    </HeaderTemplate>
+                                    <BodyTemplate>
                                         @CreateSystemBody(menu.Value, widget.SystemBodyType, widgetVo)
-                                    </CardBody>
-                                </WidgetCard>
+                                    </BodyTemplate>
+                                </Card>
                             }
                         }
                     }
-                </CardBody>
+                </BodyTemplate>
             </Card>
             <br/>
         }

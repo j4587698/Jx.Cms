@@ -30,6 +30,14 @@ namespace Jx.Cms.Plugin.Service.Admin
         /// <param name="count">总数量</param>
         /// <returns>分类列表</returns>
         List<CatalogEntity> GetCatalogPage(int pageNumber, int pageSize, out long count);
+        
+        /// <summary>
+        /// 分页获取所有的分类
+        /// </summary>
+        /// <param name="pageNumber">第几页</param>
+        /// <param name="pageSize">每页数量</param>
+        /// <returns>分类列表</returns>
+        List<CatalogEntity> GetCatalogPage(int pageNumber, int pageSize);
 
         /// <summary>
         /// 保存分类
