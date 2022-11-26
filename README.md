@@ -33,3 +33,6 @@ Jx.Cms是一个基于ASP.NET6的CMS系统，前端使用ASP.NET MVC，后台使�
 
 ## 开源协议
 [![license](https://img.shields.io/github/license/j4587698/Jx.Cms)](https://github.com/j4587698/Jx.Cms/blob/master/LICENSE)
+
+## 本项目已得到[JetBrains](https://www.jetbrains.com/shop/eform/opensource)的支持！  
+<img src="https://www.jetbrains.com/shop/static/images/jetbrains-logo-inv.svg" height="100"> 
