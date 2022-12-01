@@ -48,7 +48,7 @@ namespace Jx.Cms.Themes.Util
             return template.SetValue("id", articleEntity.Id.ToString()).SetValue("year", articleEntity.PublishTime.Year.ToString())
                 .SetValue("month", articleEntity.PublishTime.Month.ToString())
                 .SetValue("day", articleEntity.PublishTime.Day.ToString())
-                .SetValue("category", articleEntity.Catalogue.Alias)
+                .SetValue("category", articleEntity.Catalogue == null ? "" : articleEntity.Catalogue.Alias.IsNullOrEmpty() ? articleEntity.Catalogue.Name : articleEntity.Catalogue.Alias)
                 .SetValue("alias", articleEntity.Alias.IsNullOrEmpty() ? articleEntity.Title : articleEntity.Alias).Render();
         }
 
