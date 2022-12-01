@@ -3,6 +3,7 @@
 @using FreeSql
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Plugin.Service.Admin
+@using Jx.Cms.Themes.Util
 
 @inject IPageService PageService
 @inject NavigationManager NavigationManager
@@ -28,7 +29,7 @@
     <TableColumns>
         <TableColumn @bind-Field="@context.Title" Text="标题">
             <Template Context="value">
-                <NavLink href="@($"Admin/Page/Write/{(value.Row as ArticleEntity)?.Id}")">@value.Value</NavLink>
+                <a href="@RewriteUtil.GetPageUrl(value.Row)" target="_blank">@value.Value</a>
             </Template>
         </TableColumn>
         <TableColumn @bind-Field="@context.Author" Text="作者"></TableColumn>
