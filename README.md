@@ -1,12 +1,12 @@
-<h1 align="center">Jx.CMS</h1>
+<h1 align="center">Jx.Cms</h1>
 
 <div align="center">
-<h2>一个基于ASP.NET6的CMS</h2>
+<h2>一个基于ASP.NET7的CMS</h2>
 
 </div>
 
 ## 项目介绍
-Jx.Cms是一个基于ASP.NET6的CMS系统，前端使用ASP.NET MVC，后台使用Blazor。
+Jx.Cms是一个基于ASP.NET7的CMS系统，前端使用ASP.NET core MVC，后台使用Blazor。
 
 - 前端使用传统MVC，服务端渲染，SEO更方便，更符合CMS的需求。
 - 后台使用Blazor，开发更快速，配合[BootstrapBlazor](https://gitee.com/LongbowEnterprise/BootstrapBlazor)组件库，可以快速进行后台开发。
