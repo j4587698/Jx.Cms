@@ -378,11 +378,8 @@
             var ret = new List<TableTreeNode<MenuEntity>>();
             ret.AddRange(items.Select((x, index) => new TableTreeNode<MenuEntity>(x)
             {
-    // 此处为示例，假设偶行数据都有子数据
                 HasChildren = x.HasChildren,
-    // 如果子项集合有值 则默认展开此节点
                 IsExpand = x.HasChildren,
-    // 获得子项集合
                 Items = BuildTreeNodes(x.Children)
             }));
             return ret;
