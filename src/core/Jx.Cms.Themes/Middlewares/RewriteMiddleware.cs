@@ -26,7 +26,7 @@ public class RewriteMiddleware
 
         var path = context.Request.Path.ToString();
 
-        if (path.EndsWith(".js") || path.EndsWith(".css"))
+        if (path.EndsWith(".js") || path.EndsWith(".css") || path.Contains("_blazor"))
         {
             await _next.Invoke(context);
             return;

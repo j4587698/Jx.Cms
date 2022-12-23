@@ -56,7 +56,7 @@
             base.OnInitialized();
             if (Util.IsInstalled)
             {
-                  NavigationManager.NavigateTo("/Admin");
+                  NavigationManager.NavigateTo("/Admin/Login");
             }
             var mc = Regex.Match(NavigationManager.Uri, @"Step(\d)$");
             if (!mc.Success || mc.Groups.Count == 0)
@@ -65,7 +65,7 @@
             }
             if (int.Parse(mc.Groups[1].Value) != _nowStep + 1)
             {
-                  NavigationManager.NavigateTo($"Step{_nowStep + 1}");
+                  NavigationManager.NavigateTo($"/Install/Step{_nowStep + 1}");
             }
       }
 
@@ -75,7 +75,7 @@
             _nowStep++;
             if (_nowStep < _stepItems.Count)
             {
-                  NavigationManager.NavigateTo($"Step{_nowStep + 1}");
+                  NavigationManager.NavigateTo($"/Install/Step{_nowStep + 1}");
                   _stepItems[_nowStep].Status = StepStatus.Process; 
             }
       }
