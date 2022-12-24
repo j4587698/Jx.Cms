@@ -21,8 +21,7 @@ public class InstallStartup : Furion.AppStartup
         {
             endpoints.MapRazorPages();
             endpoints.MapAreaControllerRoute("install", "Install", "/Install/{controller}/{action}");
-            endpoints.MapBlazorHub("~/Install/_blazor");
-            endpoints.MapFallbackToAreaPage("~/Install/{*clientroutes:nonfile}", "/_InstallHost", "Install");
+            endpoints.MapFallbackToPage("~/Install/{*clientroutes:nonfile}", "/_InstallHost");
         });
     }
 }

@@ -12,4 +12,20 @@
       <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Areas" />
+      <Folder Include="Install" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Info\Step1.razor" />
+      <AdditionalFiles Include="Pages\Info\Step2.razor" />
+      <AdditionalFiles Include="Pages\Info\Step3.razor" />
+      <AdditionalFiles Include="Pages\Info\Step4.razor" />
+      <AdditionalFiles Include="Pages\Info\_imports.razor" />
+      <AdditionalFiles Include="Pages\Layout\InstallLayout.razor" />
+      <AdditionalFiles Include="Pages\_Imports.razor" />
+      <AdditionalFiles Include="Pages\_InstallHost.cshtml" />
+    </ItemGroup>
+
 </Project>
