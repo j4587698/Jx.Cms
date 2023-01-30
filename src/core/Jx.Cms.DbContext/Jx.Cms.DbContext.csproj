@@ -9,8 +9,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FreeSql.All" Version="3.2.682" />
-      <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.2.682" />
+      <PackageReference Include="FreeSql.All" Version="3.2.687" />
+      <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.2.687" />
     </ItemGroup>
 
     <ItemGroup>

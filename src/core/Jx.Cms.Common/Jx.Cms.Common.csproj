@@ -10,14 +10,14 @@
 
     <ItemGroup>
       <PackageReference Include="AngleSharp" Version="0.17.1" />
-      <PackageReference Include="BootstrapBlazor" Version="7.0.2" />
-      <PackageReference Include="BootstrapBlazor.FontAwesome" Version="7.0.0" />
+      <PackageReference Include="BootstrapBlazor" Version="7.2.5-beta02" />
+      <PackageReference Include="BootstrapBlazor.FontAwesome" Version="7.0.2" />
       <PackageReference Include="BootstrapBlazor.SummerNote" Version="7.0.0" />
-      <PackageReference Include="Furion" Version="4.7.7" />
-      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="4.7.7" />
+      <PackageReference Include="Furion" Version="4.8.5" />
+      <PackageReference Include="Furion.Extras.Logging.Serilog" Version="4.8.5" />
       <PackageReference Include="Furion.Extras.ObjectMapper.Mapster" Version="4.7.7" />
       <PackageReference Include="Humanizer.Core.zh-CN" Version="2.14.1" />
-      <PackageReference Include="Jx.Toolbox" Version="0.3.0" />
+      <PackageReference Include="Jx.Toolbox" Version="0.3.2" />
       <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0" />
       <PackageReference Include="SixLabors.ImageSharp" Version="1.0.4" />
       <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="1.0.0-beta13" />
