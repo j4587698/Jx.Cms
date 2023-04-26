@@ -10,6 +10,7 @@ using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
+using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;

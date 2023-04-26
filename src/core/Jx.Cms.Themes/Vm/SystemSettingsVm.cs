@@ -17,7 +17,6 @@ namespace Jx.Cms.Themes.Vm
         /// <summary>
         /// 副标题
         /// </summary>
-        [Required]
         public string SubTitle { get; set; }
 
         /// <summary>

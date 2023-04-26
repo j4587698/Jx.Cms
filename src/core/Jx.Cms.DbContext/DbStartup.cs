@@ -7,6 +7,7 @@ using Furion.Logging.Extensions;
 using Jx.Cms.Common.Exceptions;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
+using Jx.Toolbox.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -117,7 +118,7 @@ namespace Jx.Cms.DbContext
 
                 freeSql.Aop.ConfigEntity += (s, e) =>
                 {
-                    e.ModifyResult.Name = dbConfig.Prefix + e.EntityType.Name.Replace("Entity", "").ConvertToUnderLine();
+                    e.ModifyResult.Name = dbConfig.Prefix + e.EntityType.Name.Replace("Entity", "").ToUnderLine();
                 };
 
                 services.AddSingleton(freeSql);

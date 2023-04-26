@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Themes.Util;
+using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Http;
 
 namespace Jx.Cms.Themes.Middlewares

@@ -30,9 +30,13 @@
 {
 	var index = Model as IndexVm;
 	<title>@settings.Title @if (index!.PageNum > 1)
-	                                         {
-		                                         @("-第" + index.PageNum + "页")
-	                                         }-@settings.Title</title>
+	                       {
+		                       @($"{blogs.Connector}第{index.PageNum}页")
+	                       }
+		@if (!settings.SubTitle.IsNullOrEmpty())
+		{
+			@($"{blogs.Connector}{settings.SubTitle}")
+		}</title>
 	<meta name="Keywords" content="@blogs.Keywords,@settings.Title">
 	<meta name="description" content="@blogs.Description">
 }

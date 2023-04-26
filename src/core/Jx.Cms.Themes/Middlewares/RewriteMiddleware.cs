@@ -23,6 +23,14 @@ public class RewriteMiddleware
             await _next.Invoke(context);
             return;
         }
+
+        var path = context.Request.Path.ToString();
+
+        if (path.EndsWith(".js") || path.EndsWith(".css") || path.Contains("_blazor"))
+        {
+            await _next.Invoke(context);
+            return;
+        }
         var rewriterModel = RewriterModel.GetSettings();
         if (rewriterModel == null || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
         {
