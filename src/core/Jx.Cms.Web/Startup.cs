@@ -60,7 +60,7 @@ namespace Jx.Cms.Web
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapAreaControllerRoute("admin", "Admin", "/Admin/{controller=Home}/{action=Index}/{id?}");
-                endpoints.MapDefaultControllerRoute();
+                
                 endpoints.MapRazorPages();
                 
                 endpoints.MapBlazorHub("~/_blazor");

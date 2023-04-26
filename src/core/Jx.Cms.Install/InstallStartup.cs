@@ -19,6 +19,7 @@ public class InstallStartup : Furion.AppStartup
         app.UseRouting();
         app.UseEndpoints(endpoints =>
         {
+            endpoints.MapDefaultControllerRoute();
             endpoints.MapRazorPages();
             endpoints.MapAreaControllerRoute("install", "Install", "/Install/{controller}/{action}");
             endpoints.MapBlazorHub("~/Install/_blazor");
