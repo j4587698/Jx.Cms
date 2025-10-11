@@ -1,41 +1,42 @@
-using System.IO;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Jx.Cms.Install;
+using Jx.Cms.Install.Pages;
+using Jx.Cms.Web;
+using Jx.Cms.Web.Components;
+using Jx.Toolbox.Mvc.Extensions;
 using Serilog;
 
-namespace Jx.Cms.Web
+Log.Logger = new LoggerConfiguration().WriteTo
+    .File("./log/log.txt", rollingInterval: RollingInterval.Day, rollOnFileSizeLimit: true)
+    .WriteTo.Console().CreateLogger();
+
+if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "config")))
+    Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "config"));
+
+var builder = WebApplication.CreateBuilder(args).AddToolbox(configOption =>
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            if (!Directory.Exists(Path.Combine(AppContext.BaseDirectory, "config")))
-            {
-                Directory.CreateDirectory(Path.Combine(AppContext.BaseDirectory, "config"));
-            }
-            
-            var builder = WebApplication.CreateBuilder(args);
-            
-            // Configure Serilog
-            builder.Host.UseSerilog((context, configuration) =>
-                configuration.ReadFrom.Configuration(context.Configuration));
-            
-            // Create and configure startup
-            var startup = new Startup(builder.Configuration);
-            startup.ConfigureServices(builder.Services);
-            
-            var app = builder.Build();
-            
-            // Configure middleware
-            var env = app.Environment;
-            startup.Configure(app, env);
-            
-            var logger = app.Services.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("Application configured. Starting to listen...");
-            
-            app.Run();
-        }
-    }
-}
+    configOption.ConfigSearchFolder = ["config"];
+    configOption.DynamicPrefix = "/api/";
+});
+
+// Configure Serilog
+builder.Host.UseSerilog();
+
+// Create and configure startup
+var startup = new Startup(builder.Configuration);
+startup.ConfigureServices(builder.Services);
+
+// Add services for Blazor WebApp
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+
+var app = builder.Build().UseToolbox();
+
+// Configure middleware
+var env = app.Environment;
+startup.Configure(app, env);
+app.UseAntiforgery();
+app.MapDefaultControllerRoute();
+app.MapRazorComponents<App>().AddAdditionalAssemblies(typeof(Install).Assembly)
+    .AddInteractiveServerRenderMode();
+
+app.Run();

@@ -1,83 +1,73 @@
 using System.Collections;
 
-namespace CnBlogAsync.XmlRPC
+namespace CnBlogAsync.XmlRPC;
+
+public class ParameterList : IEnumerable<Value>
 {
-    public class ParameterList: IEnumerable<Value>
+    private readonly List<Value> Parameters;
+
+    public ParameterList()
     {
-        private List<Value> Parameters;
-        
-        public ParameterList()
-        {
-            this.Parameters = new List<Value>();
-        }
+        Parameters = new List<Value>();
+    }
 
-        public void Add(Value value)
-        {
-            if (value == null)
-            {
-                throw new ArgumentNullException("value");
-            }
-            this.Parameters.Add(value);
-        }
+    public Value this[int index] => Parameters[index];
 
-        public void Add(int value)
-        {
-            this.Add(new IntegerValue(value));
-        }
+    public int Count => Parameters.Count;
 
-        public void Add(bool value)
-        {
-            this.Add(new BooleanValue(value));
-        }
+    public IEnumerator<Value> GetEnumerator()
+    {
+        return Parameters.GetEnumerator();
+    }
 
-        public void Add(DateTime value)
-        {
-            this.Add(new DateTimeValue(value));
-        }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
 
-        public void Add(double value)
-        {
-            this.Add(new DoubleValue(value));
-        }
+    public void Add(Value value)
+    {
+        if (value == null) throw new ArgumentNullException("value");
+        Parameters.Add(value);
+    }
 
-        public void Add(Array value)
-        {
-            this.Parameters.Add(value);
-        }
+    public void Add(int value)
+    {
+        Add(new IntegerValue(value));
+    }
 
-        public void Add(Struct value)
-        {
-            this.Parameters.Add(value);
-        }
+    public void Add(bool value)
+    {
+        Add(new BooleanValue(value));
+    }
 
-        public void Add(Base64Data value)
-        {
-            this.Parameters.Add(value);
-        }
+    public void Add(DateTime value)
+    {
+        Add(new DateTimeValue(value));
+    }
 
-        public void Add(string value)
-        {
-            this.Add(new StringValue(value));
-        }
+    public void Add(double value)
+    {
+        Add(new DoubleValue(value));
+    }
 
-        public IEnumerator<Value> GetEnumerator()
-        {
-            return this.Parameters.GetEnumerator();
-        }
+    public void Add(Array value)
+    {
+        Parameters.Add(value);
+    }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+    public void Add(Struct value)
+    {
+        Parameters.Add(value);
+    }
 
-        public Value this[int index]
-        {
-            get { return this.Parameters[index]; }
-        }
+    public void Add(Base64Data value)
+    {
+        Parameters.Add(value);
+    }
 
-        public int Count
-        {
-            get { return this.Parameters.Count; }
-        }
+    public void Add(string value)
+    {
+        Add(new StringValue(value));
     }
 }

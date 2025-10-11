@@ -1,7 +1,6 @@
 ﻿@using System.ComponentModel
 @using System.Text.Json
 @using Jx.Toolbox.Extensions
-
 @inherits Jx.Cms.Common.Components.WidgetComponentBase
 
 <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Normal">
@@ -11,11 +10,9 @@
 </Row>
 
 @code {
-    [DisplayName("标题名")]
-    private string Title { get; set; }
+    [DisplayName("标题名")] private string Title { get; set; }
 
-    [DisplayName("内容")]
-    private string Content { get; set; }
+    [DisplayName("内容")] private string Content { get; set; }
 
     Dictionary<string, string> _values;
 
@@ -31,6 +28,7 @@
                 {
                     Title = _values[nameof(Title)];
                 }
+
                 if (_values.ContainsKey(nameof(Content)))
                 {
                     Content = _values[nameof(Content)];
@@ -41,12 +39,12 @@
 
     private async Task Callback()
     {
-        var values = new Dictionary<string, string>()
+        var values = new Dictionary<string, string>
         {
-            {nameof(Title), Title},
-            {nameof(Content), Content}
+            { nameof(Title), Title },
+            { nameof(Content), Content }
         };
         await OnParameterSave.InvokeAsync(JsonSerializer.Serialize(values));
     }
-    
+
 }

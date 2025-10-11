@@ -16,16 +16,14 @@ public class FriendLinkTagHelper : TagHelper
             output.SuppressOutput();
             return;
         }
+
         output.TagName = null;
         foreach (var menuEntity in links)
         {
             var liTag = new TagBuilder("li");
             var aTag = new TagBuilder("a");
             aTag.MergeAttribute("href", menuEntity.Url);
-            if (menuEntity.OpenInNewWindow)
-            {
-                aTag.MergeAttribute("target", "_blank");
-            }
+            if (menuEntity.OpenInNewWindow) aTag.MergeAttribute("target", "_blank");
             aTag.MergeAttribute("title", menuEntity.Title);
             aTag.InnerHtml.AppendHtml(menuEntity.NavTitle);
             liTag.InnerHtml.AppendHtml(aTag);

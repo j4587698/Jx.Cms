@@ -1,6 +1,6 @@
-﻿@model Jx.Cms.Themes.Vm.IndexVm
-@using Blogs.Enum
+﻿@using Blogs.Enum
 @using Blogs.Model
+@model Jx.Cms.Themes.Vm.IndexVm
 
 @{
 	var blogs = ViewBag.blogs as SettingsModel;
@@ -19,19 +19,21 @@
 				<ul style="margin-top: 0px;">@Html.Raw(blogs.Notice)</ul>
 			</div>
 		</div>
-		<script type="text/javascript">$(document).ready(function() {$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});})</script>
+		<script type="text/javascript">$(document).ready(function () {
+				$("#scrolldiv").textSlider({line: 1, speed: 1000, timer: 3000});
+			})</script>
 	}
 </nav>
 
-<div id="content" class="site-content">	
+<div id="content" class="site-content">
 	<div class="clear"></div>
-	<div id="contentab">	
+	<div id="contentab">
 		<section id="primary" class="content-area">
 			<main id="main" class="site-main" role="main">
-				
+
 				<div id="post_list_box" class="border_gray">
 					@await Html.PartialAsync("_articleList", Model.Articles, ViewData)
-					
+
 				</div>
 			</main><!-- .site-main -->
 			<nav class="navigation pagination" role="navigation">
@@ -44,23 +46,28 @@
 						}
 						else if (pagination.Key == "‹")
 						{
-							<span class="prev"><a class="page-numbers" index-page-num="@pagination.Value" title="上一页"><i class="fa fa-angle-left"></i></a></span>
+							<span class="prev"><a class="page-numbers" index-page-num="@pagination.Value"
+							                      title="上一页"><i class="fa fa-angle-left"></i></a></span>
 						}
 						else if (pagination.Key == ">")
 						{
-							<span class="next"><a class="page-numbers" index-page-num="@pagination.Value" title="下一页"><i class="fa fa-angle-right"></i></a></span>
+							<span class="next"><a class="page-numbers" index-page-num="@pagination.Value"
+							                      title="下一页"><i class="fa fa-angle-right"></i></a></span>
 						}
 						else if (pagination.Key == "<<")
 						{
-							<a class="page-numbers" index-page-num="@pagination.Value" title="第1页"><i class="fa fa-angle-double-left"></i></a>
+							<a class="page-numbers" index-page-num="@pagination.Value" title="第1页"><i
+									class="fa fa-angle-double-left"></i></a>
 						}
 						else if (pagination.Key == ">>")
 						{
-							<a class="page-numbers" index-page-num="@pagination.Value" title="最后一页"><i class="fa fa-angle-double-right"></i></a>
+							<a class="page-numbers" index-page-num="@pagination.Value" title="最后一页"><i
+									class="fa fa-angle-double-right"></i></a>
 						}
 						else
 						{
-							<a class="page-numbers" index-page-num="@pagination.Value" title="第 @pagination.Key 页">@pagination.Key</a>
+							<a class="page-numbers" index-page-num="@pagination.Value"
+							   title="第 @pagination.Key 页">@pagination.Key</a>
 						}
 					}
 				</div>

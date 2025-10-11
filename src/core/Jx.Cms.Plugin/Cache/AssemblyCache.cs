@@ -1,34 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.Loader;
 
 namespace Jx.Cms.Plugin.Cache;
 
 /// <summary>
-    /// 程序集缓存
-    /// </summary>
+///     程序集缓存
+/// </summary>
 public class AssemblyCache
 {
     /// <summary>
-    /// 程序集列表
+    ///     程序集列表
     /// </summary>
-    private static readonly List<Assembly> _assemblyList = new List<Assembly>();
-
-    /// <summary>
-    /// 类型列表
-    /// </summary>
-    public static IEnumerable<Type> TypeList { get; private set; } = GetEffectiveTypes();
+    private static readonly List<Assembly> _assemblyList = new();
 
     static AssemblyCache()
     {
         // 初始化当前域的程序集
-        foreach (var assembly in AssemblyLoadContext.Default.Assemblies)
-        {
-            _assemblyList.Add(assembly);
-        }
+        foreach (var assembly in AssemblyLoadContext.Default.Assemblies) _assemblyList.Add(assembly);
     }
+
+    /// <summary>
+    ///     类型列表
+    /// </summary>
+    public static IEnumerable<Type> TypeList { get; private set; } = GetEffectiveTypes();
 
     private static IEnumerable<Type> GetEffectiveTypes()
     {
@@ -37,28 +31,24 @@ public class AssemblyCache
     }
 
     /// <summary>
-    /// 添加程序集
+    ///     添加程序集
     /// </summary>
     /// <param name="assembly"></param>
     public static void AddAssembly(Assembly assembly)
     {
-        if (_assemblyList.Any(x => x.FullName == assembly.FullName))
-        {
-            return;
-        }
+        if (_assemblyList.Any(x => x.FullName == assembly.FullName)) return;
         _assemblyList.Add(assembly);
         TypeList = GetEffectiveTypes();
         var caches = _assemblyList.SelectMany(x =>
             x.GetTypes().Where(y => typeof(IPluginCache).IsAssignableFrom(y) && !y.IsAbstract));
         foreach (var cache in caches)
-        {
             cache.InvokeMember(nameof(IPluginCache.UpdateType),
-                BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null, Array.Empty<object>() );
-        }
+                BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null,
+                Array.Empty<object>());
     }
 
     /// <summary>
-    /// 移除程序集
+    ///     移除程序集
     /// </summary>
     /// <param name="assembly"></param>
     /// <returns></returns>
@@ -74,9 +64,11 @@ public class AssemblyCache
             foreach (var cache in caches)
             {
                 cache.InvokeMember(nameof(IPluginCache.RemoveAssembly),
-                    BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null, new object[]{ass} );
+                    BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null,
+                    new object[] { ass });
                 cache.InvokeMember(nameof(IPluginCache.UpdateType),
-                    BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null, Array.Empty<object>() );
+                    BindingFlags.Static | BindingFlags.InvokeMethod | BindingFlags.Public, null, null,
+                    Array.Empty<object>());
             }
         }
 

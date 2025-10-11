@@ -1,8 +1,7 @@
 ﻿@page "/Admin/Appearance/Menu"
+@using AngleSharp
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
-@using System.Collections
-@using AngleSharp
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.DbContext.Entities.Front
 @using Jx.Cms.Plugin.Service.Admin
@@ -24,15 +23,19 @@
                 <CollapseItem Text="分类目录" IsCollapsed="true">
                     <Tab OnClickTab="OnCatalogueClick">
                         <TabItem Text="最近">
-                            <CheckboxList @bind-Value="@_lateCatalogueValue" Items="@_lateCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_lateCatalogueValue" Items="@_lateCatalogue" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination MaxPageLinkCount="3" PageCount="_cataloguePageCount" OnPageLinkClick="OnCatalogueClick"></Pagination>
-                            <CheckboxList @bind-Value="@_allCatalogueValue" Items="@_allCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <Pagination MaxPageLinkCount="3" PageCount="_cataloguePageCount"
+                                        OnPageLinkClick="OnCatalogueClick"></Pagination>
+                            <CheckboxList @bind-Value="@_allCatalogueValue" Items="@_allCatalogue" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
                             <BootstrapInput TValue="string" @oninput="@CatalogueSearch"></BootstrapInput>
-                            <CheckboxList @bind-Value="@_searchCatalogueValue" Items="@_searchCatalogue" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_searchCatalogueValue" Items="@_searchCatalogue"
+                                          ShowBorder="false" IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
                     <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
@@ -42,15 +45,19 @@
                 <CollapseItem Text="文章">
                     <Tab OnClickTab="OnArticleClick">
                         <TabItem Text="最近">
-                            <CheckboxList @bind-Value="@_lateArticleValue" Items="@_lateArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_lateArticleValue" Items="@_lateArticle" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination MaxPageLinkCount="3" PageCount="_articlePageCount" OnPageLinkClick="OnArticleClick"></Pagination>
-                            <CheckboxList @bind-Value="@_allArticleValue" Items="@_allArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <Pagination MaxPageLinkCount="3" PageCount="_articlePageCount"
+                                        OnPageLinkClick="OnArticleClick"></Pagination>
+                            <CheckboxList @bind-Value="@_allArticleValue" Items="@_allArticle" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
                             <BootstrapInput TValue="string" @oninput="@ArticleSearch"></BootstrapInput>
-                            <CheckboxList @bind-Value="@_searchArticleValue" Items="@_searchArticle" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_searchArticleValue" Items="@_searchArticle" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
                     <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
@@ -60,15 +67,19 @@
                 <CollapseItem Text="页面">
                     <Tab>
                         <TabItem Text="最近">
-                            <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="所有">
-                            <Pagination MaxPageLinkCount="3" PageCount="_pagePageCount" OnPageLinkClick="OnPageClick"></Pagination>
-                            <CheckboxList @bind-Value="@_allPageValue" Items="@_allPage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <Pagination MaxPageLinkCount="3" PageCount="_pagePageCount"
+                                        OnPageLinkClick="OnPageClick"></Pagination>
+                            <CheckboxList @bind-Value="@_allPageValue" Items="@_allPage" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                         <TabItem Text="搜索">
                             <BootstrapInput TValue="string" @oninput="@PageSearch"></BootstrapInput>
-                            <CheckboxList @bind-Value="@_searchPageValue" Items="@_searchPage" ShowBorder="false" IsVertical="true"></CheckboxList>
+                            <CheckboxList @bind-Value="@_searchPageValue" Items="@_searchPage" ShowBorder="false"
+                                          IsVertical="true"></CheckboxList>
                         </TabItem>
                     </Tab>
                     <Row ItemsPerRow="ItemsPerRow.One" RowType="RowType.Inline">
@@ -88,8 +99,10 @@
     </div>
     <div class="col-8">
         <h4>菜单结构</h4>
-        <Table TItem="MenuEntity" IsBordered="true" IsTree="true" OnTreeExpand="OnTreeExpand" @ref="_table" ShowExtendButtons="true"
-               OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" TreeNodeConverter="@TreeNodeConverter">
+        <Table TItem="MenuEntity" IsBordered="true" IsTree="true" OnTreeExpand="OnTreeExpand" @ref="_table"
+               ShowExtendButtons="true"
+               OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync"
+               TreeNodeConverter="@TreeNodeConverter">
             <TableColumns>
                 <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
                 <TableColumn @bind-Field="@context.MenuType" Text="菜单类型"></TableColumn>
@@ -97,7 +110,7 @@
                 <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
                 <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
                     <Template Context="value">
-                        @(value.Value?"是":"否")
+                        @(value.Value ? "是" : "否")
                     </Template>
                 </TableColumn>
             </TableColumns>
@@ -124,8 +137,8 @@
     private int _cataloguePageCount;
     private List<SelectedItem> _allCatalogue;
     private string _allCatalogueValue;
-    
-    private List<SelectedItem> _searchCatalogue = new List<SelectedItem>();
+
+    private List<SelectedItem> _searchCatalogue = new();
     private string _searchCatalogueValue;
 
     private Task OnCatalogueClick(int arg1)
@@ -135,7 +148,7 @@
         StateHasChanged();
         return Task.CompletedTask;
     }
-    
+
     private Task OnCatalogueClick(TabItem arg)
     {
         _pageCatalogue = arg.Text;
@@ -149,7 +162,7 @@
             _searchCatalogue = CatalogEntity.Select.Where(x => x.Name.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Name));
         }
     }
-    
+
     private Task OnCatalogueAddClick()
     {
         string[] ids;
@@ -171,7 +184,8 @@
             default:
                 return Task.CompletedTask;
         }
-        MenuService.SaveMenu(items.Select(x => new MenuEntity() {MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Catalogue, NavTitle = x.Text, TypeId = int.Parse(x.Value)}));
+
+        MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Catalogue, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
         return Task.CompletedTask;
     }
@@ -188,8 +202,8 @@
     private int _pagePageCount;
     private List<SelectedItem> _allPage;
     private string _allPageValue;
-    
-    private List<SelectedItem> _searchPage = new List<SelectedItem>();
+
+    private List<SelectedItem> _searchPage = new();
     private string _searchPageValue;
 
     private Task OnPageClick(int arg1)
@@ -207,7 +221,7 @@
             _searchPage = ArticleEntity.Select.Where(x => x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
         }
     }
-    
+
     private Task OnPageAddClick()
     {
         string[] ids;
@@ -229,23 +243,24 @@
             default:
                 return Task.CompletedTask;
         }
-        MenuService.SaveMenu(items.Select(x => new MenuEntity() {MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Page, NavTitle = x.Text, TypeId = int.Parse(x.Value)}));
+
+        MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Page, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
         return Task.CompletedTask;
     }
-    
+
     #endregion
 
     #region Article
 
     private List<SelectedItem> _lateArticle;
     private string _lateArticleValue;
-    
+
     private int _articlePageCount;
     private List<SelectedItem> _allArticle;
     private string _allArticleValue;
-    
-    private List<SelectedItem> _searchArticle = new List<SelectedItem>();
+
+    private List<SelectedItem> _searchArticle = new();
     private string _searchArticleValue;
 
     private Task OnArticleClick(int pageNo)
@@ -255,7 +270,7 @@
         StateHasChanged();
         return Task.CompletedTask;
     }
-    
+
     private void ArticleSearch(ChangeEventArgs e)
     {
         if (e.Value != null && e.Value.ToString()!.Length > 1)
@@ -291,11 +306,12 @@
             default:
                 return Task.CompletedTask;
         }
-        MenuService.SaveMenu(items.Select(x => new MenuEntity() {MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Article, NavTitle = x.Text, TypeId = int.Parse(x.Value)}));
+
+        MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Article, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
         return Task.CompletedTask;
     }
-    
+
     #endregion
 
     #region CustomUrl
@@ -303,12 +319,12 @@
     private string _urlName;
 
     private string _url;
-    
+
     private Task OnCustomUrlAddClick()
     {
         var menu = new MenuEntity
         {
-            MenuName = Constants.Menu, 
+            MenuName = Constants.Menu,
             Name = _urlName,
             Url = _url,
             NavTitle = _urlName,
@@ -330,7 +346,7 @@
 
     private Task<QueryData<MenuEntity>> OnQueryAsync(QueryPageOptions arg)
     {
-        return Task.FromResult(new QueryData<MenuEntity>()
+        return Task.FromResult(new QueryData<MenuEntity>
         {
             Items = MenuService.GetAllMenuTree()
         });
@@ -350,19 +366,19 @@
     }
 
     #endregion
-    
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        
+
         _lateCatalogue = CatalogService.GetCatalogPage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
         _allCatalogue = CatalogService.GetCatalogPage(1, _pageSize, out var total).Select(x => new SelectedItem(x.Id.ToString(), x.Name)).ToList();
         _cataloguePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
-        
+
         _latePage = PageService.GetPageWithPage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _allPage = PageService.GetPageWithPage(1, _pageSize, out total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _pagePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
-        
+
         _lateArticle = ArticleService.GetArticlePage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _allArticle = ArticleService.GetArticlePage(1, _pageSize, out total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _articlePageCount = (int)(total / _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);

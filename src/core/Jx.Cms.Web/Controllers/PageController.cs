@@ -11,15 +11,12 @@ public class PageController : BaseController
     {
         var articleService = HttpContext.RequestServices.GetService<IPageService>();
         var model = articleService?.GetPageById(id);
-        if (model == null)
-        {
-            return NotFound();
-        }
-        var pageVm = new PageVm()
+        if (model == null) return NotFound();
+        var pageVm = new PageVm
         {
             Article = model.Body,
             HeaderExt = model.Header,
-            BodyExt = model.Footer,
+            BodyExt = model.Footer
         };
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorName), out var nikeName);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorEmail), out var email);

@@ -32,13 +32,14 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-8 col-md-10 mx-auto">
-            <small class="text-muted">标签：@if(Model.Article.Tags != null)
-                                         {
-                                             foreach (var tag in Model.Article.Tags)
-                                             {
-                                                 <a tag="@tag"><span class="label">@tag.Name</span></a>
-                                             }
-                                         }</small>
+            <small class="text-muted">标签：
+                @if (Model.Article.Tags != null)
+                {
+                    foreach (var tag in Model.Article.Tags)
+                    {
+                        <a tag="@tag"><span class="label">@tag.Name</span></a>
+                    }
+                }</small>
         </div>
     </div>
 </div>
@@ -51,7 +52,7 @@
     {
         <button class="btn btn-primary float-left">已经是最新一篇啦</button>
     }
-  
+
     @if (Model.NextArticle != null)
     {
         <a class="btn btn-primary float-right" article="@Model.NextArticle">@Model.NextArticle.Title &rarr;</a>

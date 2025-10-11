@@ -12,126 +12,116 @@ var mouseY = 10;
 var howElliptical = 1;
 var aA = null;
 var oDiv = null;
-window.onload=function ()
-{
-	var i=0;
-	var oTag=null;
-	oDiv=document.getElementById('tag_cloud_widget');
-	aA=oDiv.getElementsByTagName('a');
-	for(i=0;i<aA.length;i++)
-	{
-		oTag={};		
-		aA[i].onmouseover = (function (obj) {
-                return function () {
-                    obj.on = true;
-                    this.style.zIndex = 9999;
-                    this.style.color = '#fff';
-                    this.style.background = '#0099ff';
-                    this.style.padding = '5px 5px';
-                    this.style.filter = "alpha(opacity=100)";
-                    this.style.opacity = 1;
-                }
-            })(oTag)
-            aA[i].onmouseout = (function (obj) {
-                return function () {
-                    obj.on = false;
-                    this.style.zIndex = obj.zIndex;
-                    this.style.color = '#fff';
-                    this.style.background = '#30899B';
-                    this.style.padding = '5px';
-                    this.style.filter = "alpha(opacity=" + 100 * obj.alpha + ")";
-                    this.style.opacity = obj.alpha;
-                    this.style.zIndex = obj.zIndex;
-                }
-            })(oTag)
-            oTag.offsetWidth = aA[i].offsetWidth;
-            oTag.offsetHeight = aA[i].offsetHeight;
-            mcList.push(oTag);
-	}
-	sineCosine( 0,0,0 );
-	positionAll();
-	(function () {
-            update();
-            setTimeout(arguments.callee, 40);
-        })();
-};
-function update()
-{
-	var a, b, c = 0;
-        a = (Math.min(Math.max(-mouseY, -size), size) / radius) * tspeed;
-        b = (-Math.min(Math.max(-mouseX, -size), size) / radius) * tspeed;
-        lasta = a;
-        lastb = b;
-        if (Math.abs(a) <= 0.01 && Math.abs(b) <= 0.01) {
-            return;
-        }
-        sineCosine(a, b, c);
-        for (var i = 0; i < mcList.length; i++) {
-            if (mcList[i].on) {
-                continue;
+window.onload = function () {
+    var i = 0;
+    var oTag = null;
+    oDiv = document.getElementById('tag_cloud_widget');
+    aA = oDiv.getElementsByTagName('a');
+    for (i = 0; i < aA.length; i++) {
+        oTag = {};
+        aA[i].onmouseover = (function (obj) {
+            return function () {
+                obj.on = true;
+                this.style.zIndex = 9999;
+                this.style.color = '#fff';
+                this.style.background = '#0099ff';
+                this.style.padding = '5px 5px';
+                this.style.filter = "alpha(opacity=100)";
+                this.style.opacity = 1;
             }
-            var rx1 = mcList[i].cx;
-            var ry1 = mcList[i].cy * ca + mcList[i].cz * (-sa);
-            var rz1 = mcList[i].cy * sa + mcList[i].cz * ca;
+        })(oTag)
+        aA[i].onmouseout = (function (obj) {
+            return function () {
+                obj.on = false;
+                this.style.zIndex = obj.zIndex;
+                this.style.color = '#fff';
+                this.style.background = '#30899B';
+                this.style.padding = '5px';
+                this.style.filter = "alpha(opacity=" + 100 * obj.alpha + ")";
+                this.style.opacity = obj.alpha;
+                this.style.zIndex = obj.zIndex;
+            }
+        })(oTag)
+        oTag.offsetWidth = aA[i].offsetWidth;
+        oTag.offsetHeight = aA[i].offsetHeight;
+        mcList.push(oTag);
+    }
+    sineCosine(0, 0, 0);
+    positionAll();
+    (function () {
+        update();
+        setTimeout(arguments.callee, 40);
+    })();
+};
 
-            var rx2 = rx1 * cb + rz1 * sb;
-            var ry2 = ry1;
-            var rz2 = rx1 * (-sb) + rz1 * cb;
-
-            var rx3 = rx2 * cc + ry2 * (-sc);
-            var ry3 = rx2 * sc + ry2 * cc;
-            var rz3 = rz2;
-
-            mcList[i].cx = rx3;
-            mcList[i].cy = ry3;
-            mcList[i].cz = rz3;
-
-            per = d / (d + rz3);
-
-            mcList[i].x = (howElliptical * rx3 * per) - (howElliptical * 2);
-            mcList[i].y = ry3 * per;
-            mcList[i].scale = per;
-            var alpha = per;
-            alpha = (alpha - 0.6) * (10 / 6);
-            mcList[i].alpha = alpha * alpha * alpha - 0.2;
-            mcList[i].zIndex = Math.ceil(100 - Math.floor(mcList[i].cz));
+function update() {
+    var a, b, c = 0;
+    a = (Math.min(Math.max(-mouseY, -size), size) / radius) * tspeed;
+    b = (-Math.min(Math.max(-mouseX, -size), size) / radius) * tspeed;
+    lasta = a;
+    lastb = b;
+    if (Math.abs(a) <= 0.01 && Math.abs(b) <= 0.01) {
+        return;
+    }
+    sineCosine(a, b, c);
+    for (var i = 0; i < mcList.length; i++) {
+        if (mcList[i].on) {
+            continue;
         }
-        doPosition();
+        var rx1 = mcList[i].cx;
+        var ry1 = mcList[i].cy * ca + mcList[i].cz * (-sa);
+        var rz1 = mcList[i].cy * sa + mcList[i].cz * ca;
+
+        var rx2 = rx1 * cb + rz1 * sb;
+        var ry2 = ry1;
+        var rz2 = rx1 * (-sb) + rz1 * cb;
+
+        var rx3 = rx2 * cc + ry2 * (-sc);
+        var ry3 = rx2 * sc + ry2 * cc;
+        var rz3 = rz2;
+
+        mcList[i].cx = rx3;
+        mcList[i].cy = ry3;
+        mcList[i].cz = rz3;
+
+        per = d / (d + rz3);
+
+        mcList[i].x = (howElliptical * rx3 * per) - (howElliptical * 2);
+        mcList[i].y = ry3 * per;
+        mcList[i].scale = per;
+        var alpha = per;
+        alpha = (alpha - 0.6) * (10 / 6);
+        mcList[i].alpha = alpha * alpha * alpha - 0.2;
+        mcList[i].zIndex = Math.ceil(100 - Math.floor(mcList[i].cz));
+    }
+    doPosition();
 }
-function depthSort()
-{
-	var i=0;
-	var aTmp=[];
-	for(i=0;i<aA.length;i++)
-	{
-		aTmp.push(aA[i]);
-	}
-	aTmp.sort
-	(
-		function (vItem1, vItem2)
-		{
-			if(vItem1.cz>vItem2.cz)
-			{
-				return -1;
-			}
-			else if(vItem1.cz<vItem2.cz)
-			{
-				return 1;
-			}
-			else
-			{
-				return 0;
-			}
-		}
-	);
-	for(i=0;i<aTmp.length;i++)
-	{
-		aTmp[i].style.zIndex=i;
-	}
+
+function depthSort() {
+    var i = 0;
+    var aTmp = [];
+    for (i = 0; i < aA.length; i++) {
+        aTmp.push(aA[i]);
+    }
+    aTmp.sort
+    (
+        function (vItem1, vItem2) {
+            if (vItem1.cz > vItem2.cz) {
+                return -1;
+            } else if (vItem1.cz < vItem2.cz) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+    );
+    for (i = 0; i < aTmp.length; i++) {
+        aTmp[i].style.zIndex = i;
+    }
 }
-function positionAll()
-{
-	var phi = 0;
+
+function positionAll() {
+    var phi = 0;
     var theta = 0;
     var max = mcList.length;
     for (var i = 0; i < max; i++) {
@@ -151,38 +141,38 @@ function positionAll()
         aA[i].style.top = mcList[i].cy + oDiv.offsetHeight / 2 - mcList[i].offsetHeight / 2 + 'px';
     }
 }
-function doPosition()
-{
-	var l = oDiv.offsetWidth / 2;
-        var t = oDiv.offsetHeight / 2;
-        for (var i = 0; i < mcList.length; i++) {
-            if (mcList[i].on) {
-                continue;
-            }
-            var aAs = aA[i].style;
-            if (mcList[i].alpha > 0.1) {
-                if (aAs.display != '')
-                    aAs.display = '';
-            } else {
-                if (aAs.display != 'none')
-                    aAs.display = 'none';
-                continue;
-            }
-            aAs.left = mcList[i].cx + l - mcList[i].offsetWidth / 2 + 'px';
-            aAs.top = mcList[i].cy + t - mcList[i].offsetHeight / 2 + 'px';
-            //aAs.fontSize=Math.ceil(12*mcList[i].scale/2)+8+'px';
-            //aAs.filter="progid:DXImageTransform.Microsoft.Alpha(opacity="+100*mcList[i].alpha+")";
-            aAs.filter = "alpha(opacity=" + 100 * mcList[i].alpha + ")";
-            aAs.zIndex = mcList[i].zIndex;
-            aAs.opacity = mcList[i].alpha;
+
+function doPosition() {
+    var l = oDiv.offsetWidth / 2;
+    var t = oDiv.offsetHeight / 2;
+    for (var i = 0; i < mcList.length; i++) {
+        if (mcList[i].on) {
+            continue;
         }
+        var aAs = aA[i].style;
+        if (mcList[i].alpha > 0.1) {
+            if (aAs.display != '')
+                aAs.display = '';
+        } else {
+            if (aAs.display != 'none')
+                aAs.display = 'none';
+            continue;
+        }
+        aAs.left = mcList[i].cx + l - mcList[i].offsetWidth / 2 + 'px';
+        aAs.top = mcList[i].cy + t - mcList[i].offsetHeight / 2 + 'px';
+        //aAs.fontSize=Math.ceil(12*mcList[i].scale/2)+8+'px';
+        //aAs.filter="progid:DXImageTransform.Microsoft.Alpha(opacity="+100*mcList[i].alpha+")";
+        aAs.filter = "alpha(opacity=" + 100 * mcList[i].alpha + ")";
+        aAs.zIndex = mcList[i].zIndex;
+        aAs.opacity = mcList[i].alpha;
+    }
 }
-function sineCosine( a, b, c)
-{
-	sa = Math.sin(a * dtr);
+
+function sineCosine(a, b, c) {
+    sa = Math.sin(a * dtr);
     ca = Math.cos(a * dtr);
     sb = Math.sin(b * dtr);
     cb = Math.cos(b * dtr);
-	sc = Math.sin(c * dtr);
-	cc = Math.cos(c * dtr);
+    sc = Math.sin(c * dtr);
+    cc = Math.cos(c * dtr);
 }

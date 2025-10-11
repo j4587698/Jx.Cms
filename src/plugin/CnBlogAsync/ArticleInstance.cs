@@ -29,18 +29,15 @@ public class ArticleInstance : IArticlePlugin
     {
         var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
         var defaultValue = settingsService.GetValue(Constants.PluginName, Constants.BlogDefaultValue);
-        if (defaultValue.IsNullOrEmpty())
-        {
-            return new List<ArticleExtModel>();
-        }
+        if (defaultValue.IsNullOrEmpty()) return new List<ArticleExtModel>();
         var models = new List<ArticleExtModel>
         {
-            new ArticleExtModel()
+            new()
             {
                 ArticleExtTypeEnum = ArticleExtTypeEnum.Select,
                 DefaultValue = defaultValue,
                 DisplayName = "是否同步文章到博客园",
-                Items = new List<string>()
+                Items = new List<string>
                 {
                     "是", "否"
                 },
@@ -54,21 +51,13 @@ public class ArticleInstance : IArticlePlugin
     public bool OnArticleBeforeSave(ArticleEntity articleEntity, out string errorMsg)
     {
         errorMsg = "";
-        if (articleEntity.Status != ArticleStatusEnum.Published)
-        {
-            return true;
-        }
-        if (articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.EnableFlag).Value != "是")
-        {
-            return true;
-        }
+        if (articleEntity.Status != ArticleStatusEnum.Published) return true;
+        if (articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.EnableFlag)
+                .Value != "是") return true;
 
         var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
         var values = settingsService.GetAllValues(Constants.PluginName);
-        if (!values.ContainsKey(Constants.BlogName))
-        {
-            return true;
-        }
+        if (!values.ContainsKey(Constants.BlogName)) return true;
         var option = new CnBlogsOption(values[Constants.BlogName], values[Constants.BlogUserName],
             values[Constants.BlogPassword]);
         var client = new Client(option);
@@ -78,10 +67,7 @@ public class ArticleInstance : IArticlePlugin
         var imgs = Html.GetAllImgSrc(content);
         foreach (var img in imgs)
         {
-            if (!img.StartsWith("\\") && !img.StartsWith("/"))
-            {
-                continue;
-            }
+            if (!img.StartsWith("\\") && !img.StartsWith("/")) continue;
 
             var bytes = File.ReadAllBytes(Path.Combine(_webHostEnvironment.WebRootPath, img.TrimStart('\\', '/')));
             var media = client.NewMediaObject(Path.GetFileName(img),
@@ -96,28 +82,27 @@ public class ArticleInstance : IArticlePlugin
         if (catalogue != null)
         {
             if (categories.All(x => x.Title != $"[随笔分类]{catalogue.Name}"))
-            {
-                client.NewCategory(new WpCategory()
+                client.NewCategory(new WpCategory
                 {
                     Description = catalogue.Description,
                     Name = catalogue.Name,
                     ParentId = 0
                 });
-            }
             categoryName = $"[随笔分类]{catalogue.Name}";
         }
 
         if (articleEntity.Metas.Any(x => x.PluginName == Constants.PluginName && x.Name == Constants.BlogId))
         {
             client.EditPost(
-                articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.BlogId).Value,
-                articleEntity.Title, content, new List<string>(){categoryName}, true);
+                articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.BlogId)
+                    .Value,
+                articleEntity.Title, content, new List<string> { categoryName }, true);
         }
         else
         {
-            var postId = client.NewPost(articleEntity.Title, content, new List<string>(){categoryName},
+            var postId = client.NewPost(articleEntity.Title, content, new List<string> { categoryName },
                 DateTime.Now);
-            articleEntity.Metas.Add(new ArticleMetaEntity()
+            articleEntity.Metas.Add(new ArticleMetaEntity
             {
                 ArticleId = articleEntity.Id,
                 Name = Constants.BlogId,

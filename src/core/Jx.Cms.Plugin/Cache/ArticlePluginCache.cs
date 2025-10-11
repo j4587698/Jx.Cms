@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
+﻿using System.Reflection;
 using Jx.Cms.Plugin.Plugin;
 
 namespace Jx.Cms.Plugin.Cache;
@@ -17,11 +14,12 @@ public class ArticlePluginCache : IPluginCache
 
     public static void RemoveAssembly(Assembly assembly)
     {
-        
     }
 
     public static IEnumerable<IArticlePlugin> GetArticlePlugins()
     {
-        return _articleTypes == null ? Array.Empty<IArticlePlugin>() :_articleTypes.Select(x => Activator.CreateInstance(x) as IArticlePlugin);
+        return _articleTypes == null
+            ? Array.Empty<IArticlePlugin>()
+            : _articleTypes.Select(x => Activator.CreateInstance(x) as IArticlePlugin);
     }
 }

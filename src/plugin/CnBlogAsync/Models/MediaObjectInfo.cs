@@ -1,7 +1,6 @@
-namespace CnBlogAsync.Models
+namespace CnBlogAsync.Models;
+
+public class MediaObjectInfo
 {
-    public class MediaObjectInfo
-    {
-        public string URL { get; set; }
-    }
+    public string URL { get; set; }
 }

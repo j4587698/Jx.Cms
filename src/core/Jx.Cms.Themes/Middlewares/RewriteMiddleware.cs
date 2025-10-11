@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Jx.Cms.Rewrite;
+﻿using Jx.Cms.Rewrite;
 using Jx.Cms.Themes.Model;
 using Jx.Cms.Themes.Util;
 using Microsoft.AspNetCore.Http;
@@ -31,6 +30,7 @@ public class RewriteMiddleware
             await _next.Invoke(context);
             return;
         }
+
         var rewriterModel = RewriterModel.GetSettings();
         if (rewriterModel == null || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
         {
@@ -56,6 +56,7 @@ public class RewriteMiddleware
             await _next.Invoke(context);
             return;
         }
+
         url = RewriteUtil.AnalysisIndex(context.Request.Path, settings);
         if (url != null)
         {
@@ -82,7 +83,7 @@ public class RewriteMiddleware
             await _next.Invoke(context);
             return;
         }
-        
+
         url = RewriteUtil.AnalysisDate(context.Request.Path, settings);
         if (url != null)
         {
@@ -91,8 +92,7 @@ public class RewriteMiddleware
             await _next.Invoke(context);
             return;
         }
-        
+
         await _next.Invoke(context);
     }
-    
 }

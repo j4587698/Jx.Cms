@@ -5,26 +5,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
-      <ProjectReference Include="..\Jx.Cms.DbContext\Jx.Cms.DbContext.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
+        <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.DbContext\Jx.Cms.DbContext.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Areas" />
-      <Folder Include="Install" />
+        <Folder Include="Areas"/>
+        <Folder Include="Install"/>
     </ItemGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="Pages\Info\Step1.razor" />
-      <AdditionalFiles Include="Pages\Info\Step2.razor" />
-      <AdditionalFiles Include="Pages\Info\Step3.razor" />
-      <AdditionalFiles Include="Pages\Info\Step4.razor" />
-      <AdditionalFiles Include="Pages\Info\_imports.razor" />
-      <AdditionalFiles Include="Pages\Layout\InstallLayout.razor" />
-      <AdditionalFiles Include="Pages\_Imports.razor" />
-      <AdditionalFiles Include="Pages\_InstallHost.cshtml" />
+        <AdditionalFiles Include="Pages\_Imports.razor"/>
     </ItemGroup>
 
 </Project>

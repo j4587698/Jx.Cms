@@ -1,5 +1,5 @@
 ﻿@using Jx.Cms.Plugin.Service.Both
-@inject ISettingsService SettingsService 
+@inject ISettingsService SettingsService
 @inject ToastService ToastService
 
 <Row ItemsPerRow="ItemsPerRow.Two">
@@ -13,9 +13,10 @@
 </Row>
 
 @code {
+
     // 默认使用的主题项
     private string DefaultCodeType { get; set; }
-    
+
     private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
 
     protected override void OnInitialized()

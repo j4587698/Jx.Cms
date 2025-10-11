@@ -1,8 +1,5 @@
-@using Jx.Cms.Install.ViewModel
 @using Jx.Cms.Install.Validator
-@using Jx.Cms.DbContext.Entities.Admin
-@using Jx.Cms.Plugin.Service.Admin
-@using Mapster
+@using Jx.Cms.Install.ViewModel
 @inherits StepBase
 
 <ValidateForm Model="@InstallInfoVm" OnValidSubmit="@OnSubmit">
@@ -18,10 +15,12 @@
                 <BootstrapInput @bind-Value="@InstallInfoVm.NickName" DisplayText="昵称"></BootstrapInput>
             </div>
             <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@InstallInfoVm.Password" DisplayText="管理员密码" type="password"></BootstrapInput>
+                <BootstrapInput @bind-Value="@InstallInfoVm.Password" DisplayText="管理员密码"
+                                type="password"></BootstrapInput>
             </div>
             <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@InstallInfoVm.RePassword" DisplayText="管理员密码重复" type="password" ValidateRules="@Validators">
+                <BootstrapInput @bind-Value="@InstallInfoVm.RePassword" DisplayText="管理员密码重复" type="password"
+                                ValidateRules="@Validators">
                 </BootstrapInput>
             </div>
         </div>
@@ -33,14 +32,14 @@
 </ValidateForm>
 
 @code {
-    [Parameter]
-    public InstallInfoVm InstallInfoVm { get; set; }
+    [Parameter] public InstallInfoVm InstallInfoVm { get; set; }
 
-    private List<IValidator> Validators { get; set; } = new List<IValidator>() { new InstallValidator() };
+    private List<IValidator> Validators { get; } = new() { new InstallValidator() };
 
     private Task OnSubmit(EditContext arg)
     {
         Next?.Invoke();
         return Task.CompletedTask;
     }
+
 }

@@ -8,6 +8,7 @@
 @_renderFragment
 
 @code {
+
     [Parameter]
     public string Id
     {
@@ -36,12 +37,14 @@
             NavigationManager.NavigateTo("Admin");
             return;
         }
+
         var body = PluginUtil.OnPluginPageShow(_id);
         if (body == null)
         {
             NavigationManager.NavigateTo("Admin");
             return;
         }
+
         _renderFragment = body;
     }
 

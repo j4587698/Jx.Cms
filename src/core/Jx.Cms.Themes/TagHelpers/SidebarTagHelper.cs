@@ -19,7 +19,7 @@ public class SidebarTagHelper : TagHelper
         output.Attributes.SetAttribute("class", "widget-area");
         foreach (var widget in widgets)
         {
-            TagBuilder widgetTag = new TagBuilder("aside");
+            var widgetTag = new TagBuilder("aside");
             widgetTag.AddCssClass($"widget widget_{widget.Name}");
             var h3Tag = new TagBuilder("h3");
             h3Tag.AddCssClass("widget-title");
@@ -34,6 +34,5 @@ public class SidebarTagHelper : TagHelper
             widgetTag.InnerHtml.AppendHtml(clearTag);
             output.Content.AppendHtml(widgetTag);
         }
-        
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using Jx.Cms.Common.Enum;
+﻿using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.DbContext.Entities.Front;
 using Jx.Cms.Plugin.Service.Admin;
@@ -22,10 +21,8 @@ public class MenuTagHelper : TagHelper
             output.SuppressOutput();
             return;
         }
-        foreach (var menu in menus)
-        {
-            output.Content.AppendHtml(CreateItem(menu));
-        }
+
+        foreach (var menu in menus) output.Content.AppendHtml(CreateItem(menu));
     }
 
     private TagBuilder CreateItem(MenuEntity menuEntity)
@@ -36,36 +33,36 @@ public class MenuTagHelper : TagHelper
         switch (menuEntity.MenuType)
         {
             case MenuTypeEnum.Page:
-                aTag.MergeAttribute("href", RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>().GetPageById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href",
+                    RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>()
+                        .GetPageById(menuEntity.TypeId)));
                 break;
             case MenuTypeEnum.Article:
-                aTag.MergeAttribute("href", RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>().GetArticleById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href",
+                    RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>()
+                        .GetArticleById(menuEntity.TypeId)));
                 break;
             case MenuTypeEnum.CustomUrl:
                 aTag.MergeAttribute("href", menuEntity.Url);
                 break;
             case MenuTypeEnum.Catalogue:
-                aTag.MergeAttribute("href", RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>().FindCatalogById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href",
+                    RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>()
+                        .FindCatalogById(menuEntity.TypeId)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        if (menuEntity.OpenInNewWindow)
-        {
-            aTag.MergeAttribute("target", "_blank");
-        }
-        
+        if (menuEntity.OpenInNewWindow) aTag.MergeAttribute("target", "_blank");
+
         aTag.MergeAttribute("title", menuEntity.Title);
         aTag.InnerHtml.AppendHtml(menuEntity.NavTitle);
         liTag.InnerHtml.AppendHtml(aTag);
         if (menuEntity.HasChildren)
         {
             var ulTag = new TagBuilder("ul");
-            foreach (var child in menuEntity.Children)
-            {
-                ulTag.InnerHtml.AppendHtml(CreateItem(child));
-            }
+            foreach (var child in menuEntity.Children) ulTag.InnerHtml.AppendHtml(CreateItem(child));
 
             liTag.InnerHtml.AppendHtml(ulTag);
         }

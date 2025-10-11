@@ -1,0 +1,8 @@
+@using Jx.Cms.Install
+@using Microsoft.AspNetCore.Components.Authorization
+<Router AppAssembly="@typeof(Program).Assembly" AdditionalAssemblies="@(new[] { typeof(Jx.Cms.Install.Pages.Install).Assembly })">
+    <Found Context="routeData">
+        <AuthorizeRouteView Resource="@routeData" RouteData="@routeData">
+        </AuthorizeRouteView>
+    </Found>
+</Router>

@@ -1,28 +1,28 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
 
-  <PropertyGroup>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-  </PropertyGroup>
+    <PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
+    <ItemGroup>
+        <FrameworkReference Include="Microsoft.AspNetCore.App"/>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Include="theme.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Include="theme.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="screenshot.jpg">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <None Update="screenshot.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
-  <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).views.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)theme.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)screenshot.jpg&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;" />
-  </Target>
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).views.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)theme.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)screenshot.jpg&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;"/>
+    </Target>
 
 
 </Project>

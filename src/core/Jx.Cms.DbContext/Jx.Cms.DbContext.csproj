@@ -1,18 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    
 
     <ItemGroup>
-      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+        <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="FreeSql.All" Version="3.5.215-preview20250917" />
-      <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.5.215-preview20250917" />
+        <PackageReference Include="FreeSql.All" Version="3.5.215-preview20250917"/>
+        <PackageReference Include="FreeSql.Extensions.BaseEntity" Version="3.5.215-preview20250917"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Entities" />
+        <Folder Include="Entities"/>
     </ItemGroup>
 
 </Project>

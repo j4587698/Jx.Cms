@@ -1,12 +1,12 @@
-﻿@using Blogs.Model
+﻿@using Blogs.Enum
+@using Blogs.Model
 @using Jx.Cms.Themes.Vm
-@using Blogs.Enum
 @model Jx.Cms.Themes.Vm.PageVm
 
 @Html.Raw(Model.HeaderExt)
 
 @{
-	var blogs = ViewBag.blogs as SettingsModel;
+    var blogs = ViewBag.blogs as SettingsModel;
     var settings = ViewData["settings"] as SystemSettingsVm;
 }
 
@@ -14,27 +14,29 @@
     &nbsp;&gt;&nbsp;@Model.Article.Title
 </nav>
 
-<div id="content" class="site-content">	
+<div id="content" class="site-content">
     <div class="clear"></div>
     <div id="primary" class="content-area">
         <main id="main" class="site-main" role="main">
             <article id="post-@Model.Article.Id" class="post-@Model.Article.Id post type-page status-publish hentry">
 
                 <header class="entry-header">
-                    <h1 class="entry-title">@Model.Article.Title</h1>	
+                    <h1 class="entry-title">@Model.Article.Title</h1>
                     <div class="single_info">
-                        <span class="date"><i class="fas fa-clock"></i>&nbsp;@Model.Article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
+                        <span class="date"><i
+                                class="fas fa-clock"></i>&nbsp;@Model.Article.PublishTime.ToString("yyyy-MM-dd HH:mm:ss")&nbsp;</span>
                         <span class="views"><i class="fas fa-users"></i>&nbsp;@Model.Article.ReadingVolume 人阅读</span>
                         <span class="comment"><i class="fas fa-comment"></i>&nbsp;@(Model.CommentCount) 条评论</span>
                         @if (ViewData["user"] != null)
                         {
-                            <span class="edit"><i class="fas fa-pencil-alt"></i>&nbsp;<a href="/Admin/Article/Write/@Model.Article.Id" rel="nofollow">编辑</a></span>
+                            <span class="edit"><i class="fas fa-pencil-alt"></i>&nbsp;<a
+                                    href="/Admin/Article/Write/@Model.Article.Id" rel="nofollow">编辑</a></span>
                         }
-                    </div>						
+                    </div>
                 </header><!-- .entry-header -->
 
                 <div class="entry-content">
-                    <div class="single-content">									
+                    <div class="single-content">
                         @Html.Raw(Model.Article.Content)
                     </div>
                     <div class="clear"></div>
@@ -62,4 +64,4 @@
     }
 </div>
 <div class="clear"></div>
-@Html.Raw(@Model.BodyExt)
+@Html.Raw(Model.BodyExt)

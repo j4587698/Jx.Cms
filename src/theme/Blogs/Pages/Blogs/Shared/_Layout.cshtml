@@ -1,115 +1,121 @@
 ﻿@using Blogs.Model
-@using Jx.Cms.Themes.TagHelpers
 @using Jx.Cms.Themes.Vm
 @using Jx.Toolbox.Extensions
-@using Microsoft.AspNetCore.Mvc.TagHelpers
-
 @{
 	var type = ViewBag.type as string;
 
 	var settings = ViewData["settings"] as SystemSettingsVm;
 
 	var blogs = ViewBag.blogs as SettingsModel;
-
 }
 
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta http-equiv="Cache-Control" content="no-transform">
-<meta http-equiv="Cache-Control" content="no-siteapp">
-<meta name="renderer" content="webkit">
-<meta name="applicable-device" content="pc,mobile">
-<meta name="HandheldFriendly" content="true"/>
-<meta name="robots" content="index,follow"/>
-@await RenderSectionAsync("header", false)
-@if (type == "Home")
-{
-	var index = Model as IndexVm;
-	<title>@settings.Title @if (index!.PageNum > 1)
-	                       {
-		                       @($"{blogs.Connector}第{index.PageNum}页")
-	                       }
-		@if (!settings.SubTitle.IsNullOrEmpty())
-		{
-			@($"{blogs.Connector}{settings.SubTitle}")
-		}</title>
-	<meta name="Keywords" content="@blogs.Keywords,@settings.Title">
-	<meta name="description" content="@blogs.Description">
-}
-else if (type == "Catalogue")
-{
-	var catalogue = Model as CatalogVm;
-	<title>@catalogue!.Catalog.Name @if (catalogue.PageNum > 1){@blogs.Connector @($"第{catalogue.PageNum}页")}@blogs.Connector@settings.Title</title>
-	<meta name="Keywords" content="@catalogue!.Catalog.Name,@settings.Title">
-	<meta name="description" content="@catalogue.Catalog.Description">
-}
-else if (type == "Post")
-{
-	var article = Model as PostVm;
-	<title>@($"{article!.Article.Title}{blogs.Connector}{article.Article.Catalogue.Name}{blogs.Connector}{settings.Title}")</title>
-	var tag = article.Article.Tags;
-	var keywords = (tag == null || tag.Count == 0) ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
-	var description = article.Article.Description.IsNullOrEmpty() ? Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Content, 135) : Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Description, 135);
-	<meta name="keywords" content="@keywords"/>
-	<meta name="description" content="@description"/>
-	<meta name="author" content="@article.Article.Author">
-}else if (type == "Page")
-{
-	var page = Model as PageVm;
-	<title>@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")</title>
-	<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
-	<meta name="description" content="@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")"/>
-	<meta name="author" content="@(Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(page.Article.Content, 135))" />
-}else if(type == "Tag")
-{
-	var tag = Model as TagVm;
-	<title>@($"{tag.Tag.Name}{(tag.PageNum > 1 ? "第" + tag.PageNum + "页" : "")}{blogs.Connector}{settings.Title}")</title>
-	<meta name="Keywords" content="@tag.Tag.Name">
-	<meta name="description" content="@tag.Tag.Name 的文章">
-}
-else if(type == "Date")
-{
-	var date = Model as DateVm;
-	<title>@($"{date.Year}年{date.Month}月的文章")
-		@if (date.PageNum > 1)
-		{
-			@blogs.Connector
-			@($"第{date.PageNum}页")
-		}
-		@blogs.Connector@settings.Title</title>
-	<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs.Connector@settings.Title">
-	<meta name="description" content="@($"{date.Year}年{date.Month}月的文章")
-                                      		@if (date.PageNum > 1)
-                                      		{
-                                      			@blogs.Connector
-                                      			@($"第{date.PageNum}页")
-                                      		}
+	<meta charset="UTF-8">
+	<meta name="viewport"
+	      content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+	<meta http-equiv="Cache-Control" content="no-transform">
+	<meta http-equiv="Cache-Control" content="no-siteapp">
+	<meta name="renderer" content="webkit">
+	<meta name="applicable-device" content="pc,mobile">
+	<meta name="HandheldFriendly" content="true"/>
+	<meta name="robots" content="index,follow"/>
+	@await RenderSectionAsync("header", false)
+	@if (type == "Home")
+	{
+		var index = Model as IndexVm;
+		<title>@settings.Title
+			@if (index!.PageNum > 1)
+			{
+				@($"{blogs.Connector}第{index.PageNum}页")
+			}
+			@if (!settings.SubTitle.IsNullOrEmpty())
+			{
+				@($"{blogs.Connector}{settings.SubTitle}")
+			}</title>
+		<meta name="Keywords" content="@blogs.Keywords,@settings.Title">
+		<meta name="description" content="@blogs.Description">
+	}
+	else if (type == "Catalogue")
+	{
+		var catalogue = Model as CatalogVm;
+		<title>@catalogue!.Catalog.Name
+			@if (catalogue.PageNum > 1)
+			{
+				@blogs.Connector
+				@($"第{catalogue.PageNum}页")
+			}
+			@blogs.Connector@settings.Title</title>
+		<meta name="Keywords" content="@catalogue!.Catalog.Name,@settings.Title">
+		<meta name="description" content="@catalogue.Catalog.Description">
+	}
+	else if (type == "Post")
+	{
+		var article = Model as PostVm;
+		<title>@($"{article!.Article.Title}{blogs.Connector}{article.Article.Catalogue.Name}{blogs.Connector}{settings.Title}")</title>
+		var tag = article.Article.Tags;
+		var keywords = tag == null || tag.Count == 0 ? article.Article.Title : string.Join(",", tag.Select(x => x.Name));
+		var description = article.Article.Description.IsNullOrEmpty() ? Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Content, 135) : Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(article.Article.Description, 135);
+		<meta name="keywords" content="@keywords"/>
+		<meta name="description" content="@description"/>
+		<meta name="author" content="@article.Article.Author">
+	}
+	else if (type == "Page")
+	{
+		var page = Model as PageVm;
+		<title>@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")</title>
+		<meta name="keywords" content="@($"{page.Article.Title},{settings.Title}")"/>
+		<meta name="description" content="@($"{page!.Article.Title}{blogs.Connector}{settings.Title}")"/>
+		<meta name="author" content="@(Jx.Toolbox.HtmlTools.Html.RemoveHtmlTag(page.Article.Content, 135))"/>
+	}
+	else if (type == "Tag")
+	{
+		var tag = Model as TagVm;
+		<title>@($"{tag.Tag.Name}{(tag.PageNum > 1 ? "第" + tag.PageNum + "页" : "")}{blogs.Connector}{settings.Title}")</title>
+		<meta name="Keywords" content="@tag.Tag.Name">
+		<meta name="description" content="@tag.Tag.Name 的文章">
+	}
+	else if (type == "Date")
+	{
+		var date = Model as DateVm;
+		<title>@($"{date.Year}年{date.Month}月的文章")
+			@if (date.PageNum > 1)
+			{
+				@blogs.Connector
+				@($"第{date.PageNum}页")
+			}
+			@blogs.Connector@settings.Title</title>
+		<meta name="Keywords" content="@($"{date.Year}年{date.Month}月的文章"),@blogs.Connector@settings.Title">
+		<meta name="description" content="@($"{date.Year}年{date.Month}月的文章")
+                                      		@if (date.PageNum > 1) { @blogs.Connector @($"第{date.PageNum}页") }
                                       		@blogs.Connector@settings.Title">
-}
-<link rel="shortcut icon" href="@blogs.FaviconUrl">
-<link rel="profile" href="http://gmpg.org/xfn/11">
-<!--[if lt IE 9]><script src="/Blogs/js/html5-css3.js"></script><![endif]-->
-<link rel="stylesheet" rev="stylesheet" href="/Blogs/css/style.css" type="text/css" media="all"/>
-<script src="/Blogs/js/jquery-2.2.4.min.js" type="text/javascript"></script>
-<script src="/Blogs/js/custom.js" type="text/javascript"></script>
-<script src="/Blogs/js/slides.js" type="text/javascript"></script>
-<script src="/Blogs/js/stickySidebar.js" type="text/javascript"></script>
-<script src="/Blogs/js/script.js" type="text/javascript"></script>
-<script src="/Blogs/js/scrollmonitor.js" type="text/javascript"></script>
-@if(type is "Article" or "Page"){
-<script src="/Blogs/js/fancybox.min.js" type="text/javascript"></script>
-}
-@* 3D标签云功能已移除，如需要可以重新实现 *@
-@* <script src="/Blogs/js/3dtag.js" type="text/javascript"></script> *@
-<!--[if IE]>
-<div class="tixing"><strong>温馨提示：感谢您访问本站，经检测您使用的浏览器为IE浏览器，为了获得更好的浏览体验，请使用Chrome、Firefox或其他浏览器。</strong>
-</div>
-<![endif]-->
-<link rel="stylesheet" id="font-awesome-four-css" href="/Blogs/fonts/fontawesome-all.css" type='text/css' media='all'/>
-@Html.Raw(blogs.HeaderExtendCode)
+	}
+	<link rel="shortcut icon" href="@blogs.FaviconUrl">
+	<link rel="profile" href="http://gmpg.org/xfn/11">
+	<!--[if lt IE 9]>
+	<script src="/Blogs/js/html5-css3.js"></script><![endif]-->
+	<link rel="stylesheet" rev="stylesheet" href="/Blogs/css/style.css" type="text/css" media="all"/>
+	<script src="/Blogs/js/jquery-2.2.4.min.js" type="text/javascript"></script>
+	<script src="/Blogs/js/custom.js" type="text/javascript"></script>
+	<script src="/Blogs/js/slides.js" type="text/javascript"></script>
+	<script src="/Blogs/js/stickySidebar.js" type="text/javascript"></script>
+	<script src="/Blogs/js/script.js" type="text/javascript"></script>
+	<script src="/Blogs/js/scrollmonitor.js" type="text/javascript"></script>
+	@if (type is "Article" or "Page")
+	{
+		<script src="/Blogs/js/fancybox.min.js" type="text/javascript"></script>
+	}
+	@* 3D标签云功能已移除，如需要可以重新实现 *@
+	@* <script src="/Blogs/js/3dtag.js" type="text/javascript"></script> *@
+	<!--[if IE]>
+	<div class="tixing">
+		<strong>温馨提示：感谢您访问本站，经检测您使用的浏览器为IE浏览器，为了获得更好的浏览体验，请使用Chrome、Firefox或其他浏览器。</strong>
+	</div>
+	<![endif]-->
+	<link rel="stylesheet" id="font-awesome-four-css" href="/Blogs/fonts/fontawesome-all.css" type="text/css"
+	      media="all"/>
+	@Html.Raw(blogs.HeaderExtendCode)
 </head>
 <body>
 <div id="page" class="hfeed site">
@@ -117,11 +123,11 @@ else if(type == "Date")
 		<nav id="top-header">
 			<div class="top-nav">
 				<div id="user-profile">
-				@blogs.WelcomeMessage
-				</div>	
+					@blogs.WelcomeMessage
+				</div>
 				<div class="menu-youshangjiao-container">
 					<ul id="menu-youshangjiao" class="top-menu">@Html.Raw(blogs.RightMenu)</ul>
-				</div>		
+				</div>
 			</div>
 		</nav><!-- #top-header -->
 		<div id="menu-box">
@@ -130,68 +136,75 @@ else if(type == "Date")
 					@if (type == "Home")
 					{
 						@:<h1 class="site-title">
-					}
-					else
-					{
-						@:<div class="site-title">
-					}
+						}
+						else
+						{
+							@:<div class="site-title">
+							}
 						<a href="/" title="@settings.Title-@settings.SubTitle">
-							<img src="@blogs.LogoUrl" width="220" height="50" alt="@settings.Title-@settings.SubTitle" title="@settings.Title-@settings.SubTitle"/>
+							<img src="@blogs.LogoUrl" width="220" height="50" alt="@settings.Title-@settings.SubTitle"
+							     title="@settings.Title-@settings.SubTitle"/>
 							<span>@settings.Title</span>
 						</a>
 						@if (type == "Home")
 						{
-						  @:</h1>
-						}
-						else
-						{
-							@:</div>
-						}
-				</div><!-- .logo-site -->			
-				<span class="nav-search"><i class="fas fa-search"></i></span>
-				<div id="site-nav-wrap">
-					<div id="sidr-close"><a href="#sidr-close" class="toggle-sidr-close">X</a></div>
-					<nav id="site-nav" class="main-nav"> 
-						<a href="#sidr-main" id="navigation-toggle" class="bars"><i class="fa fa-bars"></i></a> 
-						<div id="divNavBar-main">
-							<ul id="menu-main" class="down-menu nav-menu">
-								<menu></menu>
-							</ul>
-						</div> 
-					</nav>
-				</div><!-- #site-nav-wrap -->
-			</div><!-- #top-menu -->
-		</div><!-- #menu-box -->
-	</header><!-- #masthead -->
+							@:</h1>
+					}
+					else
+					{
+						@:</div>
+				}
+			</div><!-- .logo-site -->
+			<span class="nav-search"><i class="fas fa-search"></i></span>
+			<div id="site-nav-wrap">
+				<div id="sidr-close"><a href="#sidr-close" class="toggle-sidr-close">X</a></div>
+				<nav id="site-nav" class="main-nav">
+					<a href="#sidr-main" id="navigation-toggle" class="bars"><i class="fa fa-bars"></i></a>
+					<div id="divNavBar-main">
+						<ul id="menu-main" class="down-menu nav-menu">
+							<menu></menu>
+						</ul>
+					</div>
+				</nav>
+			</div><!-- #site-nav-wrap -->
+		</div><!-- #top-menu -->
+</div><!-- #menu-box -->
+</header><!-- #masthead -->
 <div id="main-search">
 	<div id="searchbar">
-	<form id="searchform" name="search" method="get" action="/search">
-	<input type="text" name="q" placeholder="输入搜索内容"> 
-	<button type="submit" id="searchsubmit">搜索</button>
-	</form>
-	</div>	
+		<form id="searchform" name="search" method="get" action="/search">
+			<input type="text" name="q" placeholder="输入搜索内容">
+			<button type="submit" id="searchsubmit">搜索</button>
+		</form>
+	</div>
 	<div class="clear"></div>
 </div>
 
-	@RenderBody()
+@RenderBody()
 <div id="footer">
 	<div class="foot">
 		@if (type == "Home")
 		{
 			<div id="links">
-				<ul class="linkcat"> <li><strong>友情链接：</strong></li>
+				<ul class="linkcat">
+					<li><strong>友情链接：</strong></li>
 					<friend-link></friend-link>
 				</ul>
-				<div class="clear"></div></div>
+				<div class="clear"></div>
+			</div>
 		}
 		<div class="ps">
 			<div class="p p2">
 				<div class="clear"></div>
-				<div class="site-info">Copyright ©  @settings.Title @if (!settings.BeiAn.IsNullOrEmpty())
-				                                                                          {
-					                                                                          @("|")
-					                                                                          <a href="http://beian.miit.gov.cn" target="_blank" rel="nofollow">@settings.BeiAn</a>
-				                                                                          }<span class="footer-tag">&nbsp; | &nbsp; Theme by <a href="http://yigujin.wang/"  target="_blank" title="免费响应式博客主题BlogsV2.0">Blogs</a>&nbsp; | &nbsp; Powered by <a href="http://www.jvxiang.com/" title="JX.CMS" target="_blank">JX.CMS</a></span></div>
+				<div class="site-info">Copyright © @settings.Title
+					@if (!settings.BeiAn.IsNullOrEmpty())
+					{
+						@("|")
+						<a href="http://beian.miit.gov.cn" target="_blank" rel="nofollow">@settings.BeiAn</a>
+					}
+					<span class="footer-tag">&nbsp; | &nbsp; Theme by <a href="http://yigujin.wang/" target="_blank"
+					                                                     title="免费响应式博客主题BlogsV2.0">Blogs</a>&nbsp; | &nbsp; Powered by <a
+							href="http://www.jvxiang.com/" title="JX.CMS" target="_blank">JX.CMS</a></span></div>
 			</div>
 		</div>
 	</div>
@@ -208,17 +221,18 @@ else if(type == "Date")
 		<a href="/contact#divCommentPost" class="tools_comments" title="给我留言" target="_blank" rel="nofollow"></a>
 	}
 </div>
-@if (type == "Post" || type == "Page"){
-<script type="text/javascript">
-const regx = /\.(jpe?g|png|bmp|gif|swf)(?=\?|$)/i;
-$('.single-content').find('a').each(function(){
-    const href = $(this).attr('href');
-    const isImg = regx.test(href);
-    if (isImg) {
-        $(this).attr({'data-fancybox':'images','class':'cboxElement','rel':'example_group'});
-    }
-});
-</script>
+@if (type == "Post" || type == "Page")
+{
+	<script type="text/javascript">
+		const regx = /\.(jpe?g|png|bmp|gif|swf)(?=\?|$)/i;
+		$('.single-content').find('a').each(function () {
+			const href = $(this).attr('href');
+			const isImg = regx.test(href);
+			if (isImg) {
+				$(this).attr({'data-fancybox': 'images', 'class': 'cboxElement', 'rel': 'example_group'});
+			}
+		});
+	</script>
 }
 <script src="/Blogs/js/superfish.js" type="text/javascript"></script>
 @blogs.FooterExtendCode

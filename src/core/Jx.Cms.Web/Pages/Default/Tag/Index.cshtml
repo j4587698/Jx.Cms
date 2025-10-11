@@ -1,12 +1,10 @@
-﻿@using Jx.Cms.Common.Utils
+﻿@using Humanizer
 @using Jx.Cms.Themes.Vm
-@using Humanizer
-@using Jx.Cms.DbContext.Entities.Article
 @model Jx.Cms.Themes.Vm.TagVm
 
 @{
-    var settings = ViewData["settings"] as SystemSettingsVm;
-    var TotalPage = Model.TotalCount % Model.PageSize == 0 ? Model.TotalCount / Model.PageSize : Model.TotalCount / Model.PageSize + 1;
+  var settings = ViewData["settings"] as SystemSettingsVm;
+  var TotalPage = Model.TotalCount % Model.PageSize == 0 ? Model.TotalCount / Model.PageSize : Model.TotalCount / Model.PageSize + 1;
   var StartNo = 0;
   if (TotalPage < 5)
   {
@@ -26,25 +24,26 @@
   }
 }
 <!-- Page Header -->
-    <header class="masthead" style="background-image: url('/Default/img/home-bg.jpg')">
-      <div class="overlay"></div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-8 col-md-10 mx-auto">
-            <div class="site-heading">
-              <h1>标签 @Model.Tag.Name</h1>
-              <span class="subheading">@settings.Title</span>
-            </div>
-          </div>
+<header class="masthead" style="background-image: url('/Default/img/home-bg.jpg')">
+  <div class="overlay"></div>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-md-10 mx-auto">
+        <div class="site-heading">
+          <h1>标签 @Model.Tag.Name</h1>
+          <span class="subheading">@settings.Title</span>
         </div>
       </div>
-    </header>
+    </div>
+  </div>
+</header>
 
-    <!-- Main Content -->
+<!-- Main Content -->
 <div class="container">
   <div class="row">
     <div class="col-lg-8 col-md-10 mx-auto">
-      @foreach (ArticleEntity articleEntity in Model.Articles){
+      @foreach (var articleEntity in Model.Articles)
+      {
         <div class="post-preview">
           <a article="@articleEntity">
             <h2 class="post-title">
@@ -68,12 +67,12 @@
         <nav aria-label="Page navigation example">
           <ul class="pagination justify-content-center">
             <li class="page-item @if (Model.PageNum <= 1) { @("disabled") }">
-              <a class="page-link" label="@Model.Tag" label-page-num="1" >首页</a>
+              <a class="page-link" label="@Model.Tag" label-page-num="1">首页</a>
             </li>
             <li class="page-item @if (Model.PageNum <= 1) { @("disabled") }">
               <a class="page-link" label="@Model.Tag" label-page-num="@Model.PageNum - 1" tabindex="-1">上一页</a>
             </li>
-            @for (int i = StartNo; i <= TotalPage && i < StartNo + 5; i++)
+            @for (var i = StartNo; i <= TotalPage && i < StartNo + 5; i++)
             {
               if (Model.PageNum == i)
               {
@@ -83,12 +82,13 @@
               {
                 <li class="page-item"><a class="page-link" label="@Model.Tag" label-page-num="@i">@i</a></li>
               }
-              
             }
-            <li class="page-item @if (Model.PageNum >= TotalPage){@("disabled")}">
+            <li class="page-item @if (Model.PageNum >= TotalPage) { @("disabled")
+                                 }">
               <a class="page-link" label="@Model.Tag" label-page-num="@Model.PageNum + 1">下一页</a>
             </li>
-            <li class="page-item @if (Model.PageNum >= TotalPage){@("disabled")}">
+            <li class="page-item @if (Model.PageNum >= TotalPage) { @("disabled")
+                                 }">
               <a class="page-link" label="@Model.Tag" label-page-num="@((int)TotalPage)">尾页</a>
             </li>
           </ul>

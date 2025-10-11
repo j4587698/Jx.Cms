@@ -10,7 +10,7 @@ public class TagUrlTagHelper : TagHelper
     public TagEntity Tag { get; set; }
 
     public long TagPageNum { get; set; } = 1;
-    
+
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         base.Process(context, output);

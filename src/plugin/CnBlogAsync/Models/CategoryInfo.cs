@@ -1,11 +1,10 @@
-namespace CnBlogAsync.Models
+namespace CnBlogAsync.Models;
+
+public class CategoryInfo
 {
-    public class CategoryInfo
-    {
-        public string Description { get; set; }
-        public string HTMLURL { get; set; }
-        public string RSSURL { get; set; }
-        public string Title { get; set; }
-        public string CategoryID { get; set; }
-    }
+    public string Description { get; set; }
+    public string HTMLURL { get; set; }
+    public string RSSURL { get; set; }
+    public string Title { get; set; }
+    public string CategoryID { get; set; }
 }

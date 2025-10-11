@@ -1,10 +1,8 @@
-﻿@using Blogs.Model
+﻿@using Blogs.Enum
+@using Blogs.Model
 @using Blogs.Utils
-@using Blogs.Enum
 @using Jx.Cms.Common.Vo
 @using Jx.Cms.Plugin.Components
-@using Microsoft.AspNetCore.Components
-@using Jx.Toolbox.Extensions
 @inject ToastService ToastService
 @inject DialogService DialogService
 
@@ -18,12 +16,12 @@
 <Tab>
     <TabItem Text="图片设置">
         <Row ItemsPerRow="ItemsPerRow.One">
-            <BootstrapInputGroup >
+            <BootstrapInputGroup>
                 <BootstrapInputGroupLabel DisplayText="LOGO图片（300X70）"></BootstrapInputGroupLabel>
                 <BootstrapInput @bind-Value="@_settingsModel.LogoUrl" Readonly="true"></BootstrapInput>
                 <Button OnClick="SelectLogo">选择Logo</Button>
             </BootstrapInputGroup>
-            <BootstrapInputGroup >
+            <BootstrapInputGroup>
                 <BootstrapInputGroupLabel DisplayText="favicon图标（16X16）"></BootstrapInputGroupLabel>
                 <BootstrapInput @bind-Value="@_settingsModel.FaviconUrl" Readonly="true"></BootstrapInput>
                 <Button OnClick="SelectIco">选择Ico</Button>
@@ -34,11 +32,14 @@
         <ColorPicker @bind-Value="@_settingsModel.Color" ShowLabel="true"></ColorPicker>
         @foreach (var color in _colors)
         {
-            <div class='color-box' data-color='@color' style='display:inline;background-color:#@color' @onclick="@(e => { _settingsModel.Color = color; })"></div>
+            <div class='color-box' data-color='@color' style='display:inline;background-color:#@color'
+                 @onclick="@(e => { _settingsModel.Color = color; })"></div>
         }
         <div class="clearfix"></div>
-        <Select Items="@typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
-        <Select Items="@typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar" ShowLabel="true"></Select>
+        <Select Items="@typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout"
+                ShowLabel="true"></Select>
+        <Select Items="@typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar"
+                ShowLabel="true"></Select>
         <BootstrapInput @bind-Value="@_settingsModel.Connector" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Keywords" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Description" ShowLabel="true"></BootstrapInput>
@@ -52,22 +53,22 @@
 
 <style>
     .color-box {
-    float:left;
-    width:30px;
-    height:30px;
-    margin:5px;
-    border: 1px solid white;
-    cursor: pointer; 
-    box-sizing: border-box;
+        float: left;
+        width: 30px;
+        height: 30px;
+        margin: 5px;
+        border: 1px solid white;
+        cursor: pointer;
+        box-sizing: border-box;
     }
 </style>
 
 @code {
 
     private SettingsModel _settingsModel;
-    
-    private readonly string[] _colors = {"C01E22", "0088cc", "FF5E52", "2CDB87", "00D6AC", "EA84FF", "FDAC5F", "FD77B2", "0DAAEA", "C38CFF", "FF926F", "8AC78F", "C7C183"};
-    
+
+    private readonly string[] _colors = { "C01E22", "0088cc", "FF5E52", "2CDB87", "00D6AC", "EA84FF", "FDAC5F", "FD77B2", "0DAAEA", "C38CFF", "FF926F", "8AC78F", "C7C183" };
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
@@ -83,31 +84,31 @@
     private async Task SelectLogo()
     {
         IEnumerable<MediaInfoVo> ret = null;
-        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption
         {
             Title = "请选择媒体",
             IsScrolling = true,
             Size = Size.ExtraLarge,
             ComponentParamters = new Dictionary<string, object>
             {
-                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x)}
+                { nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x) }
             }
         });
         _settingsModel.LogoUrl = ret.First().Url;
     }
-    
+
     private async Task SelectIco()
     {
         IEnumerable<MediaInfoVo> ret = null;
-        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption()
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption
         {
             Title = "请选择媒体",
             IsScrolling = true,
             Size = Size.ExtraLarge,
             ComponentParamters = new Dictionary<string, object>
             {
-                {nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x)},
-                {nameof(MediaSelectComponent.FileType), new []{".ico"}}
+                { nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x) },
+                { nameof(MediaSelectComponent.FileType), new[] { ".ico" } }
             }
         });
         _settingsModel.FaviconUrl = ret.First().Url;

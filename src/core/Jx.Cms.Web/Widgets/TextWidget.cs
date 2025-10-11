@@ -1,14 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text.Json;
+﻿using System.Text.Json;
 using Jx.Cms.Plugin.Plugin;
-using Jx.Cms.Web.Components.WidgetCompnents;
+using Jx.Cms.Web.Components.Components.WidgetCompnents;
 using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Web.Widgets;
 
 /// <summary>
-/// 文本小工具
+///     文本小工具
 /// </summary>
 public class TextWidget : IWidget
 {
@@ -19,26 +17,21 @@ public class TextWidget : IWidget
     public string Description { get; set; } = "输出任意文本";
 
     public Type SystemBodyType { get; set; } = typeof(TextCompnent);
-    
+
     public string Parameter { get; set; }
 
     public string GetWidgetName()
     {
-        if (Parameter.IsNullOrEmpty())
-        {
-            return "";
-        }
+        if (Parameter.IsNullOrEmpty()) return "";
         var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(Parameter);
         return parameters != null && parameters.ContainsKey("Title") ? parameters["Title"] : "";
     }
 
     public string GetWidgetHtml()
     {
-        if (Parameter.IsNullOrEmpty())
-        {
-            return "";
-        }
+        if (Parameter.IsNullOrEmpty()) return "";
         var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(Parameter);
-        return $"<div class=\"textwidget\">{(parameters != null && parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
+        return
+            $"<div class=\"textwidget\">{(parameters != null && parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
     }
 }

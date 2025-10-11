@@ -1,7 +1,7 @@
 ﻿@page "/Admin/Appearance/Link"
+@using AngleSharp
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
-@using AngleSharp
 @using Jx.Cms.DbContext.Entities.Front
 @using Jx.Cms.Plugin.Service.Both
 @using Constants = Jx.Cms.Common.Utils.Constants
@@ -11,29 +11,29 @@
 
 @attribute [Menu("65C021C1-C8C1-43D3-8177-AEE795753A62", "友情链接", "Admin/Appearance/Link", 10, ParentId = MenuIds.AppearanceId)]
 
- <Table TItem="MenuEntity" IsBordered="true" ShowExtendButtons="true" ShowToolbar="true" EditMode="EditMode.InCell"
-               OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" OnAddAsync="OnAddAsync">
-            <TableColumns>
-                <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
-                <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
-                <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
-                <TableColumn @bind-Field="@context.Url" Text="链接地址"></TableColumn>
-                <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
-                    <Template Context="value">
-                        @(value.Value?"是":"否")
-                    </Template>
-                </TableColumn>
-            </TableColumns>
- </Table>
+<Table TItem="MenuEntity" IsBordered="true" ShowExtendButtons="true" ShowToolbar="true" EditMode="EditMode.InCell"
+       OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync" OnAddAsync="OnAddAsync">
+    <TableColumns>
+        <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
+        <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
+        <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
+        <TableColumn @bind-Field="@context.Url" Text="链接地址"></TableColumn>
+        <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
+            <Template Context="value">
+                @(value.Value ? "是" : "否")
+            </Template>
+        </TableColumn>
+    </TableColumns>
+</Table>
 
 @code {
 
     private List<MenuEntity> links;
-    
+
     private Task<QueryData<MenuEntity>> OnQueryAsync(QueryPageOptions arg)
     {
         links = MenuService.GetAllLinks();
-        return Task.FromResult(new QueryData<MenuEntity>()
+        return Task.FromResult(new QueryData<MenuEntity>
         {
             Items = links
         });

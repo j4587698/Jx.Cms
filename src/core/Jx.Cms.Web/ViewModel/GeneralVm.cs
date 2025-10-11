@@ -1,7 +1,5 @@
-﻿namespace Jx.Cms.Web.ViewModel
+﻿namespace Jx.Cms.Web.ViewModel;
+
+public class GeneralVm
 {
-    public class GeneralVm
-    {
-        
-    }
 }

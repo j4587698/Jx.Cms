@@ -13,13 +13,6 @@ public class InstallStartup
 
     public void Configure(IApplicationBuilder app, IHostEnvironment env)
     {
-        app.UseMiddleware<InstallMiddleware>("/Install/Step1");
-        app.UseRouting();
-        app.UseEndpoints(endpoints =>
-        {
-            endpoints.MapDefaultControllerRoute();
-            endpoints.MapRazorPages();
-            endpoints.MapFallbackToPage("~/Install/{*clientroutes:nonfile}", "/_InstallHost");
-        });
+        app.UseMiddleware<InstallMiddleware>("/Install");
     }
 }

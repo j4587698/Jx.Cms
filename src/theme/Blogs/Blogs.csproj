@@ -1,32 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
-  </PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    </PropertyGroup>
 
     <ItemGroup>
-        <EmbeddedResource Include="wwwroot/**" />
+        <EmbeddedResource Include="wwwroot/**"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+        <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9"/>
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="screenshot.jpg">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="screenshot.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\core\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
+        <ProjectReference Include="..\..\core\Jx.Cms.Themes\Jx.Cms.Themes.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <UpToDateCheckInput Remove="Pages\Blogs\Shared\_Layout.cshtml" />
-      <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml" />
-      <UpToDateCheckInput Remove="Pages\Shared\_ViewStart.cshtml" />
+        <UpToDateCheckInput Remove="Pages\Blogs\Shared\_Layout.cshtml"/>
+        <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml"/>
+        <UpToDateCheckInput Remove="Pages\Shared\_ViewStart.cshtml"/>
     </ItemGroup>
 
     <Target Name="SetAllProjectReferenceAsPublic" AfterTargets="AssignProjectConfiguration" BeforeTargets="ResolveProjectReferences" Condition="'$(OutputType)' == 'Library' and $(AssemblyName.EndsWith('Tests')) == 'false' ">
@@ -41,6 +41,6 @@
     </Target>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="if not exist &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; mkdir &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; &amp;&amp; copy /Y &quot;$(TargetPath)&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; copy /Y &quot;$(TargetDir)\*.dll&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; if exist &quot;$(TargetDir)theme.json&quot; copy /Y &quot;$(TargetDir)theme.json&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot;" />
+        <Exec Command="if not exist &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; mkdir &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; &amp;&amp; copy /Y &quot;$(TargetPath)&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; copy /Y &quot;$(TargetDir)\*.dll&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; if exist &quot;$(TargetDir)theme.json&quot; copy /Y &quot;$(TargetDir)theme.json&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot;"/>
     </Target>
 </Project>

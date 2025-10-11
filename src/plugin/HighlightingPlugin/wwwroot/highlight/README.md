@@ -31,11 +31,15 @@ detection.
 
 #### Upgrading to Version 10
 
-Version 10 is one of the biggest releases in quite some time.  If you're
+Version 10 is one of the biggest releases in quite some time. If you're
 upgrading from version 9, there are some breaking changes and things you may
 want to double check first.
 
-Please read [VERSION_10_UPGRADE.md](https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_UPGRADE.md) for  high-level summary of breaking changes and any actions you may need to take. See [VERSION_10_BREAKING_CHANGES.md](https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_BREAKING_CHANGES.md) for a more detailed list and [CHANGES.md](https://github.com/highlightjs/highlight.js/blob/main/CHANGES.md) to learn what else is new.
+Please read [VERSION_10_UPGRADE.md](https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_UPGRADE.md) for
+high-level summary of breaking changes and any actions you may need to take.
+See [VERSION_10_BREAKING_CHANGES.md](https://github.com/highlightjs/highlight.js/blob/main/VERSION_10_BREAKING_CHANGES.md)
+for a more detailed list and [CHANGES.md](https://github.com/highlightjs/highlight.js/blob/main/CHANGES.md) to learn
+what else is new.
 
 ##### Support for older versions
 
@@ -83,7 +87,7 @@ To disable highlighting of a tag completely, use the `nohighlight` class:
 
 ### Supported Languages
 
-Highlight.js supports over 180 different languages in the core library.  There are also 3rd party
+Highlight.js supports over 180 different languages in the core library. There are also 3rd party
 language plugins available for additional languages. You can find the full list of supported languages
 in [SUPPORTED_LANGUAGES.md][9].
 
@@ -105,7 +109,6 @@ document.addEventListener('DOMContentLoaded', (event) => {
 ```
 
 Please refer to the documentation for [`configure`][4] options.
-
 
 ### Using custom HTML elements for code blocks
 
@@ -131,7 +134,7 @@ document.querySelectorAll('div.code').forEach(block => {
 ```
 
 Without using a tag that preserves linebreaks (like `pre`) you'll need some
-additional CSS to help preserve them.  You could also [pre and post-process line
+additional CSS to help preserve them. You could also [pre and post-process line
 breaks with a plug-in][brPlugin], but *we recommend using CSS*.
 
 [brPlugin]: https://github.com/highlightjs/highlight.js/issues/2559
@@ -143,7 +146,6 @@ div.code {
   white-space: pre;
 }
 ```
-
 
 ## Using with Vue.js
 
@@ -197,7 +199,6 @@ You can use highlight.js with node to highlight content before sending it to the
 Make sure to use the `.value` property to get the formatted html.
 For more info about the returned object refer to the [api docs](https://highlightjs.readthedocs.io/en/latest/api.html).
 
-
 ```js
 // require the highlight.js library, including all languages
 const hljs = require('./highlight.js');
@@ -214,7 +215,6 @@ hljs.registerLanguage('xml', require('highlight.js/lib/languages/xml'));
 const highlightedCode = hljs.highlight('<span>Hello World!</span>', {language: 'xml'}).value
 ```
 
-
 ## ES6 Modules
 
 First, you'll likely install via `npm` or `yarn` -- see [Getting the Library](#getting-the-library) below.
@@ -225,7 +225,8 @@ In your application:
 import hljs from 'highlight.js';
 ```
 
-The default import imports all languages. Therefore it is likely to be more efficient to import only the library and the languages you need:
+The default import imports all languages. Therefore it is likely to be more efficient to import only the library and the
+languages you need:
 
 ```js
 import hljs from 'highlight.js/lib/core';
@@ -233,13 +234,13 @@ import javascript from 'highlight.js/lib/languages/javascript';
 hljs.registerLanguage('javascript', javascript);
 ```
 
-To set the syntax highlighting style, if your build tool processes CSS from your JavaScript entry point, you can also import the stylesheet directly as modules:
+To set the syntax highlighting style, if your build tool processes CSS from your JavaScript entry point, you can also
+import the stylesheet directly as modules:
 
 ```js
 import hljs from 'highlight.js/lib/core';
 import 'highlight.js/styles/github.css';
 ```
-
 
 ## Getting the Library
 
@@ -249,7 +250,6 @@ both AMD and CommonJS, so if you wish you can use RequireJS or
 Browserify without having to build from source. The server module also
 works perfectly fine with Browserify, but there is the option to use a
 build specific to browsers rather than something meant for a server.
-
 
 **Do not link to GitHub directly.** The library is not supposed to work straight
 from the source, it requires building. If none of the pre-packaged options
@@ -265,7 +265,7 @@ r.js -o name=hljs paths.hljs=/path/to/highlight out=highlight.js
 ### CDN Hosted
 
 A prebuilt version of Highlight.js bundled with many common languages is hosted by several popular CDNs.
-When using Highlight.js via CDN you can use Subresource Integrity for additional security.  For details
+When using Highlight.js via CDN you can use Subresource Integrity for additional security. For details
 see [DIGESTS.md](https://github.com/highlightjs/cdn-release/blob/main/DIGESTS.md).
 
 **cdnjs** ([link](https://cdnjs.com/libraries/highlight.js))
@@ -310,15 +310,17 @@ node tools/build.js -t browser :common
 
 See our [building documentation][6] for more information.
 
-**Note:** Building from source should always result in the smallest size builds.  The website download page is optimized for speed, not size.
-
+**Note:** Building from source should always result in the smallest size builds. The website download page is optimized
+for speed, not size.
 
 #### Prebuilt CDN assets
 
-You can also download and self-host the same assets we serve up via our own CDNs.  We publish those builds to the [cdn-release](https://github.com/highlightjs/cdn-release) GitHub repository.  You can easily pull individual files off the CDN endpoints with `curl`, etc; if say you only needed `highlight.min.js` and a single CSS file.
+You can also download and self-host the same assets we serve up via our own CDNs. We publish those builds to
+the [cdn-release](https://github.com/highlightjs/cdn-release) GitHub repository. You can easily pull individual files
+off the CDN endpoints with `curl`, etc; if say you only needed `highlight.min.js` and a single CSS file.
 
-There is also an npm package [@highlightjs/cdn-assets](https://www.npmjs.com/package/@highlightjs/cdn-assets) if pulling the assets in via `npm` or `yarn` would be easier for your build process.
-
+There is also an npm package [@highlightjs/cdn-assets](https://www.npmjs.com/package/@highlightjs/cdn-assets) if pulling
+the assets in via `npm` or `yarn` would be easier for your build process.
 
 ### NPM / Node.js server module
 
@@ -338,17 +340,14 @@ node tools/build.js -t node
 
 See our [building documentation][6] for more information.
 
-
 ### Source
 
 [Current source][10] is always available on GitHub.
-
 
 ## License
 
 Highlight.js is released under the BSD License. See [LICENSE][7] file
 for details.
-
 
 ## Links
 
@@ -360,12 +359,21 @@ Further in-depth documentation for the API and other topics is at
 A list of the Core Team and contributors can be found in the [CONTRIBUTORS.md][8] file.
 
 [1]: http://highlightjs.readthedocs.io/en/latest/api.html#highlightall
+
 [2]: http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html
+
 [3]: http://highlightjs.readthedocs.io/en/latest/api.html#highlightblock-block
+
 [4]: http://highlightjs.readthedocs.io/en/latest/api.html#configure-options
+
 [5]: https://highlightjs.org/download/
+
 [6]: http://highlightjs.readthedocs.io/en/latest/building-testing.html
+
 [7]: https://github.com/highlightjs/highlight.js/blob/main/LICENSE
+
 [8]: https://github.com/highlightjs/highlight.js/blob/main/CONTRIBUTORS.md
+
 [9]: https://github.com/highlightjs/highlight.js/blob/main/SUPPORTED_LANGUAGES.md
+
 [10]: https://github.com/highlightjs/

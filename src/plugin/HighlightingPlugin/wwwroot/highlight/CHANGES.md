@@ -42,25 +42,35 @@ Language grammar improvements:
 Deprecations:
 
 - `highlight(languageName, code, ignoreIllegals, continuation)` deprecated as of 10.7
-  - Please use the newer API which takes `code` and then accepts options as an object
-  - IE: `highlight(code, {language, ignoreIllegals})`
-  - `continuation` is for internal use only and no longer supported
+    - Please use the newer API which takes `code` and then accepts options as an object
+    - IE: `highlight(code, {language, ignoreIllegals})`
+    - `continuation` is for internal use only and no longer supported
 - `highlightBlock(el)` deprecated as of 10.7.
-  - Please use `highlightElement(el)` instead.
-  - Plugin callbacks renamed `before/after:highlightBlock` => `before/after:highlightElement`
-  - Plugin callback now takes `el` vs `block` attribute
-  - The old API and callbacks will be supported until v12.
+    - Please use `highlightElement(el)` instead.
+    - Plugin callbacks renamed `before/after:highlightBlock` => `before/after:highlightElement`
+    - Plugin callback now takes `el` vs `block` attribute
+    - The old API and callbacks will be supported until v12.
 
 [Stef Levesque]: https://github.com/stef-levesque
+
 [Josh Goebel]: https://github.com/joshgoebel
+
 [John Cheung]: https://github.com/Real-John-Cheung
+
 [xDGameStudios]: https://github.com/xDGameStudios
+
 [Ayesh]: https://github.com/Ayesh
+
 [Vyron Vasileiadis]: https://github.com/fedonman
+
 [Antoine du Hamel]: https://github.com/aduh95
+
 [Vaibhav Chanana]: https://github.com/il3ven
+
 [David Ostrovsky]: https://github.com/davido
+
 [AndyKIron]: https://github.com/AndyKIron
+
 [Samuel Colvin]: https://github.com/samuelcolvin
 
 ## Version 10.6.0
@@ -82,32 +92,36 @@ Language grammar improvements:
 Grammar Deprecations:
 
 - Deprecate `c-like`, though you should not be using it directly anyways.
-  - will be removed in v11.
+    - will be removed in v11.
 - `c` and `cpp` are now wholly unique grammars that will diverge over time
 
 Parser:
 
 - new simpler `highlightAll()` API (#2962) [Josh Goebel][]
-  - this should be a drop-in replacement for both `initHighlighting()` and `initHighlightingOnLoad()`
-  - note: it does not prevent itself from being called multiple times (as the previous API did)
+    - this should be a drop-in replacement for both `initHighlighting()` and `initHighlightingOnLoad()`
+    - note: it does not prevent itself from being called multiple times (as the previous API did)
 - `beginKeyword` no longer bestows double relevance (#2953) [Josh Goebel][]
 - allow `keywords` to be an array of strings [Josh Goebel][]
 - add `modes.MATCH_NOTHING_RE` that will never match
-  - This can be used with `end` to hold a mode open (it must then be ended with `endsParent` in one of it's children modes) [Josh Goebel][]
+    - This can be used with `end` to hold a mode open (it must then be ended with `endsParent` in one of it's children
+      modes) [Josh Goebel][]
 
 Deprecations:
 
 - `initHighlighting()` and `initHighlightingOnLoad()` deprecated.
-  - Please use the new `highlightAll()` API instead.
-  - Deprecated as of 10.6.
-  - These will both be aliases to `highlightAll` in v11.
+    - Please use the new `highlightAll()` API instead.
+    - Deprecated as of 10.6.
+    - These will both be aliases to `highlightAll` in v11.
 
 [Michael Newton]: https://github.com/miken32
-[Steven Van Impe]: https://github.com/svanimpe/
-[Josh Goebel]: https://github.com/joshgoebel
-[Vaibhav Chanana]: https://github.com/il3ven
-[davidhcefx]: https://github.com/davidhcefx
 
+[Steven Van Impe]: https://github.com/svanimpe/
+
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Vaibhav Chanana]: https://github.com/il3ven
+
+[davidhcefx]: https://github.com/davidhcefx
 
 ## Version 10.5.0
 
@@ -121,7 +135,7 @@ Parser:
 - add `match` as sugar for simple `begin` only matches (#2834) [Josh Goebel][]
 - allow `illegal` to also be an array of regex (#2834) [Josh Goebel][]
 - add `compilerExtensions` allows grammers to influence mode compilation (#2834) [Josh Goebel][]
-  - some internal pieces are now simple compiler extensions
+    - some internal pieces are now simple compiler extensions
 
 New Languages:
 
@@ -130,19 +144,19 @@ New Languages:
 Language grammar improvements:
 
 - enh: CSS grammars now share common foundation, keywords, etc. (#2937) [Josh Goebel][]
-  - enh(css): many consistency improvements
-  - enh(scss): many consistency improvements
-  - enh(stylus): many consistency improvements
-  - enh(less): many consistency improvements
+    - enh(css): many consistency improvements
+    - enh(scss): many consistency improvements
+    - enh(stylus): many consistency improvements
+    - enh(less): many consistency improvements
 - enh(cpp): Support C++ pack expansion in function arguments [Martin Dørum][]
 - enh(makefile): Add `make` as an alias (#2883) [tripleee][]
 - enh(swift) Improved grammar for strings (#2819) [Steven Van Impe][]
 - enh(swift) Grammar improvements (#2908) [Steven Van Impe][]
-  - New grammar for keywords and built-ins
-  - Added support for operator highlighting
-  - New grammar for attributes
-  - Added support for quoted identifiers, implicit parameters, and property wrapper projections
-  - Support for more complex expressions in string interpolation
+    - New grammar for keywords and built-ins
+    - Added support for operator highlighting
+    - New grammar for attributes
+    - Added support for quoted identifiers, implicit parameters, and property wrapper projections
+    - Support for more complex expressions in string interpolation
 - enh(swift) Improved highlighting for types and generic arguments (#2920) [Steven Van Impe][]
 - enh(swift) Improved highlighting for functions, initializers, and subscripts (#2930) [Steven Van Impe][]
 - fix(http) avoid recursive sublanguage and tighten rules (#2893) [Josh Goebel][]
@@ -150,14 +164,14 @@ Language grammar improvements:
 - fix(asciidoc): Support unconstrained emphasis syntax (#2869) [Guillaume Grossetie][]
 - enh(scheme) Allow `[]` for argument lists (#2913) [Josh Goebel][]
 - enh(vb) Large rework of VB.net grammar (#2808) [Jan Pilzer][]
-  - Adds support for Date data types, see (#2775)
-  - Adds support for `REM` comments and fixes `'''` doctags (#2875) (#2851)
-    - Custom number mode to support VB.net specific number flags
-    - Hex (&H), Oct (&O), and binary (&B) prefixes
-    - Separating digits with underscores: 90_946
-  - Type suffixes: 123UI (unsigned integer)
-  - Improves directives detection and adds support for `Enable`, `Disable`, and `Then` keywords
-  - Adds more markup tests
+    - Adds support for Date data types, see (#2775)
+    - Adds support for `REM` comments and fixes `'''` doctags (#2875) (#2851)
+        - Custom number mode to support VB.net specific number flags
+        - Hex (&H), Oct (&O), and binary (&B) prefixes
+        - Separating digits with underscores: 90_946
+    - Type suffixes: 123UI (unsigned integer)
+    - Improves directives detection and adds support for `Enable`, `Disable`, and `Then` keywords
+    - Adds more markup tests
 - fix(javascript) Empty block-comments break highlighting (#2896) [Jan Pilzer][]
 - enh(dart) Fix empty block-comments from breaking highlighting (#2898) [Jan Pilzer][]
 - enh(dart) Fix empty doc-comment eating next line [Jan Pilzer][]
@@ -168,95 +182,105 @@ Language grammar improvements:
 Recent Deprecations:
 
 - HTML "merging" is deprecated. (#2873) [Josh Goebel][]
-  - HTML inside `<pre>` blocks will no longer be magically merged back into the
-  highlighted code's HTML result - it will instead be silently removed.
-  - Consider [using a plugin][htmlPlugin] if you truly need this functionality
-  - Deprecated as of 10.5.0 - will be removed in v11.
+    - HTML inside `<pre>` blocks will no longer be magically merged back into the
+      highlighted code's HTML result - it will instead be silently removed.
+    - Consider [using a plugin][htmlPlugin] if you truly need this functionality
+    - Deprecated as of 10.5.0 - will be removed in v11.
 - `tabReplace` option deprecated. (#2873) [Josh Goebel][]
-  - **Consider:** Use the CSS `tab-size` property, or simply pre-process the
-    text yourself before rendering the initial HTML
-  - otherwise, [use a plugin][tabPlugin]
-  - Deprecated as of 10.5.0 - will be removed in v11.
+    - **Consider:** Use the CSS `tab-size` property, or simply pre-process the
+      text yourself before rendering the initial HTML
+    - otherwise, [use a plugin][tabPlugin]
+    - Deprecated as of 10.5.0 - will be removed in v11.
 - `useBR` option deprecated. (#2559) [Josh Goebel][]
-  - **Recommended:** You really should just use the HTML `<pre>` tag
-  - or perhaps try CSS `white-space: pre;`
-  - otherwise, [use a plugin][brPlugin]
-  - Deprecated as of 10.3.0 - will be removed in v11.
+    - **Recommended:** You really should just use the HTML `<pre>` tag
+    - or perhaps try CSS `white-space: pre;`
+    - otherwise, [use a plugin][brPlugin]
+    - Deprecated as of 10.3.0 - will be removed in v11.
 - `requireLanguage` API is deprecated, will be removed in v11.0.
-  - **Consider:** Use `getLanguage` (with custom error handling) or built-time dependencies.
-  - See [Library API](https://highlightjs.readthedocs.io/en/latest/api.html#requirelanguage-name) for more information.
-  - Deprecated as of 10.4.0 - will be removed in v11.
+    - **Consider:** Use `getLanguage` (with custom error handling) or built-time dependencies.
+    - See [Library API](https://highlightjs.readthedocs.io/en/latest/api.html#requirelanguage-name) for more
+      information.
+    - Deprecated as of 10.4.0 - will be removed in v11.
 
 [htmlPlugin]: https://github.com/highlightjs/highlight.js/issues/2889
+
 [tabPlugin]: https://github.com/highlightjs/highlight.js/issues/2874
+
 [brPlugin]: https://github.com/highlightjs/highlight.js/issues/2559
 
 [Martin Dørum]: https://github.com/mortie
-[Jan Pilzer]: https://github.com/Hirse
-[Oldes Huhuman]: https://github.com/Oldes
-[Josh Goebel]: https://github.com/joshgoebel
-[tripleee]: https://github.com/tripleee
-[Steven Van Impe]: https://github.com/svanimpe/
-[Vaibhav Chanana]: https://github.com/il3ven
-[Guillaume Grossetie]: https://github.com/mogztter
 
+[Jan Pilzer]: https://github.com/Hirse
+
+[Oldes Huhuman]: https://github.com/Oldes
+
+[Josh Goebel]: https://github.com/joshgoebel
+
+[tripleee]: https://github.com/tripleee
+
+[Steven Van Impe]: https://github.com/svanimpe/
+
+[Vaibhav Chanana]: https://github.com/il3ven
+
+[Guillaume Grossetie]: https://github.com/mogztter
 
 ## Version 10.4.1 (tentative)
 
 Security
 
 - (fix) Exponential backtracking fixes for: [Josh Goebel][]
-  - cpp
-  - handlebars
-  - gams
-  - perl
-  - jboss-cli
-  - r
-  - erlang-repl
-  - powershell
-  - routeros
+    - cpp
+    - handlebars
+    - gams
+    - perl
+    - jboss-cli
+    - r
+    - erlang-repl
+    - powershell
+    - routeros
 - (fix) Polynomial backtracking fixes for: [Josh Goebel][]
-  - asciidoc
-  - reasonml
-  - latex
-  - kotlin
-  - gcode
-  - d
-  - aspectj
-  - moonscript
-  - coffeescript/livescript
-  - csharp
-  - scilab
-  - crystal
-  - elixir
-  - basic
-  - ebnf
-  - ruby
-  - fortran/irpf90
-  - livecodeserver
-  - yaml
-  - x86asm
-  - dsconfig
-  - markdown
-  - ruleslanguage
-  - xquery
-  - sqf
+    - asciidoc
+    - reasonml
+    - latex
+    - kotlin
+    - gcode
+    - d
+    - aspectj
+    - moonscript
+    - coffeescript/livescript
+    - csharp
+    - scilab
+    - crystal
+    - elixir
+    - basic
+    - ebnf
+    - ruby
+    - fortran/irpf90
+    - livecodeserver
+    - yaml
+    - x86asm
+    - dsconfig
+    - markdown
+    - ruleslanguage
+    - xquery
+    - sqf
 
 Very grateful to [Michael Schmidt][] for all the help.
 
 [Michael Schmidt]: https://github.com/RunDevelopment
-[Josh Goebel]: https://github.com/joshgoebel
 
+[Josh Goebel]: https://github.com/joshgoebel
 
 ## Version 10.4.0
 
-A largish release with many improvements and fixes from quite a few different contributors.  Enjoy!
+A largish release with many improvements and fixes from quite a few different contributors. Enjoy!
 
 Deprecations:
 
 - (chore) `requireLanguage` is deprecated.
-  - Prefer `getLanguage` (with custom error handling) or built-time dependencies.
-  - See [Library API](https://highlightjs.readthedocs.io/en/latest/api.html#requirelanguage-name) for more information.
+    - Prefer `getLanguage` (with custom error handling) or built-time dependencies.
+    - See [Library API](https://highlightjs.readthedocs.io/en/latest/api.html#requirelanguage-name) for more
+      information.
 
 Parser:
 
@@ -298,10 +322,10 @@ Language Improvements:
 - enh(diff) improve highlighting of diff for git patches [Florian Bezdeka][]
 - fix(llvm) lots of small improvements and fixes (#2830) [Josh Goebel][]
 - enh(mathematica) Rework entire implementation [Patrick Scheibe][]
-  - Correct matching of the many variations of Mathematica's numbers
-  - Matching of named-characters aka special symbols like `\[Gamma]`
-  - Updated list of version 12.1 built-in symbols
-  - Matching of patterns, slots, message-names and braces
+    - Correct matching of the many variations of Mathematica's numbers
+    - Matching of named-characters aka special symbols like `\[Gamma]`
+    - Updated list of version 12.1 built-in symbols
+    - Matching of patterns, slots, message-names and braces
 - fix(swift) Handle keywords that start with `#` [Marcus Ortiz][]
 - enh(swift) Match `some` keyword [Marcus Ortiz][]
 - enh(swift) Match `@main` attribute [Marcus Ortiz][]
@@ -317,33 +341,45 @@ New themes:
 - *StackOverflow Light* by [Jan Pilzer][]
 
 [Guillaume Grossetie]: https://github.com/mogztter
-[Brad Chamberlain]: https://github.com/bradcray
-[Marat Nagayev]: https://github.com/nagayev
-[Fredrik Ekre]: https://github.com/fredrikekre
-[Richard Gibson]: https://github.com/gibson042
-[Josh Goebel]: https://github.com/joshgoebel
-[Taufik Nurrohman]: https://github.com/taufik-nurrohman
-[Jan Pilzer]: https://github.com/Hirse
-[Jonathan Sharpe]: https://github.com/textbook
-[Michael Rush]: https://github.com/rushimusmaximus
-[Patrick Scheibe]: https://github.com/halirutan
-[Kyle Brown]: https://github.com/kylebrown9
-[Marcus Ortiz]: https://github.com/mportiz08
-[Paul Reid]: https://github.com/RedGuy12
 
+[Brad Chamberlain]: https://github.com/bradcray
+
+[Marat Nagayev]: https://github.com/nagayev
+
+[Fredrik Ekre]: https://github.com/fredrikekre
+
+[Richard Gibson]: https://github.com/gibson042
+
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Taufik Nurrohman]: https://github.com/taufik-nurrohman
+
+[Jan Pilzer]: https://github.com/Hirse
+
+[Jonathan Sharpe]: https://github.com/textbook
+
+[Michael Rush]: https://github.com/rushimusmaximus
+
+[Patrick Scheibe]: https://github.com/halirutan
+
+[Kyle Brown]: https://github.com/kylebrown9
+
+[Marcus Ortiz]: https://github.com/mportiz08
+
+[Paul Reid]: https://github.com/RedGuy12
 
 ## Version 10.3.1
 
 Prior version let some look-behind regex sneak in, which does not work
-yet on Safari.  This release removes those incompatible regexes.
+yet on Safari. This release removes those incompatible regexes.
 
 Fix:
 
 - fix(Safari) Remove currently unsupported look-behind regex ([fix][187e7cfc]) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-[187e7cfc]: https://github.com/highlightjs/highlight.js/commit/187e7cfcb06277ce13b5f35fb6c37ab7a7b46de9
 
+[187e7cfc]: https://github.com/highlightjs/highlight.js/commit/187e7cfcb06277ce13b5f35fb6c37ab7a7b46de9
 
 ## Version 10.3.0
 
@@ -384,27 +420,33 @@ Deprecations:
 - `useBR` option deprecated and will be removed in v11.0. (#2559) [Josh Goebel][]
 
 [Chris Krycho]: https://github.com/chriskrycho
+
 [David Pine]: https://github.com/IEvangelist
 
 
 [Ryan Jonasson]: https://github.com/ryanjonasson
-[Philipp Engel]: https://github.com/interkosmos
-[Konrad Rudolph]: https://github.com/klmr
-[Melissa Geels]: https://github.com/codecat
-[Antoine du Hamel]: https://github.com/aduh95
-[Ayesh Karunaratne]: https://github.com/Ayesh
-[Tom Wallace]: https://github.com/thomasmichaelwallace
-[schtandard]: https://github.com/schtandard
 
+[Philipp Engel]: https://github.com/interkosmos
+
+[Konrad Rudolph]: https://github.com/klmr
+
+[Melissa Geels]: https://github.com/codecat
+
+[Antoine du Hamel]: https://github.com/aduh95
+
+[Ayesh Karunaratne]: https://github.com/Ayesh
+
+[Tom Wallace]: https://github.com/thomasmichaelwallace
+
+[schtandard]: https://github.com/schtandard
 
 ## Version 10.2.1
 
- Parser Engine:
+Parser Engine:
 
- -  fix(parser) complete fix for resuming matches from same index (#2678) [Josh Goebel][]
+- fix(parser) complete fix for resuming matches from same index (#2678) [Josh Goebel][]
 
- [Josh Goebel]: https://github.com/yyyc514
-
+[Josh Goebel]: https://github.com/yyyc514
 
 ## Version 10.2.0
 
@@ -437,16 +479,24 @@ Language Improvements:
 - enh(php) detect newer more flexible HEREdoc syntax (#2658) [eytienne][]
 
 [Youssef Victor]: https://github.com/Youssef1313
-[Josh Goebel]: https://github.com/joshgoebel
-[Andrew Janke]: https://github.com/apjanke
-[Samia Ali]: https://github.com/samiaab1990
-[kageru]: https://github.com/kageru
-[night]: https://github.com/night
-[ezksd]: https://github.com/ezksd
-[idleberg]: https://github.com/idleberg
-[eytienne]: https://github.com/eytienne
-[sirosen]: https://github.com/sirosen
 
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Andrew Janke]: https://github.com/apjanke
+
+[Samia Ali]: https://github.com/samiaab1990
+
+[kageru]: https://github.com/kageru
+
+[night]: https://github.com/night
+
+[ezksd]: https://github.com/ezksd
+
+[idleberg]: https://github.com/idleberg
+
+[eytienne]: https://github.com/eytienne
+
+[sirosen]: https://github.com/sirosen
 
 ## Version 10.1.1
 
@@ -456,8 +506,8 @@ Fixes:
 - Resolve `index.d.ts is not a module` error (#2603) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-[Edwin Hoogerbeets]: https://github.com/ehoogerbeets
 
+[Edwin Hoogerbeets]: https://github.com/ehoogerbeets
 
 ## Version 10.1.0
 
@@ -494,7 +544,8 @@ Language Improvements:
 - enh(typescript) use identifier to match potential keywords, preventing false positivites (#2519) [Josh Goebel][]
 - enh(javascript) use identifier to match potential keywords, preventing false positivites (#2519) [Josh Goebel][]
 - [enh] Add `OPTIMIZE:` and `HACK:` to the labels highlighted inside comments [Josh Goebel][]
-- enh(typescript/javascript/coffeescript/livescript) derive ECMAscript keywords from a common foudation (#2518) [Josh Goebel][]
+- enh(typescript/javascript/coffeescript/livescript) derive ECMAscript keywords from a common foudation (
+  #2518) [Josh Goebel][]
 - enh(typescript) add setInterval, setTimeout, clearInterval, clearTimeout (#2514) [Josh Goebel][]
 - enh(javascript) add setInterval, setTimeout, clearInterval, clearTimeout (#2514) [Vania Kucher][]
 - enh(cpp) add `pair`, `make_pair`, `priority_queue` as built-ins (#2538) [Hankun Lin][]
@@ -505,42 +556,57 @@ Language Improvements:
 - fix(typescript) `=>` function with nested `()` in params now works (#2502) [Josh Goebel][]
 - fix(yaml) Fix tags to include non-word characters (#2486) [Peter Plantinga][]
 - fix(swift) `@objcMembers` was being partially highlighted (#2543) [Nick Randall][]
-- enh(dart) Add `late` and `required` keywords, the `Never` built-in type, and nullable built-in types (#2550) [Sam Rawlins][]
+- enh(dart) Add `late` and `required` keywords, the `Never` built-in type, and nullable built-in types (
+  #2550) [Sam Rawlins][]
 - enh(erlang) Add underscore separators to numeric literals (#2554) [Sergey Prokhorov][]
-- enh(handlebars) Support for sub-expressions, path-expressions, hashes, block-parameters and literals (#2344) [Nils Knappmeier][]
+- enh(handlebars) Support for sub-expressions, path-expressions, hashes, block-parameters and literals (
+  #2344) [Nils Knappmeier][]
 - enh(protobuf) Support multiline comments (#2597) [Pavel Evstigneev][]
 - fix(toml) Improve key parsing (#2595) [Antoine du Hamel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-[Peter Plantinga]: https://github.com/pplantinga
-[David Benjamin]: https://github.com/davidben
-[Vania Kucher]: https://github.com/qWici
-[Hankun Lin]: https://github.com/Linhk1606
-[Nick Randall]: https://github.com/nicked
-[Sam Rawlins]: https://github.com/srawlins
-[Sergey Prokhorov]: https://github.com/seriyps
-[Nils Knappmeier]: https://github.com/nknapp
-[Martin (Lhoerion)]: https://github.com/Lhoerion
-[Jim Mason]: https://github.com/RocketMan
-[lioshi]: https://github.com/lioshi
-[Pavel Evstigneev]: https://github.com/Paxa
-[Antoine du Hamel]: https://github.com/aduh95
 
+[Peter Plantinga]: https://github.com/pplantinga
+
+[David Benjamin]: https://github.com/davidben
+
+[Vania Kucher]: https://github.com/qWici
+
+[Hankun Lin]: https://github.com/Linhk1606
+
+[Nick Randall]: https://github.com/nicked
+
+[Sam Rawlins]: https://github.com/srawlins
+
+[Sergey Prokhorov]: https://github.com/seriyps
+
+[Nils Knappmeier]: https://github.com/nknapp
+
+[Martin (Lhoerion)]: https://github.com/Lhoerion
+
+[Jim Mason]: https://github.com/RocketMan
+
+[lioshi]: https://github.com/lioshi
+
+[Pavel Evstigneev]: https://github.com/Paxa
+
+[Antoine du Hamel]: https://github.com/aduh95
 
 ## Version 10.0.2
 
 Brower build:
 
-- [Issue](https://github.com/highlightjs/highlight.js/issues/2505) (bug) Fix: Version 10 fails to load as CommonJS module. (#2511) [Josh Goebel][]
-- [Issue](https://github.com/highlightjs/highlight.js/issues/2505) (removal) AMD module loading support has been removed. (#2511) [Josh Goebel][]
+- [Issue](https://github.com/highlightjs/highlight.js/issues/2505) (bug) Fix: Version 10 fails to load as CommonJS
+  module. (#2511) [Josh Goebel][]
+- [Issue](https://github.com/highlightjs/highlight.js/issues/2505) (removal) AMD module loading support has been
+  removed. (#2511) [Josh Goebel][]
 
 Parser Engine Changes:
 
-- [Issue](https://github.com/highlightjs/highlight.js/issues/2522) fix(parser) Fix freez issue with illegal 0 width matches (#2524) [Josh Goebel][]
-
+- [Issue](https://github.com/highlightjs/highlight.js/issues/2522) fix(parser) Fix freez issue with illegal 0 width
+  matches (#2524) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-
 
 ## Version 10.0.1
 
@@ -549,7 +615,6 @@ Parser Engine Changes:
 - (bug) Fix sublanguage with no relevance score (#2506) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-
 
 ## Version 10.0.0
 
@@ -616,17 +681,26 @@ Developer Tools:
 - added Dockerfile for optionally developing with a container
 
 [Omid Golparvar]: https://github.com/omidgolparvar
-[Alexandre Grison]: https://github.com/agrison
-[Josh Goebel]: https://github.com/joshgoebel
-[Chen Bin]: https://github.com/redguardtoo
-[Sam Miller]: https://github.com/smillerc
-[Robert Riebisch]: https://github.com/bttrx
-[Taufik Nurrohman]: https://github.com/taufik-nurrohman
-[Josh Goebel]: https://github.com/joshgoebel
-[Sean Williams]: https://github.com/hmmwhatsthisdo
-[Adnan Yaqoob]: https://github.com/adnanyaqoobvirk
-[Álvaro Mondéjar]: https://github.com/mondeja
 
+[Alexandre Grison]: https://github.com/agrison
+
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Chen Bin]: https://github.com/redguardtoo
+
+[Sam Miller]: https://github.com/smillerc
+
+[Robert Riebisch]: https://github.com/bttrx
+
+[Taufik Nurrohman]: https://github.com/taufik-nurrohman
+
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Sean Williams]: https://github.com/hmmwhatsthisdo
+
+[Adnan Yaqoob]: https://github.com/adnanyaqoobvirk
+
+[Álvaro Mondéjar]: https://github.com/mondeja
 
 ## Version 9.18.1
 
@@ -635,7 +709,6 @@ Grammar Improvements:
 - bug(coffeescript) fix freezing bug due to badly behaved regex (#2376) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-
 
 ## Version 9.18.0
 
@@ -669,11 +742,14 @@ Developer Tools:
 - feat(developer): add button to show parsed structure (#2345) [Nils Knappmeier][]
 
 [Jeffrey Arnold]: https://github.com/jrnold
-[Josh Goebel]: https://github.com/joshgoebel
-[Philipp Engel]: https://github.com/interkosmos
-[Youssef Victor]: https://github.com/Youssef1313
-[Nils Knappmeier]: https://github.com/nknapp
 
+[Josh Goebel]: https://github.com/joshgoebel
+
+[Philipp Engel]: https://github.com/interkosmos
+
+[Youssef Victor]: https://github.com/Youssef1313
+
+[Nils Knappmeier]: https://github.com/nknapp
 
 ## Version 9.17.1
 
@@ -682,7 +758,6 @@ Fixes:
 - fix(parser): resolve IE 11 issue with Object.freeze() (#2319) [Josh Goebel][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-
 
 ## Version 9.17.0
 
@@ -699,14 +774,15 @@ Core Improvements:
 - chore(parser): switch from `createElementNS` to `createElement` (#2314) [Josh Goebel][]
 - enh(parser): add better error when a language requirement is missing (#2311) [Josh Goebel][]
 - fix(parser/docs): disallow `self` mode at the top-level of a language (#2294) [Josh Goebel][]
-- enh(parser) add safe & debug modes.  Better error handling for crash conditions. (#2286) [Josh Goebel][]
+- enh(parser) add safe & debug modes. Better error handling for crash conditions. (#2286) [Josh Goebel][]
 - fix(parser): Fix merger HTML attribute quoting (#2235) [Josh Goebel][]
 - fix(parser): Look-ahead regex now work for end matches also (#2237) [Josh Goebel][]
 - fix(parser): Better errors when a language is missing (#2236) [Josh Goebel][]
 - fix(parser): freeze built-in modes to prevent grammars altering them (#2271) [Josh Goebel][]
 - fix(themes): fix inconsistencies between some themes padding/spacing (#2300) [Josh Goebel][]
 - ehh(build) Add CI check for building a "use strict" safe rollup package from NPM builds (#2247) [Josh Goebel][]
-- fix(pkg): Prefix global addEventListener with window to be able to minify with closure compiler (#2305) [Kirill Saksin]()
+- fix(pkg): Prefix global addEventListener with window to be able to minify with closure compiler (
+  #2305) [Kirill Saksin]()
 
 Language Improvements:
 
@@ -732,40 +808,52 @@ Language Improvements:
 - enh(cpp): Add additional keywords (#2289) [Adrian Ostrowski][]
 
 [Josh Goebel]: https://github.com/joshgoebel
-[Liam Nobel]: https://github.com/liamnobel
-[Carl Baxter]: https://github.com/cdbax
-[Milutin Kristofic]: https://github.com/milutin
-[w3suli]: https://github.com/w3suli
-[David Benjamin]: https://github.com/davidben
-[Chris Marchesi]: https://github.com/vancluever
-[Adrian Ostrowski]: https://github.com/aostrowski
-[Rongjian Zhang]: https://github.com/pd4d10
-[Mike Schall]: https://github.com/schallm
-[Kirill Saksin]: https://github.com/saksmt
-[Samia Ali]:https://github.com/samiaab1990
 
+[Liam Nobel]: https://github.com/liamnobel
+
+[Carl Baxter]: https://github.com/cdbax
+
+[Milutin Kristofic]: https://github.com/milutin
+
+[w3suli]: https://github.com/w3suli
+
+[David Benjamin]: https://github.com/davidben
+
+[Chris Marchesi]: https://github.com/vancluever
+
+[Adrian Ostrowski]: https://github.com/aostrowski
+
+[Rongjian Zhang]: https://github.com/pd4d10
+
+[Mike Schall]: https://github.com/schallm
+
+[Kirill Saksin]: https://github.com/saksmt
+
+[Samia Ali]:https://github.com/samiaab1990
 
 ## Version 9.16.2
 
 New languages:
-  none.
+none.
 
 New styles:
-  none.
+none.
 
 Improvements:
-- fix(arduino) Resolves issue with arduino.js not being "use strict" safe (#2247)
 
+- fix(arduino) Resolves issue with arduino.js not being "use strict" safe (#2247)
 
 ## Version 9.16.1
 
 New languages:
-  none.
+none.
 
 New styles:
+
 - *Night Owl* by [Carl Baxter][]
 
 Improvements:
+
 - Add CLI tool to quickly check for relevance conflicts [Mark Ellis][] (#1554)
 - enhance(twig) update list of filter and tags (#2090)
 - fix(crystal): correctly highlight `!~` method definition (#2222)
@@ -796,136 +884,154 @@ Improvements:
 - fix(python): support comments within function parameters (#2214)
 
 [Carl Baxter]: https://github.com/cdbax
+
 [Mark Ellis]: https://github.com/ellismarkf
 
 ## Version 9.15.10
+
 New languages:
-  none.
+none.
 New styles:
-  none.
+none.
 Improvements:
-  - support for ruby's squiggly heredoc (#2049)
-  - support css custom properties (#2082)
-  - fix(PureBASIC): update to 5.60 (#1508)
-  - fix(Kotlin): parenthesized types in function declaration (#2107)
-  - fix(Kotlin): nested comment (#2104)
-  - fix(isbl): contains key typo (#2103)
-  - fix(github-gist.css): match Github styles (#2100)
-  - fix(elm): update to latest elm syntax (#2088)
-  - fix: Support highlighting inline HTML and CSS tagged template strings in JS and TS (#2105)
-  - feat(YAML): add YAML to common languages (#1952)
-  - feat(xml): Add support for Windows Script File (.wsf), inline VBScript in XML `script` tags (#1690)
+
+- support for ruby's squiggly heredoc (#2049)
+- support css custom properties (#2082)
+- fix(PureBASIC): update to 5.60 (#1508)
+- fix(Kotlin): parenthesized types in function declaration (#2107)
+- fix(Kotlin): nested comment (#2104)
+- fix(isbl): contains key typo (#2103)
+- fix(github-gist.css): match Github styles (#2100)
+- fix(elm): update to latest elm syntax (#2088)
+- fix: Support highlighting inline HTML and CSS tagged template strings in JS and TS (#2105)
+- feat(YAML): add YAML to common languages (#1952)
+- feat(xml): Add support for Windows Script File (.wsf), inline VBScript in XML `script` tags (#1690)
 
 ## Version 9.15.9
 
 Improvements:
- - fix(AutoHotkey): order and extended highlighting (#1579)
- - fix(Go): correctly highlight hex numbers, rather than stopping at last 'd' or 'f'. (#2060)
- - fix(Mathematica): Improvements to language (#2065)
- - fix(Node): Adds SCSS build (#2079)
- - fix(Rust): update keywords (#2052)
- - fix(Stata): Added keywords for the meta-analysis suite introduced in Stata 16 (#2081)
- - fix(Bash): escape double quotes (#2048)
+
+- fix(AutoHotkey): order and extended highlighting (#1579)
+- fix(Go): correctly highlight hex numbers, rather than stopping at last 'd' or 'f'. (#2060)
+- fix(Mathematica): Improvements to language (#2065)
+- fix(Node): Adds SCSS build (#2079)
+- fix(Rust): update keywords (#2052)
+- fix(Stata): Added keywords for the meta-analysis suite introduced in Stata 16 (#2081)
+- fix(Bash): escape double quotes (#2048)
 
 ## Version 9.15.8
 
 New languages:
-  none.
+none.
 New styles:
-  none.
+none.
 Improvements:
-  - fix(bash): revert escaped double quotes - broke Firefox/Safari.
+
+- fix(bash): revert escaped double quotes - broke Firefox/Safari.
 
 ## Version 9.15.7
+
 New languages:
-  none.
+none.
 New styles:
-  none.
+none.
 Improvements:
- - fix(powershell): Add cmdlets (#2022)
- - fix(Bash): escaped double quotes (#2041)
- - fix(c++): add aliases 'hh', 'hxx', 'cxx' (#2017)
- - fix(ini/toml): Support comments on the same line. (#2039)
- - fix(JSX): not rendering well in a function without parentheses. (#2024)
- - fix(LiveCode): language definition update (#2021)
- - fix(markdown): indented lists (#2004)
- - fix(styles/school-book): don't style all the pre, use .hljs instead (#2034)
- - fix(JSX): Modify JSX tag detection to use XML language regex in place of simplistic \w+
+
+- fix(powershell): Add cmdlets (#2022)
+- fix(Bash): escaped double quotes (#2041)
+- fix(c++): add aliases 'hh', 'hxx', 'cxx' (#2017)
+- fix(ini/toml): Support comments on the same line. (#2039)
+- fix(JSX): not rendering well in a function without parentheses. (#2024)
+- fix(LiveCode): language definition update (#2021)
+- fix(markdown): indented lists (#2004)
+- fix(styles/school-book): don't style all the pre, use .hljs instead (#2034)
+- fix(JSX): Modify JSX tag detection to use XML language regex in place of simplistic \w+
 
 ## Version 9.15.6
+
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
- - Move dependencies to be devDependencies.
- - Fixed security issues in dev dependencies.
+
+- Move dependencies to be devDependencies.
+- Fixed security issues in dev dependencies.
 
 ## Version 9.15.5
+
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
-  🔥 Hot fix: updated build tool.
+🔥 Hot fix: updated build tool.
 
 ## Version 9.15.4
+
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
-  🔥 Hot fix: reverted hljs cli build tool, as it was causing issues with install.
+🔥 Hot fix: reverted hljs cli build tool, as it was causing issues with install.
 
 ## Version 9.15.3
+
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
-  🔥 Hot fix: reverted hljs cli build tool, as it was causing issues with install.
+🔥 Hot fix: reverted hljs cli build tool, as it was causing issues with install.
 
 ## Version 9.15.2
+
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
-  🔥 Hot fix that was preventing highlight.js from installing.
+🔥 Hot fix that was preventing highlight.js from installing.
 
 ## Version 9.15.1
 
 New languages:
-    none.
+none.
 
 New styles:
-    none.
+none.
 
 Improvements:
 
-- Pony: Fixed keywords without spaces at line ends, highlighting of `iso` in class definitions, and function heads without bodies in traits and interfaces. Removed FUNCTION and CLASS modes until they are found to be needed and to provide some of the fixes.
- - Support external language files in minified version of highlight.js (#1888)
+- Pony: Fixed keywords without spaces at line ends, highlighting of `iso` in class definitions, and function heads
+  without bodies in traits and interfaces. Removed FUNCTION and CLASS modes until they are found to be needed and to
+  provide some of the fixes.
+- Support external language files in minified version of highlight.js (#1888)
 
 ## Version 9.15
 
 New languages:
-    none.
+none.
 
 New styles:
-    none.
+none.
 
 Improvements:
- - new cli tool `hljs` - allows easier [building from command line](docs/building-testing.rst#building-a-bundle-from-the-command-line).
- - cpp: Fully support C++11 raw strings. (#1897)
- - Python: Treat False None and True as literals (#1920)
+
+- new cli tool `hljs` - allows
+  easier [building from command line](docs/building-testing.rst#building-a-bundle-from-the-command-line).
+- cpp: Fully support C++11 raw strings. (#1897)
+- Python: Treat False None and True as literals (#1920)
 
 ## Version 9.14.2
 
 New languages:
-  none.
+none.
 New styles:
-  none.
+none.
 Improvements:
+
 - *Gauss* fixed to stop global namespace pollution [Scott Hyndman][].
 - fix(Tcl): removed apostrophe string delimiters (don't exist)
 
@@ -934,21 +1040,24 @@ Improvements:
 ## Version 9.14.1
 
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
+
 - Pony: language improvements (#1958)
 
 ## Version 9.14.0
 
 New languages:
-    none.
+none.
 New styles:
-    none.
+none.
 Improvements:
+
 - Pony: add missing "object" highlighting (#1932)
-- Added *XQuery* built-in functions, prolog declarations, as well as parsing of function bodies, computed and direct constructors, by [Duncan Paterson][]
+- Added *XQuery* built-in functions, prolog declarations, as well as parsing of function bodies, computed and direct
+  constructors, by [Duncan Paterson][]
 - fix(dart): Corrects highlighting with string interpolation. (#1946)
 - fix(swift): be eager on optional-using types (!/?) (#1919)
 - fix(tex): Changed cyrillic to unicode (IE11 throw SCRIPT5021) (#1601)
@@ -959,18 +1068,26 @@ Improvements:
   Allow empty prompt text in clojure-repl, by [Egor Rogov][]
 - Fixed several issues with *Crystal* language definition, by [Johannes Müller][]
 - Added `C#` as an alias for *CSharp* language, by [Ahmed Atito][]
-- Added generic user-defined proc support, new compiler define, refactor to re-use rules, and add tests to *GAUSS*, by [Matthew Evans][]
+- Added generic user-defined proc support, new compiler define, refactor to re-use rules, and add tests to *GAUSS*,
+  by [Matthew Evans][]
 - Improve *Crystal* language to highlight regexes after some keywords, by [Tsuyusato Kitsune][]
 - Fix filterByQualifiers: fileInfo can be null
 - Fixed String interpolation in Dart, by [Scott Hyndman][].
 
 [Laurent Voullemier]: https://github.com/l-vo
+
 [Benoit de Chezelles]: https://github.com/bew
+
 [Johannes Müller]: https://github.com/straight-shoota
+
 [Ahmed Atito]: https://github.com/atitoa93
+
 [Matthew Evans]: https://github.com/matthewevans
+
 [Tsuyusato Kitsune]: https://github.com/MakeNowJust
+
 [Scott Hyndman]: https://github.com/shyndman
+
 [Duncan Paterson]: https://github.com/duncdrum
 
 ## Version 9.13.1
@@ -985,8 +1102,11 @@ Improvements:
 - Fixed `autoDetection` to accept language aliases.
 
 [JeremyTCD]: https://github.com/JeremyTCD
+
 [Melissa Geels]: https://github.com/codecat
+
 [Antoine Boisier-Michaud]: https://github.com/Aboisier
+
 [Alejandro Isaza]: https://github.com/alejandro-isaza
 
 ## Version 9.13.0
@@ -1033,31 +1153,57 @@ Improvements:
 - *Cmake* updated with new keywords and commands by [Deniz Bahadir][]
 
 [Ahmad Awais]: https://github.com/ahmadawais
+
 [Arctic Ice Studio]: https://github.com/arcticicestudio
+
 [Dmitriy Tarasov]: https://github.com/MedvedTMN
+
 [Egor Rogov]: https://github.com/egor-rogov
+
 [Eric Bailey]: https://github.com/ericwbailey
+
 [Gidi Meir Morris]: https://github.com/gmmorris
+
 [Gustavo Costa]: https://github.com/gusbemacbe
+
 [Harmon]: https://github.com/Harmon758
+
 [Melissa Geels]: https://github.com/codecat
+
 [meseta]: https://github.com/meseta
+
 [nord-highlightjs]: https://github.com/arcticicestudio/nord-highlightjs
+
 [Tristian Kelly]: https://github.com/TristianK3604
+
 [Vijaya Chandran Mani]: https://github.com/vijaycs85
+
 [John Foster]: https://github.com/jf990
+
 [David Benjamin]: https://github.com/davidben
+
 [Berk Çebi]: https://github.com/berkcebi
+
 [Mauricio Caceres Bravo]: https://github.com/mcaceresb
+
 [bostko]: https://github.com/bostko
+
 [Deniz Bahadir]: https://github.com/Bagira80
+
 [bcleland]: https://github.com/bcleland
+
 [JohnC32]: https://github.com/JohnC32
+
 [Lutz Büch]: https://github.com/lutz-100worte
+
 [Piotr Kaminski]: https://github.com/pkaminski
+
 [Léo Lam]: https://github.com/leoetlino
+
 [Jan T. Sott]: https://github.com/idleberg
+
 [Jimmy Wärting]: https://github.com/jimmywarting
+
 [Marcos Cáceres]: https://github.com/marcoscaceres
 
 ## Version 9.12.0
@@ -1071,6 +1217,7 @@ New style:
 - *VisualStudio 2015 Dark* by [Nicolas LLOBERA][]
 
 Improvements:
+
 - *Crystal* updated with new keywords and syntaxes by [Tsuyusato Kitsune][].
 - *Julia* updated to the modern definitions by [Alex Arslan][].
 - *julia-repl* added by [Morten Piibeleht][].
@@ -1085,13 +1232,21 @@ Improvements:
 - [Alejandro Alonso][] updated *Swift* keywords.
 
 [Tsuyusato Kitsune]: https://github.com/MakeNowJust
+
 [Alex Arslan]: https://github.com/ararslan
+
 [Morten Piibeleht]: https://github.com/mortenpi
+
 [Stanislav Belov]: https://github.com/4ppl
+
 [Ivan Dementev]: https://github.com/DiVAN1x
+
 [Nicolas LLOBERA]: https://github.com/Nicolas01
+
 [nnnik]: https://github.com/nnnik
+
 [Martin Clausen]: https://github.com/maacl
+
 [Alejandro Alonso]: https://github.com/Azoy
 
 ## Version 9.11.0
@@ -1108,13 +1263,15 @@ Improvements:
 - [Jordi Petit][] added rarely used `or`, `and` and `not` keywords to *C++*.
 - [Pieter Vantorre][] fixed highlighting of negative floating point values.
 
-
 [Tsuyusato Kitsune]: https://github.com/MakeNowJust
-[Jordi Petit]: https://github.com/jordi-petit
-[Raphaël Parrëe]: https://github.com/rparree
-[Pieter Vantorre]: https://github.com/NuclearCookie
-[5b3e0e6]: https://github.com/isagalaev/highlight.js/commit/5b3e0e68bfaae282faff6697d6a490567fa9d44b
 
+[Jordi Petit]: https://github.com/jordi-petit
+
+[Raphaël Parrëe]: https://github.com/rparree
+
+[Pieter Vantorre]: https://github.com/NuclearCookie
+
+[5b3e0e6]: https://github.com/isagalaev/highlight.js/commit/5b3e0e68bfaae282faff6697d6a490567fa9d44b
 
 ## Version 9.10.0
 
@@ -1143,20 +1300,32 @@ Improvements:
 - [Sam Wu][] fixed handling of `<<` in *C++* defines.
 
 [Philipp A]: https://github.com/flying-sheep
-[Philipp Hauer]: https://github.com/phauer
-[Sergey Sobko]: https://github.com/profitware
-[Hale Chan]: https://github.com/halechan
-[Matt Evans]: https://github.com/matthewevans
-[Joe Blow]: https://github.com/mossarelli
-[Kasper Andersen]: https://github.com/kasma1990
-[Eduard-Mihai Burtescu]: https://github.com/eddyb
-[Andres Täht]: https://github.com/andrestaht
-[Rene Saarsoo]: https://github.com/nene
-[Philipp Hauer]: https://github.com/phauer
-[Ike Ku]: https://github.com/dempfi
-[Guannan Wei]: https://github.com/Kraks
-[Sam Wu]: https://github.com/samsam2310
 
+[Philipp Hauer]: https://github.com/phauer
+
+[Sergey Sobko]: https://github.com/profitware
+
+[Hale Chan]: https://github.com/halechan
+
+[Matt Evans]: https://github.com/matthewevans
+
+[Joe Blow]: https://github.com/mossarelli
+
+[Kasper Andersen]: https://github.com/kasma1990
+
+[Eduard-Mihai Burtescu]: https://github.com/eddyb
+
+[Andres Täht]: https://github.com/andrestaht
+
+[Rene Saarsoo]: https://github.com/nene
+
+[Philipp Hauer]: https://github.com/phauer
+
+[Ike Ku]: https://github.com/dempfi
+
+[Guannan Wei]: https://github.com/Kraks
+
+[Sam Wu]: https://github.com/samsam2310
 
 ## Version 9.9.0
 
@@ -1173,9 +1342,10 @@ Improvements:
 - Compiler directives in *Delphi* are now correctly highlighted as "meta".
 
 [Raphael Parree]: https://github.com/rparree
-[Michael Rodler]: https://github.com/f0rki
-[Geoffrey Booth]: https://github.com/GeoffreyBooth
 
+[Michael Rodler]: https://github.com/f0rki
+
+[Geoffrey Booth]: https://github.com/GeoffreyBooth
 
 ## Version 9.8.0 "New York"
 
@@ -1197,12 +1367,16 @@ Improvements:
   [Alexander Lichter][].
 
 [Camil Staps]: https://github.com/camilstaps
-[Magnus Madsen]: https://github.com/magnus-madsen
-[Kenton Hamaluik]: https://github.com/FuzzyWuzzie
-[Nicolas Le Gall]: https://github.com/darkitty
-[Jan T. Sott]: https://github.com/idleberg
-[Alexander Lichter]: https://github.com/manniL
 
+[Magnus Madsen]: https://github.com/magnus-madsen
+
+[Kenton Hamaluik]: https://github.com/FuzzyWuzzie
+
+[Nicolas Le Gall]: https://github.com/darkitty
+
+[Jan T. Sott]: https://github.com/idleberg
+
+[Alexander Lichter]: https://github.com/manniL
 
 ## Version 9.7.0
 
@@ -1221,7 +1395,6 @@ highlight.js: even boring things keep getting better (even if slow).
   generics `<...>`.
 - Fixed another slow regex in Less.
 
-
 ## Version 9.6.0
 
 New languages:
@@ -1232,15 +1405,17 @@ New languages:
 
 New styles:
 
-- *Atom One* in both Dark and Light variants  by [Daniel Gamage][]
+- *Atom One* in both Dark and Light variants by [Daniel Gamage][]
 
 Plus, a few smaller updates for *Lasso*, *Elixir*, *C++* and *SQL*.
 
 [Alex McKibben]: https://github.com/mckibbenta
-[Daniel Gamage]: https://github.com/danielgamage
-[Matthew Daly]: https://github.com/matthewbdaly
-[Sergey Bronnikov]: https://github.com/ligurio
 
+[Daniel Gamage]: https://github.com/danielgamage
+
+[Matthew Daly]: https://github.com/matthewbdaly
+
+[Sergey Bronnikov]: https://github.com/ligurio
 
 ## Version 9.5.0
 
@@ -1265,15 +1440,22 @@ Notable changes:
 - [Victor Zhou][] added support for digit separators in C++ numbers.
 
 [Gavin Siu]: https://github.com/gavsiu
-[Builder's Brewery]: https://github.com/buildersbrewery
-[Victor Zhou]: https://github.com/OiCMudkips
-[Sergey Bronnikov]: https://github.com/ligurio
-[Joe Eli McIlvain]: https://github.com/jemc
-[Stephan Boyer]: https://github.com/boyers
-[Jacob Childress]: https://github.com/braveulysses
-[Minh Nguyễn]: https://github.com/1ec5
-[Jeremy Hull]: https://github.com/sourrust
 
+[Builder's Brewery]: https://github.com/buildersbrewery
+
+[Victor Zhou]: https://github.com/OiCMudkips
+
+[Sergey Bronnikov]: https://github.com/ligurio
+
+[Joe Eli McIlvain]: https://github.com/jemc
+
+[Stephan Boyer]: https://github.com/boyers
+
+[Jacob Childress]: https://github.com/braveulysses
+
+[Minh Nguyễn]: https://github.com/1ec5
+
+[Jeremy Hull]: https://github.com/sourrust
 
 ## Version 9.4.0
 
@@ -1302,13 +1484,18 @@ Improvements to existing languages and styles:
 - Fixed labels and directives in x86 assembler.
 
 [Tristano Ajmone]: https://github.com/tajmone
-[Taisuke Fujimoto]: https://github.com/temp-impl
-[Oleg Efimov]: https://github.com/Sannis
-[Boone Severson]: https://github.com/BooneJS
-[Victor Zhou]: https://github.com/OiCMudkips
-[Lars Schulna]: https://github.com/captain-hanuta
-[Janis Voigtländer]: https://github.com/jvoigtlaender
 
+[Taisuke Fujimoto]: https://github.com/temp-impl
+
+[Oleg Efimov]: https://github.com/Sannis
+
+[Boone Severson]: https://github.com/BooneJS
+
+[Victor Zhou]: https://github.com/OiCMudkips
+
+[Lars Schulna]: https://github.com/captain-hanuta
+
+[Janis Voigtländer]: https://github.com/jvoigtlaender
 
 ## Version 9.3.0
 
@@ -1335,9 +1522,10 @@ Improvements to existing languages and styles:
 - Improved detection of function declarations in C++ and C#
 
 [Philipp Wolfer]: https://github.com/phw
-[Billy Quith]: https://github.com/billyquith
-[Herbert Shin]: https://github.com/initbar
 
+[Billy Quith]: https://github.com/billyquith
+
+[Herbert Shin]: https://github.com/initbar
 
 ## Version 9.2.0
 
@@ -1366,12 +1554,16 @@ Improvements to existing languages and styles:
 - `macro_rules!` is now recognized as a built-in in Rust.
 
 [John Foster]: https://github.com/jf990
-[Qeole]: https://github.com/Qeole
-[Denis Ciccale]: https://github.com/dciccale
-[Michael Johnston]: https://github.com/lastobelus
-[Taras]: https://github.com/oxdef
-[Robert Dodier]: https://github.com/robert-dodier
 
+[Qeole]: https://github.com/Qeole
+
+[Denis Ciccale]: https://github.com/dciccale
+
+[Michael Johnston]: https://github.com/lastobelus
+
+[Taras]: https://github.com/oxdef
+
+[Robert Dodier]: https://github.com/robert-dodier
 
 ## Version 9.1.0
 
@@ -1397,11 +1589,14 @@ Improvements to existing languages and styles:
 - Better numbers handling in Verilog
 
 [Brendan Rocks]: http://brendanrocks.com
-[Raphaël Assénat]: https://github.com/raphnet
-[Matt Evans]: https://github.com/matthewevans
-[Martin Braun]: https://github.com/mbr0wn
-[Stefania Mellai]: https://github.com/smellai
 
+[Raphaël Assénat]: https://github.com/raphnet
+
+[Matt Evans]: https://github.com/matthewevans
+
+[Martin Braun]: https://github.com/mbr0wn
+
+[Stefania Mellai]: https://github.com/smellai
 
 ## Version 9.0.0
 
@@ -1445,17 +1640,26 @@ Other notable changes:
 - License added to non-compressed browser build.
 
 [Jan Kühle]: https://github.com/frigus02
-[Stefan Wienert]: https://github.com/zealot128
-[Kenta Sato]: https://github.com/bicycle1885
-[Nikita Savchenko]: https://github.com/ZitRos
-[webworkers]: https://github.com/isagalaev/highlight.js#web-workers
-[Jeremy Hull]: https://github.com/sourrust
-[#348]: https://github.com/isagalaev/highlight.js/issues/348
-[sg]: http://highlightjs.readthedocs.org/en/latest/style-guide.html
-[issues]: https://github.com/isagalaev/highlight.js/issues
-[Nebuleon Fumika]: https://github.com/Nebuleon
-[prince]: https://github.com/prince-0203
 
+[Stefan Wienert]: https://github.com/zealot128
+
+[Kenta Sato]: https://github.com/bicycle1885
+
+[Nikita Savchenko]: https://github.com/ZitRos
+
+[webworkers]: https://github.com/isagalaev/highlight.js#web-workers
+
+[Jeremy Hull]: https://github.com/sourrust
+
+[#348]: https://github.com/isagalaev/highlight.js/issues/348
+
+[sg]: http://highlightjs.readthedocs.org/en/latest/style-guide.html
+
+[issues]: https://github.com/isagalaev/highlight.js/issues
+
+[Nebuleon Fumika]: https://github.com/Nebuleon
+
+[prince]: https://github.com/prince-0203
 
 ## Version 8.9.1
 
@@ -1467,7 +1671,6 @@ Some last-minute changes reverted due to strange bug with minified browser build
 - Template string support for Typescript, as for ECMAScript 6
 - License added to not minified browser build
 
-
 ## Version 8.9.0
 
 New languages:
@@ -1476,6 +1679,7 @@ New languages:
 - *SQF* by [Soren Enevoldsen][]
 
 [Kristoffer Gronlund]: https://github.com/krig
+
 [Soren Enevoldsen]: https://github.com/senevoldsen90
 
 Notable fixes and improvements to existing languages:
@@ -1495,12 +1699,16 @@ Other notable changes:
 - ~~License added to not minified browser build~~
 
 [Kristoffer Gronlund]: https://github.com/krig
-[Søren Enevoldsen]: https://github.com/senevoldsen90
-[Daniel Rosenwasser]: https://github.com/DanielRosenwasser
-[Ladislav Prskavec]: https://github.com/abtris
-[Tsuyusato Kitsune]: https://github.com/MakeNowJust
-[Nate Cook]: https://github.com/natecook1000
 
+[Søren Enevoldsen]: https://github.com/senevoldsen90
+
+[Daniel Rosenwasser]: https://github.com/DanielRosenwasser
+
+[Ladislav Prskavec]: https://github.com/abtris
+
+[Tsuyusato Kitsune]: https://github.com/MakeNowJust
+
+[Nate Cook]: https://github.com/natecook1000
 
 ## Version 8.8.0
 
@@ -1525,11 +1733,14 @@ Other notable changes:
 - Added ability to build all targets at once
 
 [Philippe Charrière]: https://github.com/k33g
-[Stefan Bechert]: https://github.com/b-pos465
-[Anthony Scemama]: https://github.com/scemama
-[Oleg Efimov]: https://github.com/Sannis
-[Tsuyusato Kitsune]: https://github.com/MakeNowJust
 
+[Stefan Bechert]: https://github.com/b-pos465
+
+[Anthony Scemama]: https://github.com/scemama
+
+[Oleg Efimov]: https://github.com/Sannis
+
+[Tsuyusato Kitsune]: https://github.com/MakeNowJust
 
 ## Version 8.7
 
@@ -1562,16 +1773,24 @@ Notable fixes and improvements to existing languages:
 - C/C++ functions now support pointer, reference, and move returns
 
 [Oleg Efimov]: https://github.com/Sannis
-[Guillaume Gomez]: https://github.com/GuillaumeGomez
-[Janis Voigtländer]: https://github.com/jvoigtlaender
-[Jan T. Sott]: https://github.com/idleberg
-[Dirk Kirsten]: https://github.com/dirkk
-[MY Sun]: https://github.com/simonmysun
-[Vadimtro]: https://github.com/Vadimtro
-[Benjamin Auder]: https://github.com/ghost
-[Dotan Dimet]: https://github.com/dotandimet
-[J2TeaM]: https://github.com/J2TeaM
 
+[Guillaume Gomez]: https://github.com/GuillaumeGomez
+
+[Janis Voigtländer]: https://github.com/jvoigtlaender
+
+[Jan T. Sott]: https://github.com/idleberg
+
+[Dirk Kirsten]: https://github.com/dirkk
+
+[MY Sun]: https://github.com/simonmysun
+
+[Vadimtro]: https://github.com/Vadimtro
+
+[Benjamin Auder]: https://github.com/ghost
+
+[Dotan Dimet]: https://github.com/dotandimet
+
+[J2TeaM]: https://github.com/J2TeaM
 
 ## Version 8.6
 
@@ -1603,14 +1822,20 @@ Notable fixes and improvements to existing languages:
 - Release process is now automated
 
 [Bram de Haan]: https://github.com/atelierbram
-[Kenneth Fuglsang]: https://github.com/kfuglsang
-[Louis Barranqueiro]: https://github.com/LouisBarranqueiro
-[Tim Schumacher]: https://github.com/enko
-[Lucas Werkmeister]: https://github.com/lucaswerkmeister
-[Dan Panzarella]: https://github.com/pzl
-[Bruno Dias]: https://github.com/sequitur
-[Jay Strybis]: https://github.com/unreal
 
+[Kenneth Fuglsang]: https://github.com/kfuglsang
+
+[Louis Barranqueiro]: https://github.com/LouisBarranqueiro
+
+[Tim Schumacher]: https://github.com/enko
+
+[Lucas Werkmeister]: https://github.com/lucaswerkmeister
+
+[Dan Panzarella]: https://github.com/pzl
+
+[Bruno Dias]: https://github.com/sequitur
+
+[Jay Strybis]: https://github.com/unreal
 
 ## Version 8.5
 
@@ -1641,18 +1866,28 @@ Notable fixes and improvements to existing languages:
 - Multi-line comments are supported now in MatLab.
 
 [Taufik Nurrohman]: https://github.com/taufik-nurrohman
-[Jet Brains]: https://www.jetbrains.com/
-[Peter Piwowarski]: https://github.com/oldlaptop
-[Kenta Sato]: https://github.com/bicycle1885
-[Bram de Haan]: https://github.com/atelierbram
-[Raivo Laanemets]: https://github.com/rla
-[Alexis Hénaut]: https://github.com/AlexisNo
-[Anthony Scemama]: https://github.com/scemama
-[Pedro Oliveira]: https://github.com/kanytu
-[Gu Yiling]: https://github.com/Justineo
-[Sergey Mashkov]: https://github.com/cy6erGn0m
-[Thomas Applencourt]: https://github.com/TApplencourt
 
+[Jet Brains]: https://www.jetbrains.com/
+
+[Peter Piwowarski]: https://github.com/oldlaptop
+
+[Kenta Sato]: https://github.com/bicycle1885
+
+[Bram de Haan]: https://github.com/atelierbram
+
+[Raivo Laanemets]: https://github.com/rla
+
+[Alexis Hénaut]: https://github.com/AlexisNo
+
+[Anthony Scemama]: https://github.com/scemama
+
+[Pedro Oliveira]: https://github.com/kanytu
+
+[Gu Yiling]: https://github.com/Justineo
+
+[Sergey Mashkov]: https://github.com/cy6erGn0m
+
+[Thomas Applencourt]: https://github.com/TApplencourt
 
 ## Version 8.4
 
@@ -1686,17 +1921,26 @@ New languages:
 - *Stata* by [Brian Quistorff][]
 
 [Hakan Özler]: https://github.com/ozlerhakan
-[Adam Joseph Cook]: https://github.com/adamjcook
-[demo page]: https://highlightjs.org/static/demo/
-[Ivan Sagalaev]: https://github.com/isagalaev
-[Edwin Dalorzo]: https://github.com/edalorzo
-[mucaho]: https://github.com/mucaho
-[Dennis Titze]: https://github.com/titze
-[Jon Evans]: https://github.com/craftyjon
-[Brian Quistorff]: https://github.com/bquistorff
-[ocaml]: https://github.com/isagalaev/highlight.js/pull/608#issue-46190207
-[Mickaël Delahaye]: https://github.com/polazarus
 
+[Adam Joseph Cook]: https://github.com/adamjcook
+
+[demo page]: https://highlightjs.org/static/demo/
+
+[Ivan Sagalaev]: https://github.com/isagalaev
+
+[Edwin Dalorzo]: https://github.com/edalorzo
+
+[mucaho]: https://github.com/mucaho
+
+[Dennis Titze]: https://github.com/titze
+
+[Jon Evans]: https://github.com/craftyjon
+
+[Brian Quistorff]: https://github.com/bquistorff
+
+[ocaml]: https://github.com/isagalaev/highlight.js/pull/608#issue-46190207
+
+[Mickaël Delahaye]: https://github.com/polazarus
 
 ## Version 8.3
 
@@ -1730,22 +1974,36 @@ New languages in this release:
 - *Roboconf* by [Vincent Zurczak][]
 
 [b]: http://highlightjs.readthedocs.org/en/latest/building-testing.html
-[Jeremy Hull]: https://github.com/sourrust
-[ik]: https://twitter.com/IvanKleshnin/status/514041599484231680
-[Max Mikhailov]: https://github.com/seven-phases-max
-[Bryant Williams]: https://github.com/scien
-[Radek Liska]: https://github.com/Nindaleth
-[Jose Molina Colmenero]: https://github.com/Moliholy
-[Erik Paluka]: https://github.com/paluka
-[Luke Holder]: https://github.com/lukeholder
-[David Mohundro]: https://github.com/drmohundro
-[ps]: https://github.com/OctopusDeploy/Library/blob/master/app/shared/presentation/highlighting/powershell.js
-[Christophe de Dinechin]: https://github.com/c3d
-[Taneli Vatanen]: https://github.com/Daiz-
-[Jen Evers-Corvina]: https://github.com/sevvie
-[Lucas Mazza]: https://github.com/lucasmazza
-[Vincent Zurczak]: https://github.com/vincent-zurczak
 
+[Jeremy Hull]: https://github.com/sourrust
+
+[ik]: https://twitter.com/IvanKleshnin/status/514041599484231680
+
+[Max Mikhailov]: https://github.com/seven-phases-max
+
+[Bryant Williams]: https://github.com/scien
+
+[Radek Liska]: https://github.com/Nindaleth
+
+[Jose Molina Colmenero]: https://github.com/Moliholy
+
+[Erik Paluka]: https://github.com/paluka
+
+[Luke Holder]: https://github.com/lukeholder
+
+[David Mohundro]: https://github.com/drmohundro
+
+[ps]: https://github.com/OctopusDeploy/Library/blob/master/app/shared/presentation/highlighting/powershell.js
+
+[Christophe de Dinechin]: https://github.com/c3d
+
+[Taneli Vatanen]: https://github.com/Daiz-
+
+[Jen Evers-Corvina]: https://github.com/sevvie
+
+[Lucas Mazza]: https://github.com/lucasmazza
+
+[Vincent Zurczak]: https://github.com/vincent-zurczak
 
 ## Version 8.2
 
@@ -1760,10 +2018,15 @@ demo web app. If you're confident front-end developer or designer and want to
 help us with it, drop a comment into [the issue][#542] on GitHub.
 
 [test]: https://github.com/isagalaev/highlight.js/tree/master/test
+
 [demo]: https://highlightjs.org/static/test.html
+
 [#542]: https://github.com/isagalaev/highlight.js/issues/542
+
 [ci]: https://travis-ci.org/isagalaev/highlight.js
+
 [Jeremy Hull]: https://github.com/sourrust
+
 [Chris Eidhof]: https://github.com/chriseidhof
 
 As usually there's a handful of new languages in this release:
@@ -1776,10 +2039,15 @@ As usually there's a handful of new languages in this release:
 - *Q* from Kx Systems by [Sergey Vidyuk][]
 
 [Guillaume Laforge]: https://github.com/glaforge
+
 [Maxim Dikun]: https://github.com/dikmax
+
 [Michael Allen]: https://github.com/bfui
+
 [JP Verkamp]: https://github.com/jpverkamp
+
 [Adam Joseph Cook]: https://github.com/adamjcook
+
 [Sergey Vidyuk]: https://github.com/sv
 
 Other improvements:
@@ -1791,8 +2059,8 @@ Other improvements:
   "built_in" for built-in functions in Clojure and Scheme.
 
 [Erik Osheim]: https://github.com/non
-[Lucas Mazza]: https://github.com/lucasmazza
 
+[Lucas Mazza]: https://github.com/lucasmazza
 
 ## Version 8.1
 
@@ -1821,23 +2089,41 @@ New styles:
 - *Hybrid* by [Nic West][]
 
 [Sam Pikesley]: https://github.com/pikesley
+
 [Sindre Sorhus]: https://github.com/sindresorhus
+
 [Josh Adams]: https://github.com/knewter
+
 [Jan T. Sott]: https://github.com/idleberg
+
 [Jun Yang]: https://github.com/harttle
+
 [Dan Tao]: https://github.com/dtao
+
 [Domen Kožar]: https://github.com/iElectric
+
 [innocenat]: https://github.com/innocenat
+
 [Oleg Efimov]: https://github.com/Sannis
+
 [Arthur Bikmullin]: https://github.com/devolonter
+
 [Panu Horsmalahti]: https://github.com/panuhorsmalahti
+
 [Flaviu Tamas]: https://github.com/flaviut
+
 [Damian Mee]: https://github.com/chester1000
+
 [Christopher Kaster]: http://christopher.kaster.ws
+
 [Fabrício Tavares de Oliveira]: https://github.com/fabriciotav
+
 [Justin Perry]: https://github.com/ourmaninamsterdam
+
 [Nic West]: https://github.com/nicwest
+
 [Chris Eidhof]: https://github.com/chriseidhof
+
 [Nate Cook]: https://github.com/natecook1000
 
 Other improvements:
@@ -1861,18 +2147,28 @@ Other improvements:
 - Fixed highlighting of generics in Java.
 
 [ll]: http://highlightjs.readthedocs.org/en/latest/api.html#listlanguages
-[Sindre Sorhus]: https://github.com/sindresorhus
-[Heiko August]: https://github.com/auge8472
-[Nikolay Lisienko]: https://github.com/neor-ru
-[Travis Odom]: https://github.com/Burstaholic
-[Jeff Escalante]: https://github.com/jenius
-[Pascal Hurni]: https://github.com/phurni
-[Jiyin Yiyong]: https://github.com/jiyinyiyong
-[Artem A. Klevtsov]: https://github.com/unikum
-[Roman Shmatov]: https://github.com/shmatov
-[Jeremy Hull]: https://github.com/sourrust
-[Matt Diephouse]: https://github.com/mdiep
 
+[Sindre Sorhus]: https://github.com/sindresorhus
+
+[Heiko August]: https://github.com/auge8472
+
+[Nikolay Lisienko]: https://github.com/neor-ru
+
+[Travis Odom]: https://github.com/Burstaholic
+
+[Jeff Escalante]: https://github.com/jenius
+
+[Pascal Hurni]: https://github.com/phurni
+
+[Jiyin Yiyong]: https://github.com/jiyinyiyong
+
+[Artem A. Klevtsov]: https://github.com/unikum
+
+[Roman Shmatov]: https://github.com/shmatov
+
+[Jeremy Hull]: https://github.com/sourrust
+
+[Matt Diephouse]: https://github.com/mdiep
 
 ## Version 8.0
 
@@ -1956,19 +2252,28 @@ Miscellaneous improvements:
 [API reference]: http://highlightjs.readthedocs.org/en/latest/api.html
 
 [cr]: http://highlightjs.readthedocs.org/en/latest/css-classes-reference.html
+
 [api docs]: http://highlightjs.readthedocs.org/en/latest/api.html
+
 [variants]: https://groups.google.com/d/topic/highlightjs/VoGC9-1p5vk/discussion
+
 [beginKeywords]: https://github.com/isagalaev/highlight.js/commit/6c7fdea002eb3949577a85b3f7930137c7c3038d
+
 [php-html]: https://twitter.com/highlightjs/status/408890903017689088
 
 [Carlo Kok]: https://github.com/carlokok
-[Bram de Haan]: https://github.com/atelierbram
-[Daniel Kvasnička]: https://github.com/dkvasnicka
-[Dmitry Smolin]: https://github.com/dimsmol
-[Jeremy Hull]: https://github.com/sourrust
-[Seongwon Lee]: https://github.com/dlimpid
-[Jan T. Sott]: https://github.com/idleberg
 
+[Bram de Haan]: https://github.com/atelierbram
+
+[Daniel Kvasnička]: https://github.com/dkvasnicka
+
+[Dmitry Smolin]: https://github.com/dimsmol
+
+[Jeremy Hull]: https://github.com/sourrust
+
+[Seongwon Lee]: https://github.com/dlimpid
+
+[Jan T. Sott]: https://github.com/idleberg
 
 ## Version 7.5
 
@@ -1999,15 +2304,22 @@ Improvements:
 - Miscellaneous fixes in PHP, Brainfuck, SCSS, Asciidoc, CMake, Python and F#.
 
 [mehdid]: https://github.com/mehdid
-[nbraud]: https://github.com/nbraud
-[revig]: https://github.com/revig
-[lcs]: http://livecode.com/developers/guides/server/
-[sylvestre]: https://github.com/sylvestre
-[isagalaev]: https://github.com/isagalaev
-[treep]: https://github.com/treep
-[sourrust]: https://github.com/sourrust
-[d]: http://highlightjs.org/download/
 
+[nbraud]: https://github.com/nbraud
+
+[revig]: https://github.com/revig
+
+[lcs]: http://livecode.com/developers/guides/server/
+
+[sylvestre]: https://github.com/sylvestre
+
+[isagalaev]: https://github.com/isagalaev
+
+[treep]: https://github.com/treep
+
+[sourrust]: https://github.com/sourrust
+
+[d]: http://highlightjs.org/download/
 
 ## New core developers
 
@@ -2024,9 +2336,10 @@ Hope now we'll be able to work through stuff faster!
 P.S. The historical commit is [here][1] for the record.
 
 [Jeremy Hull]: https://github.com/sourrust
-[Oleg Efimov]: https://github.com/sannis
-[1]: https://github.com/isagalaev/highlight.js/commit/f3056941bda56d2b72276b97bc0dd5f230f2473f
 
+[Oleg Efimov]: https://github.com/sannis
+
+[1]: https://github.com/isagalaev/highlight.js/commit/f3056941bda56d2b72276b97bc0dd5f230f2473f
 
 ## Version 7.4
 
@@ -2052,12 +2365,19 @@ New languages:
 - Mizar by [Kelley van Evert][]
 
 [Robin Ward]: https://github.com/eviltrout
+
 [Jason Jacobson]: https://github.com/jayce7
+
 [Joans Follesø]: https://github.com/follesoe
+
 [Dan Allen]: https://github.com/mojavelinux
+
 [Eric Knibbe]: https://github.com/EricFromCanada
+
 [Kurt Emch]: https://github.com/kemch
+
 [Poren Chiang]: https://github.com/rschiang
+
 [Kelley van Evert]: https://github.com/kelleyvanevert
 
 New style themes:
@@ -2070,9 +2390,13 @@ New style themes:
 - Foundation by [Dan Allen][]
 
 [noformnocontent]: http://nn.mit-license.org/
+
 [Damien White]: https://github.com/visoft
+
 [Alexander Marenin]: https://github.com/ioncreature
+
 [Simon Madine]: https://github.com/thingsinjars
+
 [Ivan Sagalaev]: https://github.com/isagalaev
 
 Other notable changes:
@@ -2086,8 +2410,8 @@ Other notable changes:
   input from [Cédric Néhémie][].
 
 [Dmitry Medvinsky]: https://github.com/dmedvinsky
-[Cédric Néhémie]: https://github.com/abe33
 
+[Cédric Néhémie]: https://github.com/abe33
 
 ## Version 7.3
 
@@ -2113,17 +2437,20 @@ Other notable changes:
   <http://highlightjs.readthedocs.org/>.
 
 [ng]: https://github.com/nathan11g
-[dd]: https://github.com/drdrang
-[bolk]: https://github.com/bolknote
-[oe]: https://github.com/Sannis
-[kk]: https://github.com/kimmel
-[vast]: https://github.com/vast
 
+[dd]: https://github.com/drdrang
+
+[bolk]: https://github.com/bolknote
+
+[oe]: https://github.com/Sannis
+
+[kk]: https://github.com/kimmel
+
+[vast]: https://github.com/vast
 
 ## Version 7.2
 
 A regular bug-fix release without any significant new features. Enjoy!
-
 
 ## Version 7.1
 
@@ -2141,11 +2468,14 @@ A Summer crop:
   fixes, including a pretty significant refactoring of Ruby.
 
 [mf]: https://github.com/mfornos
-[tm]: http://jmblog.github.com/color-themes-for-highlightjs/
-[tm0]: https://github.com/ChrisKempson/Tomorrow-Theme
-[cd]: https://github.com/caseman
-[amd]: http://requirejs.org/docs/whyamd.html
 
+[tm]: http://jmblog.github.com/color-themes-for-highlightjs/
+
+[tm0]: https://github.com/ChrisKempson/Tomorrow-Theme
+
+[cd]: https://github.com/caseman
+
+[amd]: http://requirejs.org/docs/whyamd.html
 
 ## Version 7.0
 
@@ -2186,16 +2516,24 @@ language detection.
 Overall highlight.js currently supports 51 languages and 20 style themes.
 
 [node.js]: http://nodejs.org/
-[api]: http://softwaremaniacs.org/wiki/doku.php/highlight.js:api
-[p]: http://softwaremaniacs.org/blog/2012/05/10/http-and-json-in-highlight-js/en/
-[pojoaque]: http://web-cms-designs.com/ftopict-10-pojoaque-style-for-highlight-js-code-highlighter.html
-[ao]: https://github.com/angelolloqui
-[ar]: https://github.com/raleksandar
-[jc]: https://github.com/jcheng5
-[st]: https://github.com/tikhomirov
-[sr]: https://github.com/sourrust
-[ik]: https://github.com/ikalnitsky
 
+[api]: http://softwaremaniacs.org/wiki/doku.php/highlight.js:api
+
+[p]: http://softwaremaniacs.org/blog/2012/05/10/http-and-json-in-highlight-js/en/
+
+[pojoaque]: http://web-cms-designs.com/ftopict-10-pojoaque-style-for-highlight-js-code-highlighter.html
+
+[ao]: https://github.com/angelolloqui
+
+[ar]: https://github.com/raleksandar
+
+[jc]: https://github.com/jcheng5
+
+[st]: https://github.com/tikhomirov
+
+[sr]: https://github.com/sourrust
+
+[ik]: https://github.com/ikalnitsky
 
 ## Version 6.2
 
@@ -2216,16 +2554,24 @@ from all this activity:
   by [Oleg Efimov][oe] and [Evgeny Stepanischev][es].
 
 [av]: https://github.com/vlasovskikh
-[am]: https://github.com/myadzel
-[dn]: https://github.com/dnagir
-[oe]: https://github.com/Sannis
-[db]: https://github.com/btd
-[jc]: https://github.com/seejohnrun
-[lm]: http://grigio.org/
-[ak]: https://github.com/geekpanth3r
-[es]: https://github.com/bolknote
-[log]: https://github.com/isagalaev/highlight.js/commits/
 
+[am]: https://github.com/myadzel
+
+[dn]: https://github.com/dnagir
+
+[oe]: https://github.com/Sannis
+
+[db]: https://github.com/btd
+
+[jc]: https://github.com/seejohnrun
+
+[lm]: http://grigio.org/
+
+[ak]: https://github.com/geekpanth3r
+
+[es]: https://github.com/bolknote
+
+[log]: https://github.com/isagalaev/highlight.js/commits/
 
 ## Version 6.1 — Solarized
 
@@ -2238,9 +2584,10 @@ This version also adds a new original style Arta. Its author pumbur maintains a
 [heavily modified fork of highlight.js][pb] on GitHub.
 
 [jh]: https://github.com/sourrust
-[solarized]: http://ethanschoonover.com/solarized
-[pb]: https://github.com/pumbur/highlight.js
 
+[solarized]: http://ethanschoonover.com/solarized
+
+[pb]: https://github.com/pumbur/highlight.js
 
 ## Version 6.0
 
@@ -2258,11 +2605,17 @@ New languages are:
 - Go by [Stephan Kountso][steplg]
 
 [sourrust]: https://github.com/sourrust
+
 [desh]: http://desh.su/
+
 [arhibot]: https://github.com/arhibot
+
 [ignatov]: https://github.com/ignatov
+
 [vhbit]: https://github.com/vhbit
+
 [antono]: https://github.com/antono
+
 [steplg]: https://github.com/steplg
 
 Also this version is marginally faster and fixes a number of small long-standing
@@ -2278,7 +2631,6 @@ download [your own copy][d].
 
 [d]: /soft/highlight/en/download/
 
-
 ## Version 5.14
 
 Fixed bugs in HTML/XML detection and relevance introduced in previous
@@ -2286,7 +2638,6 @@ refactoring.
 
 Also test.html now shows the second best result of language detection by
 relevance.
-
 
 ## Version 5.13
 
@@ -2313,7 +2664,9 @@ Bug fixes:
 - Small fixes in browser compatibility and heuristics.
 
 [c++ 0x]: http://ru.wikipedia.org/wiki/C%2B%2B0x
+
 [html 5]: http://en.wikipedia.org/wiki/HTML5
+
 [ik]: http://kalnitsky.org.ua/
 
 ### For developers
@@ -2336,15 +2689,14 @@ Test file test.html has at last become a real test. Now it not only puts the
 detected language name under the code snippet but also tests if it matches the
 expected one. Test summary is displayed right above all language snippets.
 
-
 ## CDN
 
 Fine people at [Yandex][] agreed to host highlight.js on their big fast servers.
 [Link up][l]!
 
 [yandex]: http://yandex.com/
-[l]: http://softwaremaniacs.org/soft/highlight/en/download/
 
+[l]: http://softwaremaniacs.org/soft/highlight/en/download/
 
 ## Version 5.10 — "Paris".
 
@@ -2354,7 +2706,6 @@ couple of small fixes:
 - Tomas Vitvar discovered that TAB replacement doesn't always work when used
   with custom markup in code
 - SQL parsing is even more rigid now and doesn't step over SmallTalk in tests
-
 
 ## Version 5.9
 
@@ -2368,6 +2719,7 @@ New languages:
 - [Vladimir Moskva][vm] made a definition for TeX
 
 [pl]: http://kung-fu-tzu.ru/
+
 [vm]: http://fulc.ru/
 
 Fixes for existing languages:
@@ -2378,6 +2730,7 @@ Fixes for existing languages:
   greedy when it comes to language detection
 
 [ls]: http://gnuu.org/
+
 [yard]: http://yardoc.org/
 
 The highlighter has become more usable as a library allowing to do highlighting
@@ -2388,8 +2741,8 @@ Also this version drops support for the [WordPress][wp] plugin. Everyone is
 welcome to [pick up its maintenance][p] if needed.
 
 [wp]: http://wordpress.org/
-[p]: http://bazaar.launchpad.net/~isagalaev/+junk/highlight/annotate/342/src/wp_highlight.js.php
 
+[p]: http://bazaar.launchpad.net/~isagalaev/+junk/highlight/annotate/342/src/wp_highlight.js.php
 
 ## Version 5.8
 
@@ -2397,24 +2750,20 @@ welcome to [pick up its maintenance][p] if needed.
 - All CSS-styles are rewritten to work only inside `<pre>` tags to avoid
   conflicts with host site styles.
 
-
 ## Version 5.7.
 
 Fixed escaping of quotes in VBScript strings.
-
 
 ## Version 5.5
 
 This version brings a small change: now .ini-files allow digits, underscores and
 square brackets in key names.
 
-
 ## Version 5.4
 
 Fixed small but upsetting bug in the packer which caused incorrect highlighting
 of explicitly specified languages. Thanks to Andrew Fedorov for precise
 diagnostics!
-
 
 ## Version 5.3
 
@@ -2433,10 +2782,12 @@ Also in this version:
 - Oleg Volchkov has sent a definition for [Parser 3][p3].
 
 [1]: http://softwaremaniacs.org/forum/highlightjs/6612/
-[p3]: http://www.parser.ru/
-[vp]: http://vasily.polovnyov.ru/
-[vd]: http://dolzhenko.blogspot.com/
 
+[p3]: http://www.parser.ru/
+
+[vp]: http://vasily.polovnyov.ru/
+
+[vd]: http://dolzhenko.blogspot.com/
 
 ## Version 5.2
 
@@ -2444,7 +2795,6 @@ Also in this version:
   (e.g. 2 or 4 spaces)
 - new keywords and built-ins for 1C by Sergey Baranov
 - a couple of small fixes to Apache highlighting
-
 
 ## Version 5.1
 
@@ -2460,10 +2810,12 @@ contributions!
   the matter.
 
 [vooon]: http://vehq.ru/about/
-[rukeba]: http://rukeba.com/
-[drake]: http://drakeguan.org/
-[ke]: http://k-evdokimenko.moikrug.ru/
 
+[rukeba]: http://rukeba.com/
+
+[drake]: http://drakeguan.org/
+
+[ke]: http://k-evdokimenko.moikrug.ru/
 
 ## Version 5.0
 
@@ -2479,7 +2831,6 @@ And as usually there were a couple of minor correctness fixes.
 
 Great thanks to all contributors! Keep using highlight.js.
 
-
 ## Version 4.3
 
 This version comes with two contributions from [Jason Diamond][jd]:
@@ -2490,7 +2841,6 @@ This version comes with two contributions from [Jason Diamond][jd]:
 Plus there are a couple of minor bug fixes for parsing HTML and XML attributes.
 
 [jd]: http://jason.diamond.name/weblog/
-
 
 ## Version 4.2
 
@@ -2512,10 +2862,12 @@ Other changes:
 - HTML allows embedded VBScript (`<% .. %>`)
 
 [f]: http://softwaremaniacs.org/forum/highlightjs/
-[voldmar]: http://voldmar.ya.ru/
-[mel]: http://en.wikipedia.org/wiki/Maya_Embedded_Language
-[drake]: http://drakeguan.org/
 
+[voldmar]: http://voldmar.ya.ru/
+
+[mel]: http://en.wikipedia.org/wiki/Maya_Embedded_Language
+
+[drake]: http://drakeguan.org/
 
 ## Version 4.1
 
@@ -2540,10 +2892,12 @@ thanks go to Sam for getting rid of my stylistic comments in code that were
 getting in the way of [JSMin][].
 
 [zenburn]: http://en.wikipedia.org/wiki/Zenburn
-[alenacpp]: http://alenacpp.blogspot.com/
-[bug]: http://softwaremaniacs.org/forum/viewtopic.php?id=1823
-[jsmin]: http://code.google.com/p/jsmin-php/
 
+[alenacpp]: http://alenacpp.blogspot.com/
+
+[bug]: http://softwaremaniacs.org/forum/viewtopic.php?id=1823
+
+[jsmin]: http://code.google.com/p/jsmin-php/
 
 ## Version 4.0
 
@@ -2564,7 +2918,6 @@ Invisible new features:
 Changing of a major version number caused by a new format of language definition
 files. If you use some third-party language files they should be updated.
 
-
 ## Version 3.5
 
 A very nice version in my opinion fixing a number of small bugs and slightly
@@ -2578,7 +2931,6 @@ things as CDATA sections and processing instructions (`<? ... ?>`).
 
 [f]: http://softwaremaniacs.org/forum/viewforum.php?id=6
 
-
 ## Version 3.3
 
 [Vladimir Gubarkov][xonix] has provided an interesting and useful addition.
@@ -2589,7 +2941,6 @@ be useful in situations when one can't use the script itself on a site.
 
 [xonix]: http://xonixx.blogspot.com/
 
-
 ## Version 3.2 consists completely of contributions:
 
 - Vladimir Gubarkov has described SmallTalk
@@ -2598,7 +2949,6 @@ be useful in situations when one can't use the script itself on a site.
 - Vladimir Ermakov has compiled a mod for phpBB
 
 Many thanks to you all!
-
 
 ## Version 3.1
 
@@ -2610,7 +2960,6 @@ The engine itself has got a long awaited feature of grouping keywords
 ("keyword", "built-in function", "literal"). No more hacks!
 
 [1]: http://roudakov.ru/
-
 
 ## Version 3.0
 
@@ -2634,7 +2983,6 @@ use it — replace it with the new one.
 
 [RibKit]: http://ribkit.sourceforge.net/
 
-
 ## Version 2.9
 
 Highlight.js is a parser, not just a couple of regular expressions. That said
@@ -2643,11 +2991,9 @@ I'm glad to announce that in the new version 2.9 has support for:
 - in-string substitutions for Ruby -- `#{...}`
 - strings from from numeric symbol codes (like #XX) for Delphi
 
-
 ## Version 2.8
 
 A maintenance release with more tuned heuristics. Fully backwards compatible.
-
 
 ## Version 2.7
 
@@ -2656,7 +3002,6 @@ A maintenance release with more tuned heuristics. Fully backwards compatible.
 - Ongoing tuning of heuristics
 
 Fixed bugs were rather unpleasant so I encourage everyone to upgrade!
-
 
 ## Version 2.4
 
@@ -2670,12 +3015,10 @@ submit form.
 
 [mail]: mailto:Maniac@SoftwareManiacs.Org
 
-
 ## Version 2.3
 
 This version fixes IE breakage in previous version. My apologies to all who have
 already downloaded that one!
-
 
 ## Version 2.2
 
@@ -2683,7 +3026,6 @@ already downloaded that one!
 - at last fixed parsing of Delphi's escaped apostrophes in strings
 - in Ruby fixed highlighting of keywords 'def' and 'class', same for 'sub' in
   Perl
-
 
 ## Version 2.0
 
@@ -2693,7 +3035,6 @@ already downloaded that one!
   places (like keyword "End" at the end of Delphi classes)
 
 [ak]: http://anton.kovalyov.net/
-
 
 ## Version 1.0
 

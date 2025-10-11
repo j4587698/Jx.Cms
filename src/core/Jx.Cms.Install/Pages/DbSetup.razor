@@ -1,8 +1,6 @@
-@using Jx.Cms.DbContext
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Common.Extensions
-@using Jx.Cms.Common.Utils
-@using Jx.Cms.Install.Validator
+@using Jx.Cms.DbContext
 @using Jx.Cms.Themes.Vm
 @inherits StepBase
 @inject SwalService SwalService
@@ -12,7 +10,8 @@
     <GroupBox class="install_content">
         <div class="row g-3">
             <div class="form-group col-12">
-                <Select @bind-Value="DbConfig.DbType" Items="typeof(DbTypeEnum).ToSelectList()" DisplayText="数据库类型" OnSelectedItemChanged="OnSelectedItemChanged"></Select>
+                <Select @bind-Value="DbConfig.DbType" Items="typeof(DbTypeEnum).ToSelectList()" DisplayText="数据库类型"
+                        OnSelectedItemChanged="OnSelectedItemChanged"></Select>
             </div>
             @if (_needShow)
             {
@@ -53,17 +52,18 @@
 </ValidateForm>
 
 @code {
-    [Parameter]
-    public DbConfig DbConfig { get; set; }
+    [Parameter] public DbConfig DbConfig { get; set; }
 
-    private bool _needShow = false;
+    private bool _needShow;
 
     private async Task OnSubmit(EditContext arg)
     {
-        var ret = DbStartup.SetupDb(ServicesExtension.Services, DbConfig);
+        // 创建新的服务集合来配置数据库
+        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        var ret = DbStartup.SetupDb(services, DbConfig);
         if (!ret.isSuccess)
         {
-            await SwalService.Show(new SwalOption()
+            await SwalService.Show(new SwalOption
             {
                 Category = SwalCategory.Error,
                 Title = "数据库配置错误",
@@ -71,10 +71,10 @@
             });
             return;
         }
-        
+
         if (!DbStartup.CreateTables(DbConfig))
         {
-            await SwalService.Show(new SwalOption()
+            await SwalService.Show(new SwalOption
             {
                 Category = SwalCategory.Error,
                 Title = "建表失败",
@@ -84,7 +84,7 @@
         }
 
         // 初始化系统设置
-        SystemSettingsVm settingsVm = SystemSettingsVm.Init();
+        var settingsVm = SystemSettingsVm.Init();
         settingsVm.Title = "JX.CMS";
         settingsVm.SubTitle = "一个基于ASP.NET CORE的CMS";
         settingsVm.Url = NavigationManager.GetAbsoluteUri().GetLeftPart(UriPartial.Authority);
@@ -132,6 +132,7 @@
                     throw new ArgumentOutOfRangeException();
             }
         }
+
         return Task.CompletedTask;
     }
 

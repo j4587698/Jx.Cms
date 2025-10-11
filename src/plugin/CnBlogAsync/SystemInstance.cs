@@ -8,19 +8,17 @@ public class SystemInstance : ISystemPlugin
 {
     public void PluginEnable()
     {
-        
     }
 
     public void PluginDeleted()
     {
-        
     }
 
     public List<PluginMenuModel> AddMenuItem()
     {
-        return new List<PluginMenuModel>()
+        return new List<PluginMenuModel>
         {
-            new PluginMenuModel()
+            new()
             {
                 DisplayName = "博客园同步设置",
                 Icon = "fa fa-home",

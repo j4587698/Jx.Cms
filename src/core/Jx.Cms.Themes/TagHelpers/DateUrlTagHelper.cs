@@ -9,7 +9,7 @@ public class DateUrlTagHelper : TagHelper
     public int Year { get; set; }
 
     public int Month { get; set; }
-    
+
     public long DatePageNum { get; set; } = 1;
 
     public override void Process(TagHelperContext context, TagHelperOutput output)

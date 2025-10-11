@@ -4,13 +4,13 @@
         <ImplicitUsings>enable</ImplicitUsings>
     </PropertyGroup>
     <ItemGroup>
-        <EmbeddedResource Include="wwwroot/**" />
+        <EmbeddedResource Include="wwwroot/**"/>
     </ItemGroup>
     <ItemGroup>
-      <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+        <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
     </ItemGroup>
     <ItemGroup>
-      <Folder Include="wwwroot" />
+        <Folder Include="wwwroot"/>
     </ItemGroup>
 
     <Target Name="SetAllProjectReferenceAsPublic" AfterTargets="AssignProjectConfiguration" BeforeTargets="ResolveProjectReferences" Condition="'$(OutputType)' == 'Library' and $(AssemblyName.EndsWith('Tests')) == 'false' ">
@@ -23,8 +23,8 @@
             </ProjectReference>
         </ItemGroup>
     </Target>
-    
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;" />
+        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;"/>
     </Target>
 </Project>

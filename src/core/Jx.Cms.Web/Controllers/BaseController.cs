@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Themes.Vm;
@@ -16,7 +15,7 @@ public abstract class BaseController : Controller
         var settings = SystemSettingsVm.Init();
 
         ViewData["settings"] = settings;
-        
+
 
         ViewData["menu"] = HttpContext.RequestServices.GetService<IMenuService>()?.GetAllMenuTree();
 
@@ -24,10 +23,8 @@ public abstract class BaseController : Controller
         {
             var username = User.FindFirst(ClaimTypes.Name);
             if (username != null)
-            {
                 ViewData["user"] = HttpContext.RequestServices.GetService<IAdminUserService>()
                     ?.GetUserByUserName(username.Value);
-            }
         }
     }
 }

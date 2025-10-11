@@ -1,39 +1,34 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using BootstrapBlazor.Components;
-using Jx.Cms.Common.Extensions;
+﻿using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Components;
 using Jx.Cms.Plugin.Service.Both.Impl;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace HighlightingPlugin.Pages
+namespace HighlightingPlugin.Pages;
+
+public partial class HighlightingDialog : IPluginDialog
 {
-    public partial class HighlightingDialog: IPluginDialog
+    private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
+
+    [Inject] public IServiceProvider Services { get; set; }
+
+    public string SelectedValue { get; set; }
+
+    public string CodeValue { get; set; }
+
+    public Task OnClose(DialogResult result)
     {
-        [Inject]
-        public IServiceProvider Services { get; set; }
-        
-        private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
-
-        public string SelectedValue { get; set; }
-
-        public string CodeValue { get; set; }
-
-        protected override void OnInitialized()
+        if (result == DialogResult.Yes)
         {
-            base.OnInitialized();
-            var settingsService = Services.GetRequiredService<SettingsService>();
-            SelectedValue = settingsService.GetValue(Constant.SettingsKey, Constant.DefaultCodeType) ?? "Auto";
         }
 
-        public Task OnClose(DialogResult result)
-        {
-            if (result == DialogResult.Yes)
-            {
-                
-            }
-            return Task.CompletedTask;
-        }
+        return Task.CompletedTask;
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        var settingsService = Services.GetRequiredService<SettingsService>();
+        SelectedValue = settingsService.GetValue(Constant.SettingsKey, Constant.DefaultCodeType) ?? "Auto";
     }
 }

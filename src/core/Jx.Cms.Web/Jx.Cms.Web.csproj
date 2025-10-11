@@ -7,31 +7,35 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
-      <ProjectReference Include="..\Jx.Cms.DbContext\Jx.Cms.DbContext.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Install\Jx.Cms.Install.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
-      <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
+        <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.DbContext\Jx.Cms.DbContext.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.Install\Jx.Cms.Install.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
+        <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="db" />
-      <Folder Include="logs" />
-      <Folder Include="Pages\Default\Shared" />
-      <Folder Include="wwwroot\Default" />
+        <Folder Include="db"/>
+        <Folder Include="logs"/>
+        <Folder Include="Pages\Default\Shared"/>
+        <Folder Include="wwwroot\Default"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BootstrapBlazor.Markdown" Version="9.0.2" />
-      <PackageReference Include="Jx.Toolbox" Version="0.4.0" />
-      <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
-      <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageReference Include="BootstrapBlazor.Markdown" Version="9.0.2"/>
+        <PackageReference Include="Jx.Toolbox" Version="0.4.0"/>
+        <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0"/>
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
     </ItemGroup>
 
     <ItemGroup>
-      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\font-awesome.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\forms.min.css" />
-      <_ContentIncludedByDefault Remove="wwwroot\Admin\css\login.min.css" />
+        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\font-awesome.min.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\forms.min.css"/>
+        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\login.min.css"/>
+    </ItemGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="Components\Components\WidgetCompnents\TextCompnent.razor" />
     </ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.DbContext.Entities.Article;
@@ -9,44 +8,41 @@ using Jx.Toolbox.HtmlTools;
 using Mapster;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Jx.Cms.Web.Areas.User.Controllers
+namespace Jx.Cms.Web.Areas.User.Controllers;
+
+/// <summary>
+///     工具类
+/// </summary>
+[Area("User")]
+[Route("/User/[action]")]
+public class ToolsController : ControllerBase
 {
     /// <summary>
-    /// 工具类
+    ///     提交评论
     /// </summary>
-    [Area("User")]
-    [Route("/User/[action]")]
-    public class ToolsController: ControllerBase
+    /// <param name="comment"></param>
+    /// <param name="commentService"></param>
+    /// <returns></returns>
+    [HttpPost]
+    public object Comment([FromForm] CommentVo comment, [FromServices] ICommentService commentService)
     {
-        /// <summary>
-        /// 提交评论
-        /// </summary>
-        /// <param name="comment"></param>
-        /// <param name="commentService"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public object Comment([FromForm]CommentVo comment, [FromServices]ICommentService commentService)
-        {
-            var systemSettingsVm = SystemSettingsVm.Init();
-            if (!systemSettingsVm.CanComment)
-            {
-                return R.Fail(500002, "评论已关闭");
-            }
-            var validationContext = new ValidationContext(comment);
-            var validationResults = new List<ValidationResult>();
-            var isValid = Validator.TryValidateObject(comment, validationContext, validationResults, true);
-            if (!isValid)
-                return R.Fail(500002, string.Join(",", validationResults.Select(x => x.ErrorMessage)));
-            comment.AuthorIp = HttpContext.Connection.RemoteIpAddress?.ToString();
-            comment.AuthorAgent = Request.Headers["User-Agent"].ToString();
-            comment.Content = Html.RemoveHtmlTag(comment.Content);
-            var commentEntity = comment.Adapt<CommentEntity>();
-            commentEntity.Status = systemSettingsVm.CommentNeedVerify ? CommentStatusEnum.NeedCheck : CommentStatusEnum.Pass;
-            if (!commentService.AddOrModifyComment(commentEntity)) return R.Fail(50001, "添加评论失败");
-            Response.Cookies.Append(nameof(CommentEntity.AuthorName), comment.AuthorName);
-            Response.Cookies.Append(nameof(CommentEntity.AuthorEmail), comment.AuthorEmail);
-            Response.Cookies.Append(nameof(CommentEntity.AuthorUrl), comment.AuthorUrl);
-            return R.Success();
-        }
+        var systemSettingsVm = SystemSettingsVm.Init();
+        if (!systemSettingsVm.CanComment) return R.Fail(500002, "评论已关闭");
+        var validationContext = new ValidationContext(comment);
+        var validationResults = new List<ValidationResult>();
+        var isValid = Validator.TryValidateObject(comment, validationContext, validationResults, true);
+        if (!isValid)
+            return R.Fail(500002, string.Join(",", validationResults.Select(x => x.ErrorMessage)));
+        comment.AuthorIp = HttpContext.Connection.RemoteIpAddress?.ToString();
+        comment.AuthorAgent = Request.Headers["User-Agent"].ToString();
+        comment.Content = Html.RemoveHtmlTag(comment.Content);
+        var commentEntity = comment.Adapt<CommentEntity>();
+        commentEntity.Status =
+            systemSettingsVm.CommentNeedVerify ? CommentStatusEnum.NeedCheck : CommentStatusEnum.Pass;
+        if (!commentService.AddOrModifyComment(commentEntity)) return R.Fail(50001, "添加评论失败");
+        Response.Cookies.Append(nameof(CommentEntity.AuthorName), comment.AuthorName);
+        Response.Cookies.Append(nameof(CommentEntity.AuthorEmail), comment.AuthorEmail);
+        Response.Cookies.Append(nameof(CommentEntity.AuthorUrl), comment.AuthorUrl);
+        return R.Success();
     }
 }

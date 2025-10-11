@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Text.Encodings.Web;
+﻿using System.Text.Encodings.Web;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Themes.Util;
@@ -15,6 +13,7 @@ public class ArchiveWidget : IWidget
     public string Description { get; set; } = "按年月对文章进行分类归档";
     public Type SystemBodyType { get; set; }
     public string Parameter { get; set; }
+
     public string GetWidgetName()
     {
         return "文章归档";
@@ -25,7 +24,7 @@ public class ArchiveWidget : IWidget
         var list = ArticleEntity.Select.Where(x => !x.IsPage)
             .GroupBy(x => x.PublishTime.ToString("yyyy年MM月")).OrderByDescending(x => x.Key).Take(20)
             .ToList(x => new { x.Key, count = x.Count() });
-        TagBuilder ulTag = new TagBuilder("ul");
+        var ulTag = new TagBuilder("ul");
         foreach (var archive in list)
         {
             var publishTime = DateOnly.ParseExact(archive.Key, "yyyy年MM月");

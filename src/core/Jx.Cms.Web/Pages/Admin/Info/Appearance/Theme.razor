@@ -1,6 +1,4 @@
 ﻿@page "/Admin/Appearance/Theme"
-@using Jx.Cms.Themes.Util
-@using Jx.Cms.Common.Utils
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Themes.Service
 @using Jx.Toolbox.Extensions
@@ -25,7 +23,8 @@
             <FooterTemplate>
                 <div class="row" style="margin: 10px auto;">
                     <span style="align-self: center">@context.ThemeType.GetDescription()</span>
-                    <Button IsDisabled="@context.IsUsing" style="margin-left: auto" @onclick="() => { SelectTheme(context); }">@(context.IsUsing ? "已启用" : "启用")</Button>
+                    <Button IsDisabled="@context.IsUsing" style="margin-left: auto"
+                            @onclick="() => { SelectTheme(context); }">@(context.IsUsing ? "已启用" : "启用")</Button>
                 </div>
             </FooterTemplate>
         </Card>
@@ -46,7 +45,7 @@
         ThemeConfigService.EnableTheme(themeConfig);
         ToastService?.Success("设置成功", "主题设置成功");
         _themeConfigs = ThemeConfigService.GetAllThemes();
-        DispatchService.Dispatch(new DispatchEntry<string>()
+        DispatchService.Dispatch(new DispatchEntry<string>
         {
             Name = "menu",
             Entry = "theme"

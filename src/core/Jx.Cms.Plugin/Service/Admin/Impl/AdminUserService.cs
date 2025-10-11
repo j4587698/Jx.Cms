@@ -2,52 +2,39 @@
 using Jx.Toolbox.Extensions;
 using Jx.Toolbox.Hash;
 
-namespace Jx.Cms.Plugin.Service.Admin.Impl
+namespace Jx.Cms.Plugin.Service.Admin.Impl;
+
+public class AdminUserService : IAdminUserService
 {
-    public class AdminUserService: IAdminUserService
+    // 盐
+    private readonly string _salt = "E78D376F97CE4A7E89E011FA1FB362F6";
+
+    public bool Register(AdminUserEntity adminUserEntity)
     {
-        // 盐
-        private string _salt = "E78D376F97CE4A7E89E011FA1FB362F6";
+        if (AdminUserEntity.Select.Where(x => x.UserName == adminUserEntity.UserName).Any()) return false;
 
-        public bool Register(AdminUserEntity adminUserEntity)
-        {
-            if (AdminUserEntity.Select.Where(x => x.UserName == adminUserEntity.UserName).Any())
-            {
-                return false;
-            }
+        adminUserEntity.Password = MD5.MD5String2WithSalt(adminUserEntity.Password, _salt);
+        adminUserEntity.Insert();
+        return true;
+    }
 
-            adminUserEntity.Password = MD5.MD5String2WithSalt(adminUserEntity.Password, _salt);
-            adminUserEntity.Insert();
-            return true;
-        }
+    public AdminUserEntity Login(string username, string password)
+    {
+        var passwordMd5 = MD5.MD5String2WithSalt(password, _salt);
+        var entity = AdminUserEntity.Where(x =>
+            (x.UserName == username || x.Email == username) && x.Password == passwordMd5);
+        if (entity.Count() == 1) return entity.First();
 
-        public AdminUserEntity Login(string username, string password)
-        {
-            var passwordMd5 = MD5.MD5String2WithSalt(password, _salt);
-            var entity = AdminUserEntity.Where(x =>
-                (x.UserName == username || x.Email == username) && x.Password == passwordMd5);
-            if (entity.Count() == 1)
-            {
-                return entity.First();
-            }
+        return null;
+    }
 
-            return null;
-        }
+    public AdminUserEntity GetUserByUserName(string username)
+    {
+        var entity = AdminUserEntity.Where(x => x.UserName == username).First();
+        if (entity == null) return null;
 
-        public AdminUserEntity GetUserByUserName(string username)
-        {
-            var entity = AdminUserEntity.Where(x => x.UserName == username).First();
-            if (entity == null)
-            {
-                return null;
-            }
+        if (entity.NickName.IsNullOrEmpty()) entity.NickName = entity.UserName;
 
-            if (entity.NickName.IsNullOrEmpty())
-            {
-                entity.NickName = entity.UserName;
-            }
-
-            return entity;
-        }
+        return entity;
     }
 }

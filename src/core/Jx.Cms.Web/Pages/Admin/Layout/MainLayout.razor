@@ -1,11 +1,8 @@
-﻿@using Jx.Cms.Common.Extensions
-@using Jx.Cms.Common.Attribute
-@using Jx.Cms.Common.Utils
+﻿@using Jx.Cms.Common.Attribute
 @using Jx.Cms.DbContext.Entities.Admin
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Plugin.Utils
 @using Jx.Toolbox.Extensions
-@using Jx.Toolbox.Utils
 @using Avatar = Jx.Toolbox.Utils.Avatar
 @inherits LayoutComponentBase
 
@@ -16,13 +13,15 @@
 @inject IDispatchService<string> DispatchService
 @inject IHttpContextAccessor HttpContextAccessor
 
-<Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true" AdditionalAssemblies="new[] { GetType().Assembly }"
+<Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true"
+        AdditionalAssemblies="new[] { GetType().Assembly }"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@_menuItems">
     <Header>
         <span class="ms-3 flex-sm-fill d-none d-sm-block">JX.CMS</span>
         <div class="flex-fill d-sm-none">
         </div>
-        <Logout ImageUrl="@Avatar.GetAvatarUrl(_adminUser.Email)" DisplayName="@_adminUser.NickName" UserName="@_adminUser.UserName">
+        <Logout ImageUrl="@Avatar.GetAvatarUrl(_adminUser.Email)" DisplayName="@_adminUser.NickName"
+                UserName="@_adminUser.UserName">
             <LinkTemplate>
                 <LogoutLink Url="/Admin/Logout"></LogoutLink>
             </LinkTemplate>
@@ -30,7 +29,7 @@
     </Header>
     <Side>
         <div class="layout-banner">
-            <img class="layout-logo" src="_content/BootstrapBlazor.Shared/images/brand.png" />
+            <img class="layout-logo" src="_content/BootstrapBlazor.Shared/images/brand.png"/>
             <div class="layout-title">
                 <span>JX.CMS</span>
             </div>
@@ -52,7 +51,7 @@
 {
 
     /// <summary>
-    ///获得/设置 是否收缩侧边栏
+    ///     获得/设置 是否收缩侧边栏
     /// </summary>
     public bool IsCollapsed { get; set; }
 
@@ -79,6 +78,7 @@
         {
             return Task.CompletedTask;
         }
+
         GetIconSideMenuItems();
         StateHasChanged();
         return Task.CompletedTask;
@@ -91,12 +91,13 @@
         {
             _adminUser = _adminUserService.GetUserByUserName(httpContext.User.Identity.Name);
         }
+
         var menuAttributes = _adminMenuService.GetAllMenu();
-        menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/Admin/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
+        menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/Admin/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId ?? "")));
         _menuItems = new List<MenuItem>();
         foreach (var attribute in menuAttributes.Where(x => x.ParentId.IsNullOrEmpty()).OrderByDescending(x => x.Order))
         {
-            MenuItem menuItem = new MenuItem();
+            var menuItem = new MenuItem();
             menuItem.Icon = attribute.IconClass;
             menuItem.Text = attribute.DisplayName;
             menuItem.Url = attribute.Path;
@@ -108,10 +109,10 @@
     private void GenerateMenu(MenuItem item, string parentId, List<MenuAttribute> menuAttributes)
     {
         var menus = menuAttributes.Where(x => x.ParentId == parentId).OrderByDescending(x => x.Order);
-        List<MenuItem> items = new List<MenuItem>();
+        var items = new List<MenuItem>();
         foreach (var menuAttribute in menus)
         {
-            MenuItem menuItem = new MenuItem();
+            var menuItem = new MenuItem();
             menuItem.Icon = menuAttribute.IconClass;
             menuItem.Text = menuAttribute.DisplayName;
             menuItem.Url = menuAttribute.Path;
@@ -119,11 +120,13 @@
             {
                 GenerateMenu(menuItem, menuAttribute.Id, menuAttributes);
             }
+
             items.Add(menuItem);
         }
+
         item.Items = items;
     }
-    
+
     private void Dispose(bool disposing)
     {
         if (disposing)

@@ -1,74 +1,62 @@
-using SXL=System.Xml.Linq;
+using System.Globalization;
+using SXL = System.Xml.Linq;
 
-namespace CnBlogAsync.XmlRPC
+namespace CnBlogAsync.XmlRPC;
+
+public class DateTimeValue : Value
 {
-    public class DateTimeValue : Value
+    public readonly DateTime Data;
+
+    public DateTimeValue(DateTime value)
     {
-        public readonly System.DateTime Data;
+        Data = value;
+    }
 
-        public DateTimeValue(System.DateTime value)
-        {
-            this.Data = value;
-        }
+    public static string TypeString => "dateTime.iso8601";
 
-        public static string TypeString
-        {
-            get { return "dateTime.iso8601"; }
-        }
+    protected override void AddToTypeEl(SXL.XElement parent)
+    {
+        var s = Data.ToString("s", CultureInfo.InvariantCulture);
+        s = s.Replace("-", "");
+        parent.Value = s;
+    }
 
-        protected override void AddToTypeEl(SXL.XElement parent)
-        {
-            var s = this.Data.ToString("s", System.Globalization.CultureInfo.InvariantCulture);
-            s = s.Replace("-","");
-            parent.Value = s;
-        }
+    public static DateTimeValue XmlToValue(SXL.XElement parent)
+    {
+        var dt = DateTime.Now;
+        if (DateTime.TryParse(parent.Value, out dt)) return new DateTimeValue(dt);
 
-        public static DateTimeValue XmlToValue(SXL.XElement parent)
-        {
-            System.DateTime dt = System.DateTime.Now;
-            if (System.DateTime.TryParse(parent.Value, out dt))
-            {
-                return new DateTimeValue(dt);
-            }
-            
-            var date = parent.Value.Trim('Z');// remove Z from SharePoint date
+        var date = parent.Value.Trim('Z'); // remove Z from SharePoint date
 
-            var x = System.DateTime.ParseExact(date, "yyyyMMddTHH:mm:ss", null);
-            var y = new DateTimeValue(x);
-            return y;
-        }
+        var x = DateTime.ParseExact(date, "yyyyMMddTHH:mm:ss", null);
+        var y = new DateTimeValue(x);
+        return y;
+    }
 
-        public static implicit operator DateTimeValue(System.DateTime v)
-        {
-            return new DateTimeValue(v);
-        }
+    public static implicit operator DateTimeValue(DateTime v)
+    {
+        return new DateTimeValue(v);
+    }
 
-        public override bool Equals(System.Object obj)
-        {
-            if (obj == null)
-            {
-                return false;
-            }
+    public override bool Equals(object obj)
+    {
+        if (obj == null) return false;
 
-            var p = obj as DateTimeValue;
-            if (p == null)
-            {
-                return false;
-            }
+        var p = obj as DateTimeValue;
+        if (p == null) return false;
 
-            // Return true if the fields match:
-            return (this.Data.Day == p.Data.Day && this.Data.Month == p.Data.Month && this.Data.Year == p.Data.Year) &&
-                (this.Data.Hour == p.Data.Hour&& this.Data.Minute== p.Data.Minute&& this.Data.Second== p.Data.Second);
-        }
+        // Return true if the fields match:
+        return Data.Day == p.Data.Day && Data.Month == p.Data.Month && Data.Year == p.Data.Year &&
+               Data.Hour == p.Data.Hour && Data.Minute == p.Data.Minute && Data.Second == p.Data.Second;
+    }
 
-        public override int GetHashCode()
-        {
-            return this.Data.GetHashCode();
-        }
+    public override int GetHashCode()
+    {
+        return Data.GetHashCode();
+    }
 
-        protected override string GetTypeString()
-        {           
-            return DateTimeValue.TypeString;
-        }
+    protected override string GetTypeString()
+    {
+        return TypeString;
     }
 }

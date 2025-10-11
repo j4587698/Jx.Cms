@@ -1,7 +1,7 @@
-﻿using Jx.Cms.Common.Utils;
-using Jx.Cms.Plugin.Service.Front;
+﻿using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
+
 // ReSharper disable All
 
 namespace Jx.Cms.Web.Controllers;
@@ -15,6 +15,7 @@ public class CatalogController : BaseController
         {
             pageNum = 1;
         }
+
         var settings = ViewData["settings"] as SystemSettingsVm;
         if (settings.CountPerPage == 0)
         {
@@ -29,12 +30,14 @@ public class CatalogController : BaseController
         }
 
         var catalogVm = new CatalogVm();
-        catalogVm.Articles = catalogueService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
+        catalogVm.Articles =
+            catalogueService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
         catalogVm.Catalog = catalogue;
         catalogVm.PageNum = pageNum;
         catalogVm.PageSize = settings.CountPerPage;
         catalogVm.TotalCount = totalPage;
-        catalogVm.Pagination = HttpContext.RequestServices.GetService<IPaginationService>()?.GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
+        catalogVm.Pagination = HttpContext.RequestServices.GetService<IPaginationService>()
+            ?.GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
         return View(catalogVm);
     }
 }

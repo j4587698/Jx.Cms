@@ -1,9 +1,8 @@
 ﻿@page "/Admin/Page/Write"
 @page "/Admin/Page/Write/{Id:int}"
+@using System.Security.Claims
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
-@using Mapster
-@using System.Security.Claims
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Model
@@ -19,13 +18,14 @@
 @inject IAdminUserService AdminUserService
 @inject IServiceProvider ServiceProvider
 
-@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "创建页面", "Admin/Page/Write", 5, parentId:MenuIds.PageId)]
+@attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "创建页面", "Admin/Page/Write", 5, parentId: MenuIds.PageId)]
 
 <ValidateForm class="row" Model="Article" OnValidSubmit="@OnValidSubmit">
     <div class="col-lg-9 col-md-8">
         <div class="row">
             <div class="form-group col-12">
-                <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="页面标题" ShowLabel="true"></BootstrapInput>
+                <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="页面标题"
+                                ShowLabel="true"></BootstrapInput>
             </div>
         </div>
         <div class="row">
@@ -48,32 +48,34 @@
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <Select style="width:100%" Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态"></Select>
+                <Select style="width:100%" Items="ArticleStatus" @bind-Value="Article.Status"
+                        DisplayText="状态"></Select>
             </div>
         </div>
         <div class="row">
             <div class="form-group col-12">
-                <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime" DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime" />
+                <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime"
+                                DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime"/>
             </div>
         </div>
     </div>
 </ValidateForm>
+
 @code {
-    [Parameter]
-    public int Id { get; set; }
+    [Parameter] public int Id { get; set; }
 
     private ArticleEntity Article { get; set; }
 
-    private IEnumerable<SelectedItem> ArticleStatus { get; set; } = typeof(ArticleStatusEnum).ToSelectList();
+    private IEnumerable<SelectedItem> ArticleStatus { get; } = typeof(ArticleStatusEnum).ToSelectList();
 
     private List<EditorExtModel> EditorExtModels { get; set; }
-    
+
     private List<EditorToolbarButton> ToolbarButtons { get; set; }
-    
+
     private IEnumerable<IArticlePlugin> ArticlePlugins { get; set; }
-    
+
     private IEnumerable<ArticleExtModel> BottomExt { get; set; }
-    
+
     private IEnumerable<ArticleExtModel> RightExt { get; set; }
 
     protected override void OnInitialized()
@@ -89,25 +91,25 @@
             IconClass = "fa fa-picture-o"
         };
         ToolbarButtons.Add(mediaButton);
-        Article = Id == 0 ? new ArticleEntity(){IsPage = true, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published} : PageService.GetPageById(Id);
+        Article = Id == 0 ? new ArticleEntity { IsPage = true, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : PageService.GetPageById(Id);
     }
 
     private async Task OnValidSubmit(EditContext arg)
     {
         var userName = HttpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
         Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
-        
+
         var ret = PageService.SavePage(Article);
-        await ToastService.Show(new ToastOption()
+        await ToastService.Show(new ToastOption
         {
-            Category = ret?ToastCategory.Success: ToastCategory.Error,
-            Title = ret?"保存成功":"保存失败",
-            Content = $"保存数据{(ret?"成功":"失败")}，4 秒后自动关闭"
+            Category = ret ? ToastCategory.Success : ToastCategory.Error,
+            Title = ret ? "保存成功" : "保存失败",
+            Content = $"保存数据{(ret ? "成功" : "失败")}，4 秒后自动关闭"
         });
         if (ret)
         {
             NavigationManager.NavigateTo("Admin/Page/All");
-        }        
+        }
     }
 
 }

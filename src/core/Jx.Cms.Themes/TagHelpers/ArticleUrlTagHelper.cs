@@ -12,10 +12,7 @@ public class ArticleUrlTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         base.Process(context, output);
-        if (Article == null)
-        {
-            return;
-        }
+        if (Article == null) return;
         output.Attributes.SetAttribute("href", RewriteUtil.GetArticleUrl(Article));
     }
 }

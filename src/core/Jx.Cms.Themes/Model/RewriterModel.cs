@@ -1,67 +1,61 @@
 ﻿using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Service.Both;
-using Jx.Toolbox.Extensions;
-using Microsoft.Extensions.DependencyInjection;
 using Jx.Cms.Rewrite;
+using Jx.Toolbox.Extensions;
 
-namespace Jx.Cms.Themes.Model
+namespace Jx.Cms.Themes.Model;
+
+public class RewriterModel
 {
-    public class RewriterModel
+    private static RewriterModel _rewriterModel;
+    public string RewriteOption { get; set; }
+
+    public string ArticleUrl { get; set; }
+
+    public string PageUrl { get; set; }
+
+    public string IndexUrl { get; set; }
+
+    public string CatalogueUrl { get; set; }
+
+    public string TagUrl { get; set; }
+
+    public string DateUrl { get; set; }
+
+    public static RewriterModel GetSettings()
     {
-        public string RewriteOption { get; set; }
-
-        public string ArticleUrl { get; set; }
-
-        public string PageUrl { get; set; }
-
-        public string IndexUrl { get; set; }
-
-        public string CatalogueUrl { get; set; }
-
-        public string TagUrl { get; set; }
-        
-        public string DateUrl { get; set; }
-
-
-        private static RewriterModel _rewriterModel;
-        
-        public static RewriterModel GetSettings()
+        if (_rewriterModel == null)
         {
-            if (_rewriterModel == null)
-            {
-                var settingsService = ServicesExtension.GetService<ISettingsService>();
-                if (settingsService == null)
-                {
-                    // 在未安装状态下，返回默认配置
-                    _rewriterModel = new RewriterModel();
-                    _rewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
-                    return _rewriterModel;
-                }
-                
-                var settingsEnumerable = settingsService.GetAllValues("Rewriter");
-                _rewriterModel = new RewriterModel();
-                var prop = _rewriterModel.GetType().GetProperties();
-                var index = prop[0].GetIndexParameters();
-                foreach (var settings in settingsEnumerable)
-                {
-                    if (_rewriterModel.GetType().GetProperty(settings.Key) == null) continue;
-                    _rewriterModel.SetProperty(settings.Key, settings.Value??"");
-                    //prop[0].SetValue(_rewriterModel, settings.Value);
-                }
-            }
-            
-            return _rewriterModel;
-        }
-        
-        public static void SaveSettings(RewriterModel rewriterModel)
-        {
-            _rewriterModel = rewriterModel;
             var settingsService = ServicesExtension.GetService<ISettingsService>();
-            var properties = rewriterModel.GetType().GetProperties();
-            foreach (var property in properties)
+            if (settingsService == null)
             {
-                settingsService.SetValue("Rewriter", property.Name, property.GetValue(rewriterModel)?.ToString());
+                // 在未安装状态下，返回默认配置
+                _rewriterModel = new RewriterModel();
+                _rewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+                return _rewriterModel;
+            }
+
+            var settingsEnumerable = settingsService.GetAllValues("Rewriter");
+            _rewriterModel = new RewriterModel();
+            var prop = _rewriterModel.GetType().GetProperties();
+            var index = prop[0].GetIndexParameters();
+            foreach (var settings in settingsEnumerable)
+            {
+                if (_rewriterModel.GetType().GetProperty(settings.Key) == null) continue;
+                _rewriterModel.SetProperty(settings.Key, settings.Value ?? "");
+                //prop[0].SetValue(_rewriterModel, settings.Value);
             }
         }
+
+        return _rewriterModel;
+    }
+
+    public static void SaveSettings(RewriterModel rewriterModel)
+    {
+        _rewriterModel = rewriterModel;
+        var settingsService = ServicesExtension.GetService<ISettingsService>();
+        var properties = rewriterModel.GetType().GetProperties();
+        foreach (var property in properties)
+            settingsService.SetValue("Rewriter", property.Name, property.GetValue(rewriterModel)?.ToString());
     }
 }

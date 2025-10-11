@@ -10,12 +10,9 @@ public class PostController : BaseController
     // GET
     public IActionResult Index(int id)
     {
-        ArticleService articleService = HttpContext.RequestServices.GetService<ArticleService>();
+        var articleService = HttpContext.RequestServices.GetService<ArticleService>();
         var model = articleService?.GetArticleById(id);
-        if (model == null)
-        {
-            return NotFound();
-        }
+        if (model == null) return NotFound();
         var postVm = new PostVm
         {
             Article = model.Body,

@@ -1,0 +1,41 @@
+@using Microsoft.Extensions.Localization
+@inject IHostEnvironment Env
+@inject IStringLocalizer<App> Localizer
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-bs-theme="light">
+
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="keywords" content="学校管理系统,教育平台,学生管理,课程管理,作业管理,在线考试">
+    <meta name="description" content="现代化学校管理系统，提供学生管理、课程管理、作业管理和在线考试等功能。">
+    <meta name="author" content="jx">
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon.ico">
+    <base href="/"/>
+
+    <link rel="stylesheet" href="@Assets["_content/BootstrapBlazor.FontAwesome/css/font-awesome.min.css"]"/>
+    <link rel="stylesheet" href="@Assets["_content/BootstrapBlazor/css/bootstrap.blazor.bundle.min.css"]"/>
+    <link rel="stylesheet" href="@Assets["_content/BootstrapBlazor/css/motronic.min.css"]"/>
+    <link rel="stylesheet" href="@Assets["Jx.Cms.Web.styles.css"]"/>
+    <script src="_content/BootstrapBlazor.SummerNote/js/jquery-3.6.0.min.js"></script>
+    <ImportMap/>
+
+    <title>学校管理系统</title>
+    <HeadOutlet @rendermode="new InteractiveServerRenderMode(false)"/>
+</head>
+
+<body>
+<Routes @rendermode="new InteractiveServerRenderMode(false)"/>
+
+<ReconnectorOutlet ReconnectInterval="5000" @rendermode="new InteractiveServerRenderMode(false)"/>
+
+<script Src="_content/BootstrapBlazor/js/bootstrap.blazor.bundle.min.js"></script>
+<script src="_framework/blazor.web.js"></script>
+</body>
+
+</html>

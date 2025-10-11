@@ -28,7 +28,7 @@
                             window.location.reload()
                         }
                     })
-                }else {
+                } else {
                     alert("评论失败:" + msg.message);
                     submit.attr("disabled", false).text("发表评论");
                 }

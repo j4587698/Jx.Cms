@@ -1,25 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
-    
-
 
     <ItemGroup>
-      <EmbeddedResource Include="wwwroot/**" />
+        <EmbeddedResource Include="wwwroot/**"/>
     </ItemGroup>
 
 
     <ItemGroup>
-        <SupportedPlatform Include="browser" />
+        <SupportedPlatform Include="browser"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.9"/>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
+        <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;" />
+        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;"/>
     </Target>
 </Project>

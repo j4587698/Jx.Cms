@@ -1,9 +1,8 @@
-﻿namespace HighlightingPlugin
-{
-    public static class Constant
-    {
-        public const string SettingsKey = "Highlighting";
+﻿namespace HighlightingPlugin;
 
-        public const string DefaultCodeType = "DefaultCodeType";
-    }
+public static class Constant
+{
+    public const string SettingsKey = "Highlighting";
+
+    public const string DefaultCodeType = "DefaultCodeType";
 }

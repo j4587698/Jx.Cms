@@ -1,33 +1,29 @@
-﻿using System.Collections.Generic;
-using Blogs.Components;
-using Blogs.Model;
+﻿using Blogs.Components;
 using Blogs.Utils;
 using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
-using Microsoft.Extensions.DependencyInjection;
 
-namespace Blogs
+namespace Blogs;
+
+public class SystemInstance : ISystemPlugin
 {
-    public class SystemInstance: ISystemPlugin
+    public void PluginEnable()
     {
-        public void PluginEnable()
-        {
-            ThemeSettings.SaveSettings(ThemeSettings.GetSettings());
-        }
+        ThemeSettings.SaveSettings(ThemeSettings.GetSettings());
+    }
 
-        public List<PluginMenuModel> AddMenuItem()
+    public List<PluginMenuModel> AddMenuItem()
+    {
+        return new List<PluginMenuModel>
         {
-            return new()
+            new()
             {
-                new PluginMenuModel()
-                {
-                    DisplayName = "Blogs主题设置",
-                    Icon = "fa fa-code",
-                    MenuId = "D07208D1-D16C-487D-A57B-1B9148A27835",
-                    PluginBody = BootstrapDynamicComponent.CreateComponent<Settings>().Render()
-                }
-            };
-        }
+                DisplayName = "Blogs主题设置",
+                Icon = "fa fa-code",
+                MenuId = "D07208D1-D16C-487D-A57B-1B9148A27835",
+                PluginBody = BootstrapDynamicComponent.CreateComponent<Settings>().Render()
+            }
+        };
     }
 }

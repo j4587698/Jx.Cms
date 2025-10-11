@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
-using Jx.Cms.Common.Enum;
+﻿using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.DbContext.Entities.Front;
 using Jx.Cms.Plugin.Service.Admin;
@@ -20,25 +18,27 @@ public class MenuUrlTagHelper : TagHelper
         switch (Menu.MenuType)
         {
             case MenuTypeEnum.Page:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>().GetPageById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href",
+                    RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>().GetPageById(Menu.TypeId)));
                 break;
             case MenuTypeEnum.Article:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>().GetArticleById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href",
+                    RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>()
+                        .GetArticleById(Menu.TypeId)));
                 break;
             case MenuTypeEnum.CustomUrl:
                 output.Attributes.SetAttribute("href", Menu.Url);
                 break;
             case MenuTypeEnum.Catalogue:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>().FindCatalogById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href",
+                    RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>()
+                        .FindCatalogById(Menu.TypeId)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();
         }
 
-        if (Menu.OpenInNewWindow)
-        {
-            output.Attributes.SetAttribute("target", "_blank");
-        }
+        if (Menu.OpenInNewWindow) output.Attributes.SetAttribute("target", "_blank");
         output.Content.SetHtmlContent(Menu.NavTitle);
     }
 }

@@ -1,10 +1,9 @@
-@using Jx.Cms.DbContext
-@using Jx.Cms.Install.ViewModel
-@using Jx.Cms.DbContext.Entities.Admin
-@using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Common.Utils
+@using Jx.Cms.DbContext
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.Install.ViewModel
+@using Jx.Cms.Plugin.Service.Admin
 @using Mapster
-@using System.IO
 @inject NavigationManager NavigationManager
 @inject IAdminUserService AdminUserService
 @inject SwalService SwalService
@@ -22,11 +21,9 @@
 
 @code {
 
-    [Parameter]
-    public DbConfig DbConfig { get; set; }
+    [Parameter] public DbConfig DbConfig { get; set; }
 
-    [Parameter]
-    public InstallInfoVm InstallInfoVm { get; set; }
+    [Parameter] public InstallInfoVm InstallInfoVm { get; set; }
 
     private bool _isFinish;
 
@@ -38,24 +35,24 @@
         {
             Content = "正在创建管理员账户，请稍后...";
             StateHasChanged();
-            
+
             try
             {
                 // 创建管理员账户
                 AdminUserService.Register(InstallInfoVm.Adapt<AdminUserEntity>());
-                
+
                 // 创建安装锁定文件
                 File.Create(Path.Combine(AppContext.BaseDirectory, "config", "install.lock"));
-                
+
                 // 设置系统已安装标志
                 Util.IsInstalled = true;
-                
+
                 _isFinish = true;
                 Content = "安装完成，3秒后将跳转登录页面";
             }
             catch (Exception ex)
             {
-                await SwalService.Show(new SwalOption()
+                await SwalService.Show(new SwalOption
                 {
                     Category = SwalCategory.Error,
                     Title = "安装失败",
@@ -63,7 +60,7 @@
                 });
                 Content = "安装失败，请检查日志";
             }
-            
+
             StateHasChanged();
         }
     }
