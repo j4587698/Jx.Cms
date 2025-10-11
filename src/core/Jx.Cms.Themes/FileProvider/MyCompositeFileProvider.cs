@@ -39,8 +39,18 @@ namespace Jx.Cms.Themes.FileProvider
 
         public IFileInfo GetFileInfo(string subPath)
         {
+            if (_fileProviders == null)
+            {
+                return new NotFoundFileInfo(subPath);
+            }
+            
             foreach (IFileProvider fileProvider in _fileProviders)
             {
+                if (fileProvider == null)
+                {
+                    continue;
+                }
+                
                 IFileInfo fileInfo = fileProvider.GetFileInfo(subPath);
                 if (fileInfo is { Exists: true })
                     return fileInfo;
@@ -48,16 +58,39 @@ namespace Jx.Cms.Themes.FileProvider
             return new NotFoundFileInfo(subPath);
         }
 
-        public IDirectoryContents GetDirectoryContents(string subPath) => new CompositeDirectoryContents(_fileProviders, subPath);
+        public IDirectoryContents GetDirectoryContents(string subPath) 
+        {
+            if (_fileProviders == null)
+            {
+                return new NotFoundDirectoryContents();
+            }
+            
+            // 过滤掉 null 的文件提供程序
+            var validProviders = _fileProviders.Where(p => p != null).ToList();
+            if (validProviders.Count == 0)
+            {
+                return new NotFoundDirectoryContents();
+            }
+            
+            return new CompositeDirectoryContents(validProviders, subPath);
+        }
 
         public IChangeToken Watch(string pattern)
         {
             List<IChangeToken> changeTokenList = new List<IChangeToken>();
-            foreach (IFileProvider fileProvider in this._fileProviders)
+            if (_fileProviders != null)
             {
-                IChangeToken changeToken = fileProvider.Watch(pattern);
-                if (changeToken != null)
-                    changeTokenList.Add(changeToken);
+                foreach (IFileProvider fileProvider in this._fileProviders)
+                {
+                    if (fileProvider == null)
+                    {
+                        continue;
+                    }
+                    
+                    IChangeToken changeToken = fileProvider.Watch(pattern);
+                    if (changeToken != null)
+                        changeTokenList.Add(changeToken);
+                }
             }
             return changeTokenList.Count == 0 ? (IChangeToken) NullChangeToken.Singleton : new CompositeChangeToken(changeTokenList);
         }

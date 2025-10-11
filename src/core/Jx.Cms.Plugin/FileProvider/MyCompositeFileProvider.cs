@@ -4,7 +4,6 @@ using Jx.Cms.Common.Utils;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Composite;
 using Microsoft.Extensions.Primitives;
-using StackExchange.Profiling.Internal;
 
 namespace Jx.Cms.Plugin.FileProvider
 {
@@ -34,16 +33,44 @@ namespace Jx.Cms.Plugin.FileProvider
             }
             else
             {
-                _fileProviders.TryRemove(pluginConfig.PluginId, out _);
+                if (_fileProviders.ContainsKey(pluginConfig.PluginId))
+                {
+                    _fileProviders.Remove(pluginConfig.PluginId);
+                }
             }
         }
         
-        public IDirectoryContents GetDirectoryContents(string subpath) => new CompositeDirectoryContents(_fileProviders.Values.ToList(), subpath);
+        public IDirectoryContents GetDirectoryContents(string subpath) 
+        {
+            if (_fileProviders == null)
+            {
+                return new NotFoundDirectoryContents();
+            }
+            
+            // 过滤掉 null 的文件提供程序
+            var validProviders = _fileProviders.Values.Where(p => p != null).ToList();
+            if (validProviders.Count == 0)
+            {
+                return new NotFoundDirectoryContents();
+            }
+            
+            return new CompositeDirectoryContents(validProviders, subpath);
+        }
 
         public IFileInfo GetFileInfo(string subPath)
         {
+            if (_fileProviders == null)
+            {
+                return new NotFoundFileInfo(subPath);
+            }
+            
             foreach (IFileProvider fileProvider in _fileProviders.Values)
             {
+                if (fileProvider == null)
+                {
+                    continue;
+                }
+                
                 IFileInfo fileInfo = fileProvider.GetFileInfo(subPath);
                 if (fileInfo != null && fileInfo.Exists)
                     return fileInfo;
@@ -54,13 +81,21 @@ namespace Jx.Cms.Plugin.FileProvider
         public IChangeToken Watch(string filter)
         {
             List<IChangeToken> changeTokenList = new List<IChangeToken>();
-            foreach (IFileProvider fileProvider in this._fileProviders.Values)
+            if (_fileProviders != null)
             {
-                IChangeToken changeToken = fileProvider.Watch(filter);
-                if (changeToken != null)
-                    changeTokenList.Add(changeToken);
+                foreach (IFileProvider fileProvider in _fileProviders.Values)
+                {
+                    if (fileProvider == null)
+                    {
+                        continue;
+                    }
+                    
+                    IChangeToken changeToken = fileProvider.Watch(filter);
+                    if (changeToken != null)
+                        changeTokenList.Add(changeToken);
+                }
             }
-            return changeTokenList.Count == 0 ? (IChangeToken) NullChangeToken.Singleton : new CompositeChangeToken(changeTokenList);
+            return changeTokenList.Count == 0 ? new Microsoft.Extensions.Primitives.CancellationChangeToken(System.Threading.CancellationToken.None) : new CompositeChangeToken(changeTokenList);
         }
     }
 }

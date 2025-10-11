@@ -29,6 +29,11 @@ namespace Jx.Cms.Common.Provider
         public Task<IImageResolver> GetAsync(HttpContext context)
         {
             // Path has already been correctly parsed before here.
+            if (Util.ThemeProvider == null)
+            {
+                return Task.FromResult<IImageResolver>(null);
+            }
+            
             IFileInfo fileInfo = Util.ThemeProvider.GetFileInfo(context.Request.Path.Value);
 
             // Check to see if the file exists.
