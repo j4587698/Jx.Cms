@@ -1,0 +1,138 @@
+@using Jx.Cms.DbContext
+@using Jx.Cms.Common.Enum
+@using Jx.Cms.Common.Extensions
+@using Jx.Cms.Common.Utils
+@using Jx.Cms.Install.Validator
+@using Jx.Cms.Themes.Vm
+@inherits StepBase
+@inject SwalService SwalService
+@inject NavigationManager NavigationManager
+
+<ValidateForm Model="@DbConfig" OnValidSubmit="@OnSubmit">
+    <GroupBox class="install_content">
+        <div class="row g-3">
+            <div class="form-group col-12">
+                <Select @bind-Value="DbConfig.DbType" Items="typeof(DbTypeEnum).ToSelectList()" DisplayText="数据库类型" OnSelectedItemChanged="OnSelectedItemChanged"></Select>
+            </div>
+            @if (_needShow)
+            {
+                <div class="form-group col-12">
+                    <BootstrapInput @bind-Value="@DbConfig.DbUrl" DisplayText="数据库URL，默认为localhost">
+                    </BootstrapInput>
+                </div>
+                <div class="form-group col-12">
+                    <BootstrapInput @bind-Value="@DbConfig.DbPort" type="number" DisplayText="数据库端口号">
+                    </BootstrapInput>
+                </div>
+            }
+
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@DbConfig.DbName" DisplayText="数据库名"></BootstrapInput>
+            </div>
+            @if (_needShow)
+            {
+                <div class="form-group col-12">
+                    <BootstrapInput @bind-Value="@DbConfig.Username" DisplayText="用户名">
+                    </BootstrapInput>
+                </div>
+                <div class="form-group col-12">
+                    <BootstrapInput @bind-Value="@DbConfig.Password" type="password" DisplayText="密码">
+                    </BootstrapInput>
+                </div>
+            }
+
+            <div class="form-group col-12">
+                <BootstrapInput @bind-Value="@DbConfig.Prefix" DisplayText="表前缀"></BootstrapInput>
+            </div>
+        </div>
+    </GroupBox>
+    <div class="text-center">
+        <Button Text="上一步" OnClick="() => Prev?.Invoke()"></Button>
+        <Button ButtonType="ButtonType.Submit" IsAsync="true">验证并继续</Button>
+    </div>
+</ValidateForm>
+
+@code {
+    [Parameter]
+    public DbConfig DbConfig { get; set; }
+
+    private bool _needShow = false;
+
+    private async Task OnSubmit(EditContext arg)
+    {
+        var ret = DbStartup.SetupDb(ServicesExtension.Services, DbConfig);
+        if (!ret.isSuccess)
+        {
+            await SwalService.Show(new SwalOption()
+            {
+                Category = SwalCategory.Error,
+                Title = "数据库配置错误",
+                Content = ret.msg
+            });
+            return;
+        }
+        
+        if (!DbStartup.CreateTables(DbConfig))
+        {
+            await SwalService.Show(new SwalOption()
+            {
+                Category = SwalCategory.Error,
+                Title = "建表失败",
+                Content = "数据表创建失败"
+            });
+            return;
+        }
+
+        // 初始化系统设置
+        SystemSettingsVm settingsVm = SystemSettingsVm.Init();
+        settingsVm.Title = "JX.CMS";
+        settingsVm.SubTitle = "一个基于ASP.NET CORE的CMS";
+        settingsVm.Url = NavigationManager.GetAbsoluteUri().GetLeftPart(UriPartial.Authority);
+        settingsVm.CopyRight = "JX.CMS";
+        settingsVm.Save();
+
+        Next?.Invoke();
+    }
+
+    private Task OnSelectedItemChanged(SelectedItem arg)
+    {
+        if (Enum.TryParse(arg.Text, true, out DbTypeEnum dbType))
+        {
+            switch (dbType)
+            {
+                case DbTypeEnum.Sqlite:
+                    _needShow = false;
+                    DbConfig.DbUrl = null;
+                    DbConfig.DbPort = null;
+                    DbConfig.Username = null;
+                    DbConfig.Password = null;
+                    DbConfig.DbName = $"{Application.WebHostEnvironment.ContentRootPath}/config/Jx.Cms.db";
+                    break;
+                case DbTypeEnum.Mysql:
+                    _needShow = true;
+                    DbConfig.DbPort = "3306";
+                    DbConfig.DbName = "JxCms";
+                    break;
+                case DbTypeEnum.SqlServer:
+                    _needShow = true;
+                    DbConfig.DbPort = "1433";
+                    DbConfig.DbName = "JxCms";
+                    break;
+                case DbTypeEnum.Oracle:
+                    _needShow = true;
+                    DbConfig.DbPort = "1521";
+                    DbConfig.DbName = "JxCms";
+                    break;
+                case DbTypeEnum.Postgresql:
+                    _needShow = true;
+                    DbConfig.DbPort = "5432";
+                    DbConfig.DbName = "JxCms";
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        return Task.CompletedTask;
+    }
+
+}

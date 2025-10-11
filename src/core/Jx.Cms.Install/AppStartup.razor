@@ -3,11 +3,7 @@
 <BootstrapBlazorRoot>
     <Router AppAssembly="typeof(InstallStartup).Assembly">
         <Found Context="routeData">
-            <AuthorizeRouteView RouteData="routeData">
-                <NotAuthorized>
-                    <RedirectToLogin></RedirectToLogin>
-                </NotAuthorized>
-            </AuthorizeRouteView>
+            <RouteView RouteData="routeData" />
         </Found>
         <NotFound>
             <h2>抱歉！找不到页面。</h2>
