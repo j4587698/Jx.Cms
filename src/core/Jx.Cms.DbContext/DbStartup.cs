@@ -1,17 +1,19 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Xml;
 using FreeSql;
 using Jx.Cms.Common.Exceptions;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
-using Jx.Toolbox.Extensions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.DbContext
 {
@@ -34,7 +36,7 @@ namespace Jx.Cms.DbContext
                 var filePath = Path.Combine(AppContext.BaseDirectory, "config", "dbsettings.json");
             var jObject = File.Exists(filePath) ? JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath)) : new JObject();
             jObject["Db"] = JObject.Parse(JsonConvert.SerializeObject(dbConfig));
-            File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Newtonsoft.Json.Formatting.Indented));
             }
             catch (Exception e)
             {

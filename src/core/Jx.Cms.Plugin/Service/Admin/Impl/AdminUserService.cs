@@ -1,6 +1,6 @@
 ﻿using Jx.Cms.DbContext.Entities.Admin;
-using Jx.Toolbox.Cryptography;
 using Jx.Toolbox.Extensions;
+using Jx.Toolbox.Hash;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {

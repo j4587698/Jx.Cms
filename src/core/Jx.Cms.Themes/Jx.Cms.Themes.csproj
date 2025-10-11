@@ -1,8 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
-    </PropertyGroup>
+    
 
     <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
@@ -10,9 +8,9 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="DeviceDetector.NET" Version="4.3.0" />
-      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />
-      <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="7.0.0" />
+      <PackageReference Include="DeviceDetector.NET" Version="6.4.6" />
+      <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="9.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyModel" Version="9.0.0" />
     </ItemGroup>
 
 </Project>

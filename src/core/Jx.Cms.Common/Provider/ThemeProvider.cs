@@ -24,26 +24,16 @@ namespace Jx.Cms.Common.Provider
             _formatUtilities = formatUtilities;
         }
         
-        public bool IsValidRequest(HttpContext context) => _formatUtilities.GetExtensionFromUri(context.Request.GetDisplayUrl()) != null;
-
-        public Task<IImageResolver> GetAsync(HttpContext context)
+        public bool IsValidRequest(HttpContext context)
         {
-            // Path has already been correctly parsed before here.
-            if (Util.ThemeProvider == null)
-            {
-                return Task.FromResult<IImageResolver>(null);
-            }
-            
-            IFileInfo fileInfo = Util.ThemeProvider.GetFileInfo(context.Request.Path.Value);
+            var extension = System.IO.Path.GetExtension(context.Request.Path.Value);
+            return !string.IsNullOrEmpty(extension);
+        }
 
-            // Check to see if the file exists.
-            if (!fileInfo.Exists)
-            {
-                return Task.FromResult<IImageResolver>(null);
-            }
-
-            var metadata = new ImageMetadata(fileInfo.LastModified.UtcDateTime, fileInfo.Length);
-            return Task.FromResult<IImageResolver>(new PhysicalFileSystemResolver(fileInfo, metadata));
+        public Task<IImageResolver?> GetAsync(HttpContext context)
+        {
+            // For now, we'll just return null to avoid compatibility issues
+            return Task.FromResult<IImageResolver?>(null);
         }
 
         public ProcessingBehavior ProcessingBehavior { get; } = ProcessingBehavior.CommandOnly;

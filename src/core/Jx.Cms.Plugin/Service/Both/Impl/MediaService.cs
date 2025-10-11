@@ -30,7 +30,7 @@ public class MediaService : IMediaService
             Directory.CreateDirectory(dir);
         }
         var fileName = NumberFormat.ToDecimalString(Stopwatch.GetTimestamp(), 36) + Path.GetExtension(file.OriginFileName);
-        if (!await file.SaveToFile(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024))
+        if (!await file.SaveToFileAsync(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024))
         {
             return false;
         }

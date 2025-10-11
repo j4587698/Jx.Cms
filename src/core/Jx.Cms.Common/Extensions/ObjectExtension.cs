@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Text.RegularExpressions;
 
 namespace Jx.Cms.Common.Extensions
 {
@@ -23,5 +24,6 @@ namespace Jx.Cms.Common.Extensions
         {
             CopyTo(target, source);
         }
+        
     }
 }

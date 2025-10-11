@@ -91,7 +91,8 @@ namespace Jx.Cms.Plugin.Components
                     // Modal 与 ModalDialog 的 OnClose 事件陷入死循环
                     // option.OnClose -> Modal.Close -> ModalDialog.Close -> ModalDialog.OnClose -> option.OnClose
                     option.OnCloseAsync = null;
-                    await option.Dialog.Close();
+                    // Close method not available in new API, just set result
+                    taskCompletionSource.SetResult(result);
                     taskCompletionSource.SetResult(result);
                 }
             };

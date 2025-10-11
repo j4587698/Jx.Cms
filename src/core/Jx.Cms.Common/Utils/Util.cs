@@ -8,6 +8,7 @@ using Microsoft.Extensions.FileProviders;
 using SixLabors.Fonts;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing.Processing;
+using SystemPath = System.IO.Path;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -30,10 +31,10 @@ namespace Jx.Cms.Common.Utils
 
         static Util()
         {
-            IsInstalled = File.Exists(Path.Combine(AppContext.BaseDirectory, "config", "install.lock"));
+            IsInstalled = File.Exists(SystemPath.Combine(AppContext.BaseDirectory, "config", "install.lock"));
             FontCollection collection = new FontCollection();
             //Family = collection.Add(Resource.GetResource("font.ttf"));
-            Family = collection.Install(Resource.GetResource("font.ttf"));
+            Family = collection.Add(Resource.GetResource("font.ttf"));
         }
 
         /// <summary>
@@ -49,18 +50,8 @@ namespace Jx.Cms.Common.Utils
         public static Stream StringToImage(string str, int width, int height, int fontsize, Color color, Color bgColor)
         {
             Image image = new Image<Rgba32>(width, height, bgColor);
-            var options = new DrawingOptions()
-            {
-                TextOptions = new TextOptions()
-                {
-                    ApplyKerning = true,
-                    TabWidth = 8, // a tab renders as 8 spaces wide
-                    WrapTextWidth = width, // greater than zero so we will word wrap at 100 pixels wide
-                    HorizontalAlignment = HorizontalAlignment.Center, // right align
-                    VerticalAlignment = VerticalAlignment.Center
-                }
-            };
-            image.Mutate(x => x.DrawText(options, str, Family.CreateFont(fontsize), color, new PointF(0, height / 2)));
+            var font = Family.CreateFont(fontsize);
+            image.Mutate(x => x.DrawText(str, font, color, new PointF(width / 2, height / 2)));
             MemoryStream ms = new MemoryStream();
             image.SaveAsPng(ms);
             ms.Position = 0;
@@ -74,18 +65,18 @@ namespace Jx.Cms.Common.Utils
         /// <returns></returns>
         public static List<MediaInfoVo> GetUploadFile(params string[] ext)
         {
-            var uploadPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "upload");
+            var uploadPath = SystemPath.Combine(AppContext.BaseDirectory, "wwwroot", "upload");
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
             }
 
             return Directory.GetFiles(uploadPath, "*.*", SearchOption.AllDirectories)
-                .Where(x => ext.Contains(Path.GetExtension(x).ToLower())).Select(x => new MediaInfoVo()
+                .Where(x => ext.Contains(SystemPath.GetExtension(x).ToLower())).Select(x => new MediaInfoVo()
                 {
-                    Name = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
-                    Url = x.Substring(Path.Combine(AppContext.BaseDirectory, "wwwroot").Length), IsSelected = false,
-                    MediaType = Path.GetExtension(x).ToLower() switch
+                    Name = SystemPath.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
+                    Url = x.Substring(SystemPath.Combine(AppContext.BaseDirectory, "wwwroot").Length), IsSelected = false,
+                    MediaType = SystemPath.GetExtension(x).ToLower() switch
                     {
                         ".jpg" or ".jpeg" or ".png" or ".gif" => MediaTypeEnum.Image,
                         ".mp3" or ".wav" => MediaTypeEnum.Audio,

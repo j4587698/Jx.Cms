@@ -1,8 +1,3 @@
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using BootstrapBlazor.Components;
 using FreeSql;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
@@ -10,31 +5,19 @@ using Jx.Cms.DbContext;
 using Jx.Cms.Install.Middlewares;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Middlewares;
-using Jx.Cms.Plugin.Options;
-using Jx.Cms.Themes;
 using Jx.Cms.Themes.Middlewares;
-using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
-using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
-using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
-using Microsoft.AspNetCore.Routing;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.FileProviders;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SixLabors.ImageSharp.Web.DependencyInjection;
 using SixLabors.ImageSharp.Web.Providers;
+using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Web
 {
@@ -68,7 +51,7 @@ namespace Jx.Cms.Web
                 {
                     throw new Common.Exceptions.DbException(ret.msg);
                 }
-                services.Configure<DbConfig>(x => x.CopyFrom(dbConfig));
+                services.Configure<DbConfig>(x => Jx.Cms.Common.Extensions.ObjectExtension.CopyFrom(x, dbConfig));
             }
             else if (Util.IsInstalled)
             {

@@ -63,8 +63,8 @@ public partial class Login
             Url = "/api/Admin/User/Login",
             Data = LoginVo
         };
-        var str = await AjaxService.InvokeAsync(ajaxOption);
-        if (str.IsNullOrEmpty())
+        var jsonDoc = await AjaxService.InvokeAsync(ajaxOption);
+        if (jsonDoc == null)
         {
             await MessageService.Show(new MessageOption()
             {
@@ -74,7 +74,6 @@ public partial class Login
         }
         else
         {
-            using var jsonDoc = JsonDocument.Parse(str);
             var root = jsonDoc.RootElement;
             var code = root.GetProperty("code").GetInt32();
             var message = root.GetProperty("message").GetString();
