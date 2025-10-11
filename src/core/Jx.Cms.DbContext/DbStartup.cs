@@ -6,6 +6,7 @@ using FreeSql;
 using Jx.Cms.Common.Exceptions;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,9 +20,16 @@ namespace Jx.Cms.DbContext
 {
     public class DbStartup
     {
+        private readonly IConfiguration _configuration;
+
+        public DbStartup(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddConfigurableOptions<DbConfig>();
+            services.AddConfigurableOptions<DbConfig>(_configuration);
             // DbConfig会在Startup.cs中配置
         }
 
