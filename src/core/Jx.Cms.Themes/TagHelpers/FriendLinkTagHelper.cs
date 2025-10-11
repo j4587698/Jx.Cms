@@ -1,4 +1,4 @@
-﻿using Furion;
+﻿using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Service.Both;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Razor.TagHelpers;
@@ -10,7 +10,7 @@ public class FriendLinkTagHelper : TagHelper
     public override void Process(TagHelperContext context, TagHelperOutput output)
     {
         base.Process(context, output);
-        var links = App.GetService<IMenuService>().GetAllLinks();
+        var links = ServicesExtension.GetService<IMenuService>().GetAllLinks();
         if (links == null || links.Count == 0)
         {
             output.SuppressOutput();

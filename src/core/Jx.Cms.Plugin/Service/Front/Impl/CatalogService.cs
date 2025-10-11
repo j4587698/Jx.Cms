@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl;
 
-public class CatalogService : ICatalogService, ITransient
+public class CatalogService : ICatalogService
 {
     public CatalogEntity GetCatalogById(int id)
     {

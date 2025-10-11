@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Furion;
 using Jx.Cms.Common.Enum;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.DbContext.Entities.Front;
 using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Themes.Util;
@@ -20,16 +20,16 @@ public class MenuUrlTagHelper : TagHelper
         switch (Menu.MenuType)
         {
             case MenuTypeEnum.Page:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetPageUrl(App.GetService<IPageService>().GetPageById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href", RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>().GetPageById(Menu.TypeId)));
                 break;
             case MenuTypeEnum.Article:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetArticleUrl(App.GetService<IArticleService>().GetArticleById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href", RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>().GetArticleById(Menu.TypeId)));
                 break;
             case MenuTypeEnum.CustomUrl:
                 output.Attributes.SetAttribute("href", Menu.Url);
                 break;
             case MenuTypeEnum.Catalogue:
-                output.Attributes.SetAttribute("href", RewriteUtil.GetCatalogUrl(App.GetService<ICatalogService>().FindCatalogById(Menu.TypeId)));
+                output.Attributes.SetAttribute("href", RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>().FindCatalogById(Menu.TypeId)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

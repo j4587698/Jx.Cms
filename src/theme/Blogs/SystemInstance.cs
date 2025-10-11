@@ -5,6 +5,7 @@ using Blogs.Utils;
 using BootstrapBlazor.Components;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Blogs
 {

@@ -1,5 +1,4 @@
 ﻿using System.Security.Claims;
-using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Plugin.Service.Both;
@@ -19,15 +18,15 @@ public abstract class BaseController : Controller
         ViewData["settings"] = settings;
         
 
-        ViewData["menu"] = App.GetService<IMenuService>().GetAllMenuTree();
+        ViewData["menu"] = HttpContext.RequestServices.GetService<IMenuService>()?.GetAllMenuTree();
 
-        if (App.User != null)
+        if (User != null && User.Identity.IsAuthenticated)
         {
-            var username = App.User.FindFirst(ClaimTypes.Name);
+            var username = User.FindFirst(ClaimTypes.Name);
             if (username != null)
             {
-                ViewData["user"] = App.GetService<IAdminUserService>()
-                    .GetUserByUserName(username.Value);
+                ViewData["user"] = HttpContext.RequestServices.GetService<IAdminUserService>()
+                    ?.GetUserByUserName(username.Value);
             }
         }
     }

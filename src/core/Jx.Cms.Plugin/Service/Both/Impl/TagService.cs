@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl
 {
-    public class TagService: ITagService, ITransient
+    public class TagService: ITagService
     {
         public TagEntity GetTagById(int id)
         {

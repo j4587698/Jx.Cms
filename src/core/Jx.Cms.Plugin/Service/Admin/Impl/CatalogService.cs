@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using FreeSql;
-using Furion.DependencyInjection;
-using Furion.Logging.Extensions;
+using Serilog;
 using Jx.Cms.Common.Exceptions;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
-    public class CatalogService: ICatalogService, ITransient
+    public class CatalogService: ICatalogService
     {
         public CatalogEntity FindCatalogById(int id)
         {
@@ -52,7 +51,7 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
             }
             catch (DbException e)
             {
-                "删除失败".LogError<CatalogService>(e);
+                Log.Error(e, "删除失败");
                 return false;
             }
             

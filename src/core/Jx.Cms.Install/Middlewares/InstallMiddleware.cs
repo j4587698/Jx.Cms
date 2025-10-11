@@ -21,11 +21,23 @@ namespace Jx.Cms.Install.Middlewares
 
         public async Task Invoke(HttpContext context)
         {
-            if (context.Request.Path.Value != null && !Util.IsInstalled &&
-                !context.Request.Path.Value.Contains(new []{_installPath, ".js", ".css", "_blazor"}))
+            var path = context.Request.Path.Value;
+            
+            if (path != null && !Util.IsInstalled)
             {
-                context.Response.Redirect(
-                    $"{context.Request.Scheme}://{context.Request.Host}{_installPath}");
+                // 过滤静态文件和安装路径
+                if (path.Contains(".js") || path.Contains(".css") || path.Contains(".png") || 
+                    path.Contains(".jpg") || path.Contains(".jpeg") || path.Contains(".gif") || 
+                    path.EndsWith(".ico") || path.EndsWith(".svg") || path.Contains("_blazor") ||
+                    path.Contains(_installPath))
+                {
+                    await _next.Invoke(context);
+                }
+                else
+                {
+                    context.Response.Redirect(
+                        $"{context.Request.Scheme}://{context.Request.Host}{_installPath}");
+                }
             }
             else
             {

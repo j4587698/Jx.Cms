@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Furion.DynamicApiController;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Web.Vo;
@@ -13,7 +12,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace Jx.Cms.Web.Admin.Controllers
 {
     [Route("api/Admin/User")]
-    public class UserController : IDynamicApiController
+    [ApiController]
+    public class UserController : ControllerBase
     {
         private readonly IAdminUserService _adminUserService;
 
@@ -39,7 +39,7 @@ namespace Jx.Cms.Web.Admin.Controllers
             {
                 var identity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
                 identity.AddClaim(new Claim(ClaimTypes.Name, entity.UserName));
-                await Furion.App.HttpContext.SignInAsync(new ClaimsPrincipal(identity), new AuthenticationProperties(){IsPersistent = true, ExpiresUtc = loginVo.RememberMe? DateTimeOffset.Now.AddDays(5): DateTimeOffset.Now.AddMinutes(30)});
+                await HttpContext.SignInAsync(new ClaimsPrincipal(identity), new AuthenticationProperties(){IsPersistent = true, ExpiresUtc = loginVo.RememberMe? DateTimeOffset.Now.AddDays(5): DateTimeOffset.Now.AddMinutes(30)});
 
                 return new { code = 20000, message = "登录成功" };
             }

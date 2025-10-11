@@ -1,13 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Furion.ConfigurableOptions;
 
 namespace Jx.Cms.DbContext
 {
     /// <summary>
     /// 数据库配置类
     /// </summary>
-    [OptionsSettings("Db")]
-    public class DbConfig : IConfigurableOptions
+    public class DbConfig
     {
         /// <summary>
         /// 数据库类型，目前支持sqlite,mysql,sqlserver,oracle,postgresql

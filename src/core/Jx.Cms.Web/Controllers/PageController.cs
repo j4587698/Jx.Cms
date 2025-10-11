@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.DbContext.Entities.Article;
+﻿using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
@@ -10,11 +9,11 @@ public class PageController : BaseController
 {
     public IActionResult Index(int id)
     {
-        var articleService = App.GetService<IPageService>();
-        var model = articleService.GetPageById(id);
+        var articleService = HttpContext.RequestServices.GetService<IPageService>();
+        var model = articleService?.GetPageById(id);
         if (model == null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
         var pageVm = new PageVm()
         {

@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Furion.DependencyInjection;
 
 namespace Jx.Cms.Plugin.Components
 {
-    public class PluginDialogService : ITransient
+    public class PluginDialogService
     {
         public async Task<(DialogResult result, IPluginDialog dialog)> ShowModal(ResultDialogOption option, Type type, DialogService dialogService)
         {

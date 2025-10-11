@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
@@ -7,7 +6,7 @@ using Jx.Cms.Plugin.Utils;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl
 {
-    public class PageService: IPageService, ITransient
+    public class PageService: IPageService
     {
         public ArticleModel GetPageById(int id)
         {

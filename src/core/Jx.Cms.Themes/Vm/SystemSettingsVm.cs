@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Toolbox.Extensions;
@@ -60,7 +61,7 @@ namespace Jx.Cms.Themes.Vm
         public static SystemSettingsVm Init()
         {
             var settings = new SystemSettingsVm();
-            var settingsService = Furion.App.GetService<ISettingsService>();
+            var settingsService = ServicesExtension.GetRequiredService<ISettingsService>();
             var values = settingsService.GetAllValues();
             var properties = settings.GetType().GetProperties();
             foreach (var property in properties)
@@ -75,14 +76,15 @@ namespace Jx.Cms.Themes.Vm
             }
 
             if (!settings.Url.IsNullOrEmpty()) return settings;
-            var request = Furion.App.HttpContext.Request;
+            var httpContext = ServicesExtension.GetRequiredService<Microsoft.AspNetCore.Http.IHttpContextAccessor>().HttpContext;
+            var request = httpContext.Request;
             settings.Url = $"{request.Scheme}://{request.Host}";
             return settings;
         }
 
         public void Save()
         {
-            var settingsService = Furion.App.GetService<ISettingsService>();
+            var settingsService = ServicesExtension.GetRequiredService<ISettingsService>();
             var properties = GetType().GetProperties();
             foreach (var property in properties)
             {

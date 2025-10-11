@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Furion;
-using Furion.JsonSerialization;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Toolbox.Extensions;
+using Newtonsoft.Json;
 
 namespace Jx.Cms.Plugin.Cache;
 
@@ -21,7 +20,7 @@ public class WidgetCache
         var widgetsVos = SettingsEntity
             .Where(x => x.Type == Constants.SystemType &&
                         Enum.GetNames(typeof(WidgetSidebarType)).Contains(x.Name))
-            .ToDictionary(x => x.Name, x => x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value));
+            .ToDictionary(x => x.Name, x => x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JsonConvert.DeserializeObject<List<WidgetVo>>(x.Value));
         var widgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
         EnabledWidget.Clear();

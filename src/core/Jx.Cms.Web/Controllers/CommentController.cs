@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.DbContext.Entities.Article;
+﻿using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Service.Both;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +8,7 @@ public class CommentController : BaseController
 {
     public IActionResult Index(int id)
     {
-        var comments = App.GetService<ICommentService>().GetCommentTreeCteByArticleId(id);
+        var comments = HttpContext.RequestServices.GetService<ICommentService>()?.GetCommentTreeCteByArticleId(id);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorName), out var nikeName);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorEmail), out var email);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorUrl), out var url);

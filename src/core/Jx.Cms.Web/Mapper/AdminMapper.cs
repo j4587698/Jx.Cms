@@ -4,16 +4,19 @@ using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Web.ViewModel;
 using Mapster;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Jx.Cms.Web.Mapper
 {
     public class AdminMapper: IRegister
     {
         private readonly ITagService _tagService;
+        private readonly IServiceProvider _serviceProvider;
 
-        public AdminMapper()
+        public AdminMapper(IServiceProvider serviceProvider)
         {
-            _tagService = Furion.App.GetService<ITagService>();
+            _serviceProvider = serviceProvider;
+            _tagService = _serviceProvider.GetService<ITagService>();
         }
 
         public void Register(TypeAdapterConfig config)

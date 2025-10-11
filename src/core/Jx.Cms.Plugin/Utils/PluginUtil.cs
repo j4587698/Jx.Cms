@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using BootstrapBlazor.Components;
-using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.DbContext.Entities.Settings;
@@ -12,6 +11,7 @@ using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using Console = System.Console;
 using Constants = Jx.Cms.Common.Utils.Constants;
@@ -130,13 +130,17 @@ namespace Jx.Cms.Plugin.Utils
         /// <summary>
         /// 文章列表显示时执行
         /// </summary>
+        /// <param name="articlePlugins">文章插件列表</param>
+        /// <param name="serviceProvider">服务提供者</param>
         /// <returns></returns>
-        public static List<EditorExtModel> OnArticleEditorShow(IEnumerable<IArticlePlugin> articlePlugins)
+        public static List<EditorExtModel> OnArticleEditorShow(IEnumerable<IArticlePlugin> articlePlugins, IServiceProvider serviceProvider)
         {
             var extModels = new List<EditorExtModel>();
             foreach (var instance in articlePlugins)
             {
-                var ret = instance?.AddEditorToolbarButton(App.GetService<DialogService>());
+                // 注意：这里需要通过依赖注入获取DialogService
+                // 暂时注释掉，需要在使用时传入服务提供者
+                var ret = instance?.AddEditorToolbarButton(serviceProvider.GetService<DialogService>());
                 if (ret != null)
                 {
                     extModels.Add(ret);

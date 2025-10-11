@@ -1,6 +1,5 @@
 ﻿using CnBlogAsync.Models;
 using CnBlogAsync.Options;
-using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
@@ -10,14 +9,26 @@ using Jx.Cms.Plugin.Service.Front;
 using Jx.Toolbox.Extensions;
 using Jx.Toolbox.HtmlTools;
 using Jx.Toolbox.Utils;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace CnBlogAsync;
 
 public class ArticleInstance : IArticlePlugin
 {
+    private readonly IServiceProvider _serviceProvider;
+    private readonly IWebHostEnvironment _webHostEnvironment;
+
+    public ArticleInstance(IServiceProvider serviceProvider, IWebHostEnvironment webHostEnvironment)
+    {
+        _serviceProvider = serviceProvider;
+        _webHostEnvironment = webHostEnvironment;
+    }
+
     public List<ArticleExtModel> RightExt(ArticleEntity articleEntity)
     {
-        var defaultValue = App.GetService<ISettingsService>().GetValue(Constants.PluginName, Constants.BlogDefaultValue);
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        var defaultValue = settingsService.GetValue(Constants.PluginName, Constants.BlogDefaultValue);
         if (defaultValue.IsNullOrEmpty())
         {
             return new List<ArticleExtModel>();
@@ -52,7 +63,8 @@ public class ArticleInstance : IArticlePlugin
             return true;
         }
 
-        var values = App.GetService<ISettingsService>().GetAllValues(Constants.PluginName);
+        var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
+        var values = settingsService.GetAllValues(Constants.PluginName);
         if (!values.ContainsKey(Constants.BlogName))
         {
             return true;
@@ -71,7 +83,7 @@ public class ArticleInstance : IArticlePlugin
                 continue;
             }
 
-            var bytes = File.ReadAllBytes(Path.Combine(App.WebHostEnvironment.WebRootPath, img.TrimStart('\\', '/')));
+            var bytes = File.ReadAllBytes(Path.Combine(_webHostEnvironment.WebRootPath, img.TrimStart('\\', '/')));
             var media = client.NewMediaObject(Path.GetFileName(img),
                 Mime.GetMimeFromExtension(Path.GetExtension(img)), bytes);
             content = content.Replace(img, media.URL);
@@ -79,7 +91,8 @@ public class ArticleInstance : IArticlePlugin
 
         var categories = client.GetCategories();
         string categoryName = null;
-        var catalogue = App.GetService<ICatalogService>().GetCatalogById(articleEntity.CatalogueId);
+        var catalogService = _serviceProvider.GetRequiredService<ICatalogService>();
+        var catalogue = catalogService.GetCatalogById(articleEntity.CatalogueId);
         if (catalogue != null)
         {
             if (categories.All(x => x.Title != $"[随笔分类]{catalogue.Name}"))

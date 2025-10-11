@@ -2,13 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Furion;
-using Furion.Localization;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;
-using StackExchange.Profiling.Internal;
 using PluginConfig = Jx.Cms.Common.Utils.PluginConfig;
 
 namespace Jx.Cms.Plugin
@@ -48,8 +45,10 @@ namespace Jx.Cms.Plugin
 
         public static void UnloadPlugin(PluginConfig pluginConfig)
         {
-            if (Plugins.TryRemove(pluginConfig.PluginId, out PluginLoader plugin))
+            if (Plugins.ContainsKey(pluginConfig.PluginId))
             {
+                var plugin = Plugins[pluginConfig.PluginId];
+                Plugins.Remove(pluginConfig.PluginId);
                 AssemblyCache.RemoveAssembly(plugin.LoadDefaultAssembly());
                 plugin.Dispose();
                 GC.Collect();

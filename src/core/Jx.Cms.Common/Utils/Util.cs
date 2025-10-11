@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Furion;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
 using Microsoft.Extensions.FileProviders;
@@ -75,7 +74,7 @@ namespace Jx.Cms.Common.Utils
         /// <returns></returns>
         public static List<MediaInfoVo> GetUploadFile(params string[] ext)
         {
-            var uploadPath = Path.Combine(App.WebHostEnvironment.WebRootPath, "upload");
+            var uploadPath = Path.Combine(AppContext.BaseDirectory, "wwwroot", "upload");
             if (!Directory.Exists(uploadPath))
             {
                 Directory.CreateDirectory(uploadPath);
@@ -85,7 +84,7 @@ namespace Jx.Cms.Common.Utils
                 .Where(x => ext.Contains(Path.GetExtension(x).ToLower())).Select(x => new MediaInfoVo()
                 {
                     Name = Path.GetFileNameWithoutExtension(x), MediaInfo = new FileInfo(x), FullPath = x,
-                    Url = x.Substring(App.WebHostEnvironment.WebRootPath.Length), IsSelected = false,
+                    Url = x.Substring(Path.Combine(AppContext.BaseDirectory, "wwwroot").Length), IsSelected = false,
                     MediaType = Path.GetExtension(x).ToLower() switch
                     {
                         ".jpg" or ".jpeg" or ".png" or ".gif" => MediaTypeEnum.Image,

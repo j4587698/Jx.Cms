@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
 using Jx.Cms.Plugin.Utils;
 
 namespace Jx.Cms.Plugin.Service.Impl
 {
-    public class PluginService: IPluginService, ITransient
+    public class PluginService: IPluginService
     {
         public List<PluginConfig> GetAllPlugins()
         {

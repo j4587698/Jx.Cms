@@ -1,5 +1,4 @@
 ﻿using System.Linq;
-using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Provider;
 using Jx.Cms.Common.Utils;
@@ -12,8 +11,7 @@ using SixLabors.ImageSharp.Web.Providers;
 
 namespace Jx.Cms.Common
 {
-    [AppStartup(int.MaxValue)]
-    public class CommonStartup : AppStartup
+    public class CommonStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {

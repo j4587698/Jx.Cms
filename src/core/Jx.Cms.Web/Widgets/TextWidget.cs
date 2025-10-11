@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Furion.JsonSerialization;
+using System.Text.Json;
 using Jx.Cms.Plugin.Plugin;
 using Jx.Cms.Web.Components.WidgetCompnents;
 using Jx.Toolbox.Extensions;
@@ -28,8 +28,8 @@ public class TextWidget : IWidget
         {
             return "";
         }
-        var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
-        return parameters.ContainsKey("Title") ? parameters["Title"] : "";
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(Parameter);
+        return parameters != null && parameters.ContainsKey("Title") ? parameters["Title"] : "";
     }
 
     public string GetWidgetHtml()
@@ -38,7 +38,7 @@ public class TextWidget : IWidget
         {
             return "";
         }
-        var parameters = JSON.Deserialize<Dictionary<string, string>>(Parameter);
-        return $"<div class=\"textwidget\">{(parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
+        var parameters = JsonSerializer.Deserialize<Dictionary<string, string>>(Parameter);
+        return $"<div class=\"textwidget\">{(parameters != null && parameters.ContainsKey("Content") ? parameters["Content"] : "")}</div>";
     }
 }

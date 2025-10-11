@@ -1,5 +1,5 @@
 ﻿using System.Linq;
-using Furion.DataValidation;
+using System.ComponentModel.DataAnnotations;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.Common.Vo;
 using Jx.Cms.DbContext.Entities.Article;
@@ -24,7 +24,6 @@ namespace Jx.Cms.Web.Areas.User.Controllers
         /// <param name="comment"></param>
         /// <param name="commentService"></param>
         /// <returns></returns>
-        [NonValidation]
         [HttpPost]
         public object Comment([FromForm]CommentVo comment, [FromServices]ICommentService commentService)
         {
@@ -33,9 +32,11 @@ namespace Jx.Cms.Web.Areas.User.Controllers
             {
                 return R.Fail(500002, "评论已关闭");
             }
-            var validate = comment.TryValidate();
-            if (!validate.IsValid)
-                return R.Fail(500002, string.Join(",", validate.ValidationResults.Select(x => x.ErrorMessage)));
+            var validationContext = new ValidationContext(comment);
+            var validationResults = new List<ValidationResult>();
+            var isValid = Validator.TryValidateObject(comment, validationContext, validationResults, true);
+            if (!isValid)
+                return R.Fail(500002, string.Join(",", validationResults.Select(x => x.ErrorMessage)));
             comment.AuthorIp = HttpContext.Connection.RemoteIpAddress?.ToString();
             comment.AuthorAgent = Request.Headers["User-Agent"].ToString();
             comment.Content = Html.RemoveHtmlTag(comment.Content);

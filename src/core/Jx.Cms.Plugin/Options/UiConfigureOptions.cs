@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.FileProvider;
 using Jx.Cms.Plugin.Utils;
@@ -10,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.Options;
+using Microsoft.Extensions.Hosting;
 
 namespace Jx.Cms.Plugin.Options
 {
@@ -43,12 +43,6 @@ namespace Jx.Cms.Plugin.Options
             
             // Basic initialization in case the options weren't initialized by any other component
             options.ContentTypeProvider ??= new FileExtensionContentTypeProvider();
-            if (options.FileProvider == null && App.WebHostEnvironment.WebRootFileProvider == null)
-            {
-                throw new InvalidOperationException("Missing FileProvider.");
-            }
-
-            options.FileProvider ??= App.WebHostEnvironment.WebRootFileProvider;
             
             options.FileProvider = new CompositeFileProvider(options.FileProvider, _filesProvider);
         }

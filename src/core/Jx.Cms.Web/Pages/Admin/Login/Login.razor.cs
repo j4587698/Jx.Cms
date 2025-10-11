@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
+using System.Text.Json;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Furion.ClayObject;
 using Jx.Cms.Web.Vo;
 using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Components;
@@ -74,13 +74,17 @@ public partial class Login
         }
         else
         {
-            dynamic ret = Clay.Parse(str);
-            if (ret.code != 20000)
+            using var jsonDoc = JsonDocument.Parse(str);
+            var root = jsonDoc.RootElement;
+            var code = root.GetProperty("code").GetInt32();
+            var message = root.GetProperty("message").GetString();
+            
+            if (code != 20000)
             {
                 await MessageService.Show(new MessageOption()
                 {
                     Color = Color.Danger,
-                    Content = ret.message
+                    Content = message
                 });
             }
             else

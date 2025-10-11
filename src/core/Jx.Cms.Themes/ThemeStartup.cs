@@ -1,10 +1,11 @@
 ﻿using System.IO;
-using Furion;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Middlewares;
 using Jx.Cms.Themes.Options;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
+using Jx.Cms.Themes.Service;
+using Jx.Cms.Themes.Service.Impl;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -16,7 +17,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Jx.Cms.Themes
 {
-    public class ThemeStartup : AppStartup
+    public class ThemeStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {
@@ -25,12 +26,18 @@ namespace Jx.Cms.Themes
                 Directory.CreateDirectory(Constants.ThemePath);
             }
             
+            // 注册主题服务
+            services.AddScoped<IThemeConfigService, ThemeConfigService>();
+            
+            // 注册 HttpContextAccessor
+            services.AddHttpContextAccessor();
+            
             services.Configure<RazorViewEngineOptions>(options =>
             {
                 options.AreaViewLocationFormats.Clear();
                 options.AreaViewLocationFormats.Add("/{2}/Views/{1}/{0}.cshtml");
                 options.AreaViewLocationFormats.Add("/{2}/Views/Shared/{0}.cshtml");
-                options.AreaViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
+                options.ViewLocationFormats.Add("/Views/Shared/{0}.cshtml");
                 options.ViewLocationExpanders.Add(new TemplateViewLocationExpander());
             });
 

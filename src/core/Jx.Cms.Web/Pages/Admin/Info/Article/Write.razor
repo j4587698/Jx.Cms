@@ -6,7 +6,6 @@
 @using Jx.Cms.Plugin.Model
 @using Jx.Cms.Plugin.Utils
 @using Mapster
-@using Furion
 @using System.Security.Claims
 @using System.Text
 @using Jx.Cms.Common.Vo
@@ -26,6 +25,9 @@
 @inject DialogService DialogService
 @inject PluginDialogService PluginDialogService
 @inject ITagService TagService
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IAdminUserService AdminUserService
+@inject IServiceProvider ServiceProvider
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "Admin/Article/Write", 5, parentId:MenuIds.ArticleId)]
 
@@ -147,7 +149,7 @@
         var settingsVm = SystemSettingsVm.Init();
         AllTags = TagService.GetAllTags().Select(x => x.Name);
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
-        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
+        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins, ServiceProvider);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));
         var article = Id == 0 ? new ArticleEntity() { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published, IsMarkdown = settingsVm.EditWithMarkdown} : ArticleService.GetArticleById(Id);
@@ -163,7 +165,9 @@
 
     private async Task OnValidSubmit(EditContext arg)
     {
-        Article.Author = App.GetService<IAdminUserService>().GetUserByUserName(App.User?.FindFirstValue(ClaimTypes.Name)).NickName;
+        var userName = HttpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+        Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
+        
         var article = Article.Adapt<ArticleEntity>();
         foreach (var articlePlugin in ArticlePlugins)
         {

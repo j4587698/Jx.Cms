@@ -22,6 +22,6 @@
       <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="mkdir $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;copy $(TargetDir)\plugin.json $(SolutionDir)src\core\\Jx.Cms.Web\Plugin\$(TargetName) &#xD;&#xA;" />
+        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;" />
     </Target>
 </Project>

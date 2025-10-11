@@ -1,6 +1,8 @@
-﻿using Furion;
+﻿using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Toolbox.Extensions;
+using Microsoft.Extensions.DependencyInjection;
+using Jx.Cms.Rewrite;
 
 namespace Jx.Cms.Themes.Model
 {
@@ -27,7 +29,15 @@ namespace Jx.Cms.Themes.Model
         {
             if (_rewriterModel == null)
             {
-                var settingsService = App.GetService<ISettingsService>();
+                var settingsService = ServicesExtension.GetService<ISettingsService>();
+                if (settingsService == null)
+                {
+                    // 在未安装状态下，返回默认配置
+                    _rewriterModel = new RewriterModel();
+                    _rewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+                    return _rewriterModel;
+                }
+                
                 var settingsEnumerable = settingsService.GetAllValues("Rewriter");
                 _rewriterModel = new RewriterModel();
                 var prop = _rewriterModel.GetType().GetProperties();
@@ -46,7 +56,7 @@ namespace Jx.Cms.Themes.Model
         public static void SaveSettings(RewriterModel rewriterModel)
         {
             _rewriterModel = rewriterModel;
-            var settingsService = App.GetService<ISettingsService>();
+            var settingsService = ServicesExtension.GetService<ISettingsService>();
             var properties = rewriterModel.GetType().GetProperties();
             foreach (var property in properties)
             {

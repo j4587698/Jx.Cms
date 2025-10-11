@@ -6,6 +6,7 @@ namespace Jx.Cms.Common.Extensions
     public static class ServicesExtension
     {
         public static IServiceCollection Services { get; set; }
+        public static IServiceProvider ServiceProvider { get; set; }
         
         public static T GetSingletonInstanceOrNull<T>(this IServiceCollection services)
         {
@@ -22,6 +23,16 @@ namespace Jx.Cms.Common.Extensions
             }
 
             return default;
+        }
+        
+        public static T GetService<T>()
+        {
+            return ServiceProvider.GetService<T>();
+        }
+        
+        public static T GetRequiredService<T>()
+        {
+            return ServiceProvider.GetRequiredService<T>();
         }
     }
 }

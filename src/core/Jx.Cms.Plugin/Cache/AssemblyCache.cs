@@ -2,25 +2,39 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Furion;
-using Furion.DependencyInjection;
+using System.Runtime.Loader;
 
 namespace Jx.Cms.Plugin.Cache;
 
 /// <summary>
-/// 程序集缓存
-/// </summary>
+    /// 程序集缓存
+    /// </summary>
 public class AssemblyCache
 {
     /// <summary>
     /// 程序集列表
     /// </summary>
-    private static readonly List<Assembly> _assemblyList = App.Assemblies.ToList();
+    private static readonly List<Assembly> _assemblyList = new List<Assembly>();
 
     /// <summary>
     /// 类型列表
     /// </summary>
-    public static IEnumerable<Type> TypeList { get; private set; } = App.EffectiveTypes;
+    public static IEnumerable<Type> TypeList { get; private set; } = GetEffectiveTypes();
+
+    static AssemblyCache()
+    {
+        // 初始化当前域的程序集
+        foreach (var assembly in AssemblyLoadContext.Default.Assemblies)
+        {
+            _assemblyList.Add(assembly);
+        }
+    }
+
+    private static IEnumerable<Type> GetEffectiveTypes()
+    {
+        return _assemblyList.SelectMany(u => u.GetTypes()
+            .Where(u => u.IsPublic));
+    }
 
     /// <summary>
     /// 添加程序集
@@ -33,8 +47,7 @@ public class AssemblyCache
             return;
         }
         _assemblyList.Add(assembly);
-        TypeList = _assemblyList.SelectMany(u => u.GetTypes()
-            .Where(u => u.IsPublic && !u.IsDefined(typeof(SuppressSnifferAttribute), false)));
+        TypeList = GetEffectiveTypes();
         var caches = _assemblyList.SelectMany(x =>
             x.GetTypes().Where(y => typeof(IPluginCache).IsAssignableFrom(y) && !y.IsAbstract));
         foreach (var cache in caches)
@@ -55,8 +68,7 @@ public class AssemblyCache
         if (ass != null)
         {
             _assemblyList.Remove(ass);
-            TypeList = _assemblyList.SelectMany(u => u.GetTypes()
-                .Where(x => x.IsPublic && !x.IsDefined(typeof(SuppressSnifferAttribute), false)));
+            TypeList = GetEffectiveTypes();
             var caches = _assemblyList.SelectMany(x =>
                 x.GetTypes().Where(y => typeof(IPluginCache).IsAssignableFrom(y) && !y.IsAbstract));
             foreach (var cache in caches)

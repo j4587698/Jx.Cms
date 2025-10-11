@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.Common.Utils;
+﻿using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
@@ -20,16 +19,16 @@ public class TagController : BaseController
         {
             settings.CountPerPage = 10;
         }
-        var labelService = App.GetService<ITagService>();
-        var label = labelService.GetTagById(id);
+        var labelService = HttpContext.RequestServices.GetService<ITagService>();
+        var label = labelService?.GetTagById(id);
         if (label == null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
         var articles = labelService.GetArticleFromTagId(id, pageNum, settings.CountPerPage, out var totalCount);
         if (articles == null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
         var labelVm = new TagVm()
         {
@@ -38,7 +37,7 @@ public class TagController : BaseController
             PageSize = settings.CountPerPage,
             TotalCount = totalCount,
             Tag = label,
-            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
+            Pagination = HttpContext.RequestServices.GetService<IPaginationService>()?.GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(labelVm);
     }

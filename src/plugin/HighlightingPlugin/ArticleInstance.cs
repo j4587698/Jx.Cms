@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Furion;
 using HighlightingPlugin.Pages;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;

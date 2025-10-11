@@ -1,10 +1,9 @@
 ﻿using System.Collections.Generic;
-using Furion.DependencyInjection;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
-    public class ArticleService: IArticleService, ITransient
+    public class ArticleService: IArticleService
     {
         public ArticleEntity GetArticleById(int id)
         {

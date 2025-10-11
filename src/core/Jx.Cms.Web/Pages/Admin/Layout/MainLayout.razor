@@ -1,5 +1,4 @@
 ﻿@using Jx.Cms.Common.Extensions
-@using Furion
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Utils
 @using Jx.Cms.DbContext.Entities.Admin
@@ -15,6 +14,7 @@
 @inject NavigationManager _navigationManager
 @inject IAdminUserService _adminUserService
 @inject IDispatchService<string> DispatchService
+@inject IHttpContextAccessor HttpContextAccessor
 
 <Layout SideWidth="0" IsPage="true" IsFullSide="true" IsFixedHeader="true" IsFixedFooter="true" AdditionalAssemblies="new[] { GetType().Assembly }"
         ShowFooter="true" ShowCollapseBar="true" OnCollapsed="@OnCollapsed" Menus="@_menuItems">
@@ -86,7 +86,11 @@
 
     private void GetIconSideMenuItems()
     {
-        _adminUser = _adminUserService.GetUserByUserName(App.User.Identity!.Name);
+        var httpContext = HttpContextAccessor?.HttpContext;
+        if (httpContext?.User?.Identity?.Name != null)
+        {
+            _adminUser = _adminUserService.GetUserByUserName(httpContext.User.Identity.Name);
+        }
         var menuAttributes = _adminMenuService.GetAllMenu();
         menuAttributes.AddRange(PluginUtil.OnMenuShow().Select(x => new MenuAttribute(x.MenuId, x.DisplayName, $"/Admin/PluginPage/{x.MenuId}", -1, x.Icon, x.ParentId??"")));
         _menuItems = new List<MenuItem>();

@@ -1,6 +1,6 @@
 ﻿using System;
-using Furion;
 using Jx.Cms.Common.Enum;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.DbContext.Entities.Front;
 using Jx.Cms.Plugin.Service.Admin;
 using Jx.Cms.Plugin.Service.Both;
@@ -16,7 +16,7 @@ public class MenuTagHelper : TagHelper
     {
         base.Process(context, output);
         output.TagName = null;
-        var menus = App.GetService<IMenuService>().GetAllMenuTree();
+        var menus = ServicesExtension.GetService<IMenuService>().GetAllMenuTree();
         if (menus == null || menus.Count == 0)
         {
             output.SuppressOutput();
@@ -36,16 +36,16 @@ public class MenuTagHelper : TagHelper
         switch (menuEntity.MenuType)
         {
             case MenuTypeEnum.Page:
-                aTag.MergeAttribute("href", RewriteUtil.GetPageUrl(App.GetService<IPageService>().GetPageById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href", RewriteUtil.GetPageUrl(ServicesExtension.GetService<IPageService>().GetPageById(menuEntity.TypeId)));
                 break;
             case MenuTypeEnum.Article:
-                aTag.MergeAttribute("href", RewriteUtil.GetArticleUrl(App.GetService<IArticleService>().GetArticleById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href", RewriteUtil.GetArticleUrl(ServicesExtension.GetService<IArticleService>().GetArticleById(menuEntity.TypeId)));
                 break;
             case MenuTypeEnum.CustomUrl:
                 aTag.MergeAttribute("href", menuEntity.Url);
                 break;
             case MenuTypeEnum.Catalogue:
-                aTag.MergeAttribute("href", RewriteUtil.GetCatalogUrl(App.GetService<ICatalogService>().FindCatalogById(menuEntity.TypeId)));
+                aTag.MergeAttribute("href", RewriteUtil.GetCatalogUrl(ServicesExtension.GetService<ICatalogService>().FindCatalogById(menuEntity.TypeId)));
                 break;
             default:
                 throw new ArgumentOutOfRangeException();

@@ -1,5 +1,5 @@
 ﻿@using System.ComponentModel
-@using Furion.JsonSerialization
+@using System.Text.Json
 @using Jx.Toolbox.Extensions
 
 @inherits Jx.Cms.Common.Components.WidgetComponentBase
@@ -24,14 +24,17 @@
         base.OnInitialized();
         if (!Parameter.IsNullOrEmpty())
         {
-            _values = JSON.Deserialize<Dictionary<string, string>>(Parameter);
-            if (_values.ContainsKey(nameof(Title)))
+            _values = JsonSerializer.Deserialize<Dictionary<string, string>>(Parameter);
+            if (_values != null)
             {
-                Title = _values[nameof(Title)];
-            }
-            if (_values.ContainsKey(nameof(Content)))
-            {
-                Content = _values[nameof(Content)];
+                if (_values.ContainsKey(nameof(Title)))
+                {
+                    Title = _values[nameof(Title)];
+                }
+                if (_values.ContainsKey(nameof(Content)))
+                {
+                    Content = _values[nameof(Content)];
+                }
             }
         }
     }
@@ -43,7 +46,7 @@
             {nameof(Title), Title},
             {nameof(Content), Content}
         };
-        await OnParameterSave.InvokeAsync(JSON.Serialize(values));
+        await OnParameterSave.InvokeAsync(JsonSerializer.Serialize(values));
     }
     
 }

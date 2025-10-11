@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using DeviceDetectorNET.Parser.Device;
-using Furion;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
@@ -11,9 +10,11 @@ using Jx.Cms.Plugin;
 using Jx.Cms.Themes.PartManager;
 using Jx.Cms.Themes.RazorCompiler;
 using Jx.Toolbox.Extensions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
 using Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using Serilog.Core;
@@ -63,7 +64,8 @@ namespace Jx.Cms.Themes.Util
                 case ThemeChangeMode.Adaptive:
                     return PcThemeName;
                 case ThemeChangeMode.Auto:
-                    var userAgent = App.HttpContext?.Request.Headers[HeaderNames.UserAgent];
+                    var httpContext = ServicesExtension.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            var userAgent = httpContext?.Request.Headers[HeaderNames.UserAgent];
                     if (!userAgent.HasValue)
                     {
                         return PcThemeName;
@@ -94,15 +96,16 @@ namespace Jx.Cms.Themes.Util
                 return null;
             }
             
-            var userAgent = App.HttpContext?.Request.Headers[HeaderNames.UserAgent];
+            var httpContext = ServicesExtension.GetRequiredService<IHttpContextAccessor>().HttpContext;
+            var userAgent = httpContext?.Request.Headers[HeaderNames.UserAgent];
             if (!userAgent.HasValue)
             {
                 return null;
             }
             
-            if (App.HttpContext?.Request.Host.Value != MobileDomain)
+            if (httpContext?.Request.Host.Value != MobileDomain)
             {
-                var url = $"{App.HttpContext!.Request.Scheme}://{MobileDomain}{App.HttpContext.Request.QueryString}";
+                var url = $"{httpContext!.Request.Scheme}://{MobileDomain}{httpContext.Request.QueryString}";
                 return url;
             }
 
@@ -177,7 +180,7 @@ namespace Jx.Cms.Themes.Util
                     RazorPlugin.LoadPlugin(themeConfig, applicationPartManager);
                     MyActionDescriptorChangeProvider.Instance.HasChanged = true;
                     MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
-                    var viewCompilerProvider = App.GetService<IViewCompilerProvider>() as MyViewCompilerProvider;
+                    var viewCompilerProvider = ServicesExtension.GetRequiredService<IViewCompilerProvider>() as MyViewCompilerProvider;
                     viewCompilerProvider?.Modify();
                 }
                 else

@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.Common.Utils;
+﻿using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Cache;
 using Jx.Cms.Plugin.Middlewares;
 using Jx.Cms.Plugin.Options;
@@ -9,8 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Jx.Cms.Plugin
 {
-    [AppStartup(int.MaxValue - 100)]
-    public class PluginStartup: AppStartup
+    public class PluginStartup
     {
         public void ConfigureServices(IServiceCollection services)
         {

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Serilog;
 
 namespace Jx.Cms.Web
 {
@@ -27,8 +28,9 @@ namespace Jx.Cms.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStaticWebAssets();
-                    webBuilder.Inject().UseStartup<Startup>();
+                    webBuilder.UseStartup<Startup>();
                 })
-                .UseSerilogDefault();
+                .UseSerilog((context, configuration) =>
+                    configuration.ReadFrom.Configuration(context.Configuration));
     }
 }

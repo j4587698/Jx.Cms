@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Settings;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl
 {
-    public class SettingsService: ISettingsService, ITransient
+    public class SettingsService: ISettingsService
     {
         public string GetValue(string type, string name)
         {

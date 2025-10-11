@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.Common.Utils;
+﻿using Jx.Cms.Common.Utils;
 using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
@@ -22,11 +21,11 @@ public class CatalogController : BaseController
             settings.CountPerPage = 10;
         }
 
-        var catalogueService = App.GetService<ICatalogService>();
-        var catalogue = catalogueService.GetCatalogById(id);
+        var catalogueService = HttpContext.RequestServices.GetService<ICatalogService>();
+        var catalogue = catalogueService?.GetCatalogById(id);
         if (catalogue == null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
 
         var catalogVm = new CatalogVm();
@@ -35,7 +34,7 @@ public class CatalogController : BaseController
         catalogVm.PageNum = pageNum;
         catalogVm.PageSize = settings.CountPerPage;
         catalogVm.TotalCount = totalPage;
-        catalogVm.Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
+        catalogVm.Pagination = HttpContext.RequestServices.GetService<IPaginationService>()?.GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
         return View(catalogVm);
     }
 }

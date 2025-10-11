@@ -3,6 +3,8 @@
 @using Blogs.Enum
 @using Jx.Cms.Common.Vo
 @using Jx.Cms.Plugin.Components
+@using Microsoft.AspNetCore.Components
+@using Jx.Toolbox.Extensions
 @inject ToastService ToastService
 @inject DialogService DialogService
 
@@ -35,8 +37,8 @@
             <div class='color-box' data-color='@color' style='display:inline;background-color:#@color' @onclick="@(e => { _settingsModel.Color = color; })"></div>
         }
         <div class="clearfix"></div>
-        <Select Items="typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
-        <Select Items="typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar" ShowLabel="true"></Select>
+        <Select Items="@typeof(BlogLayoutEnum).ToSelectList()" @bind-Value="@_settingsModel.Layout" ShowLabel="true"></Select>
+        <Select Items="@typeof(SidebarEnum).ToSelectList()" @bind-Value="@_settingsModel.Sidebar" ShowLabel="true"></Select>
         <BootstrapInput @bind-Value="@_settingsModel.Connector" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Keywords" ShowLabel="true"></BootstrapInput>
         <BootstrapInput @bind-Value="@_settingsModel.Description" ShowLabel="true"></BootstrapInput>

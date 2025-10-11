@@ -1,11 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
-using Furion.DependencyInjection;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
-    public class PageService: IPageService, ITransient
+    public class PageService: IPageService
     {
         public ArticleEntity GetPageById(int id)
         {

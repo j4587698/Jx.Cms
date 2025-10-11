@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
@@ -11,7 +10,7 @@ namespace Jx.Cms.Plugin.Service.Front.Impl
     /// <summary>
     /// 文章Service
     /// </summary>
-    public class ArticleService: IArticleService, ITransient
+    public class ArticleService: IArticleService
     {
         public ArticleModel GetArticleById(int id)
         {

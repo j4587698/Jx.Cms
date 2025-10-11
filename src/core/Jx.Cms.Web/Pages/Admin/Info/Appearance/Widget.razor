@@ -1,7 +1,6 @@
 ﻿@page "/Admin/Appearance/Widget"
 @using Jx.Cms.Common.Attribute
-@using Furion
-@using Furion.JsonSerialization
+@using System.Text.Json
 @using Jx.Cms.Common.Components
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.Common.Vo
@@ -92,7 +91,7 @@
 
         WidgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
-        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new {x.Key, Value = x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JsonSerializer.Deserialize<List<WidgetVo>>(x.Value) ?? new List<WidgetVo>()}).ToDictionary(x => x.Key, x => x.Value);
     }
 
     private Task OnAddWidget(string menuName, WidgetVo widget)
@@ -106,7 +105,7 @@
             SavedWidgetType.Add(menuName, new List<WidgetVo>());
         }
         SavedWidgetType[menuName].Add(widget);
-        SettingsService.SetValue(menuName, JSON.Serialize(SavedWidgetType[menuName]));
+        SettingsService.SetValue(menuName, JsonSerializer.Serialize(SavedWidgetType[menuName]));
         WidgetCache.UpdateCache();
         //SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
         StateHasChanged();
@@ -132,7 +131,7 @@
             {
                 widgetVo.Parameter = parameter;
                 var widgets = SavedWidgetType[menuName];
-                SettingsService.SetValue(menuName, JSON.Serialize(widgets));
+                SettingsService.SetValue(menuName, JsonSerializer.Serialize(widgets));
                 WidgetCache.UpdateCache();
                 StateHasChanged();
             }) 
@@ -145,7 +144,7 @@
     {
         List<WidgetVo> widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
         widgets.Remove(widget);
-        SettingsService.SetValue(menuName, JSON.Serialize(widgets));
+        SettingsService.SetValue(menuName, JsonSerializer.Serialize(widgets));
         WidgetCache.UpdateCache();
         StateHasChanged();
         return Task.CompletedTask;

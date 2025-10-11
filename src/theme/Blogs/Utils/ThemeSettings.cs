@@ -1,8 +1,9 @@
 ﻿using Blogs.Enum;
 using Blogs.Model;
-using Furion;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Toolbox.Extensions;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Blogs.Utils
 {
@@ -10,7 +11,7 @@ namespace Blogs.Utils
     {
         public static SettingsModel GetSettings()
         {
-            var settingsService = App.GetService<ISettingsService>();
+            var settingsService = ServicesExtension.GetRequiredService<ISettingsService>();
             var settingsEnumerable = settingsService.GetAllValues("Blogs");
             var model = new SettingsModel();
             foreach (var settings in settingsEnumerable)
@@ -34,7 +35,7 @@ namespace Blogs.Utils
         
         public static void SaveSettings(SettingsModel settingsModel)
         {
-            var settingsService = App.GetService<ISettingsService>();
+            var settingsService = ServicesExtension.GetRequiredService<ISettingsService>();
             var properties = settingsModel.GetType().GetProperties();
             foreach (var property in properties)
             {

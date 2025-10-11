@@ -22,7 +22,7 @@
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-    <Exec Command="mkdir $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\$(TargetName).views.dll $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\theme.json $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\screenshot.jpg $(SolutionDir)\Jx.Cms.Web\Theme\$(TargetName)" />
+    <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)$(TargetName).views.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)theme.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)screenshot.jpg&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)&quot;" />
   </Target>
 
 

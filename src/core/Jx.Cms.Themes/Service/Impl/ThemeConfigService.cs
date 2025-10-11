@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.Themes.Util;
 using Microsoft.Extensions.Logging;
@@ -11,7 +10,7 @@ using SixLabors.ImageSharp.Processing;
 
 namespace Jx.Cms.Themes.Service.Impl
 {
-    public class ThemeConfigService: IThemeConfigService, ITransient
+    public class ThemeConfigService: IThemeConfigService
     {
 
         private readonly ILogger<ThemeConfigService> _logger;

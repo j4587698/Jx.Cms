@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Attribute;
 using Microsoft.AspNetCore.Components;
 
@@ -10,7 +9,7 @@ namespace Jx.Cms.Plugin.Service.Admin.Impl
     /// <summary>
     /// 菜单相关
     /// </summary>
-    public class AdminMenuService: IAdminMenuService, ITransient
+    public class AdminMenuService: IAdminMenuService
     {
         /// <summary>
         /// 获取所有菜单

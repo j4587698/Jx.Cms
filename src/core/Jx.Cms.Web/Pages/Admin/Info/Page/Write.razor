@@ -4,7 +4,6 @@
 @using Jx.Cms.Common.Enum
 @using Mapster
 @using System.Security.Claims
-@using Furion
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Model
@@ -16,6 +15,9 @@
 @inject IPageService PageService
 @inject ICatalogService CatalogService
 @inject ToastService ToastService
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IAdminUserService AdminUserService
+@inject IServiceProvider ServiceProvider
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "创建页面", "Admin/Page/Write", 5, parentId:MenuIds.PageId)]
 
@@ -78,7 +80,7 @@
     {
         base.OnInitialized();
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
-        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins);
+        EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins, ServiceProvider);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         var mediaButton = new EditorToolbarButton
         {
@@ -92,7 +94,8 @@
 
     private async Task OnValidSubmit(EditContext arg)
     {
-        Article.Author = App.GetService<IAdminUserService>().GetUserByUserName(App.User?.FindFirstValue(ClaimTypes.Name)).NickName;
+        var userName = HttpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
+        Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
         
         var ret = PageService.SavePage(Article);
         await ToastService.Show(new ToastOption()

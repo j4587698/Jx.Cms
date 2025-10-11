@@ -10,7 +10,6 @@ using Jx.Cms.Plugin.Plugin;
 using McMaster.NETCore.Plugins;
 using Microsoft.AspNetCore.Mvc.ApplicationParts;
 using Microsoft.AspNetCore.Mvc.Razor.Compilation;
-using StackExchange.Profiling.Internal;
 
 namespace Jx.Cms.Plugin
 {

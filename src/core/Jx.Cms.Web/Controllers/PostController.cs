@@ -1,5 +1,4 @@
-﻿using Furion;
-using Jx.Cms.DbContext.Entities.Article;
+﻿using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Service.Front.Impl;
 using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Mvc;
@@ -11,11 +10,11 @@ public class PostController : BaseController
     // GET
     public IActionResult Index(int id)
     {
-        ArticleService articleService = App.GetService<ArticleService>();
-        var model = articleService.GetArticleById(id);
+        ArticleService articleService = HttpContext.RequestServices.GetService<ArticleService>();
+        var model = articleService?.GetArticleById(id);
         if (model == null)
         {
-            return new NotFoundResult();
+            return NotFound();
         }
         var postVm = new PostVm
         {

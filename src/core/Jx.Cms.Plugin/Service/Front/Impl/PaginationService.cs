@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
-using Furion.DependencyInjection;
 
 namespace Jx.Cms.Plugin.Service.Front.Impl
 {
-    public class PaginationService: IPaginationService, ITransient
+    public class PaginationService: IPaginationService
     {
         public Dictionary<string, long> GetPagination(int pageNo, int pageSize, long totalCount)
         {

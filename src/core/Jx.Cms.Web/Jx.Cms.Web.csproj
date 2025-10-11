@@ -9,7 +9,9 @@
 
     <ItemGroup>
       <ProjectReference Include="..\Jx.Cms.Common\Jx.Cms.Common.csproj" />
+      <ProjectReference Include="..\Jx.Cms.DbContext\Jx.Cms.DbContext.csproj" />
       <ProjectReference Include="..\Jx.Cms.Install\Jx.Cms.Install.csproj" />
+      <ProjectReference Include="..\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj" />
       <ProjectReference Include="..\Jx.Cms.Themes\Jx.Cms.Themes.csproj" />
     </ItemGroup>
 
@@ -24,6 +26,7 @@
       <PackageReference Include="BootstrapBlazor.Markdown" Version="7.0.0" />
       <PackageReference Include="Jx.Toolbox" Version="0.3.0" />
       <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     </ItemGroup>
 
     <ItemGroup>

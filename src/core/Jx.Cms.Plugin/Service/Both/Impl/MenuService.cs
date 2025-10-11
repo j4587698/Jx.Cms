@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using FreeSql;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext.Entities.Front;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl
 {
-    public class MenuService: IMenuService, ITransient
+    public class MenuService: IMenuService
     {
 
         public List<MenuEntity> GetAllMenus()

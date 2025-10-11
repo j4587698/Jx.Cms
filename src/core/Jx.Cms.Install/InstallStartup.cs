@@ -1,13 +1,11 @@
-﻿using Furion;
-using Jx.Cms.Install.Middlewares;
+﻿using Jx.Cms.Install.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace Jx.Cms.Install;
 
-[AppStartup(int.MaxValue - 20)]
-public class InstallStartup : Furion.AppStartup
+public class InstallStartup
 {
     public void ConfigureServices(IServiceCollection services)
     {

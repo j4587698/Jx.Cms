@@ -1,11 +1,10 @@
-﻿using Furion.DependencyInjection;
-using Jx.Cms.DbContext.Entities.Admin;
+﻿using Jx.Cms.DbContext.Entities.Admin;
 using Jx.Toolbox.Cryptography;
 using Jx.Toolbox.Extensions;
 
 namespace Jx.Cms.Plugin.Service.Admin.Impl
 {
-    public class AdminUserService: ITransient, IAdminUserService
+    public class AdminUserService: IAdminUserService
     {
         // 盐
         private string _salt = "E78D376F97CE4A7E89E011FA1FB362F6";

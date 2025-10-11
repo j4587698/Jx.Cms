@@ -1,15 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Furion;
+using Jx.Cms.Common.Extensions;
 using Jx.Cms.Plugin.Components;
 using Jx.Cms.Plugin.Service.Both.Impl;
 using Microsoft.AspNetCore.Components;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace HighlightingPlugin.Pages
 {
     public partial class HighlightingDialog: IPluginDialog
     {
+        [Inject]
+        public IServiceProvider Services { get; set; }
         
         private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
 
@@ -20,7 +23,7 @@ namespace HighlightingPlugin.Pages
         protected override void OnInitialized()
         {
             base.OnInitialized();
-            var settingsService = App.GetService<SettingsService>();
+            var settingsService = Services.GetRequiredService<SettingsService>();
             SelectedValue = settingsService.GetValue(Constant.SettingsKey, Constant.DefaultCodeType) ?? "Auto";
         }
 

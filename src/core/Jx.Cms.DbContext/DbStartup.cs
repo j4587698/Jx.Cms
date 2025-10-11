@@ -2,8 +2,6 @@
 using System.IO;
 using System.Linq;
 using FreeSql;
-using Furion;
-using Furion.Logging.Extensions;
 using Jx.Cms.Common.Exceptions;
 using Jx.Cms.Common.Extensions;
 using Jx.Cms.Common.Utils;
@@ -13,33 +11,16 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace Jx.Cms.DbContext
 {
-    [AppStartup(int.MaxValue - 50)]
-    public class DbStartup: AppStartup
+    public class DbStartup
     {
-
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddConfigurableOptions<DbConfig>();
-            var dbConfig = App.GetConfig<DbConfig>("Db");
-            //var dbConfig = Configure.Configuration.GetSection("Db").Get<DbConfig>();
-            if (dbConfig != null)
-            {
-                var ret = SetupDb(services, dbConfig);
-                if (!ret.isSuccess)
-                {
-                    throw new DbException(ret.msg);
-                }
-
-                services.Configure<DbConfig>(x => x.CopyFrom(dbConfig));
-            }
-            else if (Util.IsInstalled)
-            {
-                "数据库配置错误，无数据库配置信息！".LogError<DbStartup>();
-                throw new DbException("数据库配置错误，无数据库配置信息！");
-            }
+            // DbConfig会在Startup.cs中配置
         }
 
         public static bool CreateTables(DbConfig dbConfig)
@@ -51,13 +32,13 @@ namespace Jx.Cms.DbContext
                                             && y.FullName != null && !y.FullName.Contains("FreeSql")));
                 BaseEntity.Orm.CodeFirst.SyncStructure(types.ToArray());
                 var filePath = Path.Combine(AppContext.BaseDirectory, "config", "dbsettings.json");
-                var jObject = File.Exists(filePath) ? JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath)) : new JObject();
-                jObject["Db"] = JObject.Parse(JsonConvert.SerializeObject(dbConfig));
-                File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
+            var jObject = File.Exists(filePath) ? JsonConvert.DeserializeObject<JObject>(File.ReadAllText(filePath)) : new JObject();
+            jObject["Db"] = JObject.Parse(JsonConvert.SerializeObject(dbConfig));
+            File.WriteAllText(filePath, JsonConvert.SerializeObject(jObject, Formatting.Indented));
             }
             catch (Exception e)
             {
-                "建表出错了".LogError<DbStartup>(e);
+                Log.Error(e, "建表出错了");
                 return false;
             }
             
@@ -68,7 +49,7 @@ namespace Jx.Cms.DbContext
         {
             if (!dbConfig.DbType.IsNullOrEmpty() && Enum.TryParse(dbConfig.DbType, true, out DataType dataType))
             {
-                var isDevelopment = App.WebHostEnvironment?.IsDevelopment() ?? true;
+                var isDevelopment = true;
                 string connStr = "";
                 switch (dataType)
                 {
@@ -94,7 +75,7 @@ namespace Jx.Cms.DbContext
                         connStr = $"data source={(dbConfig.DbName.EndsWith(".db")?dbConfig.DbName : dbConfig.DbName + ".db")}";
                         break;
                     default:
-                        "数据库类型不在指定范围内".LogError<DbStartup>();
+                        Log.Error("数据库类型不在指定范围内");
                         return (false, "数据库类型不在指定范围内");
                 }
                 var freeSql = new FreeSqlBuilder()
@@ -105,13 +86,13 @@ namespace Jx.Cms.DbContext
                 
                 if (freeSql == null)
                 {
-                    "数据库初始化失败".LogError<DbStartup>();
+                    Log.Error("数据库初始化失败");
                     return (false, "数据库初始化失败");
                 }
 
                 if (!freeSql.Ado.ExecuteConnectTest())
                 {
-                    "数据库连接失败".LogError<DbStartup>();
+                    Log.Error("数据库连接失败");
                     freeSql.Dispose();
                     return (false, "数据库连接失败");
                 }
@@ -127,8 +108,8 @@ namespace Jx.Cms.DbContext
 
                 return (true, "");
             }
-            "数据库类型不在指定范围内".LogError<DbStartup>();
-            return (false, "数据库类型不在指定范围内"); ;
+            Log.Error("数据库类型不在指定范围内");
+            return (false, "数据库类型不在指定范围内");
         }
 
     }

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using FreeSql;
-using Furion.DependencyInjection;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl
 {
-    public class CommentService: ICommentService, ITransient
+    public class CommentService: ICommentService
     {
         public bool AddOrModifyComment(CommentEntity commentEntity)
         {

@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
     <PropertyGroup>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net9.0</TargetFramework>
       <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
     </PropertyGroup>
 
@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0" />
-        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,6 +42,6 @@
     </Target>
 
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="mkdir $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetPath) $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName)&#xD;&#xA;copy $(TargetDir)\*.dll $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;copy $(TargetDir)\theme.json $(SolutionDir)src\core\Jx.Cms.Web\Theme\$(TargetName) &#xD;&#xA;" />
+        <Exec Command="if not exist &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; mkdir &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)&quot; &amp;&amp; copy /Y &quot;$(TargetPath)&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; copy /Y &quot;$(TargetDir)\*.dll&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot; &amp;&amp; if exist &quot;$(TargetDir)theme.json&quot; copy /Y &quot;$(TargetDir)theme.json&quot; &quot;D:\dotnet\Jx.Cms\src\core\Jx.Cms.Web\Theme\$(TargetName)\&quot;" />
     </Target>
 </Project>

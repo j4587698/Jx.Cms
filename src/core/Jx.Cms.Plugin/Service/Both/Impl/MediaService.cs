@@ -5,20 +5,26 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BootstrapBlazor.Components;
-using Furion;
-using Furion.DependencyInjection;
+using Microsoft.AspNetCore.Hosting;
 using Jx.Cms.Common.Enum;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Toolbox.Utils;
 
 namespace Jx.Cms.Plugin.Service.Both.Impl;
 
-public class MediaService : IMediaService, ITransient
+public class MediaService : IMediaService
 {
+    private readonly IWebHostEnvironment _hostingEnvironment;
+    
+    public MediaService(IWebHostEnvironment hostingEnvironment)
+    {
+        _hostingEnvironment = hostingEnvironment;
+    }
+    
     public async Task<bool> AddMediaAsync(UploadFile file)
     {
         var urlBase = Path.Combine("upload", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
-        var dir = Path.Combine(App.WebHostEnvironment.WebRootPath, urlBase);
+        var dir = Path.Combine(_hostingEnvironment.WebRootPath, urlBase);
         if (!Directory.Exists(dir))
         {
             Directory.CreateDirectory(dir);

@@ -1,6 +1,7 @@
 ﻿using System;
-using Furion;
+using System.Collections.Generic;
 using Jx.Cms.Common.Utils;
+using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Service.Front;
 using Jx.Cms.Plugin.Service.Front.Impl;
 using Jx.Cms.Themes.Vm;
@@ -18,16 +19,28 @@ public class DateController : BaseController
         {
             settings.CountPerPage = 10;
         }
+        var articleService = HttpContext.RequestServices.GetService<ArticleService>();
+        List<ArticleEntity> articles;
+        long totalCount = 0;
+        
+        if (articleService != null)
+        {
+            articles = articleService.GetArticleWithDate(year, month, pageNum, settings.CountPerPage, out totalCount);
+        }
+        else
+        {
+            articles = new List<ArticleEntity>();
+        }
+        
         var dateVm = new DateVm
         {
-            Articles = App.GetService<ArticleService>()
-                .GetArticleWithDate(year, month, pageNum, settings.CountPerPage, out var totalCount),
+            Articles = articles,
             Month = month,
             Year = year,
             PageNum = pageNum,
             PageSize = settings.CountPerPage,
             TotalCount = totalCount,
-            Pagination = App.GetService<IPaginationService>().GetPagination(pageNum, settings.CountPerPage, totalCount)
+            Pagination = HttpContext.RequestServices.GetService<IPaginationService>()?.GetPagination(pageNum, settings.CountPerPage, totalCount)
         };
         return View(dateVm);
     }
