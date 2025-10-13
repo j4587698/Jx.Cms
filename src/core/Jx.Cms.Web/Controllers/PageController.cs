@@ -7,10 +7,16 @@ namespace Jx.Cms.Web.Controllers;
 
 public class PageController : BaseController
 {
+    private readonly IPageService _pageService;
+
+    public PageController(IPageService pageService)
+    {
+        _pageService = pageService;
+    }
+
     public IActionResult Index(int id)
     {
-        var articleService = HttpContext.RequestServices.GetService<IPageService>();
-        var model = articleService?.GetPageById(id);
+        var model = _pageService?.GetPageById(id);
         if (model == null) return NotFound();
         var pageVm = new PageVm
         {

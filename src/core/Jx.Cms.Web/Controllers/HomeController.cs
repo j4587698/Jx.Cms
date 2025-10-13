@@ -7,6 +7,15 @@ namespace Jx.Cms.Web.Controllers;
 
 public class HomeController : BaseController
 {
+    private readonly IArticleService _articleService;
+    private readonly IPaginationService _paginationService;
+
+    public HomeController(IArticleService articleService, IPaginationService paginationService)
+    {
+        _articleService = articleService;
+        _paginationService = paginationService;
+    }
+
     // GET
     public IActionResult Index(int pageNum)
     {
@@ -15,12 +24,11 @@ public class HomeController : BaseController
         var settings = ViewData["settings"] as SystemSettingsVm;
         if (settings.CountPerPage == 0) settings.CountPerPage = 10;
 
-        var articleService = HttpContext.RequestServices.GetService<IArticleService>();
         List<ArticleEntity> articles;
         long totalCount = 0;
 
-        if (articleService != null)
-            articles = articleService.GetArticlePageWithCount(pageNum, settings.CountPerPage, out totalCount);
+        if (_articleService != null)
+            articles = _articleService.GetArticlePageWithCount(pageNum, settings.CountPerPage, out totalCount);
         else
             articles = new List<ArticleEntity>();
 
@@ -30,8 +38,7 @@ public class HomeController : BaseController
             PageNum = pageNum,
             PageSize = settings.CountPerPage,
             TotalCount = totalCount,
-            Pagination = HttpContext.RequestServices.GetService<IPaginationService>()
-                ?.GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
+            Pagination = _paginationService?.GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(indexVm);
     }

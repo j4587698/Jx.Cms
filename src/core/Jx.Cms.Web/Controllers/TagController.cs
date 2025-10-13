@@ -7,15 +7,23 @@ namespace Jx.Cms.Web.Controllers;
 
 public class TagController : BaseController
 {
+    private readonly ITagService _tagService;
+    private readonly IPaginationService _paginationService;
+
+    public TagController(ITagService tagService, IPaginationService paginationService)
+    {
+        _tagService = tagService;
+        _paginationService = paginationService;
+    }
+
     public IActionResult Index(int id, int pageNum)
     {
         if (pageNum == 0) pageNum = 1;
         var settings = ViewData["settings"] as SystemSettingsVm;
         if (settings.CountPerPage == 0) settings.CountPerPage = 10;
-        var labelService = HttpContext.RequestServices.GetService<ITagService>();
-        var label = labelService?.GetTagById(id);
+        var label = _tagService?.GetTagById(id);
         if (label == null) return NotFound();
-        var articles = labelService.GetArticleFromTagId(id, pageNum, settings.CountPerPage, out var totalCount);
+        var articles = _tagService.GetArticleFromTagId(id, pageNum, settings.CountPerPage, out var totalCount);
         if (articles == null) return NotFound();
         var labelVm = new TagVm
         {
@@ -24,8 +32,7 @@ public class TagController : BaseController
             PageSize = settings.CountPerPage,
             TotalCount = totalCount,
             Tag = label,
-            Pagination = HttpContext.RequestServices.GetService<IPaginationService>()
-                ?.GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
+            Pagination = _paginationService?.GetPagination(pageNum, settings.CountPerPage, (int)totalCount)
         };
         return View(labelVm);
     }

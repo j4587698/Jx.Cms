@@ -6,9 +6,16 @@ namespace Jx.Cms.Web.Controllers;
 
 public class CommentController : BaseController
 {
+    private readonly ICommentService _commentService;
+
+    public CommentController(ICommentService commentService)
+    {
+        _commentService = commentService;
+    }
+
     public IActionResult Index(int id)
     {
-        var comments = HttpContext.RequestServices.GetService<ICommentService>()?.GetCommentTreeCteByArticleId(id);
+        var comments = _commentService?.GetCommentTreeCteByArticleId(id);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorName), out var nikeName);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorEmail), out var email);
         Request.Cookies.TryGetValue(nameof(CommentEntity.AuthorUrl), out var url);

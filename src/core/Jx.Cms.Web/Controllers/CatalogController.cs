@@ -8,6 +8,15 @@ namespace Jx.Cms.Web.Controllers;
 
 public class CatalogController : BaseController
 {
+    private readonly ICatalogService _catalogService;
+    private readonly IPaginationService _paginationService;
+
+    public CatalogController(ICatalogService catalogService, IPaginationService paginationService)
+    {
+        _catalogService = catalogService;
+        _paginationService = paginationService;
+    }
+
     // GET
     public IActionResult Index(int id, int pageNum)
     {
@@ -22,8 +31,7 @@ public class CatalogController : BaseController
             settings.CountPerPage = 10;
         }
 
-        var catalogueService = HttpContext.RequestServices.GetService<ICatalogService>();
-        var catalogue = catalogueService?.GetCatalogById(id);
+        var catalogue = _catalogService?.GetCatalogById(id);
         if (catalogue == null)
         {
             return NotFound();
@@ -31,13 +39,12 @@ public class CatalogController : BaseController
 
         var catalogVm = new CatalogVm();
         catalogVm.Articles =
-            catalogueService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
+            _catalogService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
         catalogVm.Catalog = catalogue;
         catalogVm.PageNum = pageNum;
         catalogVm.PageSize = settings.CountPerPage;
         catalogVm.TotalCount = totalPage;
-        catalogVm.Pagination = HttpContext.RequestServices.GetService<IPaginationService>()
-            ?.GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
+        catalogVm.Pagination = _paginationService?.GetPagination(pageNum, settings.CountPerPage, (int)totalPage);
         return View(catalogVm);
     }
 }
