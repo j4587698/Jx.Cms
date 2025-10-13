@@ -2,6 +2,7 @@
 using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Rewrite;
 using Jx.Toolbox.Extensions;
+using Jx.Toolbox.Mvc;
 
 namespace Jx.Cms.Themes.Model;
 
@@ -26,12 +27,12 @@ public class RewriterModel
     {
         if (_rewriterModel == null)
         {
-            var settingsService = ServicesExtension.GetService<ISettingsService>();
+            var settingsService = Application.GetService<ISettingsService>();
             if (settingsService == null)
             {
                 // 在未安装状态下，返回默认配置
                 _rewriterModel = new RewriterModel();
-                _rewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+                _rewriterModel.RewriteOption = nameof(RewriteOptionEnum.Dynamic);
                 return _rewriterModel;
             }
 
@@ -53,7 +54,7 @@ public class RewriterModel
     public static void SaveSettings(RewriterModel rewriterModel)
     {
         _rewriterModel = rewriterModel;
-        var settingsService = ServicesExtension.GetService<ISettingsService>();
+        var settingsService = Application.GetService<ISettingsService>();
         var properties = rewriterModel.GetType().GetProperties();
         foreach (var property in properties)
             settingsService.SetValue("Rewriter", property.Name, property.GetValue(rewriterModel)?.ToString());

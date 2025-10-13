@@ -18,84 +18,84 @@
     <tr>
         <td style="width: 20%">静态化选项</td>
         <td style="width: 80%">
-            <RadioList TValue="string" Items="@_optionItem" OnSelectedChanged="OnSelectedChanged"></RadioList>
+            <RadioList TValue="string" Value="RewriterModel.RewriteOption" Items="@_optionItem" OnSelectedChanged="OnSelectedChanged"></RadioList>
         </td>
     </tr>
     <tr>
         <td>文章URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.ArticleUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.ArticleUrl" IsDisabled="@_isDisabled" OnValueChanged="OnArticleUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_articleItems" IsVertical="true" OnSelectedChanged="ArticleChange"
+            <RadioList TValue="string" Value="@RewriterModel.ArticleUrl" Items="@_articleItems" IsVertical="true" OnSelectedChanged="ArticleChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
     <tr>
         <td>页面的URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.PageUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.PageUrl" IsDisabled="@_isDisabled" OnValueChanged="OnPageUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_pageItems" IsVertical="true" OnSelectedChanged="PageChange"
+            <RadioList TValue="string" Value="@RewriterModel.PageUrl" Items="@_pageItems" IsVertical="true" OnSelectedChanged="PageChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
     <tr>
         <td>首页URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.IndexUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.IndexUrl" IsDisabled="@_isDisabled" OnValueChanged="OnIndexUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_indexItems" IsVertical="true" OnSelectedChanged="IndexChange"
+            <RadioList TValue="string" Value="@RewriterModel.IndexUrl" Items="@_indexItems" IsVertical="true" OnSelectedChanged="IndexChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
     <tr>
         <td>分类目录URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.CatalogueUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.CatalogueUrl" IsDisabled="@_isDisabled" OnValueChanged="OnCatalogueUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_catalogueItems" IsVertical="true" OnSelectedChanged="CatalogueChange"
+            <RadioList TValue="string" Value="@RewriterModel.CatalogueUrl" Items="@_catalogueItems" IsVertical="true" OnSelectedChanged="CatalogueChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
     <tr>
         <td>标签页URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.TagUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.TagUrl" IsDisabled="@_isDisabled" OnValueChanged="OnTagUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_tagItems" IsVertical="true" OnSelectedChanged="LabelChange"
+            <RadioList TValue="string" Value="@RewriterModel.TagUrl" Items="@_tagItems" IsVertical="true" OnSelectedChanged="LabelChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
     <tr>
         <td>日期页URL配置</td>
         <td>
-            <BootstrapInput @bind-Value="@RewriterModel.DateUrl" IsDisabled="@_isDisabled"></BootstrapInput>
+            <BootstrapInput @bind-Value="@RewriterModel.DateUrl" IsDisabled="@_isDisabled" OnValueChanged="OnDateUrlChanged"></BootstrapInput>
         </td>
     </tr>
     <tr>
         <td></td>
         <td>
-            <RadioList TValue="string" Items="@_dateItems" IsVertical="true" OnSelectedChanged="DateChange"
+            <RadioList TValue="string" Value="@RewriterModel.DateUrl" Items="@_dateItems" IsVertical="true" OnSelectedChanged="DateChange"
                        IsDisabled="_isDisabled"></RadioList>
         </td>
     </tr>
@@ -114,40 +114,48 @@
     private IEnumerable<SelectedItem> _optionItem;
 
     // 文章推荐Radio
-    private readonly IEnumerable<SelectedItem> _articleItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultArticleItems =
+    [
         new SelectedItem("/post/{{id}}.html", "/post/{{id}}.html"), new SelectedItem("/post/{{alias}}.html", "/post/{{alias}}.html"), new SelectedItem("/{{year}}/{{month}}/{{id}}/", "/{{year}}/{{month}}/{{id}}/"), new SelectedItem("/{{category}}/{{alias}}/", "/{{category}}/{{alias}}/")
-    };
+    ];
 
     // 页面推荐Radio
-    private readonly IEnumerable<SelectedItem> _pageItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultPageItems =
+    [
         new SelectedItem("/{{id}}.html", "/{{id}}.html"), new SelectedItem("/{{alias}}.html", "/{{alias}}.html"), new SelectedItem("/{{alias}}/", "/{{alias}}/")
-    };
+    ];
 
     // 首页推荐Radio
-    private readonly IEnumerable<SelectedItem> _indexItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultIndexItems =
+    [
         new SelectedItem("/page_{{page}}.html", "/page_{{page}}.html"), new SelectedItem("/page_{{page}}/", "/page_{{page}}/"), new SelectedItem("/page/{{page}}/", "/page/{{page}}/")
-    };
+    ];
 
     // 分类推荐Radio
-    private readonly IEnumerable<SelectedItem> _catalogueItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultCatalogueItems =
+    [
         new SelectedItem("/catalogue_{{id}}_{{page}}.html", "/catalogue_{{id}}_{{page}}.html"), new SelectedItem("/catalogue_{{id}}_{{page}}/", "/catalogue_{{id}}_{{page}}/"), new SelectedItem("/catalogue/{{id}}/{{page}}/", "/catalogue/{{id}}/{{page}}/"), new SelectedItem("/catalogue/{{alias}}.{{page}}.html/", "/catalogue/{{alias}}.{{page}}.html/")
-    };
+    ];
 
     // 标签推荐Radio
-    private readonly IEnumerable<SelectedItem> _tagItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultTagItems =
+    [
         new SelectedItem("/tag_{{id}}_{{page}}.html", "/tag_{{id}}_{{page}}.html"), new SelectedItem("/tag_{{id}}_{{page}}/", "/tag_{{id}}_{{page}}/"), new SelectedItem("/tag/{{id}}/{{page}}/", "/tag/{{id}}/{{page}}/"), new SelectedItem("/tag/{{alias}}.{{page}}.html/", "/tag/{{alias}}.{{page}}.html")
-    };
+    ];
 
     // 日期推荐Radio
-    private readonly IEnumerable<SelectedItem> _dateItems = new[]
-    {
+    private readonly IEnumerable<SelectedItem> _defaultDateItems =
+    [
         new SelectedItem("/date_{{id}}_{{page}}.html", "/date_{{id}}_{{page}}.html"), new SelectedItem("/date_{{year}}_{{month}}_{{page}}/", "/date_{{year}}_{{page}}/"), new SelectedItem("/date/{{id}}/{{page}}/", "/date/{{id}}/{{page}}/"), new SelectedItem("/date/{{year}}.{{month}}.{{page}}.html", "/date/{{year}}.{{month}}.{{page}}.html")
-    };
+    ];
+
+    // 动态生成的Radio列表，包含自定义值
+    private IEnumerable<SelectedItem> _articleItems;
+    private IEnumerable<SelectedItem> _pageItems;
+    private IEnumerable<SelectedItem> _indexItems;
+    private IEnumerable<SelectedItem> _catalogueItems;
+    private IEnumerable<SelectedItem> _tagItems;
+    private IEnumerable<SelectedItem> _dateItems;
 
     private RewriterModel RewriterModel { get; set; }
 
@@ -157,13 +165,67 @@
         RewriterModel = RewriterModel.GetSettings();
         if (RewriterModel.RewriteOption.IsNullOrEmpty())
         {
-            RewriterModel.RewriteOption = RewriteOptionEnum.Dynamic.ToString();
+            RewriterModel.RewriteOption = nameof(RewriteOptionEnum.Dynamic);
         }
 
-        _optionItem = typeof(RewriteOptionEnum).ToSelectList().ToList();
-        _isDisabled = RewriterModel.RewriteOption != RewriteOptionEnum.Rewrite.ToString();
+        // 生成包含自定义值的Radio列表
+        GenerateRadioItems();
+
+        _optionItem = typeof(RewriteOptionEnum).ToSelectList();
+        _isDisabled = RewriterModel.RewriteOption != nameof(RewriteOptionEnum.Rewrite);
         _optionItem.First(x => x.Value == RewriterModel.RewriteOption).Active = true;
-        StateHasChanged();
+    }
+
+    // 生成包含自定义值的Radio列表
+    private void GenerateRadioItems()
+    {
+        // 为每个URL字段设置默认值
+        if (RewriterModel.ArticleUrl.IsNullOrEmpty())
+        {
+            RewriterModel.ArticleUrl = _defaultArticleItems.First().Value;
+        }
+        if (RewriterModel.PageUrl.IsNullOrEmpty())
+        {
+            RewriterModel.PageUrl = _defaultPageItems.First().Value;
+        }
+        if (RewriterModel.IndexUrl.IsNullOrEmpty())
+        {
+            RewriterModel.IndexUrl = _defaultIndexItems.First().Value;
+        }
+        if (RewriterModel.CatalogueUrl.IsNullOrEmpty())
+        {
+            RewriterModel.CatalogueUrl = _defaultCatalogueItems.First().Value;
+        }
+        if (RewriterModel.TagUrl.IsNullOrEmpty())
+        {
+            RewriterModel.TagUrl = _defaultTagItems.First().Value;
+        }
+        if (RewriterModel.DateUrl.IsNullOrEmpty())
+        {
+            RewriterModel.DateUrl = _defaultDateItems.First().Value;
+        }
+
+        // 生成包含自定义值的Radio列表
+        _articleItems = GenerateRadioListWithCustomValue(_defaultArticleItems, RewriterModel.ArticleUrl);
+        _pageItems = GenerateRadioListWithCustomValue(_defaultPageItems, RewriterModel.PageUrl);
+        _indexItems = GenerateRadioListWithCustomValue(_defaultIndexItems, RewriterModel.IndexUrl);
+        _catalogueItems = GenerateRadioListWithCustomValue(_defaultCatalogueItems, RewriterModel.CatalogueUrl);
+        _tagItems = GenerateRadioListWithCustomValue(_defaultTagItems, RewriterModel.TagUrl);
+        _dateItems = GenerateRadioListWithCustomValue(_defaultDateItems, RewriterModel.DateUrl);
+    }
+
+    // 生成包含自定义值的Radio列表
+    private IEnumerable<SelectedItem> GenerateRadioListWithCustomValue(IEnumerable<SelectedItem> defaultItems, string currentValue)
+    {
+        var items = new List<SelectedItem>(defaultItems);
+        
+        // 如果当前值不在默认列表中，则添加到列表开头
+        if (!items.Any(x => x.Value == currentValue))
+        {
+            items.Insert(0, new SelectedItem(currentValue, $"{currentValue} (自定义)"));
+        }
+        
+        return items;
     }
 
     // 是否禁用
@@ -172,6 +234,8 @@
     private Task ArticleChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.ArticleUrl = arg2;
+        // 重新生成Radio列表以包含新的自定义值
+        _articleItems = GenerateRadioListWithCustomValue(_defaultArticleItems, arg2);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -179,6 +243,7 @@
     private Task PageChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.PageUrl = arg2;
+        _pageItems = GenerateRadioListWithCustomValue(_defaultPageItems, arg2);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -186,6 +251,7 @@
     private Task IndexChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.IndexUrl = arg2;
+        _indexItems = GenerateRadioListWithCustomValue(_defaultIndexItems, arg2);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -193,6 +259,7 @@
     private Task CatalogueChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.CatalogueUrl = arg2;
+        _catalogueItems = GenerateRadioListWithCustomValue(_defaultCatalogueItems, arg2);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -200,6 +267,7 @@
     private Task LabelChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.TagUrl = arg2;
+        _tagItems = GenerateRadioListWithCustomValue(_defaultTagItems, arg2);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -207,6 +275,56 @@
     private Task DateChange(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.DateUrl = arg2;
+        _dateItems = GenerateRadioListWithCustomValue(_defaultDateItems, arg2);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    // BootstrapInput值改变事件处理
+    private Task OnArticleUrlChanged(string value)
+    {
+        RewriterModel.ArticleUrl = value;
+        _articleItems = GenerateRadioListWithCustomValue(_defaultArticleItems, value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnPageUrlChanged(string value)
+    {
+        RewriterModel.PageUrl = value;
+        _pageItems = GenerateRadioListWithCustomValue(_defaultPageItems, value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnIndexUrlChanged(string value)
+    {
+        RewriterModel.IndexUrl = value;
+        _indexItems = GenerateRadioListWithCustomValue(_defaultIndexItems, value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnCatalogueUrlChanged(string value)
+    {
+        RewriterModel.CatalogueUrl = value;
+        _catalogueItems = GenerateRadioListWithCustomValue(_defaultCatalogueItems, value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnTagUrlChanged(string value)
+    {
+        RewriterModel.TagUrl = value;
+        _tagItems = GenerateRadioListWithCustomValue(_defaultTagItems, value);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnDateUrlChanged(string value)
+    {
+        RewriterModel.DateUrl = value;
+        _dateItems = GenerateRadioListWithCustomValue(_defaultDateItems, value);
         StateHasChanged();
         return Task.CompletedTask;
     }
@@ -220,11 +338,11 @@
     private Task OnSelectedChanged(IEnumerable<SelectedItem> arg1, string arg2)
     {
         RewriterModel.RewriteOption = arg2;
-        if (arg2 == RewriteOptionEnum.Dynamic.ToString())
+        if (arg2 == nameof(RewriteOptionEnum.Dynamic))
         {
             _isDisabled = true;
         }
-        else if (arg2 == RewriteOptionEnum.Rewrite.ToString())
+        else if (arg2 == nameof(RewriteOptionEnum.Rewrite))
         {
             _isDisabled = false;
         }
