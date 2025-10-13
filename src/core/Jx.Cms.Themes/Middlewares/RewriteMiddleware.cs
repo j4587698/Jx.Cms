@@ -16,23 +16,20 @@ public class RewriteMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var hasArea = context.Request.RouteValues.ContainsKey("area");
-        if (hasArea)
-        {
-            await _next.Invoke(context);
-            return;
-        }
 
         var path = context.Request.Path.ToString();
 
-        if (path.EndsWith(".js") || path.EndsWith(".css") || path.Contains("_blazor"))
+        // 跳过静态资源和Blazor相关请求
+        if (path.EndsWith(".js") || path.EndsWith(".css") || path.Contains("_blazor") ||
+            path.StartsWith("/Admin") || path.StartsWith("/Install"))
         {
             await _next.Invoke(context);
             return;
         }
+        
 
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel == null || rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
+        if (rewriterModel == null || rewriterModel.RewriteOption == nameof(RewriteOptionEnum.Dynamic))
         {
             await _next.Invoke(context);
             return;
@@ -95,4 +92,5 @@ public class RewriteMiddleware
 
         await _next.Invoke(context);
     }
+    
 }

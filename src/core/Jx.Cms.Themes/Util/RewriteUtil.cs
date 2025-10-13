@@ -18,7 +18,7 @@ public static class RewriteUtil
     {
         var rewriterModel = RewriterModel.GetSettings();
         if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString()) return $"/Post?id={articleEntity.Id}";
+            rewriterModel.RewriteOption == nameof(RewriteOptionEnum.Dynamic)) return $"/Post?id={articleEntity.Id}";
 
         var template = Template.Create(rewriterModel.ArticleUrl);
         return template.SetValue("id", articleEntity.Id.ToString())

@@ -28,6 +28,8 @@ startup.ConfigureServices(builder.Services);
 // Add services for Blazor WebApp
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 var app = builder.Build().UseToolbox();
 
@@ -38,5 +40,4 @@ app.UseAntiforgery();
 app.MapDefaultControllerRoute();
 app.MapRazorComponents<App>().AddAdditionalAssemblies(typeof(Install).Assembly)
     .AddInteractiveServerRenderMode();
-
 app.Run();

@@ -18,9 +18,12 @@ public class TemplateViewLocationExpander : IViewLocationExpander
         var themeName = context.Values["template"] ?? ThemeUtil.PcThemeName;
         string[] locations =
         {
-            "/Pages/" + themeName + "/{1}/{0}.cshtml", "/Pages/" + themeName + "/{0}.cshtml",
-            "/Pages/" + themeName + "/Shared/{0}.cshtml", "/Pages/Shared/{0}.cshtml"
+            "/Pages/" + themeName + "/{1}/{0}.cshtml", 
+            "/Pages/" + themeName + "/{0}.cshtml",
+            "/Pages/" + themeName + "/Shared/{0}.cshtml", 
+            "/Pages/Shared/{0}.cshtml"
         };
+        
         return locations.Union(viewLocations.Where(x => !x.StartsWith("/Views/")));
     }
 }
