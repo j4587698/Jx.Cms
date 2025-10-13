@@ -31,7 +31,7 @@
 
 @attribute [Menu("A0259D93-39EB-462B-A69F-13924963D6AE", "写文章", "Admin/Article/Write", 5, parentId: MenuIds.ArticleId)]
 
-<ValidateForm class="row" ValidateAllProperties="true" Model="Article" OnValidSubmit="OnValidSubmit">
+<ValidateForm class="row" Model="Article" OnValidSubmit="OnValidSubmit">
     <div class="col-lg-9 col-md-8">
         <div class="row">
             <div class="form-group col-12">
@@ -58,7 +58,7 @@
                 }
                 else
                 {
-                    <Editor @ref="_editor" IsEditor="true" Height="400" @bind-Value="@Article.Content"
+                    <Editor @ref="_editor" IsEditor="true" Height="400" @bind-Value="@Article.Content" ShowSubmit="false"
                             CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor>
                 }
             </div>
@@ -157,7 +157,7 @@
         base.OnInitialized();
         var settingsVm = SystemSettingsVm.Init();
         AllTags = TagService.GetAllTags().Select(x => x.Name);
-        ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
+        ArticlePlugins = ArticlePluginCache.GetArticlePlugins().ToList();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins, ServiceProvider);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Catalogs = CatalogService.GetAllCatalogs().Select(x => new SelectedItem(x.Id.ToString(), x.Name));

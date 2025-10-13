@@ -27,15 +27,6 @@
         <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.15.0"/>
         <PackageReference Include="Newtonsoft.Json" Version="13.0.4"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\font-awesome.min.css"/>
-        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\forms.min.css"/>
-        <_ContentIncludedByDefault Remove="wwwroot\Admin\css\login.min.css"/>
-    </ItemGroup>
-
-    <ItemGroup>
-      <AdditionalFiles Include="Components\Components\WidgetCompnents\TextCompnent.razor" />
-    </ItemGroup>
+    
 
 </Project>

@@ -4,7 +4,7 @@ using Jx.Cms.Web.Vo;
 using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Components;
 
-namespace Jx.Cms.Web.Pages.Admin.Login;
+namespace Jx.Cms.Web.Components.Admin.Login;
 
 public partial class Login
 {

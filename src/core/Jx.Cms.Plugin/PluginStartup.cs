@@ -38,6 +38,7 @@ public class PluginStartup
         services.AddScoped<ITagService, TagService>();
         services.AddScoped<IMenuService, MenuService>();
         services.AddScoped<IPluginService, PluginService>();
+        services.AddScoped<Jx.Cms.Plugin.Components.PluginDialogService>();
         
         if (Util.IsInstalled) WidgetCache.UpdateCache();
     }
