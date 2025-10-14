@@ -6,11 +6,12 @@
 @using Jx.Cms.Common.Vo
 @using Jx.Cms.Plugin.Cache
 @using Jx.Cms.Plugin.Plugin
+@using Jx.Cms.Plugin.Service.Both
 @using Jx.Cms.Plugin.Service.Both.Impl
 @using Jx.Toolbox.Extensions
 @using Microsoft.CSharp.RuntimeBinder
 
-@inject SettingsService SettingsService
+@inject ISettingsService SettingsService
 @inject ToastService ToastService
 
 @attribute [Menu("7FBD0E2C-247A-4E50-A52A-E7DB7ADF472F", "小工具", "Admin/Appearance/Widget", parentId: MenuIds.AppearanceId)]

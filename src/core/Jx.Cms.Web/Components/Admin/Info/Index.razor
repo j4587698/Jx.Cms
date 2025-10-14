@@ -1,31 +1,193 @@
 ﻿@page "/Admin"
 @using Jx.Cms.Common.Attribute
 @using Microsoft.AspNetCore.Components.Authorization
+@using Jx.Cms.Plugin.Service.Admin
+@using Jx.Cms.DbContext.Entities.Article
+@using Console = System.Console
 
 @inject DialogService DialogService
+@inject IArticleService ArticleService
+@inject IPageService PageService
+@inject NavigationManager NavigationManager
 
 @attribute [Menu("{622993B8-7B9B-4DA8-80B5-9FD34A251C82}", "首页", "Admin", int.MaxValue, "fa fa-home")]
 
+<div class="dashboard-container">
+    <h3 class="mb-4">系统概览</h3>
+            
+    <!-- 统计卡片 -->
+    <div class="row mb-4">
+        <div class="col-md-3 mb-3">
+            <Card IsShadow="true">
+                <BodyTemplate>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <Icon Icon="fa fa-file-text-o" Size="Size.ExtraLarge" Color="Color.Primary"></Icon>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">@articleCount</h5>
+                            <p class="text-muted mb-0">文章总数</p>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </Card>
+        </div>
+                
+        <div class="col-md-3 mb-3">
+            <Card IsShadow="true">
+                <BodyTemplate>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <Icon Icon="fa fa-file-o" Size="Size.ExtraLarge" Color="Color.Success"></Icon>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">@pageCount</h5>
+                            <p class="text-muted mb-0">页面总数</p>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </Card>
+        </div>
+                
+        <div class="col-md-3 mb-3">
+            <Card IsShadow="true">
+                <BodyTemplate>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <Icon Icon="fa fa-eye" Size="Size.ExtraLarge" Color="Color.Info"></Icon>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">@viewCount</h5>
+                            <p class="text-muted mb-0">总浏览量</p>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </Card>
+        </div>
+                
+        <div class="col-md-3 mb-3">
+            <Card IsShadow="true">
+                <BodyTemplate>
+                    <div class="d-flex align-items-center">
+                        <div class="flex-shrink-0">
+                            <Icon Icon="fa fa-comments" Size="Size.ExtraLarge" Color="Color.Warning"></Icon>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h5 class="mb-0">@commentCount</h5>
+                            <p class="text-muted mb-0">评论总数</p>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </Card>
+        </div>
+    </div>
+            
+    <!-- 快捷操作 -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <Card IsShadow="true">
+                <HeaderTemplate>
+                    <h5 class="mb-0">快捷操作</h5>
+                </HeaderTemplate>
+                <BodyTemplate>
+                    <div class="row">
+                        <div class="col-md-3 mb-3">
+                            <Button Color="Color.Primary" Icon="fa fa-plus" Text="新建文章" Block="true" OnClick="@(() => NavigationManager.NavigateTo("/Admin/Article/Write"))">
+                            </Button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <Button Color="Color.Success" Icon="fa fa-file" Text="新建页面" Block="true" OnClick="@(() => NavigationManager.NavigateTo("/Admin/Page/Write"))">
+                            </Button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <Button Color="Color.Info" Icon="fa fa-cog" Text="系统设置" Block="true" OnClick="@(() => NavigationManager.NavigateTo("/Admin/Settings/SystemSettings"))">
+                            </Button>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <Button Color="Color.Warning" Icon="fa fa-palette" Text="主题管理" Block="true" OnClick="@(() => NavigationManager.NavigateTo("/Admin/Appearance/Theme"))">
+                            </Button>
+                        </div>
+                    </div>
+                </BodyTemplate>
+            </Card>
+        </div>
+    </div>
+            
+    <!-- 最近文章 -->
+    <div class="row">
+        <div class="col-12">
+            <Card IsShadow="true">
+                <HeaderTemplate>
+                    <h5 class="mb-0">最近发布的文章</h5>
+                </HeaderTemplate>
+                <BodyTemplate>
+                    @if (recentArticles.Any())
+                    {
+                        <Table TItem="ArticleEntity" Items="recentArticles" ShowToolbar="false" ShowDefaultButtons="false" IsBordered="true"
+                               IsPagination="false" ShowExtendButtons="false">
+                            <TableColumns>
+                                <TableColumn @bind-Field="@context.Title" Text="标题" Width="200">
+                                    <Template Context="value">
+                                        <a href="@($"Admin/Article/Write/{value.Row.Id}")" class="text-decoration-none">
+                                            @value.Value
+                                        </a>
+                                    </Template>
+                                </TableColumn>
+                                <TableColumn @bind-Field="@context.Author" Text="作者" Width="100"></TableColumn>
+                                <TableColumn @bind-Field="@context.UpdateTime" Text="更新时间" Width="180"></TableColumn>
+                                <TableColumn @bind-Field="@context.Status" Text="状态" Width="80"></TableColumn>
+                            </TableColumns>
+                        </Table>
+                    }
+                    else
+                    {
+                        <div class="text-center py-4">
+                            <Icon Icon="fa fa-inbox" Size="Size.ExtraLarge" Color="Color.Secondary"></Icon>
+                            <p class="mt-2 text-muted">暂无文章，<a href="/Admin/Article/Write">立即创建</a></p>
+                        </div>
+                    }
+                </BodyTemplate>
+            </Card>
+        </div>
+    </div>
+</div>
 
-@inject MessageService MessageService
-Index
-
-<AuthorizeView>
-    <Authorized>
-        Success
-    </Authorized>
-    <NotAuthorized>
-        Failed
-    </NotAuthorized>
-</AuthorizeView>
-
+<style>
+    .dashboard-container {
+        padding: 20px;
+    }
+</style>
 
 @code {
+    private long articleCount = 0;
+    private long pageCount = 0;
+    private long viewCount = 0;
+    private long commentCount = 0;
+    private List<ArticleEntity> recentArticles = new List<ArticleEntity>();
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        //DialogService.ShowModal<MediaSelectComponent>()
+        LoadDashboardData();
     }
 
+    private void LoadDashboardData()
+    {
+        try
+        {
+            
+            // 获取最近10篇文章
+            recentArticles = ArticleService.GetArticlePage(1, 10, out articleCount);
+            
+            // 获取页面总数
+            var allPages = PageService.GetPageWithPage(1, 1, out pageCount);
+            
+            
+        }
+        catch (Exception ex)
+        {
+            // 处理异常，实际项目中可以记录日志
+            Console.WriteLine($"加载仪表盘数据时出错: {ex.Message}");
+        }
+    }
 }
