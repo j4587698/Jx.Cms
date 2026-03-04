@@ -5,6 +5,12 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 *.suo
+*.csproj.user
+*.db
+*.log
 wwwroot/
 src/core/Jx.Cms.Web/Plugin/
 src/core/Jx.Cms.Web/Theme/
+src/core/Jx.Cms.Web/config/
+src/core/Jx.Cms.Web/log/
+src/core/Jx.Cms.Web/db/

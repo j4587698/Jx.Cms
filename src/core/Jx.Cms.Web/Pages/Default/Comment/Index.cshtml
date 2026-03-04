@@ -39,7 +39,8 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="card">
-                        <form id="comment">
+                        <form id="comment" method="post">
+                            @Html.AntiForgeryToken()
                             @if (ViewData["user"] != null)
                             {
                                 var user = ViewData["user"] as AdminUserEntity;

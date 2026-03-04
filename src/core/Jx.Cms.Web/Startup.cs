@@ -10,9 +10,10 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Jx.Cms.Web;
 
-public class Startup(IConfiguration configuration)
+public class Startup(IConfiguration configuration, IWebHostEnvironment environment)
 {
     public IConfiguration Configuration { get; } = configuration;
+    public IWebHostEnvironment Environment { get; } = environment;
 
     public void ConfigureServices(IServiceCollection services)
     {
@@ -23,7 +24,7 @@ public class Startup(IConfiguration configuration)
         var dbConfig = Configuration.GetSection("Db").Get<DbConfig>();
         if (dbConfig != null)
         {
-            var ret = DbStartup.SetupDb(services, dbConfig);
+            var ret = DbStartup.SetupDb(services, dbConfig, Environment.IsDevelopment());
             if (!ret.isSuccess) throw new DbException(ret.msg);
             services.Configure<DbConfig>(x => x.CopyFrom(dbConfig));
         }
@@ -50,9 +51,8 @@ public class Startup(IConfiguration configuration)
 
         // 原始服务配置
         services.AddControllersWithViews();
-        services.AddScoped<HttpContextAccessor>();
+        services.AddHttpContextAccessor();
         services.AddHttpClient();
-        services.AddScoped<HttpClient>();
         services.Configure<CookiePolicyOptions>(op =>
         {
             op.CheckConsentNeeded = context => true;

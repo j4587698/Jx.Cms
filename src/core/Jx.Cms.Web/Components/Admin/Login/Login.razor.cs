@@ -20,12 +20,20 @@ public partial class Login
 
     private Task OnSignUp()
     {
-        throw new NotImplementedException();
+        return MessageService.Show(new MessageOption
+        {
+            Color = Color.Info,
+            Content = "暂未开放注册，请联系管理员。"
+        });
     }
 
     private Task OnForgotPassword()
     {
-        throw new NotImplementedException();
+        return MessageService.Show(new MessageOption
+        {
+            Color = Color.Info,
+            Content = "请联系管理员重置密码。"
+        });
     }
 
     private async Task DoLogin()

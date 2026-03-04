@@ -97,6 +97,7 @@
 			<small><a rel="nofollow" id="cancel-reply" href="#divCommentPost" style="display:none;">取消回复</a></small>
 		</h3>
 		<form method="post" id="comment" target="_self">
+			@Html.AntiForgeryToken()
 			<input type="hidden" name="@nameof(CommentEntity.ArticleId)" id="inpId"
 			       value="@ViewData[nameof(CommentEntity.ArticleId)]"/>
 			<input type="hidden" name="@nameof(CommentEntity.ParentId)" id="inpRevID" value="0"/>

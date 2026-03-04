@@ -18,6 +18,16 @@
         <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
     </ItemGroup>
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
-        <Exec Command="mkdir &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetPath)&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)*.dll&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;copy &quot;$(TargetDir)plugin.json&quot; &quot;$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)&quot;&#xD;&#xA;"/>
+        <PropertyGroup>
+            <PluginOutputDir>$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)\</PluginOutputDir>
+        </PropertyGroup>
+        <ItemGroup>
+            <PluginDllFiles Include="$(TargetDir)*.dll"/>
+            <PluginConfigFile Include="$(TargetDir)plugin.json" Condition="Exists('$(TargetDir)plugin.json')"/>
+        </ItemGroup>
+        <MakeDir Directories="$(PluginOutputDir)"/>
+        <Copy SourceFiles="@(PluginDllFiles)" DestinationFolder="$(PluginOutputDir)" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="@(PluginConfigFile)" DestinationFolder="$(PluginOutputDir)" SkipUnchangedFiles="true"
+              Condition="'@(PluginConfigFile)' != ''"/>
     </Target>
 </Project>

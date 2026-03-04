@@ -6,6 +6,7 @@ using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Themes.Vm;
 using Jx.Toolbox.HtmlTools;
 using Mapster;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Jx.Cms.Web.Areas.User.Controllers;
@@ -24,6 +25,7 @@ public class ToolsController : ControllerBase
     /// <param name="commentService"></param>
     /// <returns></returns>
     [HttpPost]
+    [ValidateAntiForgeryToken]
     public object Comment([FromForm] CommentVo comment, [FromServices] ICommentService commentService)
     {
         var systemSettingsVm = SystemSettingsVm.Init();
@@ -40,9 +42,17 @@ public class ToolsController : ControllerBase
         commentEntity.Status =
             systemSettingsVm.CommentNeedVerify ? CommentStatusEnum.NeedCheck : CommentStatusEnum.Pass;
         if (!commentService.AddOrModifyComment(commentEntity)) return R.Fail(50001, "添加评论失败");
-        Response.Cookies.Append(nameof(CommentEntity.AuthorName), comment.AuthorName);
-        Response.Cookies.Append(nameof(CommentEntity.AuthorEmail), comment.AuthorEmail);
-        Response.Cookies.Append(nameof(CommentEntity.AuthorUrl), comment.AuthorUrl);
+        var cookieOptions = new CookieOptions
+        {
+            HttpOnly = true,
+            IsEssential = true,
+            SameSite = SameSiteMode.Lax,
+            Secure = Request.IsHttps,
+            Expires = DateTimeOffset.UtcNow.AddDays(30)
+        };
+        Response.Cookies.Append(nameof(CommentEntity.AuthorName), comment.AuthorName ?? string.Empty, cookieOptions);
+        Response.Cookies.Append(nameof(CommentEntity.AuthorEmail), comment.AuthorEmail ?? string.Empty, cookieOptions);
+        Response.Cookies.Append(nameof(CommentEntity.AuthorUrl), comment.AuthorUrl ?? string.Empty, cookieOptions);
         return R.Success();
     }
 }

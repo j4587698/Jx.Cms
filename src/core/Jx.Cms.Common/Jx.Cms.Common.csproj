@@ -16,10 +16,11 @@
         <PackageReference Include="Jx.Toolbox.Mvc" Version="0.1.0"/>
         <PackageReference Include="Mapster" Version="7.3.0"/>
         <PackageReference Include="Serilog.AspNetCore" Version="9.0.0"/>
-        <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.1-dev-02307"/>
-        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.0"/>
+        <PackageReference Include="Serilog.Extensions.Hosting" Version="9.0.0"/>
+        <PackageReference Include="SixLabors.ImageSharp" Version="3.1.12"/>
         <PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.0.0"/>
         <PackageReference Include="SixLabors.ImageSharp.Web" Version="3.1.0"/>
+        <PackageReference Include="System.Text.Json" Version="8.0.5"/>
     </ItemGroup>
 
     <ItemGroup>

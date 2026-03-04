@@ -86,7 +86,8 @@ public static class ThemeUtil
 
         if (httpContext?.Request.Host.Value != MobileDomain)
         {
-            var url = $"{httpContext!.Request.Scheme}://{MobileDomain}{httpContext.Request.QueryString}";
+            var url =
+                $"{httpContext!.Request.Scheme}://{MobileDomain}{httpContext.Request.PathBase}{httpContext.Request.Path}{httpContext.Request.QueryString}";
             return url;
         }
 
