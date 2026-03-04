@@ -8,7 +8,6 @@ riderModule.iml
 *.csproj.user
 *.db
 *.log
-wwwroot/
 src/core/Jx.Cms.Web/Plugin/
 src/core/Jx.Cms.Web/Theme/
 src/core/Jx.Cms.Web/config/
