@@ -6,6 +6,7 @@
 @using Jx.Cms.DbContext.Entities.Front
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.Plugin.Service.Both
+@using Jx.Cms.Web.Components.Components
 @using Constants = Jx.Cms.Common.Utils.Constants
 @inject IPageService PageService
 @inject IArticleService ArticleService
@@ -65,7 +66,7 @@
                     </Row>
                 </CollapseItem>
                 <CollapseItem Text="页面">
-                    <Tab>
+                    <Tab OnClickTab="OnPageTabClick">
                         <TabItem Text="最近">
                             <CheckboxList @bind-Value="@_latePageValue" Items="@_latePage" ShowBorder="false"
                                           IsVertical="true"></CheckboxList>
@@ -165,25 +166,23 @@
 
     private Task OnCatalogueAddClick()
     {
-        string[] ids;
         SelectedItem[] items;
         switch (_pageCatalogue)
         {
             case "最近":
-                ids = _lateCatalogueValue.Split(',');
-                items = _lateCatalogue.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_lateCatalogue, _lateCatalogueValue);
                 break;
             case "所有":
-                ids = _allCatalogueValue.Split(',');
-                items = _allCatalogue.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_allCatalogue, _allCatalogueValue);
                 break;
             case "搜索":
-                ids = _searchCatalogueValue.Split(',');
-                items = _searchCatalogue.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_searchCatalogue, _searchCatalogueValue);
                 break;
             default:
                 return Task.CompletedTask;
         }
+
+        if (items.Length == 0) return Task.CompletedTask;
 
         MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Catalogue, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
@@ -194,7 +193,7 @@
 
     #region Page
 
-    private string _pageTab = "最近";
+    private string _pagePageTab = "最近";
 
     private List<SelectedItem> _latePage;
     private string _latePageValue;
@@ -214,6 +213,12 @@
         return Task.CompletedTask;
     }
 
+    private Task OnPageTabClick(TabItem arg)
+    {
+        _pagePageTab = arg.Text;
+        return Task.CompletedTask;
+    }
+
     private void PageSearch(ChangeEventArgs e)
     {
         if (e.Value != null && e.Value.ToString()!.Length > 1)
@@ -224,25 +229,23 @@
 
     private Task OnPageAddClick()
     {
-        string[] ids;
         SelectedItem[] items;
-        switch (_pageTab)
+        switch (_pagePageTab)
         {
             case "最近":
-                ids = _latePageValue.Split(',');
-                items = _latePage.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_latePage, _latePageValue);
                 break;
             case "所有":
-                ids = _allPageValue.Split(',');
-                items = _allPage.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_allPage, _allPageValue);
                 break;
             case "搜索":
-                ids = _searchPageValue.Split(',');
-                items = _searchPage.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_searchPage, _searchPageValue);
                 break;
             default:
                 return Task.CompletedTask;
         }
+
+        if (items.Length == 0) return Task.CompletedTask;
 
         MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Page, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
@@ -252,6 +255,8 @@
     #endregion
 
     #region Article
+
+    private string _articleTab = "最近";
 
     private List<SelectedItem> _lateArticle;
     private string _lateArticleValue;
@@ -281,31 +286,29 @@
 
     private Task OnArticleClick(TabItem arg)
     {
-        _pageTab = arg.Text;
+        _articleTab = arg.Text;
         return Task.CompletedTask;
     }
 
     private Task OnArticleAddClick()
     {
-        string[] ids;
         SelectedItem[] items;
-        switch (_pageTab)
+        switch (_articleTab)
         {
             case "最近":
-                ids = _lateArticleValue.Split(',');
-                items = _lateArticle.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_lateArticle, _lateArticleValue);
                 break;
             case "所有":
-                ids = _allArticleValue.Split(',');
-                items = _allArticle.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_allArticle, _allArticleValue);
                 break;
             case "搜索":
-                ids = _searchArticleValue.Split(',');
-                items = _searchArticle.Where(x => ids.Contains(x.Value)).ToArray();
+                items = ResolveSelectedItems(_searchArticle, _searchArticleValue);
                 break;
             default:
                 return Task.CompletedTask;
         }
+
+        if (items.Length == 0) return Task.CompletedTask;
 
         MenuService.SaveMenu(items.Select(x => new MenuEntity { MenuName = Constants.Menu, Name = x.Text, MenuType = MenuTypeEnum.Article, NavTitle = x.Text, TypeId = int.Parse(x.Value) }));
         _table.QueryAsync();
@@ -381,7 +384,23 @@
 
         _lateArticle = ArticleService.GetArticlePage(1, _pageSize).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
         _allArticle = ArticleService.GetArticlePage(1, _pageSize, out total).Select(x => new SelectedItem(x.Id.ToString(), x.Title)).ToList();
-        _articlePageCount = (int)(total / _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
+        _articlePageCount = (int)(total % _pageSize == 0 ? total / _pageSize : total / _pageSize + 1);
+    }
+
+    private static SelectedItem[] ResolveSelectedItems(IEnumerable<SelectedItem> source, string selectedValues)
+    {
+        if (source == null || string.IsNullOrEmpty(selectedValues))
+        {
+            return [];
+        }
+
+        var ids = selectedValues.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        if (ids.Length == 0)
+        {
+            return [];
+        }
+
+        return source.Where(x => ids.Contains(x.Value)).ToArray();
     }
 
     private Task<IEnumerable<TableTreeNode<MenuEntity>>> TreeNodeConverter(IEnumerable<MenuEntity> arg)

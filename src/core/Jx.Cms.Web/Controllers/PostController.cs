@@ -17,8 +17,10 @@ public class PostController : BaseController
     // GET
     public IActionResult Index(int id)
     {
+        if (id <= 0) return NotFound();
+
         var model = _articleService?.GetArticleById(id);
-        if (model == null) 
+        if (model == null || model.Body == null)
         {
             return NotFound();
         }

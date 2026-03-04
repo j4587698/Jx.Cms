@@ -16,8 +16,10 @@ public class PageController : BaseController
 
     public IActionResult Index(int id)
     {
+        if (id <= 0) return NotFound();
+
         var model = _pageService?.GetPageById(id);
-        if (model == null) return NotFound();
+        if (model == null || model.Body == null) return NotFound();
         var pageVm = new PageVm
         {
             Article = model.Body,
