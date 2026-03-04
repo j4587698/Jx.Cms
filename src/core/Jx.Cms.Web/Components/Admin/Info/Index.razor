@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @using Jx.Cms.Plugin.Service.Admin
 @using Jx.Cms.DbContext.Entities.Article
+@using BootstrapBlazor.Components
 @using Console = System.Console
 
 @inject DialogService DialogService
@@ -22,7 +23,7 @@
                 <BodyTemplate>
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <Icon Icon="fa fa-file-text-o" Size="Size.ExtraLarge" Color="Color.Primary"></Icon>
+                            <i class="fa fa-file-text-o fa-3x text-primary"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">@articleCount</h5>
@@ -38,7 +39,7 @@
                 <BodyTemplate>
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <Icon Icon="fa fa-file-o" Size="Size.ExtraLarge" Color="Color.Success"></Icon>
+                            <i class="fa fa-file-o fa-3x text-success"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">@pageCount</h5>
@@ -54,7 +55,7 @@
                 <BodyTemplate>
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <Icon Icon="fa fa-eye" Size="Size.ExtraLarge" Color="Color.Info"></Icon>
+                            <i class="fa fa-eye fa-3x text-info"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">@viewCount</h5>
@@ -70,7 +71,7 @@
                 <BodyTemplate>
                     <div class="d-flex align-items-center">
                         <div class="flex-shrink-0">
-                            <Icon Icon="fa fa-comments" Size="Size.ExtraLarge" Color="Color.Warning"></Icon>
+                            <i class="fa fa-comments fa-3x text-warning"></i>
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h5 class="mb-0">@commentCount</h5>
@@ -142,7 +143,7 @@
                     else
                     {
                         <div class="text-center py-4">
-                            <Icon Icon="fa fa-inbox" Size="Size.ExtraLarge" Color="Color.Secondary"></Icon>
+                            <i class="fa fa-inbox fa-3x text-secondary"></i>
                             <p class="mt-2 text-muted">暂无文章，<a href="/Admin/Article/Write">立即创建</a></p>
                         </div>
                     }

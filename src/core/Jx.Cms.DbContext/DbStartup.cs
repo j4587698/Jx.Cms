@@ -49,11 +49,10 @@ public class DbStartup
         return true;
     }
 
-    public static (bool isSuccess, string msg) SetupDb(IServiceCollection services, DbConfig dbConfig)
+    public static (bool isSuccess, string msg) SetupDb(IServiceCollection services, DbConfig dbConfig, bool isDevelopment = false)
     {
         if (!dbConfig.DbType.IsNullOrEmpty() && Enum.TryParse(dbConfig.DbType, true, out DataType dataType))
         {
-            var isDevelopment = true;
             var connStr = "";
             switch (dataType)
             {

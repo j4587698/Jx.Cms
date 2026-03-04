@@ -10,17 +10,7 @@
 @code {
 
     [Parameter]
-    public string Id
-    {
-        get => _id;
-        set
-        {
-            _id = value;
-            ModifyPage();
-        }
-    }
-
-    private string _id;
+    public string Id { get; set; }
 
     private RenderFragment _renderFragment;
 
@@ -30,15 +20,21 @@
         ModifyPage();
     }
 
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+        ModifyPage();
+    }
+
     private void ModifyPage()
     {
-        if (_id.IsNullOrEmpty())
+        if (Id.IsNullOrEmpty())
         {
             NavigationManager.NavigateTo("Admin");
             return;
         }
 
-        var body = PluginUtil.OnPluginPageShow(_id);
+        var body = PluginUtil.OnPluginPageShow(Id);
         if (body == null)
         {
             NavigationManager.NavigateTo("Admin");

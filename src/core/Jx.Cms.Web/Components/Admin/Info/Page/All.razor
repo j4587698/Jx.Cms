@@ -12,7 +12,7 @@
 
 <Table @ref="_table" TItem="ArticleEntity" ShowToolbar="true" ShowDefaultButtons="false" IsBordered="true"
        IsPagination="true" ShowExtendButtons="true"
-       ShowEditButtonCallback="item => false" ShowDeleteButtonCallback="item => false" PageItemsSource="_pageItemSource"
+       ShowExtendEditButtonCallback="item => false" ShowExtendDeleteButtonCallback="item => false" PageItemsSource="_pageItemSource"
        OnQueryAsync="OnQueryAsync">
     <TableToolbarTemplate>
         <TableToolbarButton TItem="ArticleEntity" Color="Color.Success" OnClick="@AddAsync" Icon="fa fa-plus"

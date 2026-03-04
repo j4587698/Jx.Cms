@@ -1,10 +1,11 @@
-﻿@page "/Admin/Page/Write"
+@page "/Admin/Page/Write"
 @page "/Admin/Page/Write/{Id:int}"
 @using System.Security.Claims
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Enum
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Cms.Plugin.Cache
+@using Jx.Cms.Plugin.Components
 @using Jx.Cms.Plugin.Model
 @using Jx.Cms.Plugin.Plugin
 @using Jx.Cms.Plugin.Service.Admin
@@ -14,6 +15,8 @@
 @inject IPageService PageService
 @inject ICatalogService CatalogService
 @inject ToastService ToastService
+@inject DialogService DialogService
+@inject PluginDialogService PluginDialogService
 @inject IHttpContextAccessor HttpContextAccessor
 @inject IAdminUserService AdminUserService
 @inject IServiceProvider ServiceProvider
@@ -22,42 +25,39 @@
 
 <ValidateForm class="row" Model="Article" OnValidSubmit="@OnValidSubmit">
     <div class="col-lg-9 col-md-8">
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="页面标题"
-                                ShowLabel="true"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <label>页面内容</label>
-                <Editor IsEditor="true" Height="400" @bind-Value="@Article.Content"></Editor>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
-            </div>
-        </div>
+        <Card IsShadow="true">
+            <BodyTemplate>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="页面标题"
+                                        ShowLabel="true"></BootstrapInput>
+                    </div>
+                    
+                    <div class="col-12">
+                        <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
+                    </div>
+
+                    <div class="col-12">
+                        <label class="form-label">页面内容</label>
+                        <Editor IsEditor="true" Height="500" @bind-Value="@Article.Content"
+                                CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor>
+                    </div>
+                </div>
+            </BodyTemplate>
+        </Card>
     </div>
     <div class="col-lg-3 col-md-4">
-        <div class="row">
-            <div class="form-group col-12">
-                <Button IsBlock="true" Size="Size.Large" ButtonType="ButtonType.Submit">提交</Button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Select style="width:100%" Items="ArticleStatus" @bind-Value="Article.Status"
-                        DisplayText="状态"></Select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime"
-                                DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime"/>
-            </div>
-        </div>
+        <Card IsShadow="true">
+            <HeaderTemplate>发布设置</HeaderTemplate>
+            <BodyTemplate>
+                <div class="d-grid gap-3">
+                    <Button IsBlock="true" ButtonType="ButtonType.Submit" Icon="fa fa-save" Text="保存页面" Color="Color.Primary"></Button>
+                    <Select Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态" ShowLabel="true"></Select>
+                    <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime"
+                                    DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime"/>
+                </div>
+            </BodyTemplate>
+        </Card>
     </div>
 </ValidateForm>
 
@@ -84,13 +84,6 @@
         ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins, ServiceProvider);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
-        var mediaButton = new EditorToolbarButton
-        {
-            Tooltip = "选择媒体",
-            ButtonName = "selectMedia",
-            IconClass = "fa fa-picture-o"
-        };
-        ToolbarButtons.Add(mediaButton);
         Article = Id == 0 ? new ArticleEntity { IsPage = true, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : PageService.GetPageById(Id);
     }
 
@@ -110,6 +103,20 @@
         {
             NavigationManager.NavigateTo("Admin/Page/All");
         }
+    }
+
+    private async Task<string> OnClickButton(string arg)
+    {
+        var model = EditorExtModels.Find(x => x.ToolbarButton.ButtonName == arg);
+        if (model == null)
+        {
+            return "";
+        }
+
+        var option = new ResultDialogOption();
+        var type = model.OnDialogCreate(option);
+        var res = await model.OnToolbarClick(await PluginDialogService.ShowModal(option, type, DialogService));
+        return res;
     }
 
 }

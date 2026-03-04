@@ -7,10 +7,10 @@
 @attribute [Menu("CB0C129D-48D7-4E0A-BA1B-EE1912D3580D", "系统设置", "Admin/Settings/SystemSettings", parentId: MenuIds.SettingsId)]
 
 <ValidateForm Model="@_systemSettings" OnValidSubmit="Save">
-    <Row ItemsPerRow="ItemsPerRow.Two">
-        <h3>伪静态设置</h3>
-        <Button ButtonType="ButtonType.Submit" style="float: right">保存</Button>
-    </Row>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">系统设置</h3>
+        <Button ButtonType="ButtonType.Submit" Icon="fa fa-save" Text="保存设置" Color="Color.Primary"></Button>
+    </div>
     <Tab IsCard="true">
         <TabItem Text="系统设置">
             <Row ItemsPerRow="ItemsPerRow.One">

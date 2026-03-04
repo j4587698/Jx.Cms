@@ -1,4 +1,4 @@
-﻿@page "/Admin/Article/Write"
+@page "/Admin/Article/Write"
 @page "/Admin/Article/Write/{Id:int}"
 @using System.Security.Claims
 @using System.Text
@@ -33,96 +33,94 @@
 
 <ValidateForm class="row" Model="Article" OnValidSubmit="OnValidSubmit">
     <div class="col-lg-9 col-md-8">
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="文章标题"
-                                ShowLabel="true"></BootstrapInput>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Switch class="form-control" @bind-Value="@Article.IsMarkdown" OnColor="Color.Success" OnText="启用"
-                        OffText="禁用" DisplayText="启用Markdown编辑" OnValueChanged="OnValueChanged"></Switch>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <label>文章内容</label>
-                <Row ItemsPerRow="ItemsPerRow.Four">
-                    <Button OnClick="AddMedia">添加媒体</Button>
-                </Row>
-                @if (Article.IsMarkdown)
-                {
-                    <Markdown @ref="_markdown" Language="zh-CN" Height="400" @bind-Value="@Article.MarkdownContent"
-                              @bind-Html="@Article.Content"></Markdown>
-                }
-                else
-                {
-                    <Editor @ref="_editor" IsEditor="true" Height="400" @bind-Value="@Article.Content" ShowSubmit="false"
-                            CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor>
-                }
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
-            </div>
-        </div>
-        <label class="form-label">标签</label>
-        <div class="row g-3">
-            @if (Article.Tags != null)
-            {
-                foreach (var tag in Article.Tags)
-                {
-                    <div class="col-auto">
-                        <Tag Color="Color.Primary" ShowDismiss="true" OnDismiss="() => TagClose(tag)">@tag</Tag>
+        <Card IsShadow="true">
+            <BodyTemplate>
+                <div class="row g-3">
+                    <div class="col-12">
+                        <BootstrapInput placeholder="请输入标题" @bind-Value="@Article.Title" DisplayText="文章标题"
+                                        ShowLabel="true"></BootstrapInput>
                     </div>
-                }
-            }
-            <div class="col-auto">
-                <AutoComplete onkeydown="enter_down(event);" ShowLabel="false" Items="@AllTags"
-                              IsSelectAllTextOnFocus="true" OnEnterAsync="TagPress"/>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Textarea @bind-Value="@Article.Description" DisplayText="描述" ShowLabel="true"></Textarea>
-            </div>
-        </div>
+                    
+                    <div class="col-12">
+                        <BootstrapInput @bind-Value="@Article.Alias" DisplayText="别名" ShowLabel="true"></BootstrapInput>
+                    </div>
+
+                    <div class="col-12">
+                         <div class="d-flex justify-content-between align-items-center mb-2">
+                             <label class="form-label mb-0">文章内容</label>
+                             <div class="d-flex gap-2">
+                                 <Button OnClick="AddMedia" Icon="fa fa-image" Text="添加媒体" Size="Size.ExtraSmall" Color="Color.Info"></Button>
+                                 <Switch @bind-Value="@Article.IsMarkdown" OnColor="Color.Success" OnText="Markdown"
+                                         OffText="富文本" ShowLabel="false" OnValueChanged="OnValueChanged"></Switch>
+                             </div>
+                         </div>
+                        
+                        @if (Article.IsMarkdown)
+                        {
+                            <Markdown @ref="_markdown" Language="zh-CN" Height="500" @bind-Value="@Article.MarkdownContent"
+                                      @bind-Html="@Article.Content"></Markdown>
+                        }
+                        else
+                        {
+                            <Editor @ref="_editor" IsEditor="true" Height="500" @bind-Value="@Article.Content" ShowSubmit="false"
+                                    CustomerToolbarButtons="@ToolbarButtons" OnClickButton="@OnClickButton"></Editor>
+                        }
+                    </div>
+                    
+                    <div class="col-12">
+                        <label class="form-label">标签</label>
+                        <div class="mb-2">
+                            @if (Article.Tags != null)
+                            {
+                                foreach (var tag in Article.Tags)
+                                {
+                                    <Tag Color="Color.Primary" ShowDismiss="true" OnDismiss="() => TagClose(tag)" Class="me-1">@tag</Tag>
+                                }
+                            }
+                        </div>
+                        <AutoComplete onkeydown="enter_down(event);" ShowLabel="false" Items="@AllTags"
+                                      IsSelectAllTextOnFocus="true" OnEnterAsync="TagPress" placeholder="输入标签并回车添加"/>
+                    </div>
+                    
+                    <div class="col-12">
+                        <Textarea @bind-Value="@Article.Description" DisplayText="摘要" ShowLabel="true" rows="3"></Textarea>
+                    </div>
+                </div>
+            </BodyTemplate>
+        </Card>
 
         @foreach (var extModel in BottomExt)
         {
-            @RenderExt(extModel)
+             <Card Class="mt-3" IsShadow="true">
+                 <HeaderTemplate>@extModel.DisplayName</HeaderTemplate>
+                 <BodyTemplate>
+                     @RenderExt(extModel)
+                 </BodyTemplate>
+             </Card>
         }
     </div>
     <div class="col-lg-3 col-md-4">
-        <div class="row">
-            <div class="form-group col-12">
-                <Button IsBlock="true" ButtonType="ButtonType.Submit">提交</Button>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Select style="width: 100%" Items="ArticleStatus" @bind-Value="Article.Status"
-                        DisplayText="状态"></Select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <Select style="width: 100%" Items="Catalogs" @bind-Value="Article.CatalogueId"
-                        DisplayText="分类"></Select>
-            </div>
-        </div>
-        <div class="row">
-            <div class="form-group col-12">
-                <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime"
-                                DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime"/>
-            </div>
-        </div>
+        <Card IsShadow="true">
+            <HeaderTemplate>发布设置</HeaderTemplate>
+            <BodyTemplate>
+                <div class="d-grid gap-3">
+                    <Button IsBlock="true" ButtonType="ButtonType.Submit" Icon="fa fa-save" Text="保存文章" Color="Color.Primary"></Button>
+                    <Select Items="ArticleStatus" @bind-Value="Article.Status" DisplayText="状态" ShowLabel="true"></Select>
+                    <Select Items="Catalogs" @bind-Value="Article.CatalogueId" DisplayText="分类" ShowLabel="true"></Select>
+                    <DateTimePicker TValue="DateTime" ShowSidebar="true" @bind-Value="@Article.PublishTime"
+                                    DisplayText="发布时间" ShowLabel="true" ViewModel="DatePickerViewModel.DateTime"/>
+                </div>
+            </BodyTemplate>
+        </Card>
+        
         @foreach (var extModel in RightExt)
         {
-            @RenderExt(extModel)
-            ;
+             <Card Class="mt-3" IsShadow="true">
+                 <HeaderTemplate>@extModel.DisplayName</HeaderTemplate>
+                 <BodyTemplate>
+                     @RenderExt(extModel)
+                 </BodyTemplate>
+             </Card>
         }
     </div>
 </ValidateForm>
@@ -238,11 +236,16 @@
             Title = "请选择媒体",
             IsScrolling = true,
             Size = Size.ExtraLarge,
-            ComponentParamters = new Dictionary<string, object>
+            ComponentParameters = new Dictionary<string, object>
             {
+                { nameof(MediaSelectComponent.FileType), new[] { ".jpg", ".png", ".jpeg", ".gif", ".bmp" } },
+                { nameof(MediaSelectComponent.MultSelect), true },
                 { nameof(MediaSelectComponent.MediaSelected), EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => ret = x) }
             }
         });
+        
+        if (ret == null) return;
+        
         var sb = new StringBuilder();
         foreach (var mediaInfoVo in ret)
         {
@@ -285,6 +288,11 @@
         {
             await _editor.DoMethodAsync("pasteHTML", sb.ToString());
         }
+    }
+    
+    private Task OnMediaSelect(List<MediaInfoVo> medias)
+    {
+        return Task.CompletedTask;
     }
 
     private async Task<string> OnClickButton(string arg)
@@ -342,4 +350,3 @@
         </div>;
 
 }
-

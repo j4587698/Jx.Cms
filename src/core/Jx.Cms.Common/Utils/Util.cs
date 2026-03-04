@@ -17,8 +17,11 @@ public static class Util
     {
         IsInstalled = File.Exists(SystemPath.Combine(AppContext.BaseDirectory, "config", "install.lock"));
         var collection = new FontCollection();
-        //Family = collection.Add(Resource.GetResource("font.ttf"));
-        Family = collection.Add(Resource.GetResource("font.ttf"));
+        using var stream = Resource.GetResource("font.ttf");
+        if (stream != null)
+        {
+            Family = collection.Add(stream);
+        }
     }
 
     /// <summary>
@@ -43,7 +46,7 @@ public static class Util
     /// <returns>图片Stream</returns>
     public static Stream StringToImage(string str, int width, int height, int fontsize, Color color, Color bgColor)
     {
-        Image image = new Image<Rgba32>(width, height, bgColor);
+        using Image image = new Image<Rgba32>(width, height, bgColor);
         var font = Family.CreateFont(fontsize);
         image.Mutate(x => x.DrawText(str, font, color, new PointF(width / 2, height / 2)));
         var ms = new MemoryStream();
@@ -87,7 +90,7 @@ public static class Util
     /// <returns></returns>
     public static Stream GetThumbnail(Stream inputStream, int width, int height, string op = "crop")
     {
-        var image = Image.Load(inputStream);
+        using var image = Image.Load(inputStream);
         if (op == "crop")
             image.Mutate(x => x.Crop(width, height));
         else if (op == "resize") image.Mutate(x => x.Resize(width, height));

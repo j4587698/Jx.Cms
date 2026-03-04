@@ -18,7 +18,7 @@ public class PluginDialogService
         option.BodyTemplate = builder =>
         {
             builder.OpenComponent(0, type);
-            builder.AddMultipleAttributes(1, option.ComponentParamters);
+            builder.AddMultipleAttributes(1, option.ComponentParameters);
             builder.AddComponentReferenceCapture(2, com => pluginDialog = (IPluginDialog)com);
             builder.SetKey(Guid.NewGuid());
             builder.CloseComponent();
@@ -76,8 +76,7 @@ public class PluginDialogService
                 // option.OnClose -> Modal.Close -> ModalDialog.Close -> ModalDialog.OnClose -> option.OnClose
                 option.OnCloseAsync = null;
                 // Close method not available in new API, just set result
-                taskCompletionSource.SetResult(result);
-                taskCompletionSource.SetResult(result);
+                taskCompletionSource.TrySetResult(result);
             }
         };
         await dialogService.Show(option);
