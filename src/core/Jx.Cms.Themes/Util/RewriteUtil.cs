@@ -1,4 +1,5 @@
-﻿using System.Linq.Expressions;
+using System.Globalization;
+using System.Linq.Expressions;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Rewrite;
 using Jx.Cms.Themes.Model;
@@ -17,8 +18,7 @@ public static class RewriteUtil
     public static string GetArticleUrl(ArticleEntity articleEntity)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == nameof(RewriteOptionEnum.Dynamic)) return $"/Post?id={articleEntity.Id}";
+        if (IsDynamic(rewriterModel)) return $"/Post?id={articleEntity.Id}";
 
         var template = Template.Create(rewriterModel.ArticleUrl);
         return template.SetValue("id", articleEntity.Id.ToString())
@@ -41,8 +41,8 @@ public static class RewriteUtil
     public static string GetPageUrl(ArticleEntity articleEntity)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString()) return $"/Page?id={articleEntity.Id}";
+        if (IsDynamic(rewriterModel)) return $"/Page?id={articleEntity.Id}";
+
         var template = Template.Create(rewriterModel.PageUrl);
         return template.SetValue("id", articleEntity.Id.ToString())
             .SetValue("year", articleEntity.PublishTime.Year.ToString())
@@ -64,8 +64,8 @@ public static class RewriteUtil
     public static string GetIndexUrl(long pageNo = 1)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString()) return $"/?pageNum={pageNo}";
+        if (IsDynamic(rewriterModel)) return $"/?pageNum={pageNo}";
+
         var template = Template.Create(rewriterModel.IndexUrl);
         return template.SetValue("page", pageNo.ToString()).Render();
     }
@@ -73,15 +73,13 @@ public static class RewriteUtil
     /// <summary>
     ///     获取标签页Url
     /// </summary>
-    /// <param name="tagel">标签</param>
+    /// <param name="tag">标签</param>
     /// <param name="pageNo">第几页</param>
     /// <returns></returns>
     public static string GetTagUrl(TagEntity tag, long pageNo = 1)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
-            return $"/Tag?id={tag.Id}&pageNum={pageNo}";
+        if (IsDynamic(rewriterModel)) return $"/Tag?id={tag.Id}&pageNum={pageNo}";
 
         var template = Template.Create(rewriterModel.TagUrl);
         return template.SetValue("id", tag.Id.ToString()).SetValue("page", pageNo.ToString())
@@ -97,9 +95,8 @@ public static class RewriteUtil
     public static string GetCatalogUrl(CatalogEntity catalogEntity, long pageNo = 1)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
-            return $"/Catalog?id={catalogEntity.Id}&pageNum={pageNo}";
+        if (IsDynamic(rewriterModel)) return $"/Catalog?id={catalogEntity.Id}&pageNum={pageNo}";
+
         var template = Template.Create(rewriterModel.CatalogueUrl);
         return template.SetValue("id", catalogEntity.Id.ToString()).SetValue("page", pageNo.ToString())
             .SetValue("alias", catalogEntity.Alias.IsNullOrEmpty() ? catalogEntity.Name : catalogEntity.Alias).Render();
@@ -108,9 +105,8 @@ public static class RewriteUtil
     public static string GetDateUrl(int year, int month, long pageNo)
     {
         var rewriterModel = RewriterModel.GetSettings();
-        if (rewriterModel.RewriteOption.IsNullOrEmpty() ||
-            rewriterModel.RewriteOption == RewriteOptionEnum.Dynamic.ToString())
-            return $"/Date?year={year}&month={month}&pageNum={pageNo}";
+        if (IsDynamic(rewriterModel)) return $"/Date?year={year}&month={month}&pageNum={pageNo}";
+
         var template = Template.Create(rewriterModel.DateUrl);
         return template.SetValue("year", year.ToString()).SetValue("month", month.ToString())
             .SetValue("page", pageNo.ToString()).Render();
@@ -118,116 +114,100 @@ public static class RewriteUtil
 
     public static string AnalysisArticle(string url, RewriterModel rewriterModel)
     {
-        var articleList = RewriteTemplate.CreateUrl(rewriterModel.ArticleUrl);
+        var values = MatchUrl(url, rewriterModel?.ArticleUrl);
+        if (values == null) return null;
 
-        if (articleList == null || articleList.Count == 0) return null;
+        if (values.TryGetValue("id", out var id)) return $"?id={id}";
 
-        var result = RewriteTemplate.AnalysisUrl(url, articleList);
-        if (result.isSuccess)
+        Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
+        foreach (var info in values)
         {
-            if (result.result.ContainsKey("id")) return $"?id={result.result["id"]}";
-
-            Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == false;
-            foreach (var info in result.result)
-                switch (info.Key)
-                {
-                    case "year":
-                        where = where.And(x => x.PublishTime.Year == int.Parse(info.Value));
-                        break;
-                    case "month":
-                        where = where.And(x => x.PublishTime.Month == int.Parse(info.Value));
-                        break;
-                    case "day":
-                        where = where.And(x => x.PublishTime.Day == int.Parse(info.Value));
-                        break;
-                    case "alias":
-                        where = where.And(x =>
-                            x.Alias == result.result["alias"] || x.Title == result.result["alias"]);
-                        break;
-                    case "category":
-                        where = where.And(x => x.Catalogue.Alias == info.Value);
-                        break;
-                }
-
-            var articles = ArticleEntity.Select.Where(where);
-            if (articles == null || articles.Count() == 0) return null;
-
-            return $"?id={articles.First().Id}";
+            switch (info.Key)
+            {
+                case "year":
+                    if (!TryParseInt(info.Value, out var year)) return null;
+                    where = where.And(x => x.PublishTime.Year == year);
+                    break;
+                case "month":
+                    if (!TryParseInt(info.Value, out var month)) return null;
+                    where = where.And(x => x.PublishTime.Month == month);
+                    break;
+                case "day":
+                    if (!TryParseInt(info.Value, out var day)) return null;
+                    where = where.And(x => x.PublishTime.Day == day);
+                    break;
+                case "alias":
+                    var articleAlias = info.Value;
+                    where = where.And(x => x.Alias == articleAlias || x.Title == articleAlias);
+                    break;
+                case "category":
+                    var category = info.Value;
+                    where = where.And(x => x.Catalogue.Alias == category || x.Catalogue.Name == category);
+                    break;
+            }
         }
 
-        return null;
+        var article = ArticleEntity.Select.Where(where).First();
+        return article == null ? null : $"?id={article.Id}";
     }
 
     public static string AnalysisPage(string url, RewriterModel rewriterModel)
     {
-        var pageList = RewriteTemplate.CreateUrl(rewriterModel.PageUrl);
-        if (pageList == null || pageList.Count == 0) return null;
+        var values = MatchUrl(url, rewriterModel?.PageUrl);
+        if (values == null) return null;
 
-        var result = RewriteTemplate.AnalysisUrl(url, pageList);
-        if (result.isSuccess)
+        if (values.TryGetValue("id", out var id)) return $"?id={id}";
+
+        Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == true;
+        foreach (var info in values)
         {
-            if (result.result.ContainsKey("id")) return $"?id={result.result["id"]}";
-            Expression<Func<ArticleEntity, bool>> where = x => x.IsPage == true;
-            foreach (var info in result.result)
-                switch (info.Key)
-                {
-                    case "year":
-                        where = where.And(x => x.PublishTime.Year.ToString() == info.Value);
-                        break;
-                    case "month":
-                        var month = info.Value.PadLeft(2, '0');
-                        where = where.And(x => x.PublishTime.Month.ToString() == month);
-                        break;
-                    case "day":
-                        var day = info.Value.PadLeft(2, '0');
-                        where = where.And(x => x.PublishTime.Day.ToString() == day);
-                        break;
-                    case "alias":
-                        where = where.And(x =>
-                            x.Alias == result.result["alias"] || x.Title == result.result["alias"]);
-                        break;
-                    case "category":
-                        where = where.And(x => x.Catalogue.Alias == info.Value);
-                        break;
-                }
-
-            var pages = ArticleEntity.Select.Where(where);
-            if (pages == null || pages.Count() == 0) return null;
-
-            return $"?id={pages.First().Id}";
+            switch (info.Key)
+            {
+                case "year":
+                    if (!TryParseInt(info.Value, out var year)) return null;
+                    where = where.And(x => x.PublishTime.Year == year);
+                    break;
+                case "month":
+                    if (!TryParseInt(info.Value, out var month)) return null;
+                    where = where.And(x => x.PublishTime.Month == month);
+                    break;
+                case "day":
+                    if (!TryParseInt(info.Value, out var day)) return null;
+                    where = where.And(x => x.PublishTime.Day == day);
+                    break;
+                case "alias":
+                    var pageAlias = info.Value;
+                    where = where.And(x => x.Alias == pageAlias || x.Title == pageAlias);
+                    break;
+                case "category":
+                    var category = info.Value;
+                    where = where.And(x => x.Catalogue.Alias == category || x.Catalogue.Name == category);
+                    break;
+            }
         }
 
-        return null;
+        var page = ArticleEntity.Select.Where(where).First();
+        return page == null ? null : $"?id={page.Id}";
     }
-
 
     public static string AnalysisIndex(string url, RewriterModel rewriterModel)
     {
-        var indexList = RewriteTemplate.CreateUrl(rewriterModel.IndexUrl);
-        if (indexList == null || indexList.Count == 0) return null;
-        var result = RewriteTemplate.AnalysisUrl(url, indexList);
-        if (result.isSuccess) return $"?pageNum={result.result["page"]}";
-        return null;
+        var values = MatchUrl(url, rewriterModel?.IndexUrl);
+        if (values == null) return null;
+        return values.TryGetValue("page", out var page) ? $"?pageNum={page}" : null;
     }
 
     public static string AnalysisTag(string url, RewriterModel rewriterModel)
     {
-        var labelList = RewriteTemplate.CreateUrl(rewriterModel.TagUrl);
-        if (labelList == null || labelList.Count == 0) return null;
+        var values = MatchUrl(url, rewriterModel?.TagUrl);
+        if (values == null || !values.TryGetValue("page", out var page)) return null;
 
-        var result = RewriteTemplate.AnalysisUrl(url, labelList);
+        if (values.TryGetValue("id", out var id)) return $"?id={id}&pageNum={page}";
 
-        if (result.isSuccess)
+        if (values.TryGetValue("alias", out var alias))
         {
-            if (!result.result.ContainsKey("page")) return null;
-
-            if (result.result.ContainsKey("id")) return $"?id={result.result["id"]}&pageNum={result.result["page"]}";
-
-            if (result.result.ContainsKey("alias"))
-            {
-                var labelEntity = TagEntity.Where(x => x.Name == result.result["alias"]).First();
-                return labelEntity == null ? null : $"?id={labelEntity.Id}&pageNum={result.result["page"]}";
-            }
+            var labelEntity = TagEntity.Where(x => x.Name == alias).First();
+            return labelEntity == null ? null : $"?id={labelEntity.Id}&pageNum={page}";
         }
 
         return null;
@@ -235,23 +215,15 @@ public static class RewriteUtil
 
     public static string AnalysisCatalog(string url, RewriterModel rewriterModel)
     {
-        var catalogueList = RewriteTemplate.CreateUrl(rewriterModel.CatalogueUrl);
-        if (catalogueList == null || catalogueList.Count == 0) return null;
+        var values = MatchUrl(url, rewriterModel?.CatalogueUrl);
+        if (values == null || !values.TryGetValue("page", out var page)) return null;
 
-        var result = RewriteTemplate.AnalysisUrl(url, catalogueList);
+        if (values.TryGetValue("id", out var id)) return $"?id={id}&pageNum={page}";
 
-        if (result.isSuccess)
+        if (values.TryGetValue("alias", out var alias))
         {
-            if (!result.result.ContainsKey("page")) return null;
-
-            if (result.result.ContainsKey("id")) return $"?id={result.result["id"]}&pageNum={result.result["page"]}";
-
-            if (result.result.ContainsKey("alias"))
-            {
-                var catalogEntity = CatalogEntity
-                    .Where(x => x.Alias == result.result["alias"] || x.Name == result.result["alias"]).First();
-                return catalogEntity == null ? null : $"?id={catalogEntity.Id}&pageNum={result.result["page"]}";
-            }
+            var catalogEntity = CatalogEntity.Where(x => x.Alias == alias || x.Name == alias).First();
+            return catalogEntity == null ? null : $"?id={catalogEntity.Id}&pageNum={page}";
         }
 
         return null;
@@ -259,20 +231,41 @@ public static class RewriteUtil
 
     public static string AnalysisDate(string url, RewriterModel rewriterModel)
     {
-        var dateList = RewriteTemplate.CreateUrl(rewriterModel.DateUrl);
-        if (dateList == null || dateList.Count == 0) return null;
+        var values = MatchUrl(url, rewriterModel?.DateUrl);
+        if (values == null) return null;
 
-        var result = RewriteTemplate.AnalysisUrl(url, dateList);
+        if (!(values.TryGetValue("page", out var page) && values.TryGetValue("year", out var year) &&
+              values.TryGetValue("month", out var month))) return null;
 
-        if (result.isSuccess)
-        {
-            if (!(result.result.ContainsKey("page") && result.result.ContainsKey("year") &&
-                  result.result.ContainsKey("month"))) return null;
+        if (!(TryParseLong(page, out _) && TryParseInt(year, out _) && TryParseInt(month, out _))) return null;
+        return $"?year={year}&month={month}&pageNum={page}";
+    }
 
-            return
-                $"?year={result.result["year"]}&month={result.result["month"]}&pageNum={result.result["page"]}";
-        }
+    private static Dictionary<string, string> MatchUrl(string url, string template)
+    {
+        if (string.IsNullOrWhiteSpace(url) || string.IsNullOrWhiteSpace(template)) return null;
 
-        return null;
+        var templateList = RewriteTemplate.CreateUrl(template);
+        if (templateList.Count == 0) return null;
+
+        var result = RewriteTemplate.AnalysisUrl(url, templateList);
+        return result.isSuccess ? result.result : null;
+    }
+
+    private static bool TryParseInt(string value, out int result)
+    {
+        return int.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out result);
+    }
+
+    private static bool TryParseLong(string value, out long result)
+    {
+        return long.TryParse(value, NumberStyles.None, CultureInfo.InvariantCulture, out result);
+    }
+
+    private static bool IsDynamic(RewriterModel rewriterModel)
+    {
+        return rewriterModel == null || rewriterModel.RewriteOption.IsNullOrEmpty() ||
+               string.Equals(rewriterModel.RewriteOption, nameof(RewriteOptionEnum.Dynamic),
+                   StringComparison.OrdinalIgnoreCase);
     }
 }
