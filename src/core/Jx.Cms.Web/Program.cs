@@ -39,6 +39,9 @@ try
     var env = app.Environment;
     startup.Configure(app, env);
     app.UseAntiforgery();
+    app.MapControllerRoute(
+        name: "areas",
+        pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
     app.MapDefaultControllerRoute();
     app.MapRazorComponents<App>().AddAdditionalAssemblies(typeof(Install).Assembly)
         .AddInteractiveServerRenderMode();
