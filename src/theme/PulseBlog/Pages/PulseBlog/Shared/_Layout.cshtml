@@ -18,6 +18,8 @@
     var siteSubTitle = settings.SubTitle ?? "";
     var siteUrl = settings.Url.IsNullOrEmpty() ? $"{Context.Request.Scheme}://{Context.Request.Host}" : settings.Url;
     var footerInfo = theme.FooterInfo.IsNullOrEmpty() ? settings.CopyRight : theme.FooterInfo;
+    var searchKeywordFromQuery = Context.Request.Query["q"].ToString();
+    var isSearchPanelOpen = pageType == "Search" && !searchKeywordFromQuery.IsNullOrEmpty();
 
     var defaultDescription = theme.Description.IsNullOrEmpty() ? siteSubTitle : theme.Description;
     if (defaultDescription.IsNullOrEmpty()) defaultDescription = siteTitle;
@@ -28,6 +30,7 @@
     var pageKeywords = defaultKeywords;
     var canonical = Context.ToAbsoluteUrl($"{Context.Request.Path}{Context.Request.QueryString}");
     var ogType = "website";
+    var robotsContent = "index,follow,max-image-preview:large";
 
     var defaultSocialImage = theme.DefaultSocialImageUrl.IsNullOrEmpty()
         ? Context.ToAbsoluteUrl("/PulseBlog/img/placeholder.svg")
@@ -111,6 +114,20 @@
             }
 
             break;
+        case "Search":
+            if (Model is SearchVm searchVm)
+            {
+                var query = searchVm.Query.IsNullOrEmpty() ? "全部文章" : searchVm.Query;
+                pageTitle = $"{query} · 搜索 · {siteTitle}";
+                if (searchVm.PageNum > 1) pageTitle += $" · 第 {searchVm.PageNum} 页";
+                pageDescription = searchVm.Query.IsNullOrEmpty()
+                    ? $"在 {siteTitle} 中搜索文章"
+                    : $"关键词 {searchVm.Query} 的搜索结果，共 {searchVm.TotalCount} 条内容。";
+                pageKeywords = searchVm.Query.IsNullOrEmpty() ? $"搜索,{defaultKeywords}" : $"{searchVm.Query},{defaultKeywords}";
+            }
+
+            robotsContent = "noindex,follow";
+            break;
     }
 
     var webSiteSchema = JsonSerializer.Serialize(new
@@ -149,7 +166,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <meta name="robots" content="index,follow,max-image-preview:large"/>
+    <meta name="robots" content="@robotsContent"/>
     <meta name="theme-color" content="@theme.AccentColor"/>
     <title>@pageTitle</title>
 
@@ -188,7 +205,9 @@
         <script type="application/ld+json">@Html.Raw(articleSchema)</script>
     }
 </head>
-<body class="pulse pulse-@pageType.ToLowerInvariant()" style="--pulse-accent:@theme.AccentColor;">
+<body class="pulse pulse-@pageType.ToLowerInvariant()"
+      data-list-pagination-mode="@theme.ListPaginationMode.ToString().ToLowerInvariant()"
+      style="--pulse-accent:@theme.AccentColor;">
 <div class="bg-shape bg-shape-a"></div>
 <div class="bg-shape bg-shape-b"></div>
 <div class="top-progress" id="topProgress"></div>
@@ -213,6 +232,25 @@
                 <menu></menu>
             </ul>
         </nav>
+
+        <div class="search-wrap @(isSearchPanelOpen ? "is-open" : "")" id="searchWrap">
+            <button class="search-toggle"
+                    id="searchToggle"
+                    type="button"
+                    aria-label="打开搜索"
+                    aria-expanded="@(isSearchPanelOpen ? "true" : "false")"
+                    aria-controls="siteSearch">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M10.5 3a7.5 7.5 0 015.957 12.059l4.742 4.742a1 1 0 01-1.414 1.414l-4.742-4.742A7.5 7.5 0 1110.5 3zm0 2a5.5 5.5 0 100 11 5.5 5.5 0 000-11z"/>
+                </svg>
+            </button>
+            <form class="site-search" id="siteSearch" method="get" action="/search" role="search">
+                <label class="sr-only" for="siteSearchInput">搜索文章</label>
+                <input id="siteSearchInput" type="search" name="q" maxlength="64" value="@searchKeywordFromQuery"
+                       placeholder="搜索文章标题或内容"/>
+                <button type="submit">搜索</button>
+            </form>
+        </div>
     </div>
 
     @if (!theme.Notice.IsNullOrEmpty())
@@ -243,7 +281,7 @@
         }
 
         <p>@Html.Raw(footerInfo)</p>
-        <p class="muted">Powered by Jx.Cms · Theme PulseBlog</p>
+        <p class="muted">由 Jx.Cms 驱动 · PulseBlog 主题</p>
     </div>
 </footer>
 

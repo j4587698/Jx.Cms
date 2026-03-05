@@ -1,0 +1,74 @@
+@using Jx.Cms.Themes.Vm
+@using PulseBlog.Enum
+@using PulseBlog.Model
+@model SearchVm
+@{
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var hasSidebar = theme.Sidebar != SidebarLayoutEnum.None;
+    var layoutClass = hasSidebar
+        ? (theme.Sidebar == SidebarLayoutEnum.Left ? "content-grid sidebar-left" : "content-grid")
+        : "content-grid no-sidebar";
+
+    var queryText = Model.Query ?? "";
+    var queryUrl = Uri.EscapeDataString(queryText);
+}
+
+<section class="page-head js-reveal">
+    <p class="kicker">搜索</p>
+    <h1>@(queryText == "" ? "文章搜索" : $"搜索：{queryText}")</h1>
+    <p>
+        @if (queryText == "")
+        {
+            @:请输入关键词后进行搜索
+        }
+        else
+        {
+            @:共找到 @Model.TotalCount 篇相关文章
+        }
+    </p>
+</section>
+
+<div class="@layoutClass">
+    <section>
+        @if (queryText == "")
+        {
+            <div class="empty-result js-reveal">
+                <p class="muted">可以输入标题、摘要或正文片段进行搜索。</p>
+            </div>
+        }
+        else if (Model.Articles is { Count: > 0 })
+        {
+            @await Html.PartialAsync("_ArticleList", Model.Articles, ViewData)
+        }
+        else
+        {
+            <div class="empty-result js-reveal">
+                <p class="muted">没有找到匹配内容，请尝试更短或更通用的关键词。</p>
+            </div>
+        }
+
+        @if (Model.Pagination is { Count: > 0 })
+        {
+            <nav class="pager js-reveal" aria-label="搜索结果分页">
+                @foreach (var pagination in Model.Pagination)
+                {
+                    if (pagination.Key == Model.PageNum.ToString())
+                    {
+                        <span class="current">@pagination.Key</span>
+                    }
+                    else
+                    {
+                        <a href="/search?q=@queryUrl&pageNum=@pagination.Value">@pagination.Key</a>
+                    }
+                }
+            </nav>
+        }
+    </section>
+
+    @if (hasSidebar)
+    {
+        <aside>
+            <sidebar sidebar="MainMenu"></sidebar>
+        </aside>
+    }
+</div>
