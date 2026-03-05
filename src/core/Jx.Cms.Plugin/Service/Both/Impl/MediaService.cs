@@ -18,17 +18,33 @@ public class MediaService : IMediaService
 
     public async Task<bool> AddMediaAsync(UploadFile file)
     {
+        if (file == null) return false;
+
         var urlBase = Path.Combine("upload", DateTime.Now.ToString("yyyy"), DateTime.Now.ToString("MM"));
         var dir = Path.Combine(_hostingEnvironment.WebRootPath, urlBase);
         if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
-        var fileName = NumberFormat.ToDecimalString(Stopwatch.GetTimestamp(), 36) +
-                       Path.GetExtension(file.OriginFileName);
-        if (!await file.SaveToFileAsync(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024)) return false;
+        var originalFileName = file.OriginFileName ?? string.Empty;
+        var extension = Path.GetExtension(originalFileName);
+        if (string.IsNullOrWhiteSpace(extension))
+        {
+            extension = ".bin";
+        }
+
+        var fileName = NumberFormat.ToDecimalString(Stopwatch.GetTimestamp(), 36) + extension;
+        if (!await file.SaveToFileAsync(Path.Combine(dir, fileName), 50L * 1024 * 1024 * 1024))
+        {
+            if (string.IsNullOrWhiteSpace(file.Error))
+            {
+                file.Error = "文件保存失败，请检查磁盘空间或文件权限";
+            }
+
+            return false;
+        }
 
         var mediaEntity = new MediaEntity();
         mediaEntity.Url = Path.Combine("/", urlBase, fileName).Replace('\\', '/');
         var mime = Mime.GetTypeFormExtension(Path.GetExtension(fileName));
-        mediaEntity.Name = file.OriginFileName;
+        mediaEntity.Name = string.IsNullOrWhiteSpace(originalFileName) ? fileName : originalFileName;
         mediaEntity.MediaType = mime switch
         {
             "image" => MediaTypeEnum.Image,
@@ -52,7 +68,24 @@ public class MediaService : IMediaService
 
     public IEnumerable<MediaEntity> GetMediasByExtensions(IEnumerable<string> extensions)
     {
-        return GetAllMedias().Where(x => extensions.Contains(Path.GetExtension(x.Name)));
+        if (extensions == null) return GetAllMedias();
+
+        var extensionSet = extensions
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Select(x => x.StartsWith(".") ? x : "." + x)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (extensionSet.Count == 0) return GetAllMedias();
+
+        return GetAllMedias().Where(x =>
+        {
+            var ext = Path.GetExtension(x.Name ?? string.Empty);
+            if (string.IsNullOrWhiteSpace(ext))
+            {
+                ext = Path.GetExtension(x.Url ?? string.Empty);
+            }
+
+            return !string.IsNullOrWhiteSpace(ext) && extensionSet.Contains(ext);
+        });
     }
 
     public void ModifyMedia(MediaEntity media)

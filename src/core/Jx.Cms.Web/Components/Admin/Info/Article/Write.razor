@@ -48,8 +48,9 @@
                     <div class="col-12">
                          <div class="d-flex justify-content-between align-items-center mb-2">
                              <label class="form-label mb-0">文章内容</label>
-                             <div class="d-flex gap-2">
-                                 <Button OnClick="AddMedia" Icon="fa fa-image" Text="添加媒体" Size="Size.ExtraSmall" Color="Color.Info"></Button>
+                             <div class="d-flex align-items-center gap-2 flex-nowrap">
+                                 <Button OnClick="AddMedia" Icon="fa fa-image" Text="添加媒体" Size="Size.Small"
+                                         Color="Color.Info" Class="text-nowrap px-3"></Button>
                                  <Switch @bind-Value="@Article.IsMarkdown" OnColor="Color.Success" OnText="Markdown"
                                          OffText="富文本" ShowLabel="false" OnValueChanged="OnValueChanged"></Switch>
                              </div>
@@ -175,13 +176,10 @@
         Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
 
         var article = Article.Adapt<ArticleEntity>();
-        foreach (var articlePlugin in ArticlePlugins)
+        if (!PluginUtil.OnContentBeforeSave(ArticlePlugins, article, out var errorMsg))
         {
-            if (!articlePlugin.OnArticleBeforeSave(article, out var errorMsg))
-            {
-                await ToastService.Error("保存失败", errorMsg);
-                return;
-            }
+            await ToastService.Error("保存失败", errorMsg);
+            return;
         }
 
         var ret = ArticleService.SaveArticle(article);
@@ -193,11 +191,17 @@
         });
         if (ret)
         {
-            foreach (var articlePlugin in ArticlePlugins)
+            var warnings = new List<string>();
+            PluginUtil.OnContentSaved(ArticlePlugins, article, warnings.Add);
+            if (warnings.Count > 0)
             {
-                articlePlugin?.OnArticleSaved(article);
+                await ToastService.Show(new ToastOption
+                {
+                    Category = ToastCategory.Warning,
+                    Title = "插件提示",
+                    Content = string.Join("；", warnings.Take(3))
+                });
             }
-
             NavigationManager.NavigateTo("Admin/Article/All");
         }
     }

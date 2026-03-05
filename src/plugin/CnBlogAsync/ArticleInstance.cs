@@ -52,8 +52,10 @@ public class ArticleInstance : IArticlePlugin
     {
         errorMsg = "";
         if (articleEntity.Status != ArticleStatusEnum.Published) return true;
-        if (articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.EnableFlag)
-                .Value != "是") return true;
+        articleEntity.Metas ??= new List<ArticleMetaEntity>();
+        var enableMeta = articleEntity.Metas.FirstOrDefault(x =>
+            x.PluginName == Constants.PluginName && x.Name == Constants.EnableFlag);
+        if (enableMeta == null || enableMeta.Value != "是") return true;
 
         var settingsService = _serviceProvider.GetRequiredService<ISettingsService>();
         var values = settingsService.GetAllValues(Constants.PluginName);
@@ -91,12 +93,11 @@ public class ArticleInstance : IArticlePlugin
             categoryName = $"[随笔分类]{catalogue.Name}";
         }
 
-        if (articleEntity.Metas.Any(x => x.PluginName == Constants.PluginName && x.Name == Constants.BlogId))
+        var blogIdMeta = articleEntity.Metas.FirstOrDefault(x =>
+            x.PluginName == Constants.PluginName && x.Name == Constants.BlogId);
+        if (blogIdMeta != null)
         {
-            client.EditPost(
-                articleEntity.Metas.First(x => x.PluginName == Constants.PluginName && x.Name == Constants.BlogId)
-                    .Value,
-                articleEntity.Title, content, new List<string> { categoryName }, true);
+            client.EditPost(blogIdMeta.Value, articleEntity.Title, content, new List<string> { categoryName }, true);
         }
         else
         {

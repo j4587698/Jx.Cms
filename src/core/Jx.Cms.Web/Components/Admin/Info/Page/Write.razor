@@ -81,7 +81,7 @@
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        ArticlePlugins = ArticlePluginCache.GetArticlePlugins();
+        ArticlePlugins = ArticlePluginCache.GetArticlePlugins().ToList();
         EditorExtModels = PluginUtil.OnArticleEditorShow(ArticlePlugins, ServiceProvider);
         ToolbarButtons = EditorExtModels.Select(x => x.ToolbarButton).ToList();
         Article = Id == 0 ? new ArticleEntity { IsPage = true, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published } : PageService.GetPageById(Id);
@@ -92,6 +92,12 @@
         var userName = HttpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
         Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
 
+        if (!PluginUtil.OnContentBeforeSave(ArticlePlugins, Article, out var errorMsg))
+        {
+            await ToastService.Error("保存失败", errorMsg);
+            return;
+        }
+
         var ret = PageService.SavePage(Article);
         await ToastService.Show(new ToastOption
         {
@@ -101,6 +107,17 @@
         });
         if (ret)
         {
+            var warnings = new List<string>();
+            PluginUtil.OnContentSaved(ArticlePlugins, Article, warnings.Add);
+            if (warnings.Count > 0)
+            {
+                await ToastService.Show(new ToastOption
+                {
+                    Category = ToastCategory.Warning,
+                    Title = "插件提示",
+                    Content = string.Join("；", warnings.Take(3))
+                });
+            }
             NavigationManager.NavigateTo("Admin/Page/All");
         }
     }

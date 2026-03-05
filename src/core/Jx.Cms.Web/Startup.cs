@@ -68,6 +68,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
         {
             o.EnableDetailedErrors = true;
             o.MaximumReceiveMessageSize = long.MaxValue;
+            o.DisableImplicitFromServicesParameters = true;
         });
     }
 

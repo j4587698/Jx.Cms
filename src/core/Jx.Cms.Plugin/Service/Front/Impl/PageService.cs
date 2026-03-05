@@ -25,7 +25,7 @@ public class PageService : IPageService
             Body = article,
             CommentCount = count
         };
-        PluginUtil.OnArticleShow(model);
+        model = PluginUtil.OnArticleShow(model);
         return model;
     }
 

@@ -20,29 +20,34 @@
             已选中 @MediaInfoVos.Count(x => x.IsSelected) 个媒体文件
             <ListView TItem="MediaInfoVo" Items="@MediaInfoVos" OnListViewItemClick="OnListViewItemClick">
                 <BodyTemplate>
-                    <Card Color="context.IsSelected ? Color.Dark : Color.None" IsCenter="true">
+                    <Card Color="context.IsSelected ? Color.Dark : Color.None" IsCenter="true" Class="media-list-card">
                         <HeaderTemplate>
-                            <div
-                                style="width: 150px;white-space: nowrap;overflow: hidden;-o-text-overflow: ellipsis;text-overflow: ellipsis;">@context.Name</div>
+                            <div class="media-list-name">@context.Name</div>
                         </HeaderTemplate>
                         <BodyTemplate>
                             @if (context.MediaType == MediaTypeEnum.Image)
                             {
-                                <img src="@context.Url?width=150&height=150" alt="@context.Name"/>
+                                <div class="media-list-thumb-wrap">
+                                    <img src="@context.Url" alt="@context.Name" class="media-list-thumb"/>
+                                </div>
                             }
                             else if (context.MediaType == MediaTypeEnum.Audio)
                             {
-                                <i style="width: 150px;height: 150px;font-size: 180px"
-                                   class="fa fa-file-audio-o fa-5x"></i>
+                                <div class="media-list-thumb-wrap">
+                                    <i class="fa fa-file-audio-o media-list-icon"></i>
+                                </div>
                             }
                             else if (context.MediaType == MediaTypeEnum.Video)
                             {
-                                <i style="width: 150px;height: 150px" class="fa fa-file-video-o fa-5x"></i>
+                                <div class="media-list-thumb-wrap">
+                                    <i class="fa fa-file-video-o media-list-icon"></i>
+                                </div>
                             }
                             else
                             {
-                                <i style="width: 150px;height: 150px;font-size: 180px" class="fa fa-file-o"
-                                   aria-hidden="true"></i>
+                                <div class="media-list-thumb-wrap">
+                                    <i class="fa fa-file-o media-list-icon" aria-hidden="true"></i>
+                                </div>
                             }
                         </BodyTemplate>
                     </Card>
@@ -54,7 +59,7 @@
         @if (SelectedMedia != null)
         {
             <Row ItemsPerRow="ItemsPerRow.One">
-                <img src="@SelectedMedia.Url" style="width: 100%"/>
+                <img src="@SelectedMedia.Url" class="media-preview"/>
                 <BootstrapInput @bind-Value="@SelectedMedia.Name" ShowLabel="true" DisplayText="媒体名"
                                 Readonly="true"></BootstrapInput>
                 <BootstrapInput @bind-Value="@SelectedMedia.Url" ShowLabel="true" DisplayText="地址"
@@ -67,6 +72,46 @@
     </div>
 </div>
 
+<style>
+    .media-list-card {
+        width: 180px;
+    }
+
+    .media-list-name {
+        width: 150px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .media-list-thumb-wrap {
+        width: 150px;
+        height: 150px;
+        margin: 0 auto;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .media-list-thumb {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+    }
+
+    .media-list-icon {
+        font-size: 72px;
+        color: #6c757d;
+    }
+
+    .media-preview {
+        width: 100%;
+        max-height: 300px;
+        object-fit: contain;
+    }
+</style>
 
 @code {
 
@@ -126,20 +171,31 @@
 
     private async Task OnClickToUpload(UploadFile file)
     {
-        if (!FileType.Any(x => x.Contains(Path.GetExtension(file.OriginFileName ?? ""))))
+        try
         {
-            await ToastService.Error($"不支持的文件类型，目前只支持{string.Join(",", FileType)}类型的文件");
-            return;
-        }
+            var fileName = file?.OriginFileName ?? "";
+            var extension = Path.GetExtension(fileName);
+            if (string.IsNullOrWhiteSpace(extension) ||
+                !FileType.Any(x => string.Equals(x, extension, StringComparison.OrdinalIgnoreCase)))
+            {
+                await ToastService.Error($"不支持的文件类型，目前只支持{string.Join(",", FileType)}类型的文件");
+                return;
+            }
 
-        if (!await MediaService.AddMediaAsync(file))
+            if (!await MediaService.AddMediaAsync(file))
+            {
+                var error = string.IsNullOrWhiteSpace(file?.Error) ? "请检查文件格式以及服务端日志" : file.Error;
+                await ToastService.Error($"文件上传失败:{error}");
+                return;
+            }
+
+            MediaInfoVos = MediaService.GetMediasByExtensions(FileType).Select(x => x.Adapt<MediaInfoVo>()).ToList();
+            StateHasChanged();
+        }
+        catch (Exception ex)
         {
-            await ToastService.Error($"文件上传失败:{file.Error}");
-            return;
+            await ToastService.Error($"文件上传异常:{ex.Message}");
         }
-
-        MediaInfoVos = MediaService.GetMediasByExtensions(FileType).Select(x => x.Adapt<MediaInfoVo>()).ToList();
-        StateHasChanged();
     }
 
 }

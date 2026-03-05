@@ -1,5 +1,6 @@
-﻿using System.Reflection;
+using System.Reflection;
 using Jx.Cms.Plugin.Plugin;
+using Jx.Cms.Plugin.Utils;
 
 namespace Jx.Cms.Plugin.Cache;
 
@@ -20,6 +21,6 @@ public class ArticlePluginCache : IPluginCache
     {
         return _articleTypes == null
             ? Array.Empty<IArticlePlugin>()
-            : _articleTypes.Select(x => Activator.CreateInstance(x) as IArticlePlugin);
+            : _articleTypes.Select(PluginInstanceFactory.CreateInstance<IArticlePlugin>).Where(x => x != null);
     }
 }
