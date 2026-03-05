@@ -107,7 +107,12 @@ public static class PluginUtil
     /// <returns></returns>
     public static ArticleModel OnArticleShow(ArticleModel articleModel)
     {
-        foreach (var instance in ArticlePluginCache.GetArticlePlugins()) instance?.OnArticleShow(articleModel);
+        foreach (var instance in ArticlePluginCache.GetArticlePlugins())
+        {
+            var ret = instance?.OnArticleShow(articleModel);
+            if (ret != null) articleModel = ret;
+        }
+
         return articleModel;
     }
 
@@ -185,6 +190,7 @@ public static class PluginUtil
 
     public static RenderFragment OnPluginPageShow(string menuId)
     {
+        if (PluginMenuModels == null || PluginMenuModels.Count == 0) return null;
         return PluginMenuModels.FirstOrDefault(x => x.MenuId == menuId)?.PluginBody;
     }
 }

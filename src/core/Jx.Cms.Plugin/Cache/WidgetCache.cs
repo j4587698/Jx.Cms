@@ -14,28 +14,33 @@ public class WidgetCache
 
     public static void UpdateCache()
     {
+        var widgetSidebarNames = Enum.GetNames<WidgetSidebarType>();
+        var widgetSidebarNameSet = new HashSet<string>(widgetSidebarNames, StringComparer.OrdinalIgnoreCase);
+
         var widgetsVos = SettingsEntity
-            .Where(x => x.Type == Constants.SystemType &&
-                        Enum.GetNames(typeof(WidgetSidebarType)).Contains(x.Name))
+            .Where(x => x.Type == Constants.SystemType)
+            .ToList()
+            .Where(x => widgetSidebarNameSet.Contains(x.Name))
             .ToDictionary(x => x.Name,
                 x => x.Value.IsNullOrEmpty()
                     ? new List<WidgetVo>()
-                    : JsonConvert.DeserializeObject<List<WidgetVo>>(x.Value));
-        var widgetTypes = AssemblyCache.TypeList
-            .Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
-            .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
+                    : JsonConvert.DeserializeObject<List<WidgetVo>>(x.Value) ?? new List<WidgetVo>(),
+                StringComparer.OrdinalIgnoreCase);
+        var widgetTypeMap = AssemblyCache.TypeList
+            .Where(x => !x.IsAbstract && typeof(IWidget).IsAssignableFrom(x))
+            .ToDictionary(x => x.Name, x => x, StringComparer.Ordinal);
+
         EnabledWidget.Clear();
-        foreach (var name in Enum.GetNames(typeof(WidgetSidebarType)))
+        foreach (var name in widgetSidebarNames)
         {
-            if (!widgetsVos.ContainsKey(name) ||
+            if (!widgetsVos.TryGetValue(name, out var savedWidgets) ||
                 !Enum.TryParse(name, true, out WidgetSidebarType widgetSidebarType)) continue;
 
             var widgets = new List<IWidget>();
-            foreach (var vo in widgetsVos[name])
+            foreach (var vo in savedWidgets)
             {
-                var type = widgetTypes.FirstOrDefault(x => x.Name == vo.Name);
-                if (type == null) continue;
-                var widget = Activator.CreateInstance(type.GetType()) as IWidget;
+                if (!widgetTypeMap.TryGetValue(vo.Name, out var widgetType)) continue;
+                if (Activator.CreateInstance(widgetType) is not IWidget widget) continue;
                 widget.Parameter = vo.Parameter;
                 widgets.Add(widget);
             }
