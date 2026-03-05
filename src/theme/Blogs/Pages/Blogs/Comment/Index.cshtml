@@ -6,6 +6,13 @@
 @model List<Jx.Cms.DbContext.Entities.Article.CommentEntity>
 
 @{
+	string GetSafeAuthorUrl(string authorUrl)
+	{
+		if (string.IsNullOrWhiteSpace(authorUrl)) return null;
+		if (!Uri.TryCreate(authorUrl, UriKind.Absolute, out var parsedUri)) return null;
+		return parsedUri.Scheme is Uri.UriSchemeHttp or Uri.UriSchemeHttps ? parsedUri.ToString() : null;
+	}
+
 	void CreateComment(CommentEntity comment, int floor)
 	{
 		var floorName = "";
@@ -37,8 +44,18 @@
 					<div class="comment-author">
 						<strong>
 							<span class="duzhe">
-								<a href="@comment.AuthorUrl" rel="external nofollow" target="_blank"
-								   class="url">@comment.AuthorName</a>
+								@{
+									var authorUrl = GetSafeAuthorUrl(comment.AuthorUrl);
+								}
+								@if (authorUrl == null)
+								{
+									<span class="url">@comment.AuthorName</span>
+								}
+								else
+								{
+									<a href="@authorUrl" rel="external nofollow" target="_blank"
+									   class="url">@comment.AuthorName</a>
+								}
 							</span>
 						</strong>
 						@if (comment.ParentId != 0)

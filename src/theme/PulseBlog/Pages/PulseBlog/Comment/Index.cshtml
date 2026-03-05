@@ -1,4 +1,4 @@
-@using Humanizer
+﻿@using Humanizer
 @using Jx.Cms.DbContext.Entities.Admin
 @using Jx.Cms.DbContext.Entities.Article
 @using Jx.Toolbox.Utils
@@ -18,7 +18,7 @@
                             <time datetime="@comment.CreateTime.ToString("O")">@comment.CreateTime.Humanize()</time>
                         </header>
                         <p>@comment.Content</p>
-                        <a href="javascript:void(0)" onclick="reply('@comment.Id', '@comment.AuthorName')">回复</a>
+                        <a href="javascript:void(0)" data-author="@comment.AuthorName" onclick="reply('@comment.Id', this)">Reply</a>
                     </div>
                 </article>
                 @if (comment.Child is { Count: > 0 })
@@ -33,7 +33,7 @@
 }
 
 <section class="comment-panel">
-    <h3>发表评论</h3>
+    <h3>Leave a Comment</h3>
     <form id="comment" method="post">
         @Html.AntiForgeryToken()
         @if (ViewData["user"] != null)
@@ -42,21 +42,21 @@
             <input type="hidden" name="@nameof(CommentEntity.AuthorName)" value="@user!.NickName"/>
             <input type="hidden" name="@nameof(CommentEntity.AuthorEmail)" value="@user!.Email"/>
             <input type="hidden" name="@nameof(CommentEntity.AuthorUrl)" value="@user!.HomePage"/>
-            <p class="login-hint">当前用户：@user.NickName</p>
+            <p class="login-hint">Current user: @user.NickName</p>
         }
         else
         {
             <div class="comment-inputs">
                 <label>
-                    昵称（必填）
+                    Name (required)
                     <input name="@nameof(CommentEntity.AuthorName)" type="text" value="@ViewData[nameof(CommentEntity.AuthorName)]"/>
                 </label>
                 <label>
-                    邮箱（必填）
+                    Email (required)
                     <input name="@nameof(CommentEntity.AuthorEmail)" type="text" value="@ViewData[nameof(CommentEntity.AuthorEmail)]"/>
                 </label>
                 <label>
-                    网址
+                    Website
                     <input name="@nameof(CommentEntity.AuthorUrl)" type="text" value="@ViewData[nameof(CommentEntity.AuthorUrl)]"/>
                 </label>
             </div>
@@ -66,15 +66,15 @@
         <input type="hidden" name="@nameof(CommentEntity.ParentId)" value="0"/>
         <span class="reply-badge" id="replyTo" style="display:none;"></span>
         <label>
-            评论内容
+            Comment
             <textarea name="@nameof(CommentEntity.Content)" rows="4"></textarea>
         </label>
-        <button type="submit">提交评论</button>
+        <button type="submit">Submit</button>
     </form>
 </section>
 
 <section class="comment-panel">
-    <h3>评论列表</h3>
+    <h3>Comments</h3>
     @if (Model.Any())
     {
         <ol class="comment-list">
@@ -83,21 +83,28 @@
     }
     else
     {
-        <p class="muted">还没有评论，来做第一个留言的人吧。</p>
+        <p class="muted">No comments yet. Be the first one to leave a message.</p>
     }
 </section>
 
 <script src="/User/common.js"></script>
 <script>
-    function reply(id, name) {
+    function reply(id, trigger) {
+        const name = trigger ? (trigger.getAttribute("data-author") || "") : "";
         const parent = document.querySelector("[name='@nameof(CommentEntity.ParentId)']");
         const badge = document.getElementById("replyTo");
         parent.value = id;
         badge.style.display = "inline-flex";
-        badge.innerHTML = `回复 ${name} <button type="button" id="clearReply">取消</button>`;
-        document.getElementById("clearReply").onclick = function () {
+        badge.textContent = `Reply ${name} `;
+
+        const clearButton = document.createElement("button");
+        clearButton.type = "button";
+        clearButton.textContent = "Cancel";
+        clearButton.onclick = function () {
             parent.value = "0";
             badge.style.display = "none";
         };
+
+        badge.appendChild(clearButton);
     }
 </script>

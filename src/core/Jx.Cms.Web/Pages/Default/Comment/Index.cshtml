@@ -19,7 +19,8 @@
                         </div>
                         <div class="col-4">
                             <div class="pull-right reply"><a href="javascript:void(0)"
-                                                             onclick="reply('@commentEntity.Id', '@commentEntity.AuthorName')"><span><i
+                                                             onclick="reply('@commentEntity.Id', this)"
+                                                             data-author="@commentEntity.AuthorName"><span><i
                                             class="fa fa-reply"></i> 回复</span></a></div>
                         </div>
                     </div>
@@ -102,15 +103,19 @@
 </div>
 <script src="/User/common.js"></script>
 <script>
-    function reply(id, name) {
+    function reply(id, trigger) {
+        var name = trigger ? ($(trigger).attr("data-author") || "") : "";
         $("[name='@nameof(CommentEntity.ParentId)']").val(id)
         var replyTo = $("#replyTo");
-        replyTo.html('回复' + name + '<i id="clearReply" class="fa fa-times" style="margin-left: 8px;width: 4px;height: 4px;margin-right: 4px"></i>')
-        replyTo.show();
-        $("#clearReply").click(function () {
+        replyTo.empty();
+        replyTo.append(document.createTextNode("回复 " + name));
+        var clearReply = $("<i class='fa fa-times' style='margin-left: 8px;width: 4px;height: 4px;margin-right: 4px;cursor:pointer'></i>");
+        clearReply.click(function () {
             $("[name='@nameof(CommentEntity.ParentId)']").val(0)
-            $("#replyTo").hide();
+            replyTo.hide();
         });
+        replyTo.append(clearReply);
+        replyTo.show();
         console.log("reply click");
     }
 </script>

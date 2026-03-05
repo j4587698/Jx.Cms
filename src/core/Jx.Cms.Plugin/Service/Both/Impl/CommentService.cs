@@ -31,19 +31,19 @@ public class CommentService : ICommentService
 
     public List<CommentEntity> GetCommentPageByArticleId(int articleId, int pageNumber, int pageSize)
     {
-        return CommentEntity.Where(x => x.ArticleEntity.Id == articleId && x.Status == CommentStatusEnum.Pass)
+        return CommentEntity.Where(x => x.ArticleId == articleId && x.Status == CommentStatusEnum.Pass)
             .OrderByDescending(x => x.Id).Page(pageNumber, pageSize).ToList();
     }
 
     public List<CommentEntity> GetCommentPageByArticleId(int articleId, int pageNumber, int pageSize, out long count)
     {
-        return CommentEntity.Where(x => x.ArticleEntity.Id == articleId && x.Status == CommentStatusEnum.Pass)
+        return CommentEntity.Where(x => x.ArticleId == articleId && x.Status == CommentStatusEnum.Pass)
             .OrderByDescending(x => x.Id).Count(out count).Page(pageNumber, pageSize).ToList();
     }
 
     public List<CommentEntity> GetAllCommentByArticleId(int articleId)
     {
-        return CommentEntity.Where(x => x.ArticleEntity.Id == articleId && x.Status == CommentStatusEnum.Pass)
+        return CommentEntity.Where(x => x.ArticleId == articleId && x.Status == CommentStatusEnum.Pass)
             .OrderByDescending(x => x.Id).ToList();
     }
 
@@ -62,6 +62,23 @@ public class CommentService : ICommentService
 
     public bool DeleteComment(CommentEntity commentEntity)
     {
-        return commentEntity.Delete();
+        if (commentEntity == null || commentEntity.Id <= 0) return false;
+
+        var ids = new HashSet<int> { commentEntity.Id };
+        var queue = new Queue<int>();
+        queue.Enqueue(commentEntity.Id);
+
+        while (queue.Count > 0)
+        {
+            var currentId = queue.Dequeue();
+            var childIds = CommentEntity.Where(x => x.ParentId == currentId).ToList(x => x.Id);
+            foreach (var childId in childIds)
+                if (ids.Add(childId))
+                    queue.Enqueue(childId);
+        }
+
+        return BaseEntity.Orm.Delete<CommentEntity>().Where(x => ids.Contains(x.Id)).ExecuteAffrows() > 0;
     }
 }
+
+

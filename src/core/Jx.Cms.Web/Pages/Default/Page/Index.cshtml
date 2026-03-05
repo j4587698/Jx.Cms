@@ -1,5 +1,8 @@
-﻿@model Jx.Cms.Themes.Vm.PageVm
+@model Jx.Cms.Themes.Vm.PageVm
 
+@{
+    var settings = ViewData["settings"] as Jx.Cms.Themes.Vm.SystemSettingsVm;
+}
 @Html.Raw(Model.HeaderExt)
 <!-- Page Header -->
 <header class="masthead" style="background-image: url('/Default/img/post-bg.jpg')">
@@ -29,9 +32,17 @@
     </div>
 </article>
 
-<div id="commentDiv">
-    @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
-</div>
+@if (settings != null && settings.CanComment && Model.Article.CanComment)
+{
+    <div id="commentDiv">
+        @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
+    </div>
+}
+else
+{
+    <p class="no-comments">评论已关闭！</p>
+}
 
 
 @Html.Raw(Model.BodyExt)
+

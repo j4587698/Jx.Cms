@@ -1,5 +1,8 @@
-﻿@model Jx.Cms.Themes.Vm.PostVm
+@model Jx.Cms.Themes.Vm.PostVm
 
+@{
+    var settings = ViewData["settings"] as Jx.Cms.Themes.Vm.SystemSettingsVm;
+}
 
 @Html.Raw(Model.HeaderExt)
 <!-- Page Header -->
@@ -63,9 +66,17 @@
     }
 </div>
 
-<div id="commentDiv">
-    @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
-</div>
+@if (settings != null && settings.CanComment && Model.Article.CanComment)
+{
+    <div id="commentDiv">
+        @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments, ViewData)
+    </div>
+}
+else
+{
+    <p class="no-comments">评论已关闭！</p>
+}
 
 
 @Html.Raw(Model.BodyExt)
+
