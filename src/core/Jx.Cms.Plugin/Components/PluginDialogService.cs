@@ -24,6 +24,9 @@ public class PluginDialogService
             builder.CloseComponent();
         };
 
+        // BootstrapBlazor v10 对部分 ResultDialogFooter 成员标记为过时，
+        // 但当前插件弹窗仍依赖这些回调来区分 Yes/No/Close 结果。
+#pragma warning disable CS0618
         option.FooterTemplate = BootstrapDynamicComponent.CreateComponent<ResultDialogFooter>(
             new Dictionary<string, object>
             {
@@ -63,6 +66,7 @@ public class PluginDialogService
                     })
                 }
             }).Render();
+#pragma warning restore CS0618
 
         var closeCallback = option.OnCloseAsync;
         option.OnCloseAsync = async () =>

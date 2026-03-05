@@ -31,7 +31,7 @@
         base.OnInitialized();
         _stepItems.Add(new StepOption
         {
-            Template = BootstrapDynamicComponent.CreateComponent<DbSetup>(new Dictionary<string, object?>
+            Template = BootstrapDynamicComponent.CreateComponent<DbSetup>(new Dictionary<string, object>
             {
                 {
                     nameof(StepBase.Next), () =>
@@ -55,7 +55,7 @@
         });
         _stepItems.Add(new StepOption
         {
-            Template = BootstrapDynamicComponent.CreateComponent<SettingStep>(new Dictionary<string, object?>
+            Template = BootstrapDynamicComponent.CreateComponent<SettingStep>(new Dictionary<string, object>
             {
                 {
                     nameof(StepBase.Next), () =>

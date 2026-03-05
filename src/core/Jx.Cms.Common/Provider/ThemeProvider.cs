@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+#nullable enable
+using Microsoft.AspNetCore.Http;
 using SixLabors.ImageSharp.Web.Providers;
 using SixLabors.ImageSharp.Web.Resolvers;
 
