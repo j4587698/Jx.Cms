@@ -26,9 +26,17 @@ public class WidgetCache
                     ? new List<WidgetVo>()
                     : JsonConvert.DeserializeObject<List<WidgetVo>>(x.Value) ?? new List<WidgetVo>(),
                 StringComparer.OrdinalIgnoreCase);
-        var widgetTypeMap = AssemblyCache.TypeList
-            .Where(x => !x.IsAbstract && typeof(IWidget).IsAssignableFrom(x))
-            .ToDictionary(x => x.Name, x => x, StringComparer.Ordinal);
+        var widgetTypeMap = new Dictionary<string, Type>(StringComparer.OrdinalIgnoreCase);
+        foreach (var type in AssemblyCache.TypeList.Where(x => !x.IsAbstract && typeof(IWidget).IsAssignableFrom(x)))
+        {
+            // 优先使用 IWidget.Name（后台持久化字段），并兼容历史上按类型名保存的值。
+            if (Activator.CreateInstance(type) is IWidget widget && !widget.Name.IsNullOrEmpty())
+            {
+                widgetTypeMap.TryAdd(widget.Name, type);
+            }
+
+            widgetTypeMap.TryAdd(type.Name, type);
+        }
 
         EnabledWidget.Clear();
         foreach (var name in widgetSidebarNames)
@@ -39,7 +47,7 @@ public class WidgetCache
             var widgets = new List<IWidget>();
             foreach (var vo in savedWidgets)
             {
-                if (!widgetTypeMap.TryGetValue(vo.Name, out var widgetType)) continue;
+                if (vo.Name.IsNullOrEmpty() || !widgetTypeMap.TryGetValue(vo.Name, out var widgetType)) continue;
                 if (Activator.CreateInstance(widgetType) is not IWidget widget) continue;
                 widget.Parameter = vo.Parameter;
                 widgets.Add(widget);

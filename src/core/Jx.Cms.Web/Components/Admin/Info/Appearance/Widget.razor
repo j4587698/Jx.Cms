@@ -1,4 +1,4 @@
-﻿@page "/Admin/Appearance/Widget"
+@page "/Admin/Appearance/Widget"
 @using System.Text.Json
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Common.Components
@@ -25,8 +25,20 @@
                     {
                         <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
                             <HeaderTemplate>
-                                添加到：<Select style="width: 100px" @bind-Value="BindMenu" Items="SelectedItems"
-                                               OnValueChanged="arg => OnAddWidget(arg, new WidgetVo { Id = Guid.NewGuid(), Name = widget.Name })"></Select>
+                                <div class="widget-palette-actions">
+                                    <span class="widget-drag-handle widget-drag-source"
+                                          title="拖拽到右侧菜单添加"
+                                          draggable="true"
+                                          @ondragstart="@(() => OnPaletteDragStart(widget.Name))"
+                                          @ondragend="@(() => ClearDragState())">
+                                        <i class="fa fa-arrows"></i>
+                                    </span>
+                                    <span>添加到：</span>
+                                    <Select style="width: 100px"
+                                            @bind-Value="BindMenu"
+                                            Items="SelectedItems"
+                                            OnValueChanged="arg => OnAddWidget(arg, widget)"></Select>
+                                </div>
                             </HeaderTemplate>
                             <BodyTemplate>
                                 @widget.Description
@@ -39,83 +51,485 @@
 
     </div>
     <div class="col col-4">
-        @foreach (var menu in typeof(WidgetSidebarType).ToSelectList())
+        @foreach (var menu in SidebarMenus)
         {
             <Card IsCollapsible="true" HeaderText="@menu.Text">
                 <BodyTemplate>
-                    @if (SavedWidgetType.ContainsKey(menu.Value))
-                    {
-                        var widgets = SavedWidgetType[menu.Value];
-                        foreach (var widgetVo in widgets)
-                        {
-                            if (WidgetTypes.Any(x => x.Name == widgetVo.Name))
-                            {
-                                var widget = WidgetTypes.First(x => x.Name == widgetVo.Name);
-                                <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
-                                    <HeaderTemplate>
-                                        <div class="pull-right">
-                                            <PopConfirmButton Color="Color.Danger" Content="确认删除此小工具吗？"
-                                                              Text="移除"
-                                                              OnConfirm="() => RemoveWidget(menu.Value, widgetVo)"></PopConfirmButton>
-                                        </div>
+                    <div class="widget-menu-drop @(IsMenuDropActive(menu.Value) ? "is-drag-over" : string.Empty)"
+                         @ondragenter="@(() => OnDragEnterMenu(menu.Value))"
+                         @ondragover:preventDefault="true"
+                         @ondrop="@(() => OnDropMenu(menu.Value))">
+                        @GetMenuDropHint(menu.Value)
+                    </div>
 
-                                    </HeaderTemplate>
-                                    <BodyTemplate>
-                                        @CreateSystemBody(menu.Value, widget.SystemBodyType, widgetVo)
-                                    </BodyTemplate>
-                                </Card>
+                    @if (SavedWidgetType.TryGetValue(menu.Value, out var widgets) && widgets.Count > 0)
+                    {
+                        @for (var index = 0; index < widgets.Count; index++)
+                        {
+                            var currentIndex = index;
+                            var widgetVo = widgets[currentIndex];
+                            var isFirst = currentIndex == 0;
+                            var isLast = currentIndex == widgets.Count - 1;
+                            if (WidgetMap.TryGetValue(widgetVo.Name, out var widget))
+                            {
+                                <div class="widget-draggable @(IsWidgetDropActive(menu.Value, widgetVo.Id) ? "is-drag-over" : string.Empty)"
+                                     @ondragenter="@(() => OnDragEnterWidget(menu.Value, widgetVo.Id))"
+                                     @ondragover:preventDefault="true"
+                                     @ondrop="@(() => OnDropWidget(menu.Value, widgetVo.Id))">
+                                    <Card IsCollapsible="true" HeaderText="@widget.DisplayName">
+                                        <HeaderTemplate>
+                                            <div class="widget-item-actions">
+                                                <span class="widget-drag-handle"
+                                                      title="拖拽排序或移动菜单"
+                                                      draggable="true"
+                                                      @ondragstart="@(() => OnWidgetDragStart(menu.Value, widgetVo.Id))"
+                                                      @ondragend="@(() => ClearDragState())">
+                                                    <i class="fa fa-arrows"></i>
+                                                </span>
+                                                <Button Size="Size.ExtraSmall"
+                                                        Color="Color.Secondary"
+                                                        Icon="fa fa-arrow-up"
+                                                        Text=""
+                                                        title="上移"
+                                                        IsDisabled="@isFirst"
+                                                        OnClick="@(() => MoveWidget(menu.Value, currentIndex, -1))"></Button>
+                                                <Button Size="Size.ExtraSmall"
+                                                        Color="Color.Secondary"
+                                                        Icon="fa fa-arrow-down"
+                                                        Text=""
+                                                        title="下移"
+                                                        IsDisabled="@isLast"
+                                                        OnClick="@(() => MoveWidget(menu.Value, currentIndex, 1))"></Button>
+                                                <PopConfirmButton Size="Size.ExtraSmall"
+                                                                  Placement="Placement.Left"
+                                                                  Color="Color.Danger"
+                                                                  Icon="fa fa-trash"
+                                                                  Text=""
+                                                                  title="移除"
+                                                                  Content="确认删除此小工具吗？"
+                                                                  CloseButtonText="取消"
+                                                                  ConfirmButtonText="删除"
+                                                                  ConfirmButtonColor="Color.Danger"
+                                                                  OnConfirm="() => RemoveWidget(menu.Value, widgetVo.Id)"></PopConfirmButton>
+                                            </div>
+                                        </HeaderTemplate>
+                                        <BodyTemplate>
+                                            @CreateSystemBody(menu.Value, widget.SystemBodyType, widgetVo)
+                                        </BodyTemplate>
+                                    </Card>
+                                </div>
                             }
                         }
+                    }
+                    else
+                    {
+                        <div class="widget-empty">当前侧栏暂无小工具</div>
                     }
                 </BodyTemplate>
             </Card>
             <br/>
         }
 
+        <div class="widget-trash-zone @(IsTrashDropActive ? "is-drag-over" : string.Empty)"
+             @ondragenter="@(() => OnDragEnterTrash())"
+             @ondragover:preventDefault="true"
+             @ondrop="@(() => OnDropTrash())">
+            <i class="fa fa-trash"></i>
+            <span>@GetTrashDropHint()</span>
+        </div>
+
     </div>
 </div>
+
+<style>
+    .widget-palette-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .widget-item-actions {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex-wrap: nowrap;
+        justify-content: flex-end;
+    }
+
+    .widget-drag-handle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 24px;
+        height: 24px;
+        border-radius: 4px;
+        color: #495057;
+        background: #f1f3f5;
+        cursor: grab;
+        user-select: none;
+    }
+
+    .widget-drag-handle:active {
+        cursor: grabbing;
+    }
+
+    .widget-drag-source {
+        margin-right: 2px;
+    }
+
+    .widget-draggable {
+        border: 1px dashed transparent;
+        border-radius: 6px;
+        transition: border-color .12s ease, background-color .12s ease;
+    }
+
+    .widget-menu-drop {
+        margin-bottom: 8px;
+        padding: 8px 10px;
+        border: 1px dashed #ced4da;
+        border-radius: 6px;
+        color: #6c757d;
+        font-size: 12px;
+        line-height: 1.4;
+        background: #f8f9fa;
+        transition: border-color .12s ease, background-color .12s ease, color .12s ease;
+    }
+
+    .widget-trash-zone {
+        margin-top: 10px;
+        padding: 10px 12px;
+        border: 1px dashed #dc3545;
+        border-radius: 6px;
+        color: #dc3545;
+        background: #fff5f5;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        line-height: 1.4;
+        transition: background-color .12s ease, box-shadow .12s ease;
+    }
+
+    .widget-draggable.is-drag-over,
+    .widget-menu-drop.is-drag-over {
+        border-color: #409eff;
+        background-color: #f4f9ff;
+        color: #1d5ca3;
+    }
+
+    .widget-trash-zone.is-drag-over {
+        background: #ffe3e3;
+        box-shadow: inset 0 0 0 1px #e03131;
+    }
+
+    .widget-empty {
+        color: #6c757d;
+        padding: 8px 0;
+    }
+</style>
 
 @code {
 
     private List<SelectedItem> SelectedItems { get; set; }
 
+    private List<SelectedItem> SidebarMenus { get; set; }
+
     private List<IWidget> WidgetTypes { get; set; }
+
+    private Dictionary<string, IWidget> WidgetMap { get; set; }
 
     private Dictionary<string, List<WidgetVo>> SavedWidgetType { get; set; }
 
     private string BindMenu { get; set; }
 
+    private DragPayloadType CurrentDragType { get; set; } = DragPayloadType.None;
+
+    private string DragWidgetName { get; set; }
+
+    private string DragFromMenu { get; set; }
+
+    private Guid? DragWidgetId { get; set; }
+
+    private string DragOverMenu { get; set; }
+
+    private Guid? DragOverWidgetId { get; set; }
+
+    private bool IsDragOverTrash { get; set; }
+
+    private bool IsPaletteWidgetDrag => CurrentDragType == DragPayloadType.Palette && !DragWidgetName.IsNullOrEmpty();
+
+    private bool IsExistingWidgetDrag =>
+        CurrentDragType == DragPayloadType.Existing && DragWidgetId != null && !DragFromMenu.IsNullOrEmpty();
+
+    private bool HasDragPayload => IsPaletteWidgetDrag || IsExistingWidgetDrag;
+
+    private bool IsTrashDropActive => HasDragPayload && IsDragOverTrash;
+
     protected override void OnInitialized()
     {
         base.OnInitialized();
 
-        SelectedItems = typeof(WidgetSidebarType).ToSelectList().ToList();
+        SidebarMenus = typeof(WidgetSidebarType).ToSelectList().ToList();
+        SelectedItems = SidebarMenus.ToList();
         SelectedItems.Insert(0, new SelectedItem("", "请选择"));
 
         WidgetTypes = AssemblyCache.TypeList.Where(x => !x.IsAbstract && x.GetInterfaces().Contains(typeof(IWidget)))
             .Select(x => Activator.CreateInstance(x) as IWidget).ToList();
-        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType))).Select(x => new { x.Key, Value = x.Value.IsNullOrEmpty() ? new List<WidgetVo>() : JsonSerializer.Deserialize<List<WidgetVo>>(x.Value) ?? new List<WidgetVo>() }).ToDictionary(x => x.Key, x => x.Value);
+        WidgetMap = WidgetTypes
+            .GroupBy(x => x.Name ?? "")
+            .Where(x => !x.Key.IsNullOrEmpty())
+            .ToDictionary(x => x.Key, x => x.First(), StringComparer.OrdinalIgnoreCase);
+        SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetSidebarType)))
+            .Select(x => new
+            {
+                x.Key,
+                Value = x.Value.IsNullOrEmpty()
+                    ? new List<WidgetVo>()
+                    : JsonSerializer.Deserialize<List<WidgetVo>>(x.Value) ?? new List<WidgetVo>()
+            }).ToDictionary(x => x.Key, x => x.Value, StringComparer.OrdinalIgnoreCase);
+
+        foreach (var menu in SidebarMenus)
+        {
+            SavedWidgetType.TryAdd(menu.Value, new List<WidgetVo>());
+        }
     }
 
-    private Task OnAddWidget(string menuName, WidgetVo widget)
+    private Task OnAddWidget(string menuName, IWidget widget)
     {
-        if (menuName.IsNullOrEmpty())
+        if (menuName.IsNullOrEmpty() || widget == null || widget.Name.IsNullOrEmpty()) return Task.CompletedTask;
+
+        AddWidgetByName(menuName, widget.Name);
+        BindMenu = "";
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private void OnPaletteDragStart(string widgetName)
+    {
+        if (widgetName.IsNullOrEmpty()) return;
+
+        CurrentDragType = DragPayloadType.Palette;
+        DragWidgetName = widgetName;
+        DragFromMenu = null;
+        DragWidgetId = null;
+        DragOverMenu = null;
+        DragOverWidgetId = null;
+        IsDragOverTrash = false;
+    }
+
+    private void OnWidgetDragStart(string menuName, Guid widgetId)
+    {
+        if (menuName.IsNullOrEmpty()) return;
+
+        CurrentDragType = DragPayloadType.Existing;
+        DragFromMenu = menuName;
+        DragWidgetId = widgetId;
+        DragWidgetName = null;
+        DragOverMenu = null;
+        DragOverWidgetId = null;
+        IsDragOverTrash = false;
+    }
+
+    private void OnDragEnterMenu(string menuName)
+    {
+        if (!HasDragPayload) return;
+
+        DragOverMenu = menuName;
+        DragOverWidgetId = null;
+        IsDragOverTrash = false;
+    }
+
+    private void OnDragEnterWidget(string menuName, Guid widgetId)
+    {
+        if (!HasDragPayload) return;
+
+        DragOverMenu = menuName;
+        DragOverWidgetId = widgetId;
+        IsDragOverTrash = false;
+    }
+
+    private void OnDragEnterTrash()
+    {
+        if (!HasDragPayload) return;
+
+        DragOverMenu = null;
+        DragOverWidgetId = null;
+        IsDragOverTrash = true;
+    }
+
+    private Task OnDropMenu(string menuName)
+    {
+        if (!HasDragPayload || menuName.IsNullOrEmpty())
         {
+            ClearDragState();
             return Task.CompletedTask;
         }
 
-        if (!SavedWidgetType.ContainsKey(menuName))
+        if (IsPaletteWidgetDrag)
         {
-            SavedWidgetType.Add(menuName, new List<WidgetVo>());
+            AddWidgetByName(menuName, DragWidgetName);
+            ToastService.Success("添加成功", $"已拖拽添加到 {GetMenuText(menuName)}");
+            ClearDragState();
+            StateHasChanged();
+            return Task.CompletedTask;
         }
 
-        SavedWidgetType[menuName].Add(widget);
-        SettingsService.SetValue(menuName, JsonSerializer.Serialize(SavedWidgetType[menuName]));
-        WidgetCache.UpdateCache();
-        //SavedWidgetType = SettingsService.GetValuesByNames(Enum.GetNames(typeof(WidgetMenuType))).Select(x => new {x.Key, Value = JSON.Deserialize<List<WidgetVo>>(x.Value)}).ToDictionary(x => x.Key, x => x.Value);
+        if (!TryGetExistingDragContext(out var sourceWidgets, out var sourceIndex, out var draggedWidget))
+        {
+            ClearDragState();
+            return Task.CompletedTask;
+        }
+
+        var targetWidgets = GetOrCreateMenuWidgets(menuName);
+        sourceWidgets.RemoveAt(sourceIndex);
+        targetWidgets.Add(draggedWidget);
+
+        SaveMenuWidgets(DragFromMenu, menuName);
+        if (!string.Equals(DragFromMenu, menuName, StringComparison.OrdinalIgnoreCase))
+        {
+            ToastService.Success("移动成功", $"已移动到 {GetMenuText(menuName)}");
+        }
+
+        ClearDragState();
         StateHasChanged();
-        BindMenu = "";
         return Task.CompletedTask;
+    }
+
+    private Task OnDropWidget(string menuName, Guid targetWidgetId)
+    {
+        if (!HasDragPayload || menuName.IsNullOrEmpty())
+        {
+            ClearDragState();
+            return Task.CompletedTask;
+        }
+
+        var targetWidgets = GetOrCreateMenuWidgets(menuName);
+        var targetIndex = targetWidgets.FindIndex(x => x.Id == targetWidgetId);
+        if (targetIndex < 0)
+        {
+            return OnDropMenu(menuName);
+        }
+
+        if (IsPaletteWidgetDrag)
+        {
+            AddWidgetByName(menuName, DragWidgetName, targetIndex);
+            ToastService.Success("添加成功", $"已拖拽添加到 {GetMenuText(menuName)}");
+            ClearDragState();
+            StateHasChanged();
+            return Task.CompletedTask;
+        }
+
+        if (!TryGetExistingDragContext(out var sourceWidgets, out var sourceIndex, out var draggedWidget))
+        {
+            ClearDragState();
+            return Task.CompletedTask;
+        }
+
+        if (string.Equals(DragFromMenu, menuName, StringComparison.OrdinalIgnoreCase))
+        {
+            if (sourceIndex == targetIndex)
+            {
+                ClearDragState();
+                return Task.CompletedTask;
+            }
+
+            sourceWidgets.RemoveAt(sourceIndex);
+            if (sourceIndex < targetIndex) targetIndex--;
+            targetWidgets.Insert(targetIndex, draggedWidget);
+            SaveMenuWidgets(menuName);
+        }
+        else
+        {
+            sourceWidgets.RemoveAt(sourceIndex);
+            targetWidgets.Insert(targetIndex, draggedWidget);
+            SaveMenuWidgets(DragFromMenu, menuName);
+            ToastService.Success("移动成功", $"已移动到 {GetMenuText(menuName)}");
+        }
+
+        ClearDragState();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private Task OnDropTrash()
+    {
+        if (!IsExistingWidgetDrag)
+        {
+            ClearDragState();
+            return Task.CompletedTask;
+        }
+
+        if (!TryGetExistingDragContext(out var sourceWidgets, out var sourceIndex, out _))
+        {
+            ClearDragState();
+            return Task.CompletedTask;
+        }
+
+        sourceWidgets.RemoveAt(sourceIndex);
+        SaveMenuWidgets(DragFromMenu);
+        ToastService.Success("移除成功", "小工具已从菜单移除");
+
+        ClearDragState();
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private bool IsMenuDropActive(string menuName)
+    {
+        return HasDragPayload &&
+               !IsDragOverTrash &&
+               DragOverWidgetId == null &&
+               string.Equals(DragOverMenu, menuName, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool IsWidgetDropActive(string menuName, Guid widgetId)
+    {
+        return HasDragPayload &&
+               !IsDragOverTrash &&
+               string.Equals(DragOverMenu, menuName, StringComparison.OrdinalIgnoreCase) &&
+               DragOverWidgetId == widgetId &&
+               !(IsExistingWidgetDrag &&
+                 string.Equals(DragFromMenu, menuName, StringComparison.OrdinalIgnoreCase) &&
+                 DragWidgetId == widgetId);
+    }
+
+    private string GetMenuDropHint(string menuName)
+    {
+        if (!HasDragPayload) return "拖拽到这里追加到末尾";
+        if (IsPaletteWidgetDrag) return "释放后将添加到此菜单";
+        if (!IsExistingWidgetDrag) return "拖拽到这里追加到末尾";
+
+        return string.Equals(DragFromMenu, menuName, StringComparison.OrdinalIgnoreCase)
+            ? "释放后移动到当前菜单末尾"
+            : "释放后将移动到此菜单";
+    }
+
+    private string GetTrashDropHint()
+    {
+        if (!HasDragPayload) return "把右侧小工具拖到这里可快速移除";
+        return IsExistingWidgetDrag ? "释放后移除该小工具" : "仅支持拖拽右侧已添加的小工具到此处移除";
+    }
+
+    private string GetMenuText(string menuName)
+    {
+        return SidebarMenus.FirstOrDefault(x => string.Equals(x.Value, menuName, StringComparison.OrdinalIgnoreCase))
+            ?.Text ?? menuName;
+    }
+
+    private bool TryGetExistingDragContext(out List<WidgetVo> sourceWidgets, out int sourceIndex, out WidgetVo draggedWidget)
+    {
+        sourceWidgets = null;
+        sourceIndex = -1;
+        draggedWidget = null;
+
+        if (!IsExistingWidgetDrag || DragWidgetId == null || DragFromMenu.IsNullOrEmpty()) return false;
+        if (!SavedWidgetType.TryGetValue(DragFromMenu, out sourceWidgets)) return false;
+
+        sourceIndex = sourceWidgets.FindIndex(x => x.Id == DragWidgetId.Value);
+        if (sourceIndex < 0) return false;
+
+        draggedWidget = sourceWidgets[sourceIndex];
+        return true;
     }
 
     private RenderFragment CreateSystemBody(string menuName, Type widgetType, WidgetVo widgetVo)
@@ -138,23 +552,99 @@
                 nameof(WidgetComponentBase.OnParameterSave), EventCallback.Factory.Create<string>(this, parameter =>
                 {
                     widgetVo.Parameter = parameter;
-                    var widgets = SavedWidgetType[menuName];
-                    SettingsService.SetValue(menuName, JsonSerializer.Serialize(widgets));
-                    WidgetCache.UpdateCache();
+                    SaveMenuWidgets(menuName);
                     StateHasChanged();
                 })
             }
         }).Render();
     }
 
-    private Task RemoveWidget(string menuName, WidgetVo widget)
+    private Task MoveWidget(string menuName, int index, int step)
     {
-        var widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
-        widgets.Remove(widget);
-        SettingsService.SetValue(menuName, JsonSerializer.Serialize(widgets));
-        WidgetCache.UpdateCache();
+        if (!SavedWidgetType.TryGetValue(menuName, out var widgets)) return Task.CompletedTask;
+
+        var targetIndex = index + step;
+        if (index < 0 || targetIndex < 0 || index >= widgets.Count || targetIndex >= widgets.Count) return Task.CompletedTask;
+
+        (widgets[index], widgets[targetIndex]) = (widgets[targetIndex], widgets[index]);
+        SaveMenuWidgets(menuName);
         StateHasChanged();
         return Task.CompletedTask;
     }
 
+    private Task RemoveWidget(string menuName, Guid widgetId)
+    {
+        var widgets = !SavedWidgetType.ContainsKey(menuName) ? new List<WidgetVo>() : SavedWidgetType[menuName];
+        widgets.RemoveAll(x => x.Id == widgetId);
+        SaveMenuWidgets(menuName);
+        StateHasChanged();
+        return Task.CompletedTask;
+    }
+
+    private void AddWidgetByName(string menuName, string widgetName, int? index = null)
+    {
+        if (menuName.IsNullOrEmpty() || widgetName.IsNullOrEmpty()) return;
+
+        var widgets = GetOrCreateMenuWidgets(menuName);
+        var widget = new WidgetVo
+        {
+            Id = Guid.NewGuid(),
+            Name = widgetName
+        };
+
+        if (index.HasValue && index.Value >= 0 && index.Value <= widgets.Count)
+        {
+            widgets.Insert(index.Value, widget);
+        }
+        else
+        {
+            widgets.Add(widget);
+        }
+
+        SaveMenuWidgets(menuName);
+    }
+
+    private List<WidgetVo> GetOrCreateMenuWidgets(string menuName)
+    {
+        if (!SavedWidgetType.TryGetValue(menuName, out var widgets))
+        {
+            widgets = new List<WidgetVo>();
+            SavedWidgetType[menuName] = widgets;
+        }
+
+        return widgets;
+    }
+
+    private void SaveMenuWidgets(params string[] menuNames)
+    {
+        var names = menuNames
+            .Where(x => !x.IsNullOrEmpty())
+            .Distinct(StringComparer.OrdinalIgnoreCase)
+            .ToList();
+        foreach (var menuName in names)
+        {
+            if (!SavedWidgetType.TryGetValue(menuName, out var widgets)) continue;
+            SettingsService.SetValue(menuName, JsonSerializer.Serialize(widgets));
+        }
+
+        WidgetCache.UpdateCache();
+    }
+
+    private void ClearDragState()
+    {
+        CurrentDragType = DragPayloadType.None;
+        DragWidgetName = null;
+        DragFromMenu = null;
+        DragWidgetId = null;
+        DragOverMenu = null;
+        DragOverWidgetId = null;
+        IsDragOverTrash = false;
+    }
+
+    private enum DragPayloadType
+    {
+        None,
+        Palette,
+        Existing
+    }
 }
