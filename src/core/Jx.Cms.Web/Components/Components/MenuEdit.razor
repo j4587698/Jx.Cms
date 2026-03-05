@@ -1,7 +1,7 @@
 ﻿@using Jx.Cms.Common.Enum
 @using Jx.Cms.DbContext.Entities.Front
-@using Jx.Cms.Plugin.Service.Both.Impl
-@inject MenuService MenuService
+@using Jx.Cms.Plugin.Service.Both
+@inject IMenuService MenuService
 
 <BootstrapInput @bind-Value="Context.Name" DisplayText="菜单名"></BootstrapInput>
 <Select Items="typeof(MenuTypeEnum).ToSelectList()" @bind-Value="Context.MenuType" IsDisabled="true"

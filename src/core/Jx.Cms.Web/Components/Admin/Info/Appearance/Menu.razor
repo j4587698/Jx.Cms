@@ -11,7 +11,6 @@
 @inject IPageService PageService
 @inject IArticleService ArticleService
 @inject IMenuService MenuService
-@inject MessageService MessageService
 @inject ICatalogService CatalogService
 
 @attribute [Menu("909EBEB6-3865-42CC-9E63-AF036B7AD2A3", "菜单", "Admin/Appearance/Menu", 10, ParentId = MenuIds.AppearanceId)]
@@ -104,6 +103,22 @@
                ShowExtendButtons="true"
                OnQueryAsync="OnQueryAsync" OnSaveAsync="OnSaveAsync" OnDeleteAsync="OnDeleteAsync"
                TreeNodeConverter="@TreeNodeConverter">
+            <RowButtonTemplate>
+                <TableCellButton Size="Size.ExtraSmall"
+                                 Color="Color.Secondary"
+                                 Icon="fa fa-arrow-up"
+                                 Text=""
+                                 TooltipText="上移"
+                                 IsDisabled="@(!CanMoveMenu(context, -1))"
+                                 OnClick="@(() => MoveMenu(context, -1))"></TableCellButton>
+                <TableCellButton Size="Size.ExtraSmall"
+                                 Color="Color.Secondary"
+                                 Icon="fa fa-arrow-down"
+                                 Text=""
+                                 TooltipText="下移"
+                                 IsDisabled="@(!CanMoveMenu(context, 1))"
+                                 OnClick="@(() => MoveMenu(context, 1))"></TableCellButton>
+            </RowButtonTemplate>
             <TableColumns>
                 <TableColumn @bind-Field="@context.Name" Text="菜单名"></TableColumn>
                 <TableColumn @bind-Field="@context.MenuType" Text="菜单类型"></TableColumn>
@@ -126,7 +141,7 @@
 
     private Table<MenuEntity> _table;
 
-    private readonly int _pageSize = 1;
+    private readonly int _pageSize = 10;
 
     #region Catalogue
 
@@ -158,10 +173,18 @@
 
     private void CatalogueSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString()!.Length > 1)
+        var keyword = e.Value?.ToString()?.Trim();
+        if (string.IsNullOrEmpty(keyword))
         {
-            _searchCatalogue = CatalogEntity.Select.Where(x => x.Name.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Name));
+            _searchCatalogue = new List<SelectedItem>();
+            _searchCatalogueValue = null;
+            return;
         }
+
+        _searchCatalogue = CatalogEntity.Select
+            .Where(x => x.Name.Contains(keyword))
+            .OrderByDescending(x => x.Id)
+            .ToList(x => new SelectedItem(x.Id.ToString(), x.Name));
     }
 
     private Task OnCatalogueAddClick()
@@ -221,10 +244,18 @@
 
     private void PageSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString()!.Length > 1)
+        var keyword = e.Value?.ToString()?.Trim();
+        if (string.IsNullOrEmpty(keyword))
         {
-            _searchPage = ArticleEntity.Select.Where(x => x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
+            _searchPage = new List<SelectedItem>();
+            _searchPageValue = null;
+            return;
         }
+
+        _searchPage = ArticleEntity.Select
+            .Where(x => x.IsPage && x.Title.Contains(keyword))
+            .OrderByDescending(x => x.Id)
+            .ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
     }
 
     private Task OnPageAddClick()
@@ -278,10 +309,18 @@
 
     private void ArticleSearch(ChangeEventArgs e)
     {
-        if (e.Value != null && e.Value.ToString()!.Length > 1)
+        var keyword = e.Value?.ToString()?.Trim();
+        if (string.IsNullOrEmpty(keyword))
         {
-            _searchArticle = ArticleEntity.Select.Where(x => !x.IsPage && x.Title.Contains(e.Value.ToString())).OrderByDescending(x => x.Id).ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
+            _searchArticle = new List<SelectedItem>();
+            _searchArticleValue = null;
+            return;
         }
+
+        _searchArticle = ArticleEntity.Select
+            .Where(x => !x.IsPage && x.Title.Contains(keyword))
+            .OrderByDescending(x => x.Id)
+            .ToList(x => new SelectedItem(x.Id.ToString(), x.Title));
     }
 
     private Task OnArticleClick(TabItem arg)
@@ -366,6 +405,52 @@
     private Task<bool> OnDeleteAsync(IEnumerable<MenuEntity> arg)
     {
         return Task.FromResult(MenuService.DeleteMenu(arg));
+    }
+
+    private Task MoveMenu(MenuEntity menu, int offset)
+    {
+        var siblings = GetOrderedSiblings(menu.ParentId);
+        var index = siblings.FindIndex(x => x.Id == menu.Id);
+        if (index < 0) return Task.CompletedTask;
+
+        var targetIndex = index + offset;
+        if (targetIndex < 0 || targetIndex >= siblings.Count) return Task.CompletedTask;
+
+        var target = siblings[index];
+        siblings.RemoveAt(index);
+        siblings.Insert(targetIndex, target);
+
+        SaveSiblingOrder(siblings);
+        _table.QueryAsync();
+        return Task.CompletedTask;
+    }
+
+    private bool CanMoveMenu(MenuEntity menu, int offset)
+    {
+        var siblings = GetOrderedSiblings(menu.ParentId);
+        var index = siblings.FindIndex(x => x.Id == menu.Id);
+        if (index < 0) return false;
+
+        var targetIndex = index + offset;
+        return targetIndex >= 0 && targetIndex < siblings.Count;
+    }
+
+    private List<MenuEntity> GetOrderedSiblings(int parentId)
+    {
+        return MenuService.GetMenuByParentId(parentId)
+            .OrderByDescending(x => x.Order)
+            .ThenByDescending(x => x.Id)
+            .ToList();
+    }
+
+    private void SaveSiblingOrder(List<MenuEntity> siblings)
+    {
+        for (var i = 0; i < siblings.Count; i++)
+        {
+            siblings[i].Order = siblings.Count - i;
+        }
+
+        MenuService.SaveMenu(siblings);
     }
 
     #endregion
