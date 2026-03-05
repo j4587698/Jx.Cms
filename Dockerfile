@@ -7,11 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
+COPY ["Directory.Build.props", "./"]
 COPY ["src/core/Jx.Cms.Web/Jx.Cms.Web.csproj", "src/core/Jx.Cms.Web/"]
 COPY ["src/core/Jx.Cms.Common/Jx.Cms.Common.csproj", "src/core/Jx.Cms.Common/"]
 COPY ["src/core/Jx.Cms.Themes/Jx.Cms.Themes.csproj", "src/core/Jx.Cms.Themes/"]
 COPY ["src/core/Jx.Cms.Plugin/Jx.Cms.Plugin.csproj", "src/core/Jx.Cms.Plugin/"]
 COPY ["src/core/Jx.Cms.DbContext/Jx.Cms.DbContext.csproj", "src/core/Jx.Cms.DbContext/"]
+COPY ["src/core/Jx.Cms.Install/Jx.Cms.Install.csproj", "src/core/Jx.Cms.Install/"]
 RUN dotnet restore "src/core/Jx.Cms.Web/Jx.Cms.Web.csproj"
 COPY . .
 WORKDIR "/src/src/core/Jx.Cms.Web"
