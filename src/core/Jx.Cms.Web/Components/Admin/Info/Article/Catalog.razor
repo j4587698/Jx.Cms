@@ -41,13 +41,21 @@
         <TableColumn @bind-Field="@context.Alias" Text="分类别名"></TableColumn>
         <TableColumn @bind-Field="@context.Parent" Text="父分类">
             <Template Context="value">
-                @if (value.Value == null)
+                @if (value.Row.ParentId == 0)
                 {
                     @("无")
                 }
-                else
+                else if (_catalogNameMap.TryGetValue(value.Row.ParentId, out var parentName))
+                {
+                    @parentName
+                }
+                else if (value.Value != null)
                 {
                     @value.Value.Name
+                }
+                else
+                {
+                    @("无")
                 }
             </Template>
         </TableColumn>
@@ -56,20 +64,32 @@
 
 @code {
     private readonly IEnumerable<int> _pageItemSource = new[] { 10, 20, 30, 40 };
+    private Dictionary<int, string> _catalogNameMap = new();
+    private List<CatalogEntity> _allCatalogs = new();
 
     private IEnumerable<SelectedItem> GetSelectItems(int id)
     {
+        if (_allCatalogs.Count == 0)
+        {
+            _allCatalogs = CatalogService.GetAllCatalogs();
+        }
+
         var list = new List<SelectedItem>
         {
             new("0", "无")
         };
-        list.AddRange(CatalogService.GetAllCatalogs().Where(x => x.Id != id).Select(x => new SelectedItem(x.Id.ToString(), x.Name)));
+        list.AddRange(_allCatalogs.Where(x => x.Id != id).Select(x => new SelectedItem(x.Id.ToString(), x.Name)));
         return list;
     }
 
     private Task<QueryData<CatalogEntity>> OnQueryAsync(QueryPageOptions arg)
     {
-        var catalogEntities = CatalogService.GetCatalogPage(arg.PageIndex - 1, arg.PageItems, out var count);
+        _allCatalogs = CatalogService.GetAllCatalogs();
+        _catalogNameMap = _allCatalogs
+            .GroupBy(x => x.Id)
+            .Select(x => x.First())
+            .ToDictionary(x => x.Id, x => x.Name);
+        var catalogEntities = CatalogService.GetCatalogPage(arg.PageIndex, arg.PageItems, out var count);
         return Task.FromResult(new QueryData<CatalogEntity>
         {
             Items = catalogEntities,

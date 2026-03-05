@@ -39,7 +39,7 @@ public class CatalogController : BaseController
 
         var catalogVm = new CatalogVm();
         catalogVm.Articles =
-            _catalogService.GetArticlesByCatalogId(id, false, pageNum, settings.CountPerPage, out var totalPage);
+            _catalogService.GetArticlesByCatalogId(id, true, pageNum, settings.CountPerPage, out var totalPage);
         catalogVm.Catalog = catalogue;
         catalogVm.PageNum = pageNum;
         catalogVm.PageSize = settings.CountPerPage;
