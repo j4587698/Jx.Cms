@@ -6,12 +6,12 @@
 @inject ToastService ToastService
 @inject DialogService DialogService
 
-<Row ItemsPerRow="ItemsPerRow.Two">
+<div class="settings-header">
     <h3>Pulse Blog 主题设置</h3>
-    <Button style="float: right" OnClick="Save">保存</Button>
-</Row>
+    <Button Color="Color.Primary" OnClick="Save">保存</Button>
+</div>
 
-<Tab>
+<Tab class="settings-tab">
     <TabItem Text="基础">
         <Row ItemsPerRow="ItemsPerRow.One">
             <BootstrapInputGroup>
@@ -27,6 +27,7 @@
             <BootstrapInput @bind-Value="_settings.HeroTitle" ShowLabel="true"></BootstrapInput>
             <BootstrapInput @bind-Value="_settings.HeroSubtitle" ShowLabel="true"></BootstrapInput>
             <Select Items="@typeof(SidebarLayoutEnum).ToSelectList()" @bind-Value="_settings.Sidebar" ShowLabel="true"></Select>
+            <Select Items="@typeof(ListPaginationModeEnum).ToSelectList()" @bind-Value="_settings.ListPaginationMode" ShowLabel="true"></Select>
         </Row>
     </TabItem>
     <TabItem Text="配色与SEO">
@@ -52,6 +53,25 @@
 </Tab>
 
 <style>
+    .settings-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .75rem;
+        min-height: 48px;
+        margin-bottom: .75rem;
+        flex-wrap: wrap;
+    }
+
+    .settings-header h3 {
+        margin: 0;
+        line-height: 1.4;
+    }
+
+    .settings-tab {
+        min-height: 0;
+    }
+
     .preset-color {
         float: left;
         width: 28px;

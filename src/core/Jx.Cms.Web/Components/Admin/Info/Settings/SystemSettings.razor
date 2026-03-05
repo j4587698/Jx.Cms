@@ -25,6 +25,8 @@
             <Row ItemsPerRow="ItemsPerRow.One">
                 <BootstrapInputNumber @bind-Value="@_systemSettings.CountPerPage"
                                       DisplayText="每页显示数量"></BootstrapInputNumber>
+                <BootstrapInputNumber @bind-Value="@_systemSettings.SearchRateLimitPerMinute"
+                                      DisplayText="搜索每分钟限流次数"></BootstrapInputNumber>
                 <Switch @bind-Value="@_systemSettings.CanComment" DisplayText="允许评论"></Switch>
                 <Switch @bind-Value="@_systemSettings.CommentNeedVerify" DisplayText="评论需要审核"></Switch>
                 <Switch @bind-Value="@_systemSettings.EditWithMarkdown"

@@ -74,6 +74,16 @@ public interface IArticleService
     List<ArticleEntity> GetArticleByLabel(string label, int pageNumber, int pageSize, out long count);
 
     /// <summary>
+    ///     根据关键词搜索文章
+    /// </summary>
+    /// <param name="keyword">搜索关键词</param>
+    /// <param name="pageNumber">第几页</param>
+    /// <param name="pageSize">每页条数</param>
+    /// <param name="count">总数</param>
+    /// <returns>文章列表</returns>
+    List<ArticleEntity> SearchArticles(string keyword, int pageNumber, int pageSize, out long count);
+
+    /// <summary>
     ///     获取相关文章（根据所在分类以及相同Label）
     /// </summary>
     /// <param name="baseArticle">基准文章</param>

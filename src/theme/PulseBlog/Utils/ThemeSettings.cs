@@ -21,6 +21,12 @@ public static class ThemeSettings
                 continue;
             }
 
+            if (kv.Key == nameof(SettingsModel.ListPaginationMode))
+            {
+                model.SetProperty(kv.Key, (kv.Value ?? "").ToEnum<ListPaginationModeEnum>());
+                continue;
+            }
+
             model.SetProperty(kv.Key, kv.Value ?? "");
         }
 

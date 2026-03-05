@@ -57,6 +57,12 @@ public class SystemSettingsVm
     /// </summary>
     public bool EditWithMarkdown { get; set; }
 
+    /// <summary>
+    ///     搜索接口每分钟限流次数
+    /// </summary>
+    [Required]
+    public int SearchRateLimitPerMinute { get; set; } = 5;
+
     public static SystemSettingsVm Init()
     {
         var settings = new SystemSettingsVm();

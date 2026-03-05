@@ -84,6 +84,26 @@ public class ArticleService : IArticleService
             .IncludeMany(x => x.Comments.Select(y => new CommentEntity { Id = y.Id })).ToList();
     }
 
+    public List<ArticleEntity> SearchArticles(string keyword, int pageNumber, int pageSize, out long count)
+    {
+        if (string.IsNullOrWhiteSpace(keyword))
+        {
+            count = 0;
+            return new List<ArticleEntity>();
+        }
+
+        var trimmed = keyword.Trim();
+        return ArticleEntity.Select
+            .Where(x => !x.IsPage && x.Status == ArticleStatusEnum.Published)
+            .Where(x => x.Title.Contains(trimmed) || x.Description.Contains(trimmed) || x.Content.Contains(trimmed))
+            .OrderByDescending(x => x.PublishTime)
+            .Count(out count)
+            .Page(pageNumber, pageSize)
+            .Include(x => x.Catalogue)
+            .IncludeMany(x => x.Comments.Select(y => new CommentEntity { Id = y.Id }))
+            .ToList();
+    }
+
     public List<ArticleEntity> GetRelevantArticle(ArticleEntity baseArticle, int count = 10)
     {
         var articles = new List<ArticleEntity>();

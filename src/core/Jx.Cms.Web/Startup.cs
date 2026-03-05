@@ -5,8 +5,11 @@ using Jx.Cms.Common.Utils;
 using Jx.Cms.DbContext;
 using Jx.Cms.Install;
 using Jx.Cms.Plugin;
+using Jx.Cms.Plugin.Service.Both;
 using Jx.Cms.Themes;
+using Jx.Cms.Themes.Vm;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Threading.RateLimiting;
 
 namespace Jx.Cms.Web;
 
@@ -64,6 +67,32 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
             op.LoginPath = "/Admin/Login";
         });
         services.AddBootstrapBlazor();
+        services.AddRateLimiter(options =>
+        {
+            options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+            options.AddPolicy("search", context =>
+            {
+                var searchRateLimitPerMinute = 5;
+                var settingsService = context.RequestServices.GetService<ISettingsService>();
+                if (settingsService != null)
+                {
+                    var dbValue = settingsService.GetValue(nameof(SystemSettingsVm.SearchRateLimitPerMinute));
+                    if (int.TryParse(dbValue, out var parsed) && parsed > 0)
+                        searchRateLimitPerMinute = Math.Clamp(parsed, 1, 100);
+                }
+
+                var remoteIp = context.Connection.RemoteIpAddress?.ToString() ?? "unknown";
+                var partitionKey = $"{remoteIp}:{searchRateLimitPerMinute}";
+                return RateLimitPartition.GetFixedWindowLimiter(partitionKey, _ => new FixedWindowRateLimiterOptions
+                {
+                    PermitLimit = searchRateLimitPerMinute,
+                    Window = TimeSpan.FromMinutes(1),
+                    QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+                    QueueLimit = 0,
+                    AutoReplenishment = true
+                });
+            });
+        });
         services.AddSignalR(o =>
         {
             o.EnableDetailedErrors = true;
@@ -95,6 +124,7 @@ public class Startup(IConfiguration configuration, IWebHostEnvironment environme
 
         // 原始中间件配置
         app.UseRouting();
+        app.UseRateLimiter();
         app.UseCookiePolicy();
         app.UseAuthentication();
         app.UseAuthorization();

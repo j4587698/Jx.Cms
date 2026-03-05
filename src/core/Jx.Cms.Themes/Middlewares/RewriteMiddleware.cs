@@ -107,6 +107,7 @@ public class RewriteMiddleware
 
         if (path.StartsWith("/Admin", StringComparison.OrdinalIgnoreCase) ||
             path.StartsWith("/Install", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/Search", StringComparison.OrdinalIgnoreCase) ||
             path.StartsWith("/_blazor", StringComparison.OrdinalIgnoreCase) ||
             path.StartsWith("/_framework", StringComparison.OrdinalIgnoreCase) ||
             path.StartsWith("/_content", StringComparison.OrdinalIgnoreCase) ||

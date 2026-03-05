@@ -24,6 +24,9 @@ public class SettingsModel
     [DisplayName("侧边栏布局")]
     public SidebarLayoutEnum Sidebar { get; set; } = SidebarLayoutEnum.Right;
 
+    [DisplayName("列表分页模式")]
+    public ListPaginationModeEnum ListPaginationMode { get; set; } = ListPaginationModeEnum.Pager;
+
     [DisplayName("站点关键词")]
     public string Keywords { get; set; } = "";
 

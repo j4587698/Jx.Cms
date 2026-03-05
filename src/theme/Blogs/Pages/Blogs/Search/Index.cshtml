@@ -1,0 +1,87 @@
+@using Blogs.Enum
+@using Blogs.Model
+@using Jx.Cms.Themes.Vm
+@model SearchVm
+
+@{
+    var blogs = ViewBag.blogs as SettingsModel;
+    var query = Model.Query ?? "";
+    var encodedQuery = Uri.EscapeDataString(query);
+}
+
+<nav class="breadcrumb"><a title="返回首页" href="/">首页</a>
+    @if (query != "")
+    {
+        @: › 搜索：@query
+    }
+</nav>
+
+<div id="content" class="site-content">
+    <div class="clear"></div>
+    <div id="contentab">
+        <section id="primary" class="content-area">
+            <main id="main" class="site-main" role="main">
+
+                <div id="post_list_box" class="border_gray">
+                    @if (query == "")
+                    {
+                        <div style="padding: 18px 20px;">请输入关键词后进行搜索。</div>
+                    }
+                    else if (Model.Articles is { Count: > 0 })
+                    {
+                        @await Html.PartialAsync("_articleList", Model.Articles, ViewData)
+                    }
+                    else
+                    {
+                        <div style="padding: 18px 20px;">没有找到与“@query”相关的内容。</div>
+                    }
+
+                </div>
+            </main>
+            @if (Model.Pagination is { Count: > 0 })
+            {
+                <nav class="navigation pagination" role="navigation">
+                    <div class="nav-links">
+                        @foreach (var pagination in Model.Pagination)
+                        {
+                            if (pagination.Key == Model.PageNum.ToString())
+                            {
+                                <span class='page-numbers current'>@pagination.Key</span>
+                            }
+                            else if (pagination.Key == "<")
+                            {
+                                <span class="prev"><a class="page-numbers" href="/search?q=@encodedQuery&pageNum=@pagination.Value"
+                                                      title="上一页"><i class="fa fa-angle-left"></i></a></span>
+                            }
+                            else if (pagination.Key == ">")
+                            {
+                                <span class="next"><a class="page-numbers" href="/search?q=@encodedQuery&pageNum=@pagination.Value"
+                                                      title="下一页"><i class="fa fa-angle-right"></i></a></span>
+                            }
+                            else if (pagination.Key == "<<")
+                            {
+                                <a class="page-numbers" href="/search?q=@encodedQuery&pageNum=@pagination.Value" title="第1页"><i
+                                        class="fa fa-angle-double-left"></i></a>
+                            }
+                            else if (pagination.Key == ">>")
+                            {
+                                <a class="page-numbers" href="/search?q=@encodedQuery&pageNum=@pagination.Value" title="最后一页"><i
+                                        class="fa fa-angle-double-right"></i></a>
+                            }
+                            else
+                            {
+                                <a class="page-numbers" href="/search?q=@encodedQuery&pageNum=@pagination.Value"
+                                   title="第 @pagination.Key 页">@pagination.Key</a>
+                            }
+                        }
+                    </div>
+                </nav>
+            }
+        </section>
+        @if (blogs.Sidebar != SidebarEnum.None)
+        {
+            <sidebar sidebar="MainMenu"></sidebar>
+        }
+    </div>
+    <div class="clear"></div>
+</div>
