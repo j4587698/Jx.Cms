@@ -14,6 +14,11 @@ public class UiConfigureOptions : IPostConfigureOptions<StaticFileOptions>
 
     private MyCompositeFileProvider _filesProvider;
 
+    public UiConfigureOptions()
+    {
+        PluginUtil.PluginModify = ModifyPlugin;
+    }
+
     public void PostConfigure(string name, StaticFileOptions options)
     {
         name = name ?? throw new ArgumentNullException(nameof(name));
@@ -36,13 +41,27 @@ public class UiConfigureOptions : IPostConfigureOptions<StaticFileOptions>
         // Basic initialization in case the options weren't initialized by any other component
         options.ContentTypeProvider ??= new FileExtensionContentTypeProvider();
 
-        options.FileProvider = new CompositeFileProvider(options.FileProvider, _filesProvider);
+        options.FileProvider = options.FileProvider == null
+            ? _filesProvider
+            : new CompositeFileProvider(options.FileProvider, _filesProvider);
     }
 
     public void ModifyPlugin(PluginConfig pluginConfig)
     {
+        if (pluginConfig == null || string.IsNullOrWhiteSpace(pluginConfig.PluginPath) || _filesProvider == null) return;
+
+        // 禁用插件时只需要从组合文件提供器中移除，避免依赖卸载后的程序集实例。
+        if (!pluginConfig.IsEnable)
+        {
+            _filesProvider.ModifyPlugin(pluginConfig, null);
+            return;
+        }
+
+        var assembly = DefaultPlugin.GetAssemblyByPluginId(pluginConfig.PluginId);
+        if (assembly == null) return;
+
         _filesProvider.ModifyPlugin(pluginConfig,
-            new EmbeddedFileProvider(DefaultPlugin.GetAssemblyByPluginId(pluginConfig.PluginId),
+            new EmbeddedFileProvider(assembly,
                 $"{Path.GetFileNameWithoutExtension(pluginConfig.PluginPath)}.{_basePath}"));
     }
 }

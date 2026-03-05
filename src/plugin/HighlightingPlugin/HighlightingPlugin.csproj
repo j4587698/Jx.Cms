@@ -15,17 +15,35 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj"/>
+        <ProjectReference Include="..\..\core\Jx.Cms.Plugin\Jx.Cms.Plugin.csproj">
+            <Private>false</Private>
+        </ProjectReference>
     </ItemGroup>
+
+    <Target Name="SetAllProjectReferenceAsPublic" AfterTargets="AssignProjectConfiguration"
+            BeforeTargets="ResolveProjectReferences"
+            Condition="'$(OutputType)' == 'Library' and $(AssemblyName.EndsWith('Tests')) == 'false' ">
+        <ItemGroup>
+            <ProjectReferenceWithConfiguration Update="@(ProjectReferenceWithConfiguration)">
+                <Private>false</Private>
+            </ProjectReferenceWithConfiguration>
+            <ProjectReference Update="@(ProjectReference)">
+                <Private>false</Private>
+            </ProjectReference>
+        </ItemGroup>
+    </Target>
+
     <Target Name="PostBuild" AfterTargets="PostBuildEvent">
         <PropertyGroup>
             <PluginOutputDir>$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Plugin\$(TargetName)\</PluginOutputDir>
         </PropertyGroup>
         <ItemGroup>
-            <PluginDllFiles Include="$(TargetDir)*.dll"/>
+            <PluginDllFiles Include="$(TargetDir)*.dll" Exclude="$(TargetDir)Jx.Cms.*.dll"/>
             <PluginConfigFile Include="$(TargetDir)plugin.json" Condition="Exists('$(TargetDir)plugin.json')"/>
+            <PluginCoreDllFiles Include="$(PluginOutputDir)Jx.Cms.*.dll"/>
         </ItemGroup>
         <MakeDir Directories="$(PluginOutputDir)"/>
+        <Delete Files="@(PluginCoreDllFiles)"/>
         <Copy SourceFiles="@(PluginDllFiles)" DestinationFolder="$(PluginOutputDir)" SkipUnchangedFiles="true"/>
         <Copy SourceFiles="@(PluginConfigFile)" DestinationFolder="$(PluginOutputDir)" SkipUnchangedFiles="true"
               Condition="'@(PluginConfigFile)' != ''"/>

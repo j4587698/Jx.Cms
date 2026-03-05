@@ -17,7 +17,24 @@ namespace Jx.Cms.Plugin.Utils;
 
 public static class PluginUtil
 {
+    /// <summary>
+    ///     插件变更通知（用于刷新静态文件提供器等运行时状态）
+    /// </summary>
+    public static Action<PluginConfig> PluginModify;
+
     private static List<PluginMenuModel> PluginMenuModels { get; set; }
+
+    private static void NotifyPluginModify(PluginConfig pluginConfig)
+    {
+        try
+        {
+            PluginModify?.Invoke(pluginConfig);
+        }
+        catch (Exception ex)
+        {
+            HandleHookException(pluginConfig, nameof(PluginModify), ex);
+        }
+    }
 
     private static void HandleHookException(object pluginInstance, string hookName, Exception ex,
         Action<string> onWarning = null)
@@ -95,6 +112,8 @@ public static class PluginUtil
             try
             {
                 DefaultPlugin.UnloadPlugin(plugin);
+                plugin.IsEnable = false;
+                NotifyPluginModify(plugin);
             }
             catch (Exception ex)
             {
@@ -113,6 +132,8 @@ public static class PluginUtil
             try
             {
                 DefaultPlugin.LoadPlugin(plugin);
+                plugin.IsEnable = true;
+                NotifyPluginModify(plugin);
             }
             catch (Exception ex)
             {
@@ -147,6 +168,8 @@ public static class PluginUtil
         }
 
         DefaultPlugin.UnloadPlugin(plugin);
+        plugin.IsEnable = false;
+        NotifyPluginModify(plugin);
         if (plugin.PluginPath.IsNullOrEmpty()) return false;
         Directory.Delete(Path.GetDirectoryName(plugin.PluginPath)!, true);
         return true;
