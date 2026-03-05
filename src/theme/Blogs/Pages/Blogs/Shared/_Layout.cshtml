@@ -2,12 +2,15 @@
 @using Jx.Cms.Themes.Vm
 @using Jx.Cms.Common.Extensions
 @using Jx.Toolbox.Extensions
+@using Jx.Cms.Plugin.Service.Both
+@inject IMenuService MenuService
 @{
 	var type = ViewBag.type as string;
 
 	var settings = ViewData["settings"] as SystemSettingsVm;
 
 	var blogs = ViewBag.blogs as SettingsModel;
+	var hasFriendLinks = MenuService.GetAllLinks() is { Count: > 0 };
 }
 
 <!DOCTYPE html>
@@ -184,7 +187,7 @@
 @RenderBody()
 <div id="footer">
 	<div class="foot">
-		@if (type == "Home")
+		@if (hasFriendLinks)
 		{
 			<div id="links">
 				<ul class="linkcat">

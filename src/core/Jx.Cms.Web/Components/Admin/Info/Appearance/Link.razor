@@ -18,6 +18,7 @@
         <TableColumn @bind-Field="@context.NavTitle" Text="导航标签"></TableColumn>
         <TableColumn @bind-Field="@context.Title" Text="描述"></TableColumn>
         <TableColumn @bind-Field="@context.Url" Text="链接地址"></TableColumn>
+        <TableColumn @bind-Field="@context.Order" Text="排序"></TableColumn>
         <TableColumn @bind-Field="@context.OpenInNewWindow" Text="新标签页打开">
             <Template Context="value">
                 @(value.Value ? "是" : "否")
@@ -57,7 +58,8 @@
         var menuEntity = new MenuEntity
         {
             MenuType = MenuTypeEnum.CustomUrl,
-            MenuName = Constants.Link
+            MenuName = Constants.Link,
+            Order = 0
         };
         return Task.FromResult(menuEntity);
     }

@@ -1,7 +1,10 @@
 ﻿@using Jx.Cms.DbContext.Entities.Front
 @using Jx.Cms.Themes.Vm
+@using Jx.Cms.Plugin.Service.Both
+@inject IMenuService MenuService
 @{
   var settings = ViewData["settings"] as SystemSettingsVm;
+  var hasFriendLinks = MenuService.GetAllLinks() is { Count: > 0 };
 }
 
 <!DOCTYPE html>
@@ -88,6 +91,17 @@
 <!-- Footer -->
 <footer>
   <div class="container">
+    @if (hasFriendLinks)
+    {
+      <div class="row mb-3">
+        <div class="col-lg-8 col-md-10 mx-auto">
+          <strong class="d-block mb-2">友情链接：</strong>
+          <ul class="list-unstyled mb-0">
+            <friend-link></friend-link>
+          </ul>
+        </div>
+      </div>
+    }
     <div class="row">
       <div class="col-lg-8 col-md-10 mx-auto">
         <p class="copyright text-muted">@settings.CopyRight
@@ -101,3 +115,4 @@
 </body>
 
 </html>
+

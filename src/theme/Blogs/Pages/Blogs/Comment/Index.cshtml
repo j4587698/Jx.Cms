@@ -10,7 +10,9 @@
 	{
 		if (string.IsNullOrWhiteSpace(authorUrl)) return null;
 		if (!Uri.TryCreate(authorUrl, UriKind.Absolute, out var parsedUri)) return null;
-		return parsedUri.Scheme is Uri.UriSchemeHttp or Uri.UriSchemeHttps ? parsedUri.ToString() : null;
+		return parsedUri.Scheme == Uri.UriSchemeHttp || parsedUri.Scheme == Uri.UriSchemeHttps
+			? parsedUri.ToString()
+			: null;
 	}
 
 	void CreateComment(CommentEntity comment, int floor)

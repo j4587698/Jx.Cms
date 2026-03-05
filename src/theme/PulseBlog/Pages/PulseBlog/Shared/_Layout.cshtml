@@ -1,13 +1,16 @@
 ﻿@using System.Text.Json
 @using Jx.Cms.Themes.Util
 @using Jx.Cms.Themes.Vm
+@using Jx.Cms.Plugin.Service.Both
 @using Jx.Toolbox.Extensions
 @using PulseBlog.Model
 @using PulseBlog.Utils
+@inject IMenuService MenuService
 @{
     var pageType = (ViewBag.type as string ?? "Home").Trim();
     var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
     var settings = ViewData["settings"] as SystemSettingsVm ?? new SystemSettingsVm();
+    var hasFriendLinks = MenuService.GetAllLinks() is { Count: > 0 };
 
     theme.AccentColor = ThemeViewHelper.NormalizeColor(theme.AccentColor);
 
@@ -229,7 +232,7 @@
 
 <footer class="site-footer">
     <div class="container">
-        @if (pageType == "Home")
+        @if (hasFriendLinks)
         {
             <section class="friend-section">
                 <h3>友情链接</h3>
