@@ -163,17 +163,75 @@
         var article = Id == 0 ? new ArticleEntity { IsPage = false, PublishTime = DateTime.Now, Status = ArticleStatusEnum.Published, IsMarkdown = settingsVm.EditWithMarkdown } : ArticleService.GetArticleById(Id);
         BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, article);
         RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, article);
-        Article = article.Adapt<ArticleVm>();
+        Article = CreateArticleVm(article);
         if (Article.CatalogueId == 0 && Catalogs.Any())
         {
             Article.CatalogueId = int.Parse(Catalogs.First().Value);
         }
     }
 
+    private static ArticleVm CreateArticleVm(ArticleEntity article)
+    {
+        article ??= new ArticleEntity();
+        return new ArticleVm
+        {
+            Id = article.Id,
+            Title = article.Title,
+            Alias = article.Alias,
+            Description = article.Description,
+            Author = article.Author,
+            CatalogueId = article.CatalogueId,
+            Catalogue = article.Catalogue,
+            Content = article.Content,
+            MarkdownContent = article.MarkdownContent,
+            Tags = article.Tags?
+                .Where(x => x != null && !x.Name.IsNullOrEmpty())
+                .Select(x => x.Name)
+                .Distinct()
+                .ToList() ?? new List<string>(),
+            ReadingVolume = article.ReadingVolume,
+            PublishTime = article.PublishTime,
+            Status = article.Status,
+            IsMarkdown = article.IsMarkdown,
+            Metas = NormalizeMetas(article.Metas)
+        };
+    }
+
+    private static bool IsValidMeta(ArticleMetaEntity meta)
+    {
+        return meta != null && !meta.PluginName.IsNullOrEmpty() && !meta.Name.IsNullOrEmpty();
+    }
+
+    private static List<ArticleMetaEntity> NormalizeMetas(IEnumerable<ArticleMetaEntity> metas)
+    {
+        if (metas == null)
+        {
+            return new List<ArticleMetaEntity>();
+        }
+
+        return metas
+            .Where(IsValidMeta)
+            .GroupBy(x => $"{x.PluginName}@@{x.Name}")
+            .Select(g =>
+            {
+                var selected = g.OrderByDescending(x => x.Id).First();
+                return new ArticleMetaEntity
+                {
+                    Id = selected.Id,
+                    ArticleId = selected.ArticleId,
+                    PluginName = selected.PluginName,
+                    Name = selected.Name,
+                    Value = selected.Value
+                };
+            })
+            .ToList();
+    }
+
     private async Task OnValidSubmit(EditContext arg)
     {
         var userName = HttpContextAccessor?.HttpContext?.User?.FindFirstValue(ClaimTypes.Name);
         Article.Author = userName != null ? AdminUserService?.GetUserByUserName(userName)?.NickName ?? "" : "";
+        Article.Metas = NormalizeMetas(Article.Metas);
 
         var article = Article.Adapt<ArticleEntity>();
         if (!PluginUtil.OnContentBeforeSave(ArticlePlugins, article, out var errorMsg))
@@ -208,6 +266,7 @@
 
     private Task TagPress(string value)
     {
+        Article.Tags ??= new List<string>();
         if (value.IsNullOrEmpty() || Article.Tags.Any(x => x == value))
         {
             return Task.CompletedTask;
@@ -220,6 +279,7 @@
 
     private Task TagClose(string tagName)
     {
+        Article.Tags ??= new List<string>();
         Article.Tags.Remove(tagName);
         StateHasChanged();
         return Task.CompletedTask;
@@ -313,26 +373,35 @@
         return res;
     }
 
+    private ArticleMetaEntity EnsureMeta(ArticleExtModel articleExtModel)
+    {
+        Article.Metas = NormalizeMetas(Article.Metas);
+
+        var articleMetaEntity = Article.Metas.FirstOrDefault(x =>
+            string.Equals(x.PluginName, articleExtModel.PluginName, StringComparison.Ordinal) &&
+            string.Equals(x.Name, articleExtModel.Name, StringComparison.Ordinal));
+
+        if (articleMetaEntity != null)
+        {
+            return articleMetaEntity;
+        }
+
+        articleMetaEntity = new ArticleMetaEntity
+        {
+            PluginName = articleExtModel.PluginName,
+            Name = articleExtModel.Name,
+            Value = articleExtModel.DefaultValue
+        };
+
+        Article.Metas.Add(articleMetaEntity);
+        return articleMetaEntity;
+    }
+
     RenderFragment<ArticleExtModel> RenderExt => articleExtModel =>
         @<div class="row">
             <div class="form-group col-12">
                 @{
-                    ArticleMetaEntity articleMetaEntity = null;
-                }
-                @if (Article.Metas == null || !Article.Metas.Any(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name))
-                {
-                    articleMetaEntity = new ArticleMetaEntity
-                    {
-                        PluginName = articleExtModel.PluginName,
-                        Name = articleExtModel.Name,
-                        Value = articleExtModel.DefaultValue
-                    };
-                    Article.Metas ??= new List<ArticleMetaEntity>();
-                    Article.Metas.Add(articleMetaEntity);
-                }
-                else
-                {
-                    articleMetaEntity = Article.Metas.First(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name);
+                    var articleMetaEntity = EnsureMeta(articleExtModel);
                 }
                 @switch (articleExtModel.ArticleExtTypeEnum)
                 {

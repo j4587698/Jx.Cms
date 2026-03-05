@@ -264,6 +264,7 @@ img {
     align-items: center;
     min-height: 42px;
     padding: 0 14px;
+    position: relative;
     border-radius: 12px;
     color: var(--pulse-muted);
     font-weight: 600;
@@ -271,14 +272,32 @@ img {
 }
 
 .nav-list > li > a:hover,
-.nav-list > li:hover > a {
+.nav-list > li:hover > a,
+.nav-list > li:focus-within > a {
     color: var(--pulse-accent);
     background: #fff;
 }
 
+.nav-list > li.has-children > a {
+    padding-right: 30px;
+}
+
+.nav-list > li.has-children > a::after {
+    content: "";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: translateY(-65%) rotate(45deg);
+    opacity: .82;
+}
+
 .nav-list li ul {
     position: absolute;
-    top: calc(100% + 6px);
+    top: 100%;
     left: 0;
     min-width: 180px;
     margin: 0;
@@ -288,23 +307,65 @@ img {
     border: 1px solid var(--pulse-line);
     background: #fff;
     box-shadow: var(--pulse-shadow);
-    display: none;
+    z-index: 30;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transform: translateY(6px);
+    transition: opacity .16s ease, transform .16s ease, visibility .16s ease;
 }
 
-.nav-list li:hover > ul {
-    display: block;
+.nav-list li:hover > ul,
+.nav-list li:focus-within > ul {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateY(0);
+}
+
+.nav-list li li {
+    position: relative;
+}
+
+.nav-list li li > ul {
+    top: -8px;
+    left: calc(100% - 10px);
+    transform: translateX(6px);
+}
+
+.nav-list li li:hover > ul,
+.nav-list li li:focus-within > ul {
+    transform: translateX(0);
 }
 
 .nav-list li ul a {
     display: block;
-    padding: 8px 10px;
+    padding: 8px 12px;
     border-radius: 10px;
     color: var(--pulse-muted);
+    position: relative;
 }
 
 .nav-list li ul a:hover {
     background: rgba(10, 127, 120, .08);
     color: var(--pulse-accent);
+}
+
+.nav-list li li.has-children > a {
+    padding-right: 26px;
+}
+
+.nav-list li li.has-children > a::after {
+    content: "";
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    border-top: 2px solid currentColor;
+    border-right: 2px solid currentColor;
+    transform: translateY(-50%) rotate(45deg);
+    opacity: .78;
 }
 
 .menu-toggle {
@@ -1059,9 +1120,17 @@ img {
         gap: 6px;
     }
 
+    .nav-list > li.has-children > a::after,
+    .nav-list li li.has-children > a::after {
+        transform: translateY(-55%) rotate(135deg);
+    }
+
     .nav-list li ul {
         position: static;
-        display: block;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+        transform: none;
         margin-top: 6px;
         border-style: dashed;
         box-shadow: none;

@@ -24,6 +24,30 @@
         menuToggle.setAttribute("aria-expanded", "false");
     };
 
+    const initNavHierarchy = function () {
+        if (!nav) {
+            return;
+        }
+
+        const items = nav.querySelectorAll("li");
+        Array.prototype.forEach.call(items, function (item) {
+            if (!item || !item.children || item.children.length === 0) {
+                return;
+            }
+
+            let hasDirectSubmenu = false;
+            Array.prototype.forEach.call(item.children, function (child) {
+                if (child && child.tagName === "UL") {
+                    hasDirectSubmenu = true;
+                }
+            });
+
+            if (hasDirectSubmenu) {
+                item.classList.add("has-children");
+            }
+        });
+    };
+
     const closeSearch = function () {
         if (!searchWrap || !searchToggle) {
             return;
@@ -34,6 +58,8 @@
     };
 
     if (menuToggle && nav) {
+        initNavHierarchy();
+
         menuToggle.addEventListener("click", function () {
             closeSearch();
             const opened = nav.classList.toggle("is-open");

@@ -141,6 +141,7 @@
             : PageService.GetPageById(Id);
         Article ??= new ArticleEntity();
         Article.IsPage = true;
+        Article.Metas = NormalizeMetas(Article.Metas);
         BottomExt = PluginUtil.GetBottomExtModels(ArticlePlugins, Article);
         RightExt = PluginUtil.GetRightExtModels(ArticlePlugins, Article);
     }
@@ -263,26 +264,54 @@
         return res;
     }
 
+    private ArticleMetaEntity EnsureMeta(ArticleExtModel articleExtModel)
+    {
+        Article.Metas = NormalizeMetas(Article.Metas);
+
+        var articleMetaEntity = Article.Metas.FirstOrDefault(x =>
+            string.Equals(x.PluginName, articleExtModel.PluginName, StringComparison.Ordinal) &&
+            string.Equals(x.Name, articleExtModel.Name, StringComparison.Ordinal));
+
+        if (articleMetaEntity != null)
+        {
+            return articleMetaEntity;
+        }
+
+        articleMetaEntity = new ArticleMetaEntity
+        {
+            PluginName = articleExtModel.PluginName,
+            Name = articleExtModel.Name,
+            Value = articleExtModel.DefaultValue
+        };
+
+        Article.Metas.Add(articleMetaEntity);
+        return articleMetaEntity;
+    }
+
+    private static bool IsValidMeta(ArticleMetaEntity meta)
+    {
+        return meta != null && !meta.PluginName.IsNullOrEmpty() && !meta.Name.IsNullOrEmpty();
+    }
+
+    private static List<ArticleMetaEntity> NormalizeMetas(IEnumerable<ArticleMetaEntity> metas)
+    {
+        if (metas == null)
+        {
+            return new List<ArticleMetaEntity>();
+        }
+
+        return metas
+            .Where(IsValidMeta)
+            .GroupBy(x => $"{x.PluginName}@@{x.Name}")
+            .Select(g => g.OrderByDescending(x => x.Id).First())
+            .ToList();
+    }
+
     RenderFragment<ArticleExtModel> RenderExt => articleExtModel =>
         @<div class="row">
             <div class="form-group col-12">
                 @{
-                    ArticleMetaEntity articleMetaEntity = null;
-                }
-                @if (Article.Metas == null || !Article.Metas.Any(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name))
-                {
-                    articleMetaEntity = new ArticleMetaEntity
-                    {
-                        PluginName = articleExtModel.PluginName,
-                        Name = articleExtModel.Name,
-                        Value = articleExtModel.DefaultValue
-                    };
-                    Article.Metas ??= new List<ArticleMetaEntity>();
-                    Article.Metas.Add(articleMetaEntity);
-                }
-                else
-                {
-                    articleMetaEntity = Article.Metas.First(x => x.PluginName == articleExtModel.PluginName && x.Name == articleExtModel.Name);
+                    var articleMetaEntity = EnsureMeta(articleExtModel);
                 }
                 @switch (articleExtModel.ArticleExtTypeEnum)
                 {
