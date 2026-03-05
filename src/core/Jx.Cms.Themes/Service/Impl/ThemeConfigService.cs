@@ -26,20 +26,7 @@ public class ThemeConfigService : IThemeConfigService
         var screenShotPath = GetAllThemes().Where(x => x.ThemeName == themeName)
             .Select(x => Path.Combine(x.Path, x.ScreenShot))
             .FirstOrDefault() ?? "";
-        Image img;
-        if (File.Exists(screenShotPath))
-            try
-            {
-                img = Image.Load(screenShotPath);
-            }
-            catch
-            {
-                _logger.LogInformation("获取封面信息失败:{screenShotPath}", screenShotPath);
-                img = Image.Load(Resource.GetResource("noconver.jpg"));
-            }
-        else
-            img = Image.Load(Resource.GetResource("noconver.jpg"));
-
+        using Image img = LoadImage(screenShotPath);
         var stream = new MemoryStream();
         img.Mutate(x => x.Resize(150, 200));
         img.Save(stream, JpegFormat.Instance);
@@ -49,7 +36,36 @@ public class ThemeConfigService : IThemeConfigService
 
     public bool EnableTheme(ThemeConfig themeConfig)
     {
-        ThemeUtil.SetTheme(themeConfig);
-        return true;
+        if (themeConfig == null)
+        {
+            _logger.LogWarning("主题配置为空，无法启用");
+            return false;
+        }
+
+        try
+        {
+            ThemeUtil.SetTheme(themeConfig);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "启用主题失败: {ThemeName}", themeConfig.ThemeName);
+            return false;
+        }
+    }
+
+    private Image LoadImage(string screenShotPath)
+    {
+        if (File.Exists(screenShotPath))
+            try
+            {
+                return Image.Load(screenShotPath);
+            }
+            catch
+            {
+                _logger.LogInformation("获取封面信息失败:{screenShotPath}", screenShotPath);
+                return Image.Load(Resource.GetResource("noconver.jpg"));
+            }
+        return Image.Load(Resource.GetResource("noconver.jpg"));
     }
 }

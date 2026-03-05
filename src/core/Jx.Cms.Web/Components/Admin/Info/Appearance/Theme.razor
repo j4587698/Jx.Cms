@@ -42,7 +42,13 @@
 
     private void SelectTheme(ThemeConfig themeConfig)
     {
-        ThemeConfigService.EnableTheme(themeConfig);
+        var isSuccess = ThemeConfigService.EnableTheme(themeConfig);
+        if (!isSuccess)
+        {
+            ToastService?.Error("设置失败", "主题设置失败，请检查主题配置是否完整");
+            return;
+        }
+
         ToastService?.Success("设置成功", "主题设置成功");
         _themeConfigs = ThemeConfigService.GetAllThemes();
         DispatchService.Dispatch(new DispatchEntry<string>

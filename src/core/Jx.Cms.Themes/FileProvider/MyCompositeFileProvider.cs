@@ -1,4 +1,4 @@
-﻿using Jx.Cms.Common.Utils;
+using Jx.Cms.Common.Utils;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.Extensions.FileProviders.Composite;
 using Microsoft.Extensions.Primitives;
@@ -10,24 +10,14 @@ namespace Jx.Cms.Themes.FileProvider;
 /// </summary>
 public class MyCompositeFileProvider : IFileProvider
 {
-    /// <summary>
-    ///     主提供器
-    /// </summary>
-    private List<IFileProvider> _fileProviders;
-
-    /// <summary>
-    ///     手机主题提供器
-    /// </summary>
+    private readonly object _syncRoot = new();
     private IFileProvider _mobileFileProvider;
-
-    /// <summary>
-    ///     PC主题提供器
-    /// </summary>
     private IFileProvider _pcProvider;
+    private IReadOnlyList<IFileProvider> _fileProviders = Array.Empty<IFileProvider>();
 
     public MyCompositeFileProvider(params IFileProvider[] fileProviders)
     {
-        _fileProviders = fileProviders.ToList();
+        _fileProviders = (fileProviders ?? Array.Empty<IFileProvider>()).Where(x => x != null).ToList();
     }
 
     public MyCompositeFileProvider(IFileProvider pcProvider, IFileProvider mobileFileProvider)
@@ -41,9 +31,8 @@ public class MyCompositeFileProvider : IFileProvider
 
     public IFileInfo GetFileInfo(string subPath)
     {
-        if (_fileProviders == null) return new NotFoundFileInfo(subPath);
-
-        foreach (var fileProvider in _fileProviders)
+        var providers = _fileProviders;
+        foreach (var fileProvider in providers)
         {
             if (fileProvider == null) continue;
 
@@ -57,57 +46,53 @@ public class MyCompositeFileProvider : IFileProvider
 
     public IDirectoryContents GetDirectoryContents(string subPath)
     {
-        if (_fileProviders == null) return new NotFoundDirectoryContents();
-
-        // 过滤掉 null 的文件提供程序
-        var validProviders = _fileProviders.Where(p => p != null).ToList();
-        if (validProviders.Count == 0) return new NotFoundDirectoryContents();
-
-        return new CompositeDirectoryContents(validProviders, subPath);
+        var providers = _fileProviders.Where(p => p != null).ToList();
+        return providers.Count == 0 ? new NotFoundDirectoryContents() : new CompositeDirectoryContents(providers, subPath);
     }
 
     public IChangeToken Watch(string pattern)
     {
         var changeTokenList = new List<IChangeToken>();
-        if (_fileProviders != null)
-            foreach (var fileProvider in _fileProviders)
-            {
-                if (fileProvider == null) continue;
+        foreach (var fileProvider in _fileProviders)
+        {
+            if (fileProvider == null) continue;
 
-                var changeToken = fileProvider.Watch(pattern);
-                if (changeToken != null)
-                    changeTokenList.Add(changeToken);
-            }
+            var changeToken = fileProvider.Watch(pattern);
+            if (changeToken != null)
+                changeTokenList.Add(changeToken);
+        }
 
         return changeTokenList.Count == 0 ? NullChangeToken.Singleton : new CompositeChangeToken(changeTokenList);
     }
 
     public void ModifyFileProvider(IFileProvider fileProvider, ThemeType themeType)
     {
-        switch (themeType)
+        lock (_syncRoot)
         {
-            case ThemeType.PcTheme:
-                _pcProvider = fileProvider;
-                break;
-            case ThemeType.MobileTheme:
-                _mobileFileProvider = fileProvider;
-                break;
-            case ThemeType.AdaptiveTheme:
-                _pcProvider = fileProvider;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(themeType), themeType, null);
-        }
+            switch (themeType)
+            {
+                case ThemeType.PcTheme:
+                    _pcProvider = fileProvider;
+                    break;
+                case ThemeType.MobileTheme:
+                    _mobileFileProvider = fileProvider;
+                    break;
+                case ThemeType.AdaptiveTheme:
+                    _pcProvider = fileProvider;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(themeType), themeType, null);
+            }
 
-        CreateFileProviders();
+            CreateFileProviders();
+        }
     }
 
     private void CreateFileProviders()
     {
-        if (_fileProviders == null) _fileProviders = new List<IFileProvider>();
-        _fileProviders.Clear();
-        if (_pcProvider != null) _fileProviders.Add(_pcProvider);
-
-        if (_mobileFileProvider != null) _fileProviders.Add(_mobileFileProvider);
+        var providers = new List<IFileProvider>();
+        if (_pcProvider != null) providers.Add(_pcProvider);
+        if (_mobileFileProvider != null) providers.Add(_mobileFileProvider);
+        _fileProviders = providers;
     }
 }

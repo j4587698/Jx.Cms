@@ -51,22 +51,16 @@ public static class ThemeUtil
     /// </summary>
     public static string GetThemeName()
     {
+        var httpContext = ServicesExtension.GetRequiredService<IHttpContextAccessor>().HttpContext;
         switch (Mode)
         {
             case ThemeChangeMode.None:
             case ThemeChangeMode.Adaptive:
                 return PcThemeName;
             case ThemeChangeMode.Auto:
-                var httpContext = ServicesExtension.GetRequiredService<IHttpContextAccessor>().HttpContext;
-                var userAgent = httpContext?.Request.Headers[HeaderNames.UserAgent];
-                if (!userAgent.HasValue) return PcThemeName;
-                var device = new MobileParser();
-                device.SetUserAgent(userAgent.Value);
-                if (device.Parse().Success) return MobileThemeName;
-
-                return PcThemeName;
+                return IsMobileRequest(httpContext) ? MobileThemeName : PcThemeName;
             case ThemeChangeMode.Domain:
-                return MobileDomain;
+                return IsCurrentMobileDomain(httpContext) ? MobileThemeName : PcThemeName;
             default:
                 throw new ArgumentOutOfRangeException();
         }
@@ -78,20 +72,15 @@ public static class ThemeUtil
     /// <returns></returns>
     public static string Redirect()
     {
-        if (MobileDomain.IsNullOrEmpty()) return null;
+        if (Mode != ThemeChangeMode.Domain || MobileDomain.IsNullOrEmpty()) return null;
 
         var httpContext = ServicesExtension.GetRequiredService<IHttpContextAccessor>().HttpContext;
-        var userAgent = httpContext?.Request.Headers[HeaderNames.UserAgent];
-        if (!userAgent.HasValue) return null;
+        if (httpContext == null) return null;
+        if (IsCurrentMobileDomain(httpContext)) return null;
+        if (!IsMobileRequest(httpContext)) return null;
 
-        if (httpContext?.Request.Host.Value != MobileDomain)
-        {
-            var url =
-                $"{httpContext!.Request.Scheme}://{MobileDomain}{httpContext.Request.PathBase}{httpContext.Request.Path}{httpContext.Request.QueryString}";
-            return url;
-        }
-
-        return null;
+        return
+            $"{httpContext.Request.Scheme}://{MobileDomain}{httpContext.Request.PathBase}{httpContext.Request.Path}{httpContext.Request.QueryString}";
     }
 
     /// <summary>
@@ -115,28 +104,51 @@ public static class ThemeUtil
         }
 
         var themes = GetAllThemes();
+        var needSave = false;
         if (PcThemeName != DefaultPcThemeName)
         {
             var pc = themes.FirstOrDefault(x => x.ThemeName == PcThemeName);
-            SetTheme(pc);
+            if (pc != null)
+                SetTheme(pc);
+            else
+            {
+                PcThemeName = DefaultPcThemeName;
+                needSave = true;
+            }
         }
 
         if (MobileThemeName != DefaultMobileThemeName)
         {
             var mobile = themes.FirstOrDefault(x => x.ThemeName == MobileThemeName);
-            SetTheme(mobile);
+            if (mobile != null)
+                SetTheme(mobile);
+            else
+            {
+                MobileThemeName = DefaultMobileThemeName;
+                needSave = true;
+            }
+        }
+
+        if (needSave)
+        {
+            SettingsEntity.SetValue(nameof(PcThemeName), PcThemeName);
+            SettingsEntity.SetValue(nameof(MobileThemeName), MobileThemeName);
         }
     }
 
     public static void SetTheme(ThemeConfig themeConfig)
     {
+        if (themeConfig == null) throw new ArgumentNullException(nameof(themeConfig));
+        if (themeConfig.ThemeName.IsNullOrEmpty())
+            throw new ArgumentException("主题名称不能为空", nameof(themeConfig));
+
         var oldThemeName = themeConfig.ThemeType switch
         {
             ThemeType.PcTheme => PcThemeName,
             ThemeType.MobileTheme => MobileThemeName,
             _ => PcThemeName
         };
-        var needChange = GetThemeName() == oldThemeName;
+
         switch (themeConfig.ThemeType)
         {
             case ThemeType.PcTheme:
@@ -152,28 +164,35 @@ public static class ThemeUtil
                 throw new ArgumentOutOfRangeException(nameof(themeConfig.ThemeType), themeConfig.ThemeType, null);
         }
 
-        if (needChange)
+        var hasChanged = !string.Equals(oldThemeName, themeConfig.ThemeName, StringComparison.OrdinalIgnoreCase);
+        var isDefaultTheme = string.Equals(themeConfig.ThemeName, DefaultPcThemeName, StringComparison.OrdinalIgnoreCase);
+        var currentAssembly = RazorPlugin.GetAssemblyByThemeType(themeConfig.ThemeType);
+        var needRuntimeRefresh = hasChanged || (!isDefaultTheme && currentAssembly == null) ||
+                                 (isDefaultTheme && currentAssembly != null);
+
+        if (!hasChanged && !needRuntimeRefresh) return;
+
+        if (hasChanged)
         {
             SettingsEntity.SetValue(nameof(Mode), Mode.ToString());
             SettingsEntity.SetValue(nameof(PcThemeName), PcThemeName);
             SettingsEntity.SetValue(nameof(MobileThemeName), MobileThemeName);
-            if (themeConfig.ThemeName != "Default")
-            {
-                var applicationPartManager =
-                    ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+        }
+
+        var applicationPartManager =
+            ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
+
+        if (needRuntimeRefresh)
+        {
+            if (!isDefaultTheme)
                 RazorPlugin.LoadPlugin(themeConfig, applicationPartManager);
-                MyActionDescriptorChangeProvider.Instance.HasChanged = true;
-                MyActionDescriptorChangeProvider.Instance.TokenSource.Cancel();
-                var viewCompilerProvider =
-                    ServicesExtension.GetRequiredService<IViewCompilerProvider>() as MyViewCompilerProvider;
-                viewCompilerProvider?.Modify();
-            }
             else
-            {
-                var applicationPartManager =
-                    ServicesExtension.Services.GetSingletonInstanceOrNull<ApplicationPartManager>();
                 RazorPlugin.RemovePlugin(themeConfig, applicationPartManager);
-            }
+
+            MyActionDescriptorChangeProvider.Instance.NotifyChanges();
+            var viewCompilerProvider =
+                ServicesExtension.GetRequiredService<IViewCompilerProvider>() as MyViewCompilerProvider;
+            viewCompilerProvider?.Modify();
 
             ThemeModify?.Invoke(themeConfig);
         }
@@ -200,6 +219,8 @@ public static class ThemeUtil
                 try
                 {
                     var themeConfig = JsonConvert.DeserializeObject<ThemeConfig>(File.ReadAllText(configPath));
+                    if (themeConfig == null || themeConfig.ThemeName.IsNullOrEmpty()) continue;
+
                     themeConfig.Path = dir;
                     switch (themeConfig.ThemeType)
                     {
@@ -226,5 +247,24 @@ public static class ThemeUtil
         }
 
         return themeConfigs;
+    }
+
+    private static bool IsCurrentMobileDomain(HttpContext httpContext)
+    {
+        if (httpContext == null || MobileDomain.IsNullOrEmpty()) return false;
+
+        var requestHost = httpContext.Request.Host.Value;
+        if (requestHost.Equals(MobileDomain, StringComparison.OrdinalIgnoreCase)) return true;
+        return httpContext.Request.Host.Host.Equals(MobileDomain, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private static bool IsMobileRequest(HttpContext httpContext)
+    {
+        var userAgent = httpContext?.Request.Headers[HeaderNames.UserAgent];
+        if (!userAgent.HasValue) return false;
+
+        var device = new MobileParser();
+        device.SetUserAgent(userAgent.Value);
+        return device.Parse().Success;
     }
 }

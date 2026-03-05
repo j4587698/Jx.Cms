@@ -1,4 +1,5 @@
-﻿using Jx.Cms.Themes.Util;
+using System.IO;
+using Jx.Cms.Themes.Util;
 using Jx.Toolbox.Extensions;
 using Microsoft.AspNetCore.Http;
 
@@ -6,6 +7,12 @@ namespace Jx.Cms.Themes.Middlewares;
 
 public class RedirectMiddleware
 {
+    private static readonly HashSet<string> StaticFileExtensions = new(StringComparer.OrdinalIgnoreCase)
+    {
+        ".js", ".css", ".map", ".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp", ".bmp", ".avif", ".woff",
+        ".woff2", ".ttf", ".eot", ".otf", ".json", ".txt", ".xml", ".webmanifest", ".wasm"
+    };
+
     private readonly RequestDelegate _next;
 
     public RedirectMiddleware(RequestDelegate next)
@@ -15,31 +22,39 @@ public class RedirectMiddleware
 
     public async Task Invoke(HttpContext context)
     {
-        var hasArea = context.Request.RouteValues.ContainsKey("area");
-        var path = context.Request.Path.ToString();
-
-        // 过滤静态文件和Blazor资源
-        if (path.EndsWith(".js") || path.EndsWith(".css") || path.EndsWith(".png") ||
-            path.EndsWith(".jpg") || path.EndsWith(".jpeg") || path.EndsWith(".gif") ||
-            path.EndsWith(".ico") || path.EndsWith(".svg") || path.Contains("_blazor") ||
-            path.StartsWith("/lib/") || path.StartsWith("/css/") || path.StartsWith("/js/") ||
-            path.StartsWith("/_framework/"))
+        if (!(HttpMethods.IsGet(context.Request.Method) || HttpMethods.IsHead(context.Request.Method)))
         {
-            await _next.Invoke(context);
+            await _next(context);
             return;
         }
 
-        if (!hasArea)
+        var path = context.Request.Path.Value ?? string.Empty;
+        if (ShouldSkip(path))
         {
-            var redirectPath = ThemeUtil.Redirect();
-            if (redirectPath.IsNullOrEmpty())
-                await _next.Invoke(context);
-            else
-                context.Response.Redirect(redirectPath);
+            await _next(context);
+            return;
         }
+
+        var redirectPath = ThemeUtil.Redirect();
+        if (redirectPath.IsNullOrEmpty())
+            await _next(context);
         else
-        {
-            await _next.Invoke(context);
-        }
+            context.Response.Redirect(redirectPath);
+    }
+
+    private static bool ShouldSkip(string path)
+    {
+        if (string.IsNullOrWhiteSpace(path) || path == "/") return false;
+
+        if (path.StartsWith("/Admin", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/Install", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/api", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/_blazor", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/_framework", StringComparison.OrdinalIgnoreCase) ||
+            path.StartsWith("/_content", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (!Path.HasExtension(path)) return false;
+        return StaticFileExtensions.Contains(Path.GetExtension(path));
     }
 }
