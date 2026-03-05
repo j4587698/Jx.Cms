@@ -1,0 +1,60 @@
+<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+    <PropertyGroup>
+        <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Include="wwwroot/**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Jx.Toolbox.HtmlTools" Version="0.3.0"/>
+        <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Update="screenshot.jpg">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\core\Jx.Cms.Themes\Jx.Cms.Themes.csproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <UpToDateCheckInput Remove="Pages\PulseBlog\Shared\_Layout.cshtml"/>
+        <UpToDateCheckInput Remove="Pages\Shared\_Layout.cshtml"/>
+        <UpToDateCheckInput Remove="Pages\Shared\_ViewStart.cshtml"/>
+    </ItemGroup>
+
+    <Target Name="SetAllProjectReferenceAsPublic" AfterTargets="AssignProjectConfiguration" BeforeTargets="ResolveProjectReferences" Condition="'$(OutputType)' == 'Library' and $(AssemblyName.EndsWith('Tests')) == 'false' ">
+        <ItemGroup>
+            <ProjectReferenceWithConfiguration Update="@(ProjectReferenceWithConfiguration)">
+                <Private>false</Private>
+            </ProjectReferenceWithConfiguration>
+            <ProjectReference Update="@(ProjectReference)">
+                <Private>false</Private>
+            </ProjectReference>
+        </ItemGroup>
+    </Target>
+
+    <Target Name="PostBuild" AfterTargets="PostBuildEvent">
+        <PropertyGroup>
+            <ThemeOutputDir>$(MSBuildThisFileDirectory)..\..\core\Jx.Cms.Web\Theme\$(TargetName)\</ThemeOutputDir>
+        </PropertyGroup>
+        <ItemGroup>
+            <ThemeDllFiles Include="$(TargetDir)*.dll"/>
+            <ThemeJsonFile Include="$(TargetDir)theme.json" Condition="Exists('$(TargetDir)theme.json')"/>
+            <ThemeScreenshotFile Include="$(TargetDir)screenshot.jpg" Condition="Exists('$(TargetDir)screenshot.jpg')"/>
+        </ItemGroup>
+        <MakeDir Directories="$(ThemeOutputDir)"/>
+        <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ThemeOutputDir)" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="@(ThemeDllFiles)" DestinationFolder="$(ThemeOutputDir)" SkipUnchangedFiles="true"/>
+        <Copy SourceFiles="@(ThemeJsonFile)" DestinationFolder="$(ThemeOutputDir)" SkipUnchangedFiles="true"
+              Condition="'@(ThemeJsonFile)' != ''"/>
+        <Copy SourceFiles="@(ThemeScreenshotFile)" DestinationFolder="$(ThemeOutputDir)" SkipUnchangedFiles="true"
+              Condition="'@(ThemeScreenshotFile)' != ''"/>
+    </Target>
+</Project>

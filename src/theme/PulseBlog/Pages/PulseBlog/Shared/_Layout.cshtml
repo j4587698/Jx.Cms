@@ -1,0 +1,251 @@
+﻿@using System.Text.Json
+@using Jx.Cms.Themes.Util
+@using Jx.Cms.Themes.Vm
+@using Jx.Toolbox.Extensions
+@using PulseBlog.Model
+@using PulseBlog.Utils
+@{
+    var pageType = (ViewBag.type as string ?? "Home").Trim();
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var settings = ViewData["settings"] as SystemSettingsVm ?? new SystemSettingsVm();
+
+    theme.AccentColor = ThemeViewHelper.NormalizeColor(theme.AccentColor);
+
+    var siteTitle = settings.Title.IsNullOrEmpty() ? "Jx.Cms" : settings.Title;
+    var siteSubTitle = settings.SubTitle ?? "";
+    var siteUrl = settings.Url.IsNullOrEmpty() ? $"{Context.Request.Scheme}://{Context.Request.Host}" : settings.Url;
+    var footerInfo = theme.FooterInfo.IsNullOrEmpty() ? settings.CopyRight : theme.FooterInfo;
+
+    var defaultDescription = theme.Description.IsNullOrEmpty() ? siteSubTitle : theme.Description;
+    if (defaultDescription.IsNullOrEmpty()) defaultDescription = siteTitle;
+
+    var defaultKeywords = theme.Keywords.IsNullOrEmpty() ? siteTitle : theme.Keywords;
+    var pageTitle = siteSubTitle.IsNullOrEmpty() ? siteTitle : $"{siteTitle} · {siteSubTitle}";
+    var pageDescription = defaultDescription;
+    var pageKeywords = defaultKeywords;
+    var canonical = Context.ToAbsoluteUrl($"{Context.Request.Path}{Context.Request.QueryString}");
+    var ogType = "website";
+
+    var defaultSocialImage = theme.DefaultSocialImageUrl.IsNullOrEmpty()
+        ? Context.ToAbsoluteUrl("/PulseBlog/img/placeholder.svg")
+        : Context.ToAbsoluteUrl(theme.DefaultSocialImageUrl);
+    var ogImage = defaultSocialImage;
+    var articlePublished = "";
+    var articleModified = "";
+
+    switch (pageType)
+    {
+        case "Home":
+            if (Model is IndexVm indexVm && indexVm.PageNum > 1)
+            {
+                pageTitle = $"{siteTitle} · 第 {indexVm.PageNum} 页";
+            }
+
+            break;
+        case "Catalog":
+            if (Model is CatalogVm catalogVm)
+            {
+                pageTitle = $"{catalogVm.Catalog.Name} · {siteTitle}";
+                if (catalogVm.PageNum > 1) pageTitle += $" · 第 {catalogVm.PageNum} 页";
+                pageDescription = catalogVm.Catalog.Description.IsNullOrEmpty()
+                    ? $"分类 {catalogVm.Catalog.Name} 的文章列表"
+                    : ThemeViewHelper.GetPlainText(catalogVm.Catalog.Description, 180);
+                pageKeywords = $"{catalogVm.Catalog.Name},{defaultKeywords}";
+            }
+
+            break;
+        case "Tag":
+            if (Model is TagVm tagVm)
+            {
+                pageTitle = $"{tagVm.Tag.Name} · {siteTitle}";
+                if (tagVm.PageNum > 1) pageTitle += $" · 第 {tagVm.PageNum} 页";
+                pageDescription = $"标签 {tagVm.Tag.Name} 下的文章列表";
+                pageKeywords = $"{tagVm.Tag.Name},{defaultKeywords}";
+            }
+
+            break;
+        case "Date":
+            if (Model is DateVm dateVm)
+            {
+                pageTitle = $"{dateVm.Year}年{dateVm.Month}月归档 · {siteTitle}";
+                if (dateVm.PageNum > 1) pageTitle += $" · 第 {dateVm.PageNum} 页";
+                pageDescription = $"{dateVm.Year}年{dateVm.Month}月归档文章";
+                pageKeywords = $"{dateVm.Year}年{dateVm.Month}月,归档,{defaultKeywords}";
+            }
+
+            break;
+        case "Post":
+            if (Model is PostVm postVm)
+            {
+                pageTitle = $"{postVm.Article.Title} · {siteTitle}";
+                pageDescription = postVm.Article.Description.IsNullOrEmpty()
+                    ? ThemeViewHelper.GetPlainText(postVm.Article.Content, 180)
+                    : ThemeViewHelper.GetPlainText(postVm.Article.Description, 180);
+                pageKeywords = postVm.Article.Tags is { Count: > 0 }
+                    ? string.Join(",", postVm.Article.Tags.Select(x => x.Name))
+                    : $"{postVm.Article.Title},{defaultKeywords}";
+                canonical = Context.ToAbsoluteUrl(RewriteUtil.GetArticleUrl(postVm.Article));
+                ogType = "article";
+                ogImage = Context.ToAbsoluteUrl(postVm.Article.GetCover(defaultSocialImage));
+                articlePublished = postVm.Article.PublishTime.ToString("O");
+                articleModified = postVm.Article.PublishTime.ToString("O");
+            }
+
+            break;
+        case "Page":
+            if (Model is PageVm pageVm)
+            {
+                pageTitle = $"{pageVm.Article.Title} · {siteTitle}";
+                pageDescription = pageVm.Article.Description.IsNullOrEmpty()
+                    ? ThemeViewHelper.GetPlainText(pageVm.Article.Content, 180)
+                    : ThemeViewHelper.GetPlainText(pageVm.Article.Description, 180);
+                pageKeywords = $"{pageVm.Article.Title},{defaultKeywords}";
+                canonical = Context.ToAbsoluteUrl(RewriteUtil.GetPageUrl(pageVm.Article));
+                ogType = "article";
+                ogImage = Context.ToAbsoluteUrl(pageVm.Article.GetCover(defaultSocialImage));
+                articlePublished = pageVm.Article.PublishTime.ToString("O");
+                articleModified = pageVm.Article.PublishTime.ToString("O");
+            }
+
+            break;
+    }
+
+    var webSiteSchema = JsonSerializer.Serialize(new
+    {
+        @context = "https://schema.org",
+        @type = "WebSite",
+        name = siteTitle,
+        url = siteUrl,
+        description = pageDescription
+    });
+
+    string articleSchema = null;
+    if (pageType == "Post" && Model is PostVm postSchemaVm)
+    {
+        articleSchema = JsonSerializer.Serialize(new
+        {
+            @context = "https://schema.org",
+            @type = "BlogPosting",
+            headline = postSchemaVm.Article.Title,
+            description = pageDescription,
+            datePublished = articlePublished,
+            dateModified = articleModified,
+            author = new
+            {
+                @type = "Person",
+                name = theme.SeoAuthor.IsNullOrEmpty() ? postSchemaVm.Article.Author : theme.SeoAuthor
+            },
+            mainEntityOfPage = canonical,
+            image = new[] { ogImage }
+        });
+    }
+}
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="robots" content="index,follow,max-image-preview:large"/>
+    <meta name="theme-color" content="@theme.AccentColor"/>
+    <title>@pageTitle</title>
+
+    <meta name="description" content="@pageDescription"/>
+    <meta name="keywords" content="@pageKeywords"/>
+    <link rel="canonical" href="@canonical"/>
+
+    <meta property="og:site_name" content="@siteTitle"/>
+    <meta property="og:type" content="@ogType"/>
+    <meta property="og:title" content="@pageTitle"/>
+    <meta property="og:description" content="@pageDescription"/>
+    <meta property="og:url" content="@canonical"/>
+    <meta property="og:image" content="@ogImage"/>
+
+    <meta name="twitter:card" content="summary_large_image"/>
+    <meta name="twitter:title" content="@pageTitle"/>
+    <meta name="twitter:description" content="@pageDescription"/>
+    <meta name="twitter:image" content="@ogImage"/>
+    @if (!theme.TwitterSite.IsNullOrEmpty())
+    {
+        <meta name="twitter:site" content="@theme.TwitterSite"/>
+    }
+    @if (ogType == "article")
+    {
+        <meta property="article:published_time" content="@articlePublished"/>
+        <meta property="article:modified_time" content="@articleModified"/>
+    }
+
+    <link rel="icon" href="@theme.FaviconUrl"/>
+    <link rel="stylesheet" href="/PulseBlog/css/theme.css"/>
+    @await RenderSectionAsync("header", false)
+    @Html.Raw(theme.HeaderExtendCode)
+    <script type="application/ld+json">@Html.Raw(webSiteSchema)</script>
+    @if (!articleSchema.IsNullOrEmpty())
+    {
+        <script type="application/ld+json">@Html.Raw(articleSchema)</script>
+    }
+</head>
+<body class="pulse pulse-@pageType.ToLowerInvariant()" style="--pulse-accent:@theme.AccentColor;">
+<div class="bg-shape bg-shape-a"></div>
+<div class="bg-shape bg-shape-b"></div>
+<div class="top-progress" id="topProgress"></div>
+
+<header class="site-header" id="siteHeader">
+    <div class="container nav-wrap">
+        <a class="brand" href="/" aria-label="@siteTitle">
+            @if (!theme.LogoUrl.IsNullOrEmpty())
+            {
+                <img src="@theme.LogoUrl" alt="@siteTitle"/>
+            }
+            <span>@siteTitle</span>
+        </a>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="primaryNav">
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav id="primaryNav" class="main-nav" aria-label="主导航">
+            <ul class="nav-list">
+                <menu></menu>
+            </ul>
+        </nav>
+    </div>
+
+    @if (!theme.Notice.IsNullOrEmpty())
+    {
+        <div class="notice-bar">
+            <div class="container">
+                <span>公告</span>
+                <p>@Html.Raw(theme.Notice)</p>
+            </div>
+        </div>
+    }
+</header>
+
+<main class="container page-shell">
+    @RenderBody()
+</main>
+
+<footer class="site-footer">
+    <div class="container">
+        @if (pageType == "Home")
+        {
+            <section class="friend-section">
+                <h3>友情链接</h3>
+                <ul class="friend-list">
+                    <friend-link></friend-link>
+                </ul>
+            </section>
+        }
+
+        <p>@Html.Raw(footerInfo)</p>
+        <p class="muted">Powered by Jx.Cms · Theme PulseBlog</p>
+    </div>
+</footer>
+
+<script src="/PulseBlog/js/theme.js" defer></script>
+@await RenderSectionAsync("body", false)
+@Html.Raw(theme.FooterExtendCode)
+</body>
+</html>

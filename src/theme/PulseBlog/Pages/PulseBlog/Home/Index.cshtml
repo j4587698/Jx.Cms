@@ -1,0 +1,51 @@
+﻿@using PulseBlog.Enum
+@using PulseBlog.Model
+@using Jx.Cms.Themes.Vm
+@model Jx.Cms.Themes.Vm.IndexVm
+@{
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var settings = ViewData["settings"] as SystemSettingsVm;
+    var hasSidebar = theme.Sidebar != SidebarLayoutEnum.None;
+    var layoutClass = hasSidebar
+        ? (theme.Sidebar == SidebarLayoutEnum.Left ? "content-grid sidebar-left" : "content-grid")
+        : "content-grid no-sidebar";
+
+    var heroTitle = theme.HeroTitle == "" ? settings?.Title : theme.HeroTitle;
+    var heroSubtitle = theme.HeroSubtitle == "" ? settings?.SubTitle : theme.HeroSubtitle;
+}
+
+<section class="hero hero-home js-reveal">
+    <p class="kicker">PULSE BLOG</p>
+    <h1>@heroTitle</h1>
+    <p>@heroSubtitle</p>
+    <div class="hero-metrics">
+        <span>本页文章 <strong>@(Model.Articles?.Count ?? 0)</strong></span>
+        <span>当前第 <strong>@Model.PageNum</strong> 页</span>
+    </div>
+</section>
+
+<div class="@layoutClass">
+    <section>
+        @await Html.PartialAsync("_ArticleList", Model.Articles, ViewData)
+        <nav class="pager js-reveal" aria-label="分页">
+            @foreach (var pagination in Model.Pagination)
+            {
+                if (pagination.Key == Model.PageNum.ToString())
+                {
+                    <span class="current">@pagination.Key</span>
+                }
+                else
+                {
+                    <a index-page-num="@pagination.Value">@pagination.Key</a>
+                }
+            }
+        </nav>
+    </section>
+
+    @if (hasSidebar)
+    {
+        <aside>
+            <sidebar sidebar="MainMenu"></sidebar>
+        </aside>
+    }
+</div>

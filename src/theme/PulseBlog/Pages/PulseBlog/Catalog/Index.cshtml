@@ -1,0 +1,47 @@
+﻿@using PulseBlog.Enum
+@using PulseBlog.Model
+@using PulseBlog.Utils
+@model Jx.Cms.Themes.Vm.CatalogVm
+@{
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var hasSidebar = theme.Sidebar != SidebarLayoutEnum.None;
+    var layoutClass = hasSidebar
+        ? (theme.Sidebar == SidebarLayoutEnum.Left ? "content-grid sidebar-left" : "content-grid")
+        : "content-grid no-sidebar";
+
+    var description = string.IsNullOrEmpty(Model.Catalog.Description)
+        ? $"分类 {Model.Catalog.Name} 下的文章列表"
+        : ThemeViewHelper.GetPlainText(Model.Catalog.Description, 180);
+}
+
+<section class="page-head js-reveal">
+    <p class="kicker">CATEGORY</p>
+    <h1>@Model.Catalog.Name</h1>
+    <p>@description</p>
+</section>
+
+<div class="@layoutClass">
+    <section>
+        @await Html.PartialAsync("_ArticleList", Model.Articles, ViewData)
+        <nav class="pager js-reveal" aria-label="分页">
+            @foreach (var pagination in Model.Pagination)
+            {
+                if (pagination.Key == Model.PageNum.ToString())
+                {
+                    <span class="current">@pagination.Key</span>
+                }
+                else
+                {
+                    <a catalog="@Model.Catalog" catalog-page-num="@pagination.Value">@pagination.Key</a>
+                }
+            }
+        </nav>
+    </section>
+
+    @if (hasSidebar)
+    {
+        <aside>
+            <sidebar sidebar="MainMenu"></sidebar>
+        </aside>
+    }
+</div>

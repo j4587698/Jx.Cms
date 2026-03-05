@@ -1,0 +1,135 @@
+@using Jx.Cms.Common.Vo
+@using Jx.Cms.Plugin.Components
+@using PulseBlog.Enum
+@using PulseBlog.Model
+@using PulseBlog.Utils
+@inject ToastService ToastService
+@inject DialogService DialogService
+
+<Row ItemsPerRow="ItemsPerRow.Two">
+    <h3>Pulse Blog 主题设置</h3>
+    <Button style="float: right" OnClick="Save">保存</Button>
+</Row>
+
+<Tab>
+    <TabItem Text="基础">
+        <Row ItemsPerRow="ItemsPerRow.One">
+            <BootstrapInputGroup>
+                <BootstrapInputGroupLabel DisplayText="Logo图片"></BootstrapInputGroupLabel>
+                <BootstrapInput @bind-Value="_settings.LogoUrl" Readonly="true"></BootstrapInput>
+                <Button OnClick="SelectLogo">选择Logo</Button>
+            </BootstrapInputGroup>
+            <BootstrapInputGroup>
+                <BootstrapInputGroupLabel DisplayText="Favicon图标"></BootstrapInputGroupLabel>
+                <BootstrapInput @bind-Value="_settings.FaviconUrl" Readonly="true"></BootstrapInput>
+                <Button OnClick="SelectFavicon">选择图标</Button>
+            </BootstrapInputGroup>
+            <BootstrapInput @bind-Value="_settings.HeroTitle" ShowLabel="true"></BootstrapInput>
+            <BootstrapInput @bind-Value="_settings.HeroSubtitle" ShowLabel="true"></BootstrapInput>
+            <Select Items="@typeof(SidebarLayoutEnum).ToSelectList()" @bind-Value="_settings.Sidebar" ShowLabel="true"></Select>
+        </Row>
+    </TabItem>
+    <TabItem Text="配色与SEO">
+        <ColorPicker @bind-Value="_settings.AccentColor" ShowLabel="true"></ColorPicker>
+        @foreach (var color in _presetColors)
+        {
+            <div class="preset-color" style="background-color:@color" @onclick="() => _settings.AccentColor = color"></div>
+        }
+        <div class="clearfix"></div>
+
+        <BootstrapInput @bind-Value="_settings.Keywords" ShowLabel="true"></BootstrapInput>
+        <Textarea @bind-Value="_settings.Description" ShowLabel="true"></Textarea>
+        <BootstrapInput @bind-Value="_settings.DefaultSocialImageUrl" ShowLabel="true"></BootstrapInput>
+        <BootstrapInput @bind-Value="_settings.SeoAuthor" ShowLabel="true"></BootstrapInput>
+        <BootstrapInput @bind-Value="_settings.TwitterSite" ShowLabel="true"></BootstrapInput>
+    </TabItem>
+    <TabItem Text="扩展">
+        <Textarea @bind-Value="_settings.Notice" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="_settings.FooterInfo" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="_settings.HeaderExtendCode" ShowLabel="true"></Textarea>
+        <Textarea @bind-Value="_settings.FooterExtendCode" ShowLabel="true"></Textarea>
+    </TabItem>
+</Tab>
+
+<style>
+    .preset-color {
+        float: left;
+        width: 28px;
+        height: 28px;
+        margin: 4px;
+        border-radius: 999px;
+        border: 2px solid #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+        cursor: pointer;
+    }
+</style>
+
+@code {
+
+    private SettingsModel _settings = new();
+
+    private readonly string[] _presetColors =
+    [
+        "#0A7F78",
+        "#0C6EFD",
+        "#C45A1A",
+        "#2B7A39",
+        "#B24157",
+        "#3A5A7A"
+    ];
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        _settings = ThemeSettings.GetSettings();
+    }
+
+    private void Save()
+    {
+        ThemeSettings.SaveSettings(_settings);
+        ToastService.Success("保存成功", "Pulse Blog 设置已更新");
+    }
+
+    private async Task SelectLogo()
+    {
+        IEnumerable<MediaInfoVo> selected = null;
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption
+        {
+            Title = "请选择Logo",
+            IsScrolling = true,
+            Size = Size.ExtraLarge,
+            ComponentParameters = new Dictionary<string, object>
+            {
+                {
+                    nameof(MediaSelectComponent.MediaSelected),
+                    EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => selected = x)
+                }
+            }
+        });
+
+        var logo = selected?.FirstOrDefault();
+        if (logo != null) _settings.LogoUrl = logo.Url;
+    }
+
+    private async Task SelectFavicon()
+    {
+        IEnumerable<MediaInfoVo> selected = null;
+        await DialogService.ShowModal<MediaSelectComponent>(new ResultDialogOption
+        {
+            Title = "请选择图标",
+            IsScrolling = true,
+            Size = Size.ExtraLarge,
+            ComponentParameters = new Dictionary<string, object>
+            {
+                {
+                    nameof(MediaSelectComponent.MediaSelected),
+                    EventCallback.Factory.Create<IEnumerable<MediaInfoVo>>(this, x => selected = x)
+                },
+                { nameof(MediaSelectComponent.FileType), new[] { ".ico", ".png", ".svg" } }
+            }
+        });
+
+        var icon = selected?.FirstOrDefault();
+        if (icon != null) _settings.FaviconUrl = icon.Url;
+    }
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="Pulse Blog placeholder">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#d5ebe6"/>
+      <stop offset="100%" stop-color="#f2d6bf"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#g)"/>
+  <circle cx="220" cy="130" r="120" fill="#ffffff" fill-opacity="0.45"/>
+  <circle cx="1000" cy="520" r="180" fill="#ffffff" fill-opacity="0.35"/>
+  <text x="80" y="340" font-size="76" font-family="Noto Serif SC, Source Han Serif SC, serif" fill="#1a2428">Pulse Blog</text>
+  <text x="82" y="398" font-size="34" font-family="IBM Plex Sans, PingFang SC, sans-serif" fill="#2d4a57">Modern. Readable. Search-friendly.</text>
+</svg>

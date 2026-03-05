@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Pulse Blog favicon">
+  <defs>
+    <linearGradient id="fg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0a7f78"/>
+      <stop offset="100%" stop-color="#c45a1a"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#f5f7f8"/>
+  <path d="M16 44V20h17c6.7 0 11.3 4 11.3 10s-4.6 10-11.3 10h-9.2v4H16zM23.8 33h8.4c2.7 0 4.3-1.2 4.3-3s-1.6-3-4.3-3h-8.4v6z" fill="url(#fg)"/>
+</svg>

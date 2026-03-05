@@ -1,0 +1,123 @@
+﻿@using Jx.Cms.Themes.Vm
+@using PulseBlog.Enum
+@using PulseBlog.Model
+@using PulseBlog.Utils
+@using Jx.Toolbox.Extensions
+@model Jx.Cms.Themes.Vm.PostVm
+
+@Html.Raw(Model.HeaderExt)
+
+@{
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var settings = ViewData["settings"] as SystemSettingsVm;
+    var hasSidebar = theme.Sidebar != SidebarLayoutEnum.None;
+    var layoutClass = hasSidebar
+        ? (theme.Sidebar == SidebarLayoutEnum.Left ? "content-grid sidebar-left" : "content-grid")
+        : "content-grid no-sidebar";
+
+    var cover = ThemeViewHelper.GetFirstImage(Model.Article.Content);
+}
+
+<div class="@layoutClass">
+    <section>
+        @if (!cover.IsNullOrEmpty())
+        {
+            <figure class="post-cover js-reveal">
+                <img src="@cover" alt="@Model.Article.Title" loading="eager"/>
+            </figure>
+        }
+
+        <article class="post-detail js-reveal">
+            <header class="post-header">
+                <p class="kicker">ARTICLE</p>
+                <h1>@Model.Article.Title</h1>
+                <div class="meta-row">
+                    <span>@Model.Article.Author</span>
+                    <time datetime="@Model.Article.PublishTime.ToString("O")">@Model.Article.PublishTime.ToString("yyyy-MM-dd HH:mm")</time>
+                    <span>阅读 @Model.Article.ReadingVolume</span>
+                    <span>评论 @Model.CommentCount</span>
+                    @if (ViewData["user"] != null)
+                    {
+                        <a href="/Admin/Article/Write/@Model.Article.Id" rel="nofollow">编辑</a>
+                    }
+                </div>
+                @if (!Model.Article.Description.IsNullOrEmpty())
+                {
+                    <p class="post-summary">@ThemeViewHelper.GetPlainText(Model.Article.Description, 220)</p>
+                }
+            </header>
+
+            <div class="post-content">
+                @Html.Raw(Model.Article.Content)
+            </div>
+
+            @if (Model.Article.Tags is { Count: > 0 })
+            {
+                <footer class="tag-list">
+                    @foreach (var tag in Model.Article.Tags)
+                    {
+                        <a tag="@tag">#@tag.Name</a>
+                    }
+                </footer>
+            }
+        </article>
+
+        <nav class="post-nav js-reveal" aria-label="文章导航">
+            <div>
+                <small>上一篇</small>
+                @if (Model.PrevArticle != null)
+                {
+                    <a article="@Model.PrevArticle">@Model.PrevArticle.Title</a>
+                }
+                else
+                {
+                    <span>没有更早的文章</span>
+                }
+            </div>
+            <div>
+                <small>下一篇</small>
+                @if (Model.NextArticle != null)
+                {
+                    <a article="@Model.NextArticle">@Model.NextArticle.Title</a>
+                }
+                else
+                {
+                    <span>已经是最新文章</span>
+                }
+            </div>
+        </nav>
+
+        @if (Model.Relevant is { Count: > 0 })
+        {
+            <section class="related js-reveal">
+                <h3>相关阅读</h3>
+                <ul>
+                    @foreach (var article in Model.Relevant)
+                    {
+                        <li><a article="@article">@article.Title</a></li>
+                    }
+                </ul>
+            </section>
+        }
+
+        @if (settings != null && settings.CanComment && Model.Article.CanComment)
+        {
+            <div id="commentDiv" class="js-reveal">
+                @await Html.PartialAsync("../Comment/Index.cshtml", Model.Article.Comments.ToList(), ViewData)
+            </div>
+        }
+        else
+        {
+            <p class="comment-closed">评论已关闭</p>
+        }
+    </section>
+
+    @if (hasSidebar)
+    {
+        <aside>
+            <sidebar></sidebar>
+        </aside>
+    }
+</div>
+
+@Html.Raw(Model.BodyExt)

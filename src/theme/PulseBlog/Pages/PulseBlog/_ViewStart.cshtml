@@ -1,0 +1,6 @@
+@using PulseBlog.Utils
+@{
+    Layout = "Shared/_Layout";
+    ViewBag.type = ViewContext.RouteData.Values["controller"]?.ToString();
+    ViewBag.theme = ThemeSettings.GetSettings();
+}

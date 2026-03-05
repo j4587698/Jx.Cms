@@ -1,0 +1,42 @@
+﻿@using PulseBlog.Enum
+@using PulseBlog.Model
+@model Jx.Cms.Themes.Vm.DateVm
+@{
+    var theme = ViewBag.theme as SettingsModel ?? new SettingsModel();
+    var hasSidebar = theme.Sidebar != SidebarLayoutEnum.None;
+    var layoutClass = hasSidebar
+        ? (theme.Sidebar == SidebarLayoutEnum.Left ? "content-grid sidebar-left" : "content-grid")
+        : "content-grid no-sidebar";
+}
+
+<section class="page-head js-reveal">
+    <p class="kicker">ARCHIVE</p>
+    <h1>@($"{Model.Year}年 {Model.Month}月")</h1>
+    <p>该时间段的文章归档列表</p>
+</section>
+
+<div class="@layoutClass">
+    <section>
+        @await Html.PartialAsync("_ArticleList", Model.Articles, ViewData)
+        <nav class="pager js-reveal" aria-label="分页">
+            @foreach (var pagination in Model.Pagination)
+            {
+                if (pagination.Key == Model.PageNum.ToString())
+                {
+                    <span class="current">@pagination.Key</span>
+                }
+                else
+                {
+                    <a year="@Model.Year" month="@Model.Month" date-page-num="@pagination.Value">@pagination.Key</a>
+                }
+            }
+        </nav>
+    </section>
+
+    @if (hasSidebar)
+    {
+        <aside>
+            <sidebar sidebar="MainMenu"></sidebar>
+        </aside>
+    }
+</div>

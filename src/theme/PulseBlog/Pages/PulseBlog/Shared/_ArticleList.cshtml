@@ -1,0 +1,50 @@
+﻿@using Jx.Cms.DbContext.Entities.Article
+@using Jx.Toolbox.Extensions
+@using PulseBlog.Utils
+@model List<ArticleEntity>
+
+<section class="story-feed">
+    @foreach (var article in Model)
+    {
+        var cover = ThemeViewHelper.GetFirstImage(article.Content);
+        var hasCover = !cover.IsNullOrEmpty();
+        var excerpt = article.Description.IsNullOrEmpty()
+            ? ThemeViewHelper.GetPlainText(article.Content, 170)
+            : ThemeViewHelper.GetPlainText(article.Description, 170);
+
+        <article class="story-card js-reveal @(hasCover ? "has-cover" : "no-cover")">
+            @if (hasCover)
+            {
+                <a class="story-media" article="@article">
+                    <img src="@cover" alt="@article.Title" loading="lazy"/>
+                </a>
+            }
+
+            <div class="story-body">
+                <div class="story-meta">
+                    @if (article.Catalogue != null)
+                    {
+                        <a class="story-chip" catalog="@article.Catalogue">@article.Catalogue.Name</a>
+                    }
+                    <time datetime="@article.PublishTime.ToString("O")">@article.PublishTime.ToString("yyyy-MM-dd")</time>
+                    <span>阅读 @article.ReadingVolume</span>
+                    <span>评论 @(article.Comments?.Count ?? 0)</span>
+                </div>
+
+                <h2 class="story-title">
+                    <a article="@article">@article.Title</a>
+                </h2>
+
+                <p class="story-excerpt">@excerpt</p>
+
+                <div class="story-footer">
+                    @if (article.Tags is { Count: > 0 })
+                    {
+                        <a class="story-tag" tag="@article.Tags.First()">#@article.Tags.First().Name</a>
+                    }
+                    <a class="read-more" article="@article">继续阅读</a>
+                </div>
+            </div>
+        </article>
+    }
+</section>

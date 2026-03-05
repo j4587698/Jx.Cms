@@ -1,0 +1,103 @@
+@using Humanizer
+@using Jx.Cms.DbContext.Entities.Admin
+@using Jx.Cms.DbContext.Entities.Article
+@using Jx.Toolbox.Utils
+@model IEnumerable<Jx.Cms.DbContext.Entities.Article.CommentEntity>
+
+@{
+    void RenderComments(IEnumerable<CommentEntity> comments)
+    {
+        foreach (var comment in comments)
+        {
+            <li class="comment-item">
+                <article>
+                    <img class="avatar" src="@Avatar.GetAvatarUrl(comment.AuthorEmail)" alt="@comment.AuthorName"/>
+                    <div class="comment-body">
+                        <header>
+                            <strong>@comment.AuthorName</strong>
+                            <time datetime="@comment.CreateTime.ToString("O")">@comment.CreateTime.Humanize()</time>
+                        </header>
+                        <p>@comment.Content</p>
+                        <a href="javascript:void(0)" onclick="reply('@comment.Id', '@comment.AuthorName')">回复</a>
+                    </div>
+                </article>
+                @if (comment.Child is { Count: > 0 })
+                {
+                    <ol class="comment-list children">
+                        @{ RenderComments(comment.Child); }
+                    </ol>
+                }
+            </li>
+        }
+    }
+}
+
+<section class="comment-panel">
+    <h3>发表评论</h3>
+    <form id="comment" method="post">
+        @Html.AntiForgeryToken()
+        @if (ViewData["user"] != null)
+        {
+            var user = ViewData["user"] as AdminUserEntity;
+            <input type="hidden" name="@nameof(CommentEntity.AuthorName)" value="@user!.NickName"/>
+            <input type="hidden" name="@nameof(CommentEntity.AuthorEmail)" value="@user!.Email"/>
+            <input type="hidden" name="@nameof(CommentEntity.AuthorUrl)" value="@user!.HomePage"/>
+            <p class="login-hint">当前用户：@user.NickName</p>
+        }
+        else
+        {
+            <div class="comment-inputs">
+                <label>
+                    昵称（必填）
+                    <input name="@nameof(CommentEntity.AuthorName)" type="text" value="@ViewData[nameof(CommentEntity.AuthorName)]"/>
+                </label>
+                <label>
+                    邮箱（必填）
+                    <input name="@nameof(CommentEntity.AuthorEmail)" type="text" value="@ViewData[nameof(CommentEntity.AuthorEmail)]"/>
+                </label>
+                <label>
+                    网址
+                    <input name="@nameof(CommentEntity.AuthorUrl)" type="text" value="@ViewData[nameof(CommentEntity.AuthorUrl)]"/>
+                </label>
+            </div>
+        }
+
+        <input type="hidden" name="@nameof(CommentEntity.ArticleId)" value="@ViewData[nameof(CommentEntity.ArticleId)]"/>
+        <input type="hidden" name="@nameof(CommentEntity.ParentId)" value="0"/>
+        <span class="reply-badge" id="replyTo" style="display:none;"></span>
+        <label>
+            评论内容
+            <textarea name="@nameof(CommentEntity.Content)" rows="4"></textarea>
+        </label>
+        <button type="submit">提交评论</button>
+    </form>
+</section>
+
+<section class="comment-panel">
+    <h3>评论列表</h3>
+    @if (Model.Any())
+    {
+        <ol class="comment-list">
+            @{ RenderComments(Model); }
+        </ol>
+    }
+    else
+    {
+        <p class="muted">还没有评论，来做第一个留言的人吧。</p>
+    }
+</section>
+
+<script src="/User/common.js"></script>
+<script>
+    function reply(id, name) {
+        const parent = document.querySelector("[name='@nameof(CommentEntity.ParentId)']");
+        const badge = document.getElementById("replyTo");
+        parent.value = id;
+        badge.style.display = "inline-flex";
+        badge.innerHTML = `回复 ${name} <button type="button" id="clearReply">取消</button>`;
+        document.getElementById("clearReply").onclick = function () {
+            parent.value = "0";
+            badge.style.display = "none";
+        };
+    }
+</script>
