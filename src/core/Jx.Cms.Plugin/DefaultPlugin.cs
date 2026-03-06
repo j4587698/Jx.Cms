@@ -53,6 +53,7 @@ public static class DefaultPlugin
         {
             configure.IsUnloadable = true;
             configure.PreferSharedTypes = true;
+            configure.LoadInMemory = true;
         });
         Plugins.Add(pluginConfig.PluginId, plugin);
 
@@ -78,6 +79,7 @@ public static class DefaultPlugin
             {
                 configure.IsUnloadable = true;
                 configure.PreferSharedTypes = true;
+                configure.LoadInMemory = true;
             });
             InvokeLifecycle(tempLoader.LoadDefaultAssembly(), x => x.PluginDeleted(), nameof(ISystemPlugin.PluginDeleted));
         }

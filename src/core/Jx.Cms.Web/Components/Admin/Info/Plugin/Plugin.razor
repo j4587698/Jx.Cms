@@ -1,4 +1,5 @@
 ﻿@page "/Admin/Plugin"
+@using BootstrapBlazor.Components
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Plugin.Service
 
@@ -7,25 +8,29 @@
 @inject IPluginService PluginService
 @inject IDispatchService<string> DispatchService
 
-@attribute [Menu("BFA18170-C2BC-4352-AFB7-E8A15F4C07E1", "插件列表", "Admin/Plugin", 60, "fa fa-plug")]
+@attribute [Menu("BFA18170-C2BC-4352-AFB7-E8A15F4C07E1", "插件管理", "Admin/Plugin", 60, "fa fa-plug")]
 
-<h3>插件列表</h3>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">插件管理</h3>
+    <ButtonUpload TValue="string" BrowserButtonText="上传插件（zip）" IsMultiple="false" ShowProgress="true"
+                  OnChange="@OnUploadPlugin" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
+</div>
+<div class="mb-3 p-2 border rounded bg-light text-dark">
+    压缩包需包含一个插件目录，目录中必须存在 <code>plugin.json</code> 和同名 <code>.dll</code>。
+</div>
 
 <Table TItem="PluginConfig" IsBordered="true" Items="@_pluginConfigs" ShowExtendButtons="true"
        ShowDefaultButtons="false" ShowRefresh="true"
        ShowExtendDeleteButtonCallback="item => false" ShowExtendEditButtonCallback="item => false">
-    <TableToolbarTemplate>
-        <TableToolbarButton TItem="PluginConfig" Text="添加"></TableToolbarButton>
-    </TableToolbarTemplate>
     <RowButtonTemplate>
-        <Button Text="@(context.IsEnable ? "禁用插件" : "启用插件")" Size="Size.ExtraSmall"
+        <Button Text="@(context.IsEnable ? "禁用" : "启用")" Size="Size.ExtraSmall"
                 OnClick="@EnablePlugin(context)"></Button>
-        <Button Text="删除插件" Size="Size.ExtraSmall" Color="Color.Danger" OnClick="@DeletePlugin(context)"></Button>
+        <Button Text="删除" Size="Size.ExtraSmall" Color="Color.Danger" OnClick="@DeletePlugin(context)"></Button>
     </RowButtonTemplate>
     <TableColumns>
-        <TableColumn @bind-Field="@context.PluginName" Text="插件名"></TableColumn>
-        <TableColumn @bind-Field="@context.Version" Text="版本号"></TableColumn>
-        <TableColumn @bind-Field="@context.PluginDescription" Text="插件说明"></TableColumn>
+        <TableColumn @bind-Field="@context.PluginName" Text="名称"></TableColumn>
+        <TableColumn @bind-Field="@context.Version" Text="版本"></TableColumn>
+        <TableColumn @bind-Field="@context.PluginDescription" Text="描述"></TableColumn>
     </TableColumns>
 </Table>
 
@@ -41,12 +46,13 @@
 
     private EventCallback EnablePlugin(PluginConfig context)
     {
-        return EventCallback.Factory.Create(this, () =>
+        return EventCallback.Factory.Create(this, async () =>
         {
             if (PluginService.ChangePluginStatus(context.PluginId))
             {
                 context.IsEnable = !context.IsEnable;
-                ToastService.Success("处理成功", $"插件{context.PluginName}{(context.IsEnable ? "启用" : "禁用")}成功");
+                await ToastService.Success("成功",
+                    $"插件 {context.PluginName} 已{(context.IsEnable ? "启用" : "禁用")}");
                 DispatchService.Dispatch(new DispatchEntry<string>
                 {
                     Name = "menu",
@@ -55,7 +61,7 @@
             }
             else
             {
-                ToastService.Error("处理失败", $"插件{context.PluginName}{(context.IsEnable ? "禁用" : "启用")}失败");
+                await ToastService.Error("失败", $"插件 {context.PluginName} 操作失败");
             }
         });
     }
@@ -66,8 +72,8 @@
         {
             var ret = await SwalService.ShowModal(new SwalOption
             {
-                Content = $"确认删除插件{context.PluginName}吗？此操作不可回退",
-                Title = "确认删除",
+                Content = $"确定删除插件 {context.PluginName} 吗？此操作不可撤销。",
+                Title = "删除确认",
                 Category = SwalCategory.Question
             });
             if (ret)
@@ -75,14 +81,33 @@
                 if (PluginService.DeletePlugin(context.PluginId))
                 {
                     _pluginConfigs = PluginService.GetAllPlugins();
-                    ToastService?.Success("插件删除成功", $"插件{context.PluginName}删除成功");
+                    await ToastService.Success("成功", $"插件 {context.PluginName} 已删除");
                 }
                 else
                 {
-                    ToastService?.Error("插件删除失败", $"插件{context.PluginName}删除失败");
+                    await ToastService.Error("失败", $"插件 {context.PluginName} 删除失败");
                 }
             }
         });
+    }
+
+    private async Task OnUploadPlugin(UploadFile file)
+    {
+        var result = await PluginService.UploadPluginAsync(file);
+        if (result.IsSuccess)
+        {
+            _pluginConfigs = PluginService.GetAllPlugins();
+            await ToastService.Success("上传成功", result.Message);
+            DispatchService.Dispatch(new DispatchEntry<string>
+            {
+                Name = "menu",
+                Entry = "plugin"
+            });
+            StateHasChanged();
+            return;
+        }
+
+        await ToastService.Error("上传失败", result.Message);
     }
 
 }

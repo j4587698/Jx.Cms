@@ -1,0 +1,42 @@
+<Project>
+    <PropertyGroup>
+        <_IsPluginProject Condition="Exists('$(MSBuildProjectDirectory)/plugin.json')">true</_IsPluginProject>
+        <_IsThemeProject Condition="Exists('$(MSBuildProjectDirectory)/theme.json')">true</_IsThemeProject>
+        <_ShouldPackageExtension Condition="'$(Configuration)' == 'Release' and ('$(_IsPluginProject)' == 'true' or '$(_IsThemeProject)' == 'true')">true</_ShouldPackageExtension>
+
+        <_ExtensionType Condition="'$(_IsPluginProject)' == 'true'">plugin</_ExtensionType>
+        <_ExtensionType Condition="'$(_IsThemeProject)' == 'true'">theme</_ExtensionType>
+
+        <_ExtensionRuntimeDir Condition="'$(_IsPluginProject)' == 'true'">$(MSBuildProjectDirectory)/../../core/Jx.Cms.Web/Plugin/$(TargetName)/</_ExtensionRuntimeDir>
+        <_ExtensionRuntimeDir Condition="'$(_IsThemeProject)' == 'true'">$(MSBuildProjectDirectory)/../../core/Jx.Cms.Web/Theme/$(TargetName)/</_ExtensionRuntimeDir>
+
+        <_ExtensionPackageOutputDir Condition="'$(ExtensionPackageOutputDir)' == ''">$(TargetDir)packages/</_ExtensionPackageOutputDir>
+        <_ExtensionPackageOutputDir Condition="'$(ExtensionPackageOutputDir)' != ''">$(ExtensionPackageOutputDir)</_ExtensionPackageOutputDir>
+        <_ExtensionPackageStageRoot>$(BaseIntermediateOutputPath)extension-package/</_ExtensionPackageStageRoot>
+        <_ExtensionPackageStageDir>$(_ExtensionPackageStageRoot)$(TargetName)/</_ExtensionPackageStageDir>
+        <_ExtensionPackageZipPath>$(_ExtensionPackageOutputDir)$(_ExtensionType)-$(TargetName).zip</_ExtensionPackageZipPath>
+    </PropertyGroup>
+
+    <Target Name="PackageExtensionZip" AfterTargets="PostBuildEvent" Condition="'$(_ShouldPackageExtension)' == 'true'">
+        <Error Text="Extension runtime directory not found: $(_ExtensionRuntimeDir)"
+               Condition="!Exists('$(_ExtensionRuntimeDir)')"/>
+
+        <ItemGroup>
+            <_ExtensionPackageFiles Include="$(_ExtensionRuntimeDir)**/*"/>
+        </ItemGroup>
+
+        <RemoveDir Directories="$(_ExtensionPackageStageRoot)"/>
+        <MakeDir Directories="$(_ExtensionPackageStageDir)"/>
+
+        <Copy SourceFiles="@(_ExtensionPackageFiles)"
+              DestinationFiles="@(_ExtensionPackageFiles->'$(_ExtensionPackageStageDir)%(RecursiveDir)%(Filename)%(Extension)')"/>
+
+        <MakeDir Directories="$(_ExtensionPackageOutputDir)"/>
+        <Delete Files="$(_ExtensionPackageZipPath)" Condition="Exists('$(_ExtensionPackageZipPath)')"/>
+        <ZipDirectory SourceDirectory="$(_ExtensionPackageStageRoot)" DestinationFile="$(_ExtensionPackageZipPath)"/>
+
+        <RemoveDir Directories="$(_ExtensionPackageStageRoot)"/>
+
+        <Message Importance="high" Text="Extension package generated: $(_ExtensionPackageZipPath)"/>
+    </Target>
+</Project>

@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Constants = Jx.Cms.Common.Utils.Constants;
+using PackageImportHelper = Jx.Cms.Common.Utils.PackageImportHelper;
 
 namespace Jx.Cms.Plugin.Utils;
 
@@ -26,6 +27,9 @@ public static class PluginUtil
 
     private static void NotifyPluginModify(PluginConfig pluginConfig)
     {
+        // 清理菜单缓存，避免持有旧插件的 RenderFragment 导致程序集无法回收。
+        PluginMenuModels = null;
+
         try
         {
             PluginModify?.Invoke(pluginConfig);
@@ -51,6 +55,19 @@ public static class PluginUtil
         catch
         {
             // 日志异常不影响主流程。
+        }
+    }
+
+    private static void RefreshWidgetCache()
+    {
+        if (!Util.IsInstalled) return;
+        try
+        {
+            WidgetCache.UpdateCache();
+        }
+        catch (Exception ex)
+        {
+            HandleHookException("WidgetCache", nameof(WidgetCache.UpdateCache), ex);
         }
     }
 
@@ -111,13 +128,17 @@ public static class PluginUtil
 
             try
             {
-                DefaultPlugin.UnloadPlugin(plugin);
                 plugin.IsEnable = false;
                 NotifyPluginModify(plugin);
+                DefaultPlugin.UnloadPlugin(plugin);
+                RefreshWidgetCache();
+                ForceCollectAfterUnload();
             }
             catch (Exception ex)
             {
                 HandleHookException(plugin, "UnloadPlugin", ex);
+                plugin.IsEnable = true;
+                NotifyPluginModify(plugin);
                 PluginEntity.Select.Where(x => x.PluginId == pluginId).ToUpdate().Set(x => x.IsEnable, true)
                     .ExecuteAffrows();
                 return false;
@@ -133,6 +154,7 @@ public static class PluginUtil
             {
                 DefaultPlugin.LoadPlugin(plugin);
                 plugin.IsEnable = true;
+                RefreshWidgetCache();
                 NotifyPluginModify(plugin);
             }
             catch (Exception ex)
@@ -167,12 +189,14 @@ public static class PluginUtil
             // 删除流程不因插件自身清理异常而中断。
         }
 
-        DefaultPlugin.UnloadPlugin(plugin);
         plugin.IsEnable = false;
         NotifyPluginModify(plugin);
+        DefaultPlugin.UnloadPlugin(plugin);
+        RefreshWidgetCache();
+        ForceCollectAfterUnload();
         if (plugin.PluginPath.IsNullOrEmpty()) return false;
-        Directory.Delete(Path.GetDirectoryName(plugin.PluginPath)!, true);
-        return true;
+        var pluginDir = Path.GetDirectoryName(plugin.PluginPath)!;
+        return PackageImportHelper.TryDeleteDirectoryWithRetry(pluginDir, 12, 300);
     }
 
     /// <summary>
@@ -371,5 +395,13 @@ public static class PluginUtil
     {
         if (PluginMenuModels == null || PluginMenuModels.Count == 0) OnMenuShow();
         return PluginMenuModels.FirstOrDefault(x => x.MenuId == menuId)?.PluginBody;
+    }
+
+    private static void ForceCollectAfterUnload()
+    {
+        // 二次回收：在缓存清理后再触发一次，尽快释放插件文件句柄。
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
+        GC.Collect();
     }
 }

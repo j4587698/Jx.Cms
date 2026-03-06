@@ -33,6 +33,7 @@ public static class RazorPlugin
             {
                 config.IsUnloadable = true;
                 config.PreferSharedTypes = true;
+                config.LoadInMemory = true;
             });
         var assembly = plugin.LoadDefaultAssembly();
         AddToPartManager(plugin, partManager, assembly);

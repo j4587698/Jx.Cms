@@ -1,29 +1,30 @@
-﻿using Jx.Cms.Common.Utils;
+﻿using BootstrapBlazor.Components;
+using Jx.Cms.Common.Utils;
 
 namespace Jx.Cms.Themes.Service;
 
 /// <summary>
-///     主题相关
+/// Theme management service.
 /// </summary>
 public interface IThemeConfigService
 {
     /// <summary>
-    ///     获取所有主题
+    /// Get all themes.
     /// </summary>
-    /// <returns>主题信息列表</returns>
     List<ThemeConfig> GetAllThemes();
 
     /// <summary>
-    ///     获取主题对应的主题图片
+    /// Get screenshot stream by theme name.
     /// </summary>
-    /// <param name="themeName">主题名</param>
-    /// <returns>主题图片流</returns>
     Stream GetScreenShotStreamByThemeName(string themeName);
 
     /// <summary>
-    ///     启用指定主题
+    /// Enable a theme.
     /// </summary>
-    /// <param name="themeConfig">主题信息</param>
-    /// <returns>是否成功</returns>
     bool EnableTheme(ThemeConfig themeConfig);
+
+    /// <summary>
+    /// Upload theme zip package, overwrite if same theme exists.
+    /// </summary>
+    Task<(bool IsSuccess, string Message)> UploadThemeAsync(UploadFile file);
 }

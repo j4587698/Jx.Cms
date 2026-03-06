@@ -1,14 +1,27 @@
 ﻿@page "/Admin/Appearance/Theme"
+@using BootstrapBlazor.Components
 @using Jx.Cms.Common.Attribute
 @using Jx.Cms.Themes.Service
 @using Jx.Toolbox.Extensions
 
-@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题列表", "Admin/Appearance/Theme", 10, ParentId = MenuIds.AppearanceId)]
+@attribute [Menu("4363DE5F-CDAC-4872-909A-EC05AF488AC0", "主题管理", "Admin/Appearance/Theme", 10, ParentId = MenuIds.AppearanceId)]
 
 @inject IThemeConfigService ThemeConfigService
 @inject NavigationManager NavigationManager
 @inject ToastService ToastService
 @inject IDispatchService<string> DispatchService
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">主题管理</h3>
+    <div class="d-flex align-items-center gap-2">
+        <ButtonUpload TValue="string" BrowserButtonText="上传主题（zip）" IsMultiple="false" ShowProgress="true"
+                      OnChange="@OnUploadTheme" OnDelete="@(fileName => Task.FromResult(true))"></ButtonUpload>
+    </div>
+</div>
+<div class="mb-3 p-2 border rounded bg-light text-dark">
+    压缩包需包含一个主题目录，目录中必须存在 <code>theme.json</code> 和同名 <code>.dll</code>。
+    如果当前主题正在使用，系统会先临时切换到默认主题再更新，完成后再切回。
+</div>
 
 <ListView Items="_themeConfigs" TItem="ThemeConfig">
     <HeaderTemplate>
@@ -24,7 +37,7 @@
                 <div class="row" style="margin: 10px auto;">
                     <span style="align-self: center">@context.ThemeType.GetDescription()</span>
                     <Button IsDisabled="@context.IsUsing" style="margin-left: auto"
-                            @onclick="() => { SelectTheme(context); }">@(context.IsUsing ? "已启用" : "启用")</Button>
+                            @onclick="() => SelectTheme(context)">@(context.IsUsing ? "已启用" : "启用")</Button>
                 </div>
             </FooterTemplate>
         </Card>
@@ -40,22 +53,41 @@
         _themeConfigs = ThemeConfigService.GetAllThemes();
     }
 
-    private void SelectTheme(ThemeConfig themeConfig)
+    private async Task SelectTheme(ThemeConfig themeConfig)
     {
         var isSuccess = ThemeConfigService.EnableTheme(themeConfig);
         if (!isSuccess)
         {
-            ToastService?.Error("设置失败", "主题设置失败，请检查主题配置是否完整");
+            await ToastService.Error("失败", "主题启用失败");
             return;
         }
 
-        ToastService?.Success("设置成功", "主题设置成功");
+        await ToastService.Success("成功", "主题已启用");
         _themeConfigs = ThemeConfigService.GetAllThemes();
         DispatchService.Dispatch(new DispatchEntry<string>
         {
             Name = "menu",
             Entry = "theme"
         });
+    }
+
+    private async Task OnUploadTheme(UploadFile file)
+    {
+        var result = await ThemeConfigService.UploadThemeAsync(file);
+        if (result.IsSuccess)
+        {
+            _themeConfigs = ThemeConfigService.GetAllThemes();
+            await ToastService.Success("上传成功", result.Message);
+            DispatchService.Dispatch(new DispatchEntry<string>
+            {
+                Name = "menu",
+                Entry = "theme"
+            });
+            StateHasChanged();
+            return;
+        }
+
+        await ToastService.Error("上传失败", result.Message);
     }
 
 }
