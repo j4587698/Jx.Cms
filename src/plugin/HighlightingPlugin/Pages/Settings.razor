@@ -1,34 +1,59 @@
-﻿@using Jx.Cms.Plugin.Service.Both
+@using Jx.Cms.Plugin.Service.Both
 @inject ISettingsService SettingsService
 @inject ToastService ToastService
 
 <Row ItemsPerRow="ItemsPerRow.Two">
-    <h3>高亮设置设置</h3>
+    <h3>代码高亮设置</h3>
     <Button OnClick="Modify" style="float: right">确定</Button>
 </Row>
 
 
 <Row RowType="RowType.Inline" ItemsPerRow="ItemsPerRow.One">
     <Select @bind-Value="@DefaultCodeType" Items="@Codes" DisplayText="默认语言" ShowLabel="true"></Select>
+    <Select @bind-Value="@ThemeStyle" Items="@ThemeStyles" DisplayText="高亮主题样式" ShowLabel="true"></Select>
+    <Switch @bind-Value="@EnableInlineCode" DisplayText="启用行内 code 高亮" OnText="启用" OffText="关闭"></Switch>
 </Row>
 
 @code {
 
-    // 默认使用的主题项
+    // 默认语言
     private string DefaultCodeType { get; set; }
 
+    // 高亮主题样式
+    private string ThemeStyle { get; set; } = HighlightStyleHelper.DefaultStyleFile;
+
+    // 是否启用行内 code 高亮
+    private bool EnableInlineCode { get; set; } = true;
+
     private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
+
+    private readonly IEnumerable<SelectedItem> ThemeStyles = HighlightStyleHelper.ToSelectItems();
 
     protected override void OnInitialized()
     {
         base.OnInitialized();
-        DefaultCodeType = SettingsService.GetValue(Constant.SettingsKey, Constant.DefaultCodeType) ?? "Auto";
+        var values = SettingsService.GetAllValues(Constant.SettingsKey);
+
+        if (!values.TryGetValue(Constant.DefaultCodeType, out var defaultCodeType) ||
+            string.IsNullOrWhiteSpace(defaultCodeType))
+            defaultCodeType = "Auto";
+        DefaultCodeType = defaultCodeType;
+
+        if (!values.TryGetValue(Constant.ThemeStyle, out var themeStyle)) themeStyle = HighlightStyleHelper.DefaultStyleFile;
+        ThemeStyle = HighlightStyleHelper.Normalize(themeStyle);
+
+        if (values.TryGetValue(Constant.EnableInlineCode, out var inlineCode) &&
+            bool.TryParse(inlineCode, out var enableInlineCode))
+            EnableInlineCode = enableInlineCode;
     }
 
     private void Modify()
     {
+        ThemeStyle = HighlightStyleHelper.Normalize(ThemeStyle);
         SettingsService.SetValue(Constant.SettingsKey, Constant.DefaultCodeType, DefaultCodeType);
-        ToastService.Success("修改成功", "默认语言修改成功");
+        SettingsService.SetValue(Constant.SettingsKey, Constant.ThemeStyle, ThemeStyle);
+        SettingsService.SetValue(Constant.SettingsKey, Constant.EnableInlineCode, EnableInlineCode.ToString());
+        ToastService.Success("修改成功", "代码高亮配置已保存");
     }
 
 }

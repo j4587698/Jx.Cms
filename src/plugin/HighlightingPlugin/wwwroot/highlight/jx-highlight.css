@@ -1,0 +1,11 @@
+code.jx-inline-hl.hljs {
+    display: inline;
+    overflow: visible;
+    padding: 0.14em 0.4em;
+    border-radius: 4px;
+    white-space: break-spaces;
+}
+
+pre code.hljs {
+    display: block;
+}

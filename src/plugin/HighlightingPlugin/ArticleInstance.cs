@@ -3,12 +3,26 @@ using HighlightingPlugin.Pages;
 using Jx.Cms.DbContext.Entities.Article;
 using Jx.Cms.Plugin.Model;
 using Jx.Cms.Plugin.Plugin;
+using Jx.Cms.Plugin.Service.Both;
 using Microsoft.AspNetCore.Components;
 
 namespace HighlightingPlugin;
 
 public class ArticleInstance : IArticlePlugin
 {
+    private readonly ISettingsService _settingsService;
+
+    private const string HighlightAssetVersion = "11.11.1-20260306.2";
+
+    public ArticleInstance()
+    {
+    }
+
+    public ArticleInstance(ISettingsService settingsService)
+    {
+        _settingsService = settingsService;
+    }
+
     public RenderFragment<ArticleEntity> BottomRender { get; } = article => builder =>
     {
         builder.OpenComponent<Settings>(0);
@@ -18,9 +32,20 @@ public class ArticleInstance : IArticlePlugin
 
     public ArticleModel OnArticleShow(ArticleModel articleModel)
     {
-        articleModel.Header += "<link rel=\"stylesheet\" href=\"/highlight/styles/default.css\">";
+        var themeStyle = HighlightStyleHelper.Normalize(
+            _settingsService?.GetValue(Constant.SettingsKey, Constant.ThemeStyle) ?? HighlightStyleHelper.DefaultStyleFile);
+        var enableInlineCode = !bool.TryParse(
+                                   _settingsService?.GetValue(Constant.SettingsKey, Constant.EnableInlineCode),
+                                   out var value) ||
+                               value;
+
+        articleModel.Header +=
+            $"<link rel=\"stylesheet\" href=\"/highlight/styles/{themeStyle}?v={HighlightAssetVersion}\">";
+        articleModel.Header += $"<link rel=\"stylesheet\" href=\"/highlight/jx-highlight.css?v={HighlightAssetVersion}\">";
         articleModel.Footer +=
-            "<script src=\"/highlight/highlight.pack.js\"></script><script>hljs.highlightAll();</script>";
+            $"<script>window.jxHighlightOptions={{enableInlineCode:{(enableInlineCode ? "true" : "false")}}};</script>";
+        articleModel.Footer += $"<script src=\"/highlight/highlight.pack.js?v={HighlightAssetVersion}\"></script>";
+        articleModel.Footer += $"<script src=\"/highlight/jx-highlight.js?v={HighlightAssetVersion}\"></script>";
         return articleModel;
     }
 
