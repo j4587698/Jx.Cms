@@ -299,7 +299,9 @@ img {
     position: absolute;
     top: 100%;
     left: 0;
-    min-width: 180px;
+    min-width: 0;
+    width: max-content;
+    max-width: min(420px, calc(100vw - 24px));
     margin: 0;
     padding: 8px;
     list-style: none;
@@ -344,6 +346,9 @@ img {
     border-radius: 10px;
     color: var(--pulse-muted);
     position: relative;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .nav-list li ul a:hover {
@@ -1127,6 +1132,8 @@ img {
 
     .nav-list li ul {
         position: static;
+        width: auto;
+        max-width: none;
         opacity: 1;
         visibility: visible;
         pointer-events: auto;
