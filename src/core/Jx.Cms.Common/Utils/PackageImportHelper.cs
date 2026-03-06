@@ -112,6 +112,11 @@ public static class PackageImportHelper
                 Directory.Move(sourceDirectory, destinationDirectory);
                 return;
             }
+            catch (IOException ex) when (IsCrossDeviceMoveError(ex))
+            {
+                MoveDirectoryByCopyAndDelete(sourceDirectory, destinationDirectory, retryCount, delayMs);
+                return;
+            }
             catch (IOException) when (i < retryCount - 1)
             {
                 Thread.Sleep(delayMs);
@@ -123,6 +128,31 @@ public static class PackageImportHelper
         }
 
         Directory.Move(sourceDirectory, destinationDirectory);
+    }
+
+    private static bool IsCrossDeviceMoveError(IOException ex)
+    {
+        if (ex == null) return false;
+
+        if (!string.IsNullOrWhiteSpace(ex.Message) &&
+            ex.Message.IndexOf("cross-device", StringComparison.OrdinalIgnoreCase) >= 0)
+            return true;
+
+        // Windows ERROR_NOT_SAME_DEVICE = 17, Linux EXDEV = 18
+        var code = ex.HResult & 0xFFFF;
+        return code is 17 or 18;
+    }
+
+    private static void MoveDirectoryByCopyAndDelete(string sourceDirectory, string destinationDirectory, int retryCount,
+        int delayMs)
+    {
+        if (Directory.Exists(destinationDirectory))
+            throw new IOException($"Destination directory already exists: {destinationDirectory}");
+
+        CopyDirectory(sourceDirectory, destinationDirectory);
+        if (TryDeleteDirectoryWithRetry(sourceDirectory, retryCount, delayMs)) return;
+
+        throw new IOException($"Failed to remove source directory after cross-device copy: {sourceDirectory}");
     }
 
     public static bool WaitForFileAvailable(string filePath, int timeoutMs = 6000, int delayMs = 250)
