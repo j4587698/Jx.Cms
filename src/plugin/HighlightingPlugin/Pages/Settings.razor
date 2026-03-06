@@ -2,17 +2,21 @@
 @inject ISettingsService SettingsService
 @inject ToastService ToastService
 
-<Row ItemsPerRow="ItemsPerRow.Two">
-    <h3>代码高亮设置</h3>
-    <Button OnClick="Modify" style="float: right">确定</Button>
-</Row>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h3 class="mb-0">代码高亮设置</h3>
+    <Button OnClick="Modify" Icon="fa fa-save" Text="保存设置" Color="Color.Primary"></Button>
+</div>
 
-
-<Row RowType="RowType.Inline" ItemsPerRow="ItemsPerRow.One">
-    <Select @bind-Value="@DefaultCodeType" Items="@Codes" DisplayText="默认语言" ShowLabel="true"></Select>
-    <Select @bind-Value="@ThemeStyle" Items="@ThemeStyles" DisplayText="高亮主题样式" ShowLabel="true"></Select>
-    <Switch @bind-Value="@EnableInlineCode" DisplayText="启用行内 code 高亮" OnText="启用" OffText="关闭"></Switch>
-</Row>
+<div class="card p-3">
+    <Row RowType="RowType.Inline" ItemsPerRow="ItemsPerRow.One">
+        <Select @bind-Value="@DefaultCodeType" Items="@Codes" DisplayText="默认语言" ShowLabel="true"></Select>
+        <Select @bind-Value="@ThemeStyle" Items="@ThemeStyles" DisplayText="高亮主题样式" ShowLabel="true"></Select>
+        <Switch @bind-Value="@EnableInlineCode" DisplayText="启用行内 code 高亮" ShowLabel="true" OnText="启用" OffText="关闭"></Switch>
+        <Switch @bind-Value="@EnableCopyButton" DisplayText="启用代码块复制按钮" ShowLabel="true" OnText="启用" OffText="关闭"></Switch>
+        <Switch @bind-Value="@EnableLineNumbers" DisplayText="显示代码行号" ShowLabel="true" OnText="显示" OffText="隐藏"></Switch>
+        <Switch @bind-Value="@ShowLanguageLabel" DisplayText="显示语言标签" ShowLabel="true" OnText="显示" OffText="隐藏"></Switch>
+    </Row>
+</div>
 
 @code {
 
@@ -24,6 +28,15 @@
 
     // 是否启用行内 code 高亮
     private bool EnableInlineCode { get; set; } = true;
+
+    // 是否显示复制按钮
+    private bool EnableCopyButton { get; set; } = true;
+
+    // 是否显示行号
+    private bool EnableLineNumbers { get; set; } = true;
+
+    // 是否显示语言标签
+    private bool ShowLanguageLabel { get; set; } = true;
 
     private readonly IEnumerable<SelectedItem> Codes = typeof(Code).ToSelectList();
 
@@ -39,12 +52,25 @@
             defaultCodeType = "Auto";
         DefaultCodeType = defaultCodeType;
 
-        if (!values.TryGetValue(Constant.ThemeStyle, out var themeStyle)) themeStyle = HighlightStyleHelper.DefaultStyleFile;
+        if (!values.TryGetValue(Constant.ThemeStyle, out var themeStyle))
+            themeStyle = HighlightStyleHelper.DefaultStyleFile;
         ThemeStyle = HighlightStyleHelper.Normalize(themeStyle);
 
         if (values.TryGetValue(Constant.EnableInlineCode, out var inlineCode) &&
             bool.TryParse(inlineCode, out var enableInlineCode))
             EnableInlineCode = enableInlineCode;
+
+        if (values.TryGetValue(Constant.EnableCopyButton, out var copyButton) &&
+            bool.TryParse(copyButton, out var enableCopyButton))
+            EnableCopyButton = enableCopyButton;
+
+        if (values.TryGetValue(Constant.EnableLineNumbers, out var lineNumbers) &&
+            bool.TryParse(lineNumbers, out var enableLineNumbers))
+            EnableLineNumbers = enableLineNumbers;
+
+        if (values.TryGetValue(Constant.ShowLanguageLabel, out var languageLabel) &&
+            bool.TryParse(languageLabel, out var showLanguageLabel))
+            ShowLanguageLabel = showLanguageLabel;
     }
 
     private void Modify()
@@ -53,6 +79,9 @@
         SettingsService.SetValue(Constant.SettingsKey, Constant.DefaultCodeType, DefaultCodeType);
         SettingsService.SetValue(Constant.SettingsKey, Constant.ThemeStyle, ThemeStyle);
         SettingsService.SetValue(Constant.SettingsKey, Constant.EnableInlineCode, EnableInlineCode.ToString());
+        SettingsService.SetValue(Constant.SettingsKey, Constant.EnableCopyButton, EnableCopyButton.ToString());
+        SettingsService.SetValue(Constant.SettingsKey, Constant.EnableLineNumbers, EnableLineNumbers.ToString());
+        SettingsService.SetValue(Constant.SettingsKey, Constant.ShowLanguageLabel, ShowLanguageLabel.ToString());
         ToastService.Success("修改成功", "代码高亮配置已保存");
     }
 

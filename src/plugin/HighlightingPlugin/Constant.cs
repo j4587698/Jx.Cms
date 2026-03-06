@@ -9,4 +9,10 @@ public static class Constant
     public const string ThemeStyle = "ThemeStyle";
 
     public const string EnableInlineCode = "EnableInlineCode";
+
+    public const string EnableCopyButton = "EnableCopyButton";
+
+    public const string EnableLineNumbers = "EnableLineNumbers";
+
+    public const string ShowLanguageLabel = "ShowLanguageLabel";
 }

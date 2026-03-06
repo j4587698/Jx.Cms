@@ -12,7 +12,7 @@ public class ArticleInstance : IArticlePlugin
 {
     private readonly ISettingsService _settingsService;
 
-    private const string HighlightAssetVersion = "11.11.1-20260306.2";
+    private const string HighlightAssetVersion = "11.11.1-20260306.4";
 
     public ArticleInstance()
     {
@@ -34,19 +34,31 @@ public class ArticleInstance : IArticlePlugin
     {
         var themeStyle = HighlightStyleHelper.Normalize(
             _settingsService?.GetValue(Constant.SettingsKey, Constant.ThemeStyle) ?? HighlightStyleHelper.DefaultStyleFile);
-        var enableInlineCode = !bool.TryParse(
-                                   _settingsService?.GetValue(Constant.SettingsKey, Constant.EnableInlineCode),
-                                   out var value) ||
-                               value;
+        var enableInlineCode = GetBoolSetting(Constant.EnableInlineCode, true);
+        var enableCopyButton = GetBoolSetting(Constant.EnableCopyButton, true);
+        var enableLineNumbers = GetBoolSetting(Constant.EnableLineNumbers, true);
+        var showLanguageLabel = GetBoolSetting(Constant.ShowLanguageLabel, true);
 
         articleModel.Header +=
             $"<link rel=\"stylesheet\" href=\"/highlight/styles/{themeStyle}?v={HighlightAssetVersion}\">";
         articleModel.Header += $"<link rel=\"stylesheet\" href=\"/highlight/jx-highlight.css?v={HighlightAssetVersion}\">";
         articleModel.Footer +=
-            $"<script>window.jxHighlightOptions={{enableInlineCode:{(enableInlineCode ? "true" : "false")}}};</script>";
+            $"<script>window.jxHighlightOptions={{enableInlineCode:{ToJsBool(enableInlineCode)},enableCopyButton:{ToJsBool(enableCopyButton)},enableLineNumbers:{ToJsBool(enableLineNumbers)},showLanguageLabel:{ToJsBool(showLanguageLabel)}}};</script>";
         articleModel.Footer += $"<script src=\"/highlight/highlight.pack.js?v={HighlightAssetVersion}\"></script>";
         articleModel.Footer += $"<script src=\"/highlight/jx-highlight.js?v={HighlightAssetVersion}\"></script>";
         return articleModel;
+    }
+
+    private bool GetBoolSetting(string settingName, bool defaultValue)
+    {
+        if (_settingsService == null) return defaultValue;
+        var settingValue = _settingsService.GetValue(Constant.SettingsKey, settingName);
+        return bool.TryParse(settingValue, out var value) ? value : defaultValue;
+    }
+
+    private static string ToJsBool(bool value)
+    {
+        return value ? "true" : "false";
     }
 
     public void OnArticleSaved(ArticleEntity articleEntity)
