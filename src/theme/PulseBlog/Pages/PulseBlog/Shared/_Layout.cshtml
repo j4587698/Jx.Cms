@@ -20,6 +20,7 @@
     var footerInfo = theme.FooterInfo.IsNullOrEmpty() ? settings.CopyRight : theme.FooterInfo;
     var searchKeywordFromQuery = Context.Request.Query["q"].ToString();
     var isSearchPanelOpen = pageType == "Search" && !searchKeywordFromQuery.IsNullOrEmpty();
+    var hasLogo = !theme.LogoUrl.IsNullOrEmpty();
 
     var defaultDescription = theme.Description.IsNullOrEmpty() ? siteSubTitle : theme.Description;
     if (defaultDescription.IsNullOrEmpty()) defaultDescription = siteTitle;
@@ -214,12 +215,15 @@
 
 <header class="site-header" id="siteHeader">
     <div class="container nav-wrap">
-        <a class="brand" href="/" aria-label="@siteTitle">
-            @if (!theme.LogoUrl.IsNullOrEmpty())
+        <a class="brand @(hasLogo ? "has-logo" : "")" href="/" aria-label="@siteTitle">
+            @if (hasLogo)
             {
                 <img src="@theme.LogoUrl" alt="@siteTitle"/>
             }
-            <span>@siteTitle</span>
+            else
+            {
+                <span>@siteTitle</span>
+            }
         </a>
 
         <button class="menu-toggle" id="menuToggle" aria-label="打开菜单" aria-expanded="false" aria-controls="primaryNav">

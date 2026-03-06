@@ -135,6 +135,10 @@ img {
     font-weight: 700;
 }
 
+.brand.has-logo {
+    gap: 0;
+}
+
 .brand img {
     height: 36px;
     width: auto;
@@ -535,9 +539,14 @@ img {
 
 .story-media {
     display: block;
-    aspect-ratio: 16 / 9;
     overflow: hidden;
     background: #dde7f6;
+    aspect-ratio: auto;
+    height: clamp(132px, 16vw, 188px);
+}
+
+.content-grid.no-sidebar .story-media {
+    height: clamp(126px, 12vw, 170px);
 }
 
 .story-media img {
@@ -1072,6 +1081,10 @@ img {
     .content-grid.no-sidebar .story-feed {
         grid-template-columns: minmax(0, 1fr);
     }
+
+    .content-grid.no-sidebar .story-media {
+        height: clamp(132px, 18vw, 188px);
+    }
 }
 
 @media (max-width: 1024px) {
@@ -1150,6 +1163,10 @@ img {
 
     .story-card {
         min-height: initial;
+    }
+
+    .story-media {
+        height: clamp(140px, 34vw, 220px);
     }
 }
 
