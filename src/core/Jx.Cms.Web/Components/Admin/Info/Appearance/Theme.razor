@@ -83,7 +83,7 @@
                 Name = "menu",
                 Entry = "theme"
             });
-            StateHasChanged();
+            await InvokeAsync(StateHasChanged);
             return;
         }
 

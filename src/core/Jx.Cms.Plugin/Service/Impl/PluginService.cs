@@ -133,8 +133,17 @@ public class PluginService : IPluginService
                 {
                     PackageImportHelper.MoveDirectoryWithRetry(targetDir, backupDir, 20, 300);
                 }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
+                    _logger.LogWarning(ex, "Plugin directory move denied. TargetDir: {TargetDir}, BackupDir: {BackupDir}",
+                        targetDir, backupDir);
+                    if (needReEnable) ChangePluginStatus(config.PluginId);
+                    return (false, "插件目录无写权限或文件仍被占用，请检查容器挂载目录权限并稍后重试。");
+                }
+                catch (IOException ex)
+                {
+                    _logger.LogWarning(ex, "Plugin directory move failed due to IO lock. TargetDir: {TargetDir}, BackupDir: {BackupDir}",
+                        targetDir, backupDir);
                     if (needReEnable) ChangePluginStatus(config.PluginId);
                     return (false, "插件文件仍被占用，请稍后重试；如持续失败请重启应用后再更新。");
                 }

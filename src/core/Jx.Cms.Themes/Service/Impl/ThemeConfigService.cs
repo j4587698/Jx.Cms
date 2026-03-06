@@ -133,8 +133,17 @@ public class ThemeConfigService : IThemeConfigService
                 {
                     PackageImportHelper.MoveDirectoryWithRetry(targetDir, backupDir, 20, 300);
                 }
-                catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
+                    _logger.LogWarning(ex, "Theme directory move denied. TargetDir: {TargetDir}, BackupDir: {BackupDir}",
+                        targetDir, backupDir);
+                    if (wasUsing && restoreConfig != null) EnableTheme(restoreConfig);
+                    return (false, "主题目录无写权限或文件仍被占用，请检查容器挂载目录权限并稍后重试。");
+                }
+                catch (IOException ex)
+                {
+                    _logger.LogWarning(ex, "Theme directory move failed due to IO lock. TargetDir: {TargetDir}, BackupDir: {BackupDir}",
+                        targetDir, backupDir);
                     if (wasUsing && restoreConfig != null) EnableTheme(restoreConfig);
                     return (false, "主题文件仍被占用，请稍后重试；如持续失败请重启应用后再更新。");
                 }

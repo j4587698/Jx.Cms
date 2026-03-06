@@ -5,6 +5,7 @@
 @using Jx.Toolbox.Extensions
 @using Avatar = Jx.Toolbox.Utils.Avatar
 @inherits LayoutComponentBase
+@implements IDisposable
 
 @inject IAdminMenuService _adminMenuService
 @inject MessageService _messageService
@@ -75,16 +76,18 @@
         DispatchService.Subscribe(Notify);
     }
 
-    private Task Notify(DispatchEntry<string> payload)
+    private async Task Notify(DispatchEntry<string> payload)
     {
         if (payload.Name != "menu")
         {
-            return Task.CompletedTask;
+            return;
         }
 
-        GetIconSideMenuItems();
-        StateHasChanged();
-        return Task.CompletedTask;
+        await InvokeAsync(() =>
+        {
+            GetIconSideMenuItems();
+            StateHasChanged();
+        });
     }
 
     private void GetIconSideMenuItems()
@@ -130,11 +133,8 @@
         item.Items = items;
     }
 
-    private void Dispose(bool disposing)
+    public void Dispose()
     {
-        if (disposing)
-        {
-            DispatchService.UnSubscribe(Notify);
-        }
+        DispatchService.UnSubscribe(Notify);
     }
 }
