@@ -166,7 +166,7 @@ public static class ThemeUtil
 
         var hasChanged = !string.Equals(oldThemeName, themeConfig.ThemeName, StringComparison.OrdinalIgnoreCase);
         var isDefaultTheme = string.Equals(themeConfig.ThemeName, DefaultPcThemeName, StringComparison.OrdinalIgnoreCase);
-        var currentAssembly = RazorPlugin.GetAssemblyByThemeType(themeConfig.ThemeType);
+        var currentAssembly = hasChanged ? null : RazorPlugin.GetAssemblyByThemeType(themeConfig.ThemeType);
         var needRuntimeRefresh = hasChanged || (!isDefaultTheme && currentAssembly == null) ||
                                  (isDefaultTheme && currentAssembly != null);
 
