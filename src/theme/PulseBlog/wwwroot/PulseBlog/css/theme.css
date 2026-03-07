@@ -145,6 +145,11 @@ img {
     border-radius: 8px;
 }
 
+.brand.has-logo span,
+.brand img + span {
+    display: none;
+}
+
 .main-nav {
     margin-left: auto;
 }

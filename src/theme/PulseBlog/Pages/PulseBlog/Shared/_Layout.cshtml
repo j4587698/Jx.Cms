@@ -20,7 +20,12 @@
     var footerInfo = theme.FooterInfo.IsNullOrEmpty() ? settings.CopyRight : theme.FooterInfo;
     var searchKeywordFromQuery = Context.Request.Query["q"].ToString();
     var isSearchPanelOpen = pageType == "Search" && !searchKeywordFromQuery.IsNullOrEmpty();
-    var hasLogo = !theme.LogoUrl.IsNullOrEmpty();
+    var logoUrl = theme.LogoUrl?.Trim() ?? "";
+    var hasLogo = !logoUrl.IsNullOrEmpty();
+    if (hasLogo)
+    {
+        logoUrl = Context.ToAbsoluteUrl(logoUrl);
+    }
 
     var defaultDescription = theme.Description.IsNullOrEmpty() ? siteSubTitle : theme.Description;
     if (defaultDescription.IsNullOrEmpty()) defaultDescription = siteTitle;
@@ -218,7 +223,7 @@
         <a class="brand @(hasLogo ? "has-logo" : "")" href="/" aria-label="@siteTitle">
             @if (hasLogo)
             {
-                <img src="@theme.LogoUrl" alt="@siteTitle"/>
+                <img src="@logoUrl" alt="@siteTitle"/>
             }
             else
             {
