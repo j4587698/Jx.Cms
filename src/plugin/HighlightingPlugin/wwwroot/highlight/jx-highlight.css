@@ -10,6 +10,10 @@ code.jx-inline-hl.hljs {
     --jx-code-bg: #ffffff;
     --jx-code-fg: #0f172a;
     --jx-code-border: rgba(148, 163, 184, 0.35);
+    --jx-code-font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
+        "Courier New", monospace;
+    --jx-code-pad-top: 0.5em;
+    --jx-code-pad-bottom: 0.5em;
     --jx-toolbar-bg: var(--jx-code-bg);
     --jx-toolbar-fg: var(--jx-code-fg);
     --jx-code-lang-color: rgba(15, 23, 42, 0.75);
@@ -92,12 +96,17 @@ code.jx-inline-hl.hljs {
     position: relative;
     background: var(--jx-code-bg);
     color: var(--jx-code-fg);
+    font-family: var(--jx-code-font-family);
+    font-size: 1em;
+    line-height: 1.6;
 }
 
 pre code.hljs {
     display: block;
+    font-family: inherit;
+    font-size: inherit;
     white-space: pre;
-    line-height: 1.6;
+    line-height: inherit;
 }
 
 pre.jx-has-line-numbers {
@@ -110,17 +119,23 @@ pre.jx-has-line-numbers > .jx-line-numbers {
     left: 0;
     bottom: 0;
     width: 3.2em;
-    padding-top: 1em;
+    box-sizing: border-box;
+    padding-top: var(--jx-code-pad-top);
+    padding-bottom: var(--jx-code-pad-bottom);
     border-right: 1px solid var(--jx-code-border);
     background: var(--jx-line-bg);
     text-align: right;
     user-select: none;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
 }
 
 pre.jx-has-line-numbers > .jx-line-numbers > span {
     display: block;
     padding: 0 0.6em 0 0.2em;
-    line-height: 1.6;
+    font-family: inherit;
+    font-size: inherit;
+    line-height: inherit;
     color: var(--jx-line-fg);
-    font-size: 12px;
 }

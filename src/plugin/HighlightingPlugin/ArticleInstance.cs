@@ -12,7 +12,7 @@ public class ArticleInstance : IArticlePlugin
 {
     private readonly ISettingsService _settingsService;
 
-    private const string HighlightAssetVersion = "11.11.1-20260306.4";
+    private const string HighlightAssetVersion = "11.11.1-20260312.2";
 
     public ArticleInstance()
     {

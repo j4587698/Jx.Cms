@@ -186,6 +186,8 @@
         container.style.setProperty("--jx-copy-border-hover", toCssRgba(foregroundColor, 0.45));
         container.style.setProperty("--jx-copy-hover-bg", toCssRgba(foregroundColor, 0.12));
         container.style.setProperty("--jx-copy-active-bg", toCssRgba(foregroundColor, 0.18));
+        container.style.setProperty("--jx-code-pad-top", codeStyle.paddingTop || "0px");
+        container.style.setProperty("--jx-code-pad-bottom", codeStyle.paddingBottom || "0px");
     }
 
     function createToolbar(codeElement, options) {
